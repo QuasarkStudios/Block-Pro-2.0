@@ -3,12 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECEF228FB55600CC9180 /* AppDelegate.swift */; };
-		0D2CECF2228FB55600CC9180 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECF1228FB55600CC9180 /* ViewController.swift */; };
+		0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */; };
 		0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CECF3228FB55600CC9180 /* Main.storyboard */; };
 		0D2CECF7228FB55800CC9180 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CECF6228FB55800CC9180 /* Assets.xcassets */; };
 		0D2CECFA228FB55800CC9180 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CECF8228FB55800CC9180 /* LaunchScreen.storyboard */; };
@@ -17,7 +17,7 @@
 /* Begin PBXFileReference section */
 		0D2CECEC228FB55600CC9180 /* Block Pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Block Pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D2CECEF228FB55600CC9180 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		0D2CECF1228FB55600CC9180 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockViewController.swift; sourceTree = "<group>"; };
 		0D2CECF4228FB55600CC9180 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0D2CECF6228FB55800CC9180 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0D2CECF9228FB55800CC9180 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -55,13 +55,29 @@
 			isa = PBXGroup;
 			children = (
 				0D2CECEF228FB55600CC9180 /* AppDelegate.swift */,
-				0D2CECF1228FB55600CC9180 /* ViewController.swift */,
-				0D2CECF3228FB55600CC9180 /* Main.storyboard */,
+				0D2CED02228FC75B00CC9180 /* View */,
+				0D2CED01228FC73A00CC9180 /* Controller */,
 				0D2CECF6228FB55800CC9180 /* Assets.xcassets */,
 				0D2CECF8228FB55800CC9180 /* LaunchScreen.storyboard */,
 				0D2CECFB228FB55800CC9180 /* Info.plist */,
 			);
 			path = "Block Pro";
+			sourceTree = "<group>";
+		};
+		0D2CED01228FC73A00CC9180 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		0D2CED02228FC75B00CC9180 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				0D2CECF3228FB55600CC9180 /* Main.storyboard */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -100,7 +116,7 @@
 				};
 			};
 			buildConfigurationList = 0D2CECE7228FB55600CC9180 /* Build configuration list for PBXProject "Block Pro" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -135,7 +151,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0D2CECF2228FB55600CC9180 /* ViewController.swift in Sources */,
+				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
