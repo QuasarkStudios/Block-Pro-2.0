@@ -13,6 +13,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @IBOutlet weak var timeTableView: UITableView!
     @IBOutlet weak var blockTableView: UITableView!
+    @IBOutlet weak var verticalTableViewSeperator: UIImageView!
+    
     
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
@@ -20,17 +22,24 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
         timeTableView.delegate = self
         timeTableView.dataSource = self
+        timeTableView.showsVerticalScrollIndicator = false
+        //timeTableView.allowsSelection = false
+        timeTableView.separatorStyle = .none
+        timeTableView.rowHeight = 80.0
         
         blockTableView.delegate = self
         blockTableView.dataSource = self
+        blockTableView.separatorStyle = .none
+        blockTableView.rowHeight = 80.0
         
-        timeTableView.showsVerticalScrollIndicator = false
-        timeTableView.allowsSelection = false
-        timeTableView.rowHeight = 80.0
+        verticalTableViewSeperator.layer.cornerRadius = 0.4 * verticalTableViewSeperator.bounds.size.width
+        verticalTableViewSeperator.clipsToBounds = true
+        
+        timeTableView.register(UINib(nibName: "CustomTimeTableCell", bundle: nil), forCellReuseIdentifier: "timeCell")
+        
     }
 
     
@@ -51,12 +60,11 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-//        let cell2 = tableView.dequeueReusableCell(withIdentifier: "Cell2", for: indexPath)
-        
         if tableView == timeTableView {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-            cell.textLabel?.text = cellTimes[indexPath.row]
+            let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell", for: indexPath) as! CustomTimeTableCell
+            cell.timeLabel.adjustsFontSizeToFitWidth = true
+            cell.timeLabel.text = cellTimes[indexPath.row]
+
             return cell
         }
         else {
@@ -66,5 +74,22 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if scrollView == timeTableView {
+            blockTableView.contentOffset = scrollView.contentOffset
+            blockTableView.contentSize.height = scrollView.contentSize.height
+        }
+        else {
+            timeTableView.contentOffset = scrollView.contentOffset
+            timeTableView.contentSize.height = scrollView.contentSize.height
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.cellForRow(at: indexPath)
+        
+        print (cell?.frame.origin.y)
+    }
 }
 
