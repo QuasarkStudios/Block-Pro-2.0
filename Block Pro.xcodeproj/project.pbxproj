@@ -14,6 +14,8 @@
 		0D2CECFA228FB55800CC9180 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CECF8228FB55800CC9180 /* LaunchScreen.storyboard */; };
 		0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CED082290829300CC9180 /* CustomTimeTableCell.swift */; };
 		0D2CED0B2290829300CC9180 /* CustomTimeTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CED092290829300CC9180 /* CustomTimeTableCell.xib */; };
+		0D2CED0E2290ED4C00CC9180 /* CustomBlockTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CED0C2290ED4C00CC9180 /* CustomBlockTableCell.swift */; };
+		0D2CED0F2290ED4C00CC9180 /* CustomBlockTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CED0D2290ED4C00CC9180 /* CustomBlockTableCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		0D2CECFB228FB55800CC9180 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0D2CED082290829300CC9180 /* CustomTimeTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTimeTableCell.swift; sourceTree = "<group>"; };
 		0D2CED092290829300CC9180 /* CustomTimeTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomTimeTableCell.xib; sourceTree = "<group>"; };
+		0D2CED0C2290ED4C00CC9180 /* CustomBlockTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBlockTableCell.swift; sourceTree = "<group>"; };
+		0D2CED0D2290ED4C00CC9180 /* CustomBlockTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomBlockTableCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +94,8 @@
 			children = (
 				0D2CED082290829300CC9180 /* CustomTimeTableCell.swift */,
 				0D2CED092290829300CC9180 /* CustomTimeTableCell.xib */,
+				0D2CED0C2290ED4C00CC9180 /* CustomBlockTableCell.swift */,
+				0D2CED0D2290ED4C00CC9180 /* CustomBlockTableCell.xib */,
 			);
 			path = "Custom Cells";
 			sourceTree = "<group>";
@@ -154,6 +160,7 @@
 			files = (
 				0D2CECFA228FB55800CC9180 /* LaunchScreen.storyboard in Resources */,
 				0D2CECF7228FB55800CC9180 /* Assets.xcassets in Resources */,
+				0D2CED0F2290ED4C00CC9180 /* CustomBlockTableCell.xib in Resources */,
 				0D2CED0B2290829300CC9180 /* CustomTimeTableCell.xib in Resources */,
 				0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */,
 			);
@@ -169,6 +176,7 @@
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
+				0D2CED0E2290ED4C00CC9180 /* CustomBlockTableCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
