@@ -39,7 +39,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         verticalTableViewSeperator.clipsToBounds = true
         
         timeTableView.register(UINib(nibName: "CustomTimeTableCell", bundle: nil), forCellReuseIdentifier: "timeCell")
-        //blockTableView.register(UINib(nibName: "CustomBlockTableCell", bundle: nil), forCellReuseIdentifier: "blockCell")
+        blockTableView.register(UINib(nibName: "CustomBlockTableCell", bundle: nil), forCellReuseIdentifier: "blockCell")
         
     }
 
@@ -58,7 +58,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        //if tableView == timeTableView {
+        if tableView == timeTableView {
             let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell", for: indexPath) as! CustomTimeTableCell
             cell.timeLabel.font = UIFont(name: "Helvetica Neue", size: 9)
             cell.timeLabel.text = cellTimes[indexPath.row]
@@ -70,12 +70,13 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.cellSeperator.backgroundColor = UIColor.black
             }
             return cell
-        //}
-//        else {
-//            let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
-//            //cell.textLabel?.text = "None"
-//            return cell
-//        }
+        }
+        else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
+            
+            cell.selectionStyle = .none
+            return cell
+        }
 
     }
     
@@ -96,11 +97,10 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell", for: indexPath) as! CustomTimeTableCell
-//
-//        tableView.deselectRow(at: indexPath, animated: true)
-//        print (cell.timeLabel.font)
-//    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
+
+        print (indexPath.row)
+    }
 }
 
