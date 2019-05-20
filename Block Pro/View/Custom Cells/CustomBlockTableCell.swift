@@ -10,9 +10,16 @@ import UIKit
 
 class CustomBlockTableCell: UITableViewCell {
 
+    @IBOutlet weak var cellContainerView: UIView!
+    @IBOutlet weak var eventLabel: UILabel!
+
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        cellContainerView.layer.cornerRadius = 0.05 * cellContainerView.bounds.size.width
+        cellContainerView.clipsToBounds = true
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

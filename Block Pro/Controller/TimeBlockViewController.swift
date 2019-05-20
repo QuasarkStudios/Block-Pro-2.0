@@ -18,13 +18,14 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
-    let cellTimes2: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
+    var cellAnimated = [Bool](repeating: false, count: 24) //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         timeTableView.delegate = self
         timeTableView.dataSource = self
+        
         timeTableView.showsVerticalScrollIndicator = false
         timeTableView.allowsSelection = false
         timeTableView.separatorStyle = .none
@@ -32,7 +33,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         blockTableView.delegate = self
         blockTableView.dataSource = self
-        //blockTableView.separatorStyle = .none
+        blockTableView.separatorStyle = .none
         blockTableView.rowHeight = 80.0
         
         verticalTableViewSeperator.layer.cornerRadius = 0.5 * verticalTableViewSeperator.bounds.size.width
@@ -52,7 +53,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             return cellTimes.count
         }
         else {
-            return 1
+            return 5
         }
     }
     
@@ -74,6 +75,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
             
+            animateBlock(cell, indexPath)
             cell.selectionStyle = .none
             return cell
         }
@@ -100,7 +102,24 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
 
-        print (indexPath.row)
+    }
+    
+    
+    func animateBlock (_ cell: CustomBlockTableCell, _ indexPath: IndexPath) {
+        
+        if cellAnimated[indexPath.row] == false {
+            
+            cell.cellContainerView.frame.origin.x = CGFloat(500) + CGFloat(indexPath.row * 150)
+        
+            UIView.animate(withDuration: 2) {
+                cell.cellContainerView.frame.origin.x = 5.0
+            }
+            
+           cellAnimated[indexPath.row] = true
+        }
+        else {
+            cell.cellContainerView.frame.origin.x = 5.0
+        }
     }
 }
 
