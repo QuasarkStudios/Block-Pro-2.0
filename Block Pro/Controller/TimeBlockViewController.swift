@@ -7,18 +7,22 @@
 //
 
 import UIKit
+import RealmSwift
 
 class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    let realm = try! Realm() //Initializing a new "Realm"
+    var blocks: Results<Block>? //Setting the variable "blocks" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
+    
+    let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
+    
+    var cellAnimated = [Bool](repeating: false, count: 24) //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
     @IBOutlet weak var timeTableView: UITableView!
     @IBOutlet weak var blockTableView: UITableView!
     @IBOutlet weak var verticalTableViewSeperator: UIImageView!
     
-    
-    let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
-    
-    var cellAnimated = [Bool](repeating: false, count: 24) //Variable that helps track whether or not a certain cell has been animated onto the screen yet
+    var count: Int = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +45,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         timeTableView.register(UINib(nibName: "CustomTimeTableCell", bundle: nil), forCellReuseIdentifier: "timeCell")
         blockTableView.register(UINib(nibName: "CustomBlockTableCell", bundle: nil), forCellReuseIdentifier: "blockCell")
+        blockTableView.register(UINib(nibName: "CustomAddBlockTableCell", bundle: nil), forCellReuseIdentifier: "addBlockCell")
+        
+        blocks = realm.objects(Block.self)
         
     }
 
@@ -52,18 +59,27 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         if tableView == timeTableView {
             return cellTimes.count
         }
+            
         else {
-            return 5
+            if blocks?.count ?? 0 == 0 {
+                return 1
+            }
+            
+            else {
+                return (blocks?.count ?? 1) + 1
+            }
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if tableView == timeTableView {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell", for: indexPath) as! CustomTimeTableCell
-            cell.timeLabel.font = UIFont(name: "Helvetica Neue", size: 9)
-            cell.timeLabel.text = cellTimes[indexPath.row]
             
+            let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell", for: indexPath) as! CustomTimeTableCell
+            cell.timeLabel.font = UIFont(name: "Helvetica Neue", size: 9) //Setting the font and font size of the cell
+            cell.timeLabel.text = cellTimes[indexPath.row] //Setting the time the cell should display
+            
+            //Every cell that does not have the text "11:00 PM" should have a black "cellSeperator"
             if cell.timeLabel.text == "11:00 PM" {
                 cell.cellSeperator.backgroundColor = UIColor.white
             }
@@ -72,12 +88,48 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             return cell
         }
-        else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
             
-            animateBlock(cell, indexPath)
-            cell.selectionStyle = .none
-            return cell
+        else {
+            print ("4")
+            if blocks?.count ?? 0 == 0 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "addBlockCell", for: indexPath) as! CustomAddBlockTableCell
+                return cell
+            }
+            else {
+                if indexPath.row < blocks?.count ?? 0 {
+                    
+                    //Use of optional binding to check if "blocks" variable contains any "Block" objects; if so, a "CustomBlockTableCell" will be created using that "Block object
+                    if let blockData = blocks?[indexPath.row] {
+                        print ("1")
+                        let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
+                        animateBlock(cell, indexPath)
+                        return cell
+                    }
+                    
+                    else {
+                        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                        cell.textLabel!.text = "Error Creating Time Block"
+                        return cell
+                    }
+                }
+                    
+                else {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "addBlockCell", for: indexPath) as! CustomAddBlockTableCell
+                    return cell
+                }
+            }
+            
+            
+            
+            //If "blocks" variable is nil, a "CustomAddBlockTableCell" is going to be used in the tableView to allow the user to add another "blockCell"
+//            else {
+//                print ("2")
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "addBlockCell", for: indexPath) as! CustomAddBlockTableCell
+//
+//            //cell.selectionStyle = .none
+//            return cell
+//            }
         }
 
     }
@@ -100,10 +152,23 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
-
+        let cell = tableView.dequeueReusableCell(withIdentifier: "addBlockCell", for: indexPath) as! CustomAddBlockTableCell
+        print ("3")
+        let newBlock = Block()
+        
+        newBlock.name = "cool"
+        
+        do {
+            try realm.write {
+                realm.add(newBlock)
+            }
+        } catch {
+            print ("Error adding a new block \(error)")
+        }
+        tableView.reloadData()
+        count += 1
+        //performSegue(withIdentifier: "pushToTestView", sender: self)
     }
-    
     
     func animateBlock (_ cell: CustomBlockTableCell, _ indexPath: IndexPath) {
         
@@ -121,5 +186,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             cell.cellContainerView.frame.origin.x = 5.0
         }
     }
+    
+
 }
 
