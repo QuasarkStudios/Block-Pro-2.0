@@ -60,7 +60,7 @@
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <viewLayoutGuide key="safeArea" id="o8q-3S-QRu"/>
+                        <viewLayoutGuide key="safeArea" id="dAP-hJ-TwJ"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Time Block" id="f21-Pf-8Sq" userLabel="Time Block"/>
                     <connections>
@@ -105,7 +105,7 @@
                             </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <viewLayoutGuide key="safeArea" id="TDp-4X-mI9"/>
+                        <viewLayoutGuide key="safeArea" id="U3C-mM-kXW"/>
                     </view>
                     <connections>
                         <outlet property="testInput" destination="zUl-u2-wfA" id="cQr-Cn-NML"/>
