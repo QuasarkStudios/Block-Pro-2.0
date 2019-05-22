@@ -10,6 +10,8 @@ import UIKit
 
 class CustomAddBlockTableCell: UITableViewCell {
 
+    @IBOutlet weak var addBlockLabel: UILabel!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

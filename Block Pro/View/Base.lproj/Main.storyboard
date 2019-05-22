@@ -67,6 +67,7 @@
                         <outlet property="blockTableView" destination="yHf-Z8-Qw0" id="D2x-Zf-HRk"/>
                         <outlet property="timeTableView" destination="3bQ-Cb-hYd" id="li2-IM-Fzz"/>
                         <outlet property="verticalTableViewSeperator" destination="MSY-6P-dmZ" id="hkd-f3-4DI"/>
+                        <segue destination="gbb-K0-VTQ" kind="show" identifier="moveToTest" id="rHE-pQ-V59"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -81,15 +82,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zUl-u2-wfA">
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Block Name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zUl-u2-wfA">
                                 <rect key="frame" x="139" y="172" width="97" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Start Time" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dWd-jR-SVy">
+                                <rect key="frame" x="139" y="210" width="97" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="End Time" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BEO-Ev-xKu">
+                                <rect key="frame" x="139" y="276" width="97" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S64-17-6jQ">
-                                <rect key="frame" x="172" y="273" width="30" height="30"/>
+                                <rect key="frame" x="172" y="391" width="30" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Test"/>
                                 <connections>
@@ -97,19 +112,30 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CAK-Id-NsE">
-                                <rect key="frame" x="116" y="396" width="158" height="21"/>
+                                <rect key="frame" x="139" y="703" width="158" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="syB-fA-h77">
+                                <rect key="frame" x="150" y="486" width="58" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Go Back"/>
+                                <connections>
+                                    <action selector="goBack:" destination="gbb-K0-VTQ" eventType="touchUpInside" id="Lmi-QI-fNg"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="U3C-mM-kXW"/>
                     </view>
                     <connections>
-                        <outlet property="testInput" destination="zUl-u2-wfA" id="cQr-Cn-NML"/>
+                        <outlet property="blockName" destination="zUl-u2-wfA" id="cNn-8z-lQ5"/>
+                        <outlet property="endTime" destination="BEO-Ev-xKu" id="Uzp-9F-s7n"/>
+                        <outlet property="startTime" destination="dWd-jR-SVy" id="b0P-Ws-Z1f"/>
                         <outlet property="testLabel" destination="CAK-Id-NsE" id="pNN-4j-Jua"/>
+                        <segue destination="BYZ-38-t0r" kind="show" identifier="goBack" id="Zsw-DH-pAi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KHo-zc-REp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -135,4 +161,7 @@
             <point key="canvasLocation" x="136.80000000000001" y="133.5832083958021"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="Zsw-DH-pAi"/>
+    </inferredMetricsTieBreakers>
 </document>

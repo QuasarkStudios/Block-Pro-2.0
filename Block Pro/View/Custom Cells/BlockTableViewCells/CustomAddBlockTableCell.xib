@@ -29,6 +29,9 @@
                 </subviews>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="addBlockLabel" destination="W6H-JL-sxs" id="KHv-zH-PCO"/>
+            </connections>
         </tableViewCell>
     </objects>
 </document>

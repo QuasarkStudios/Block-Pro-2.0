@@ -12,7 +12,9 @@ class CustomBlockTableCell: UITableViewCell {
 
     @IBOutlet weak var cellContainerView: UIView!
     @IBOutlet weak var eventLabel: UILabel!
-
+    @IBOutlet weak var startLabel: UILabel!
+    @IBOutlet weak var endLabel: UILabel!
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()

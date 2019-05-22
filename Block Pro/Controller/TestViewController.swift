@@ -17,7 +17,11 @@ class TestViewController: UIViewController {
     
     //let testBlock = Block()
     
-    @IBOutlet weak var testInput: UITextField!
+    @IBOutlet weak var blockName: UITextField!
+    @IBOutlet weak var startTime: UITextField!
+    @IBOutlet weak var endTime: UITextField!
+    
+    
     @IBOutlet weak var testLabel: UILabel!
     
     override func viewDidLoad() {
@@ -29,23 +33,38 @@ class TestViewController: UIViewController {
 
     @IBAction func testButton(_ sender: Any) {
 
+        let newBlock = Block()
         
+        newBlock.name = blockName.text!
+        newBlock.start = startTime.text!
+        newBlock.end = endTime.text!
         
-        
-        //Updating a model
-//        testBlock = realm.objects(Block.self)
-//
-//        do {
-//            try self.realm.write {
-//                self.testBlock![0].name = testInput.text!
-//            }
-//        } catch {
-//            print ("Error updating block \(error)")
-//
-//        }
+        do {
+            try realm.write {
+                realm.add(newBlock)
+            }
+        } catch {
+            print ("Awhhh shit \(error)")
+        }
+
     }
     
     
+    @IBAction func goBack(_ sender: Any) {
+        performSegue(withIdentifier: "goBack", sender: self)
+    }
+    
+    //Updating a model
+    //        testBlock = realm.objects(Block.self)
+    //
+    //        do {
+    //            try self.realm.write {
+    //                self.testBlock![0].name = testInput.text!
+    //            }
+    //        } catch {
+    //            print ("Error updating block \(error)")
+    //
+    //        }
     
     
 }

@@ -111,6 +111,11 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     if let blockData = blocks?[indexPath.row] {
                         
                         let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
+                        
+                        cell.eventLabel.text = blockData.name
+                        cell.startLabel.text = blockData.start
+                        cell.endLabel.text = blockData.end
+                        
                         animateBlock(cell, indexPath)
                         return cell
                     }
@@ -148,22 +153,29 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "addBlockCell", for: indexPath) as! CustomAddBlockTableCell
         
-        let newBlock = Block()
         
-        newBlock.name = "cool"
+        addNewBlockView()
         
-        do {
-            try realm.write {
-                realm.add(newBlock)
-            }
-        } catch {
-            print ("Error adding a new block \(error)")
-        }
-        tableView.reloadData()
-
-        //performSegue(withIdentifier: "pushToTestView", sender: self)
+        
+        
+//        if indexPath.row == blocks?.count ?? 0 {
+//
+//            let newBlock = Block()
+//
+//            newBlock.name = "cool"
+//
+//            do {
+//                try realm.write {
+//                    realm.add(newBlock)
+//                }
+//            } catch {
+//                print ("Error adding a new block \(error)")
+//            }
+//            tableView.reloadData()
+//        }
+        //performSegue(withIdentifier: "moveToTest", sender: self)
+        
     }
     
     
@@ -187,6 +199,72 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         else {
             cell.cellContainerView.frame.origin.x = 5.0
         }
+    }
+    
+    func addNewBlockView () {
+        
+        
+        let customView = UIView()
+        var blockName: UITextField = createTextField(xCord: 20, yCord: 100, width: 300, height: 40, placeholderText: "TimeBlock Name", keyboard: "default")
+        var blockStart = UITextField()
+        var blockEnd = UITextField()
+        
+        customView.frame = CGRect.init(x: 12.5, y: 1000, width: 350, height: 200)
+        customView.backgroundColor = UIColor.blue
+        customView.layer.cornerRadius = 0.05 * customView.bounds.size.width
+        customView.clipsToBounds = true
+        self.view.addSubview(customView)
+        
+        let sampleTextField = UITextField(frame: CGRect(x: 20, y: 100, width: 300, height: 40))
+        sampleTextField.placeholder = "placeholderText"
+        sampleTextField.font = UIFont.systemFont(ofSize: 15)
+        sampleTextField.borderStyle = UITextField.BorderStyle.roundedRect
+        sampleTextField.autocorrectionType = UITextAutocorrectionType.no
+        sampleTextField.keyboardType = UIKeyboardType.alphabet
+        sampleTextField.returnKeyType = UIReturnKeyType.done
+        sampleTextField.clearButtonMode = UITextField.ViewMode.whileEditing;
+        sampleTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        //sampleTextField.delegate = self as! UITextFieldDelegate
+        customView.addSubview(blockName)
+        
+        //blockName.frame = CGRect.init(x: 12.5, y: 1100, width: 200, height: 30)
+        //customView.addSubview(blockName)
+        
+        UIView.animate(withDuration: 0.8) {
+            //customView.center = self.view.center
+            
+            customView.frame.origin = CGPoint(x: 12.5, y: 200.0)
+            //blockName.frame.origin = CGPoint(x: 12.5, y: 300)
+            
+            self.timeTableView.alpha = 0.3
+            self.blockTableView.alpha = 0.3
+            print (sampleTextField.frame.origin)
+        }
+        
+    }
+    
+    func createTextField (xCord: CGFloat, yCord: CGFloat, width: CGFloat, height: CGFloat, placeholderText: String, keyboard: String) -> UITextField {
+        
+        let textField = UITextField(frame: CGRect(x: xCord, y: yCord, width: width, height: height))
+        
+        textField.placeholder = placeholderText
+        textField.font = UIFont.systemFont(ofSize: 15)
+        textField.borderStyle = UITextField.BorderStyle.roundedRect
+        textField.autocorrectionType = UITextAutocorrectionType.no
+        textField.returnKeyType = UIReturnKeyType.done
+        textField.clearButtonMode = UITextField.ViewMode.whileEditing;
+        textField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
+        
+        switch keyboard {
+        case "default":
+            textField.keyboardType = UIKeyboardType.default
+        case "number":
+            textField.keyboardType = UIKeyboardType.numberPad
+        default:
+            textField.keyboardType = UIKeyboardType.default
+        }
+        
+        return textField
     }
     
 }
