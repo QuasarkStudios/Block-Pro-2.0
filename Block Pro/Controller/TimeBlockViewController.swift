@@ -9,7 +9,9 @@
 import UIKit
 import RealmSwift
 
-class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    
 
     let realm = try! Realm() //Initializing a new "Realm"
     var blocks: Results<Block>? //Setting the variable "blocks" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
@@ -18,11 +20,19 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
     var cellAnimated = [Bool](repeating: false, count: 24) //Variable that helps track whether or not a certain cell has been animated onto the screen yet
+    var userSelectedTime = [String](repeating: "", count: 3)
     
     @IBOutlet weak var timeTableView: UITableView!
     @IBOutlet weak var blockTableView: UITableView!
     @IBOutlet weak var verticalTableViewSeperator: UIImageView!
     
+    let testObject = AddBlockViewController()
+    
+    lazy var viewDictionary: [String : UIView] = testObject.createNewBlockView()
+    lazy var enterBlockTitle = viewDictionary["enterBlockTitle"] as! UITextField
+    lazy var enterBlockStart = viewDictionary["enterBlockStart"] as! UITextField
+    lazy var enterBlockEnd = viewDictionary["enterBlockEnd"] as! UITextField
+    lazy var timePicker = viewDictionary["timePicker"] as! UIPickerView
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,6 +58,13 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         blockTableView.register(UINib(nibName: "CustomAddBlockTableCell", bundle: nil), forCellReuseIdentifier: "addBlockCell")
         
         blocks = realm.objects(Block.self)
+        
+        enterBlockTitle.delegate = self
+        enterBlockStart.delegate = self
+        enterBlockEnd.delegate = self
+        
+        timePicker.delegate = self
+        timePicker.dataSource = self
         
     }
 
@@ -139,6 +156,64 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     //MARK: - TableView Delegate Methods
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        
+        let blockView: UIView = viewDictionary["blockView"]!
+        let blockTitleLabel = viewDictionary["blockTitleLabel"]
+
+        let blockStartLabel = viewDictionary["blockStartLabel"]
+
+        let blockEndLabel = viewDictionary["blockEndLabel"]
+        
+        
+        blockView.addSubview(blockTitleLabel!)
+        blockView.addSubview(enterBlockTitle)
+        blockView.addSubview(blockStartLabel!)
+        blockView.addSubview(enterBlockStart)
+        blockView.addSubview(blockEndLabel!)
+        blockView.addSubview(enterBlockEnd)
+        
+        self.view.addSubview(blockView)
+        
+        //timePicker.center = self.view.center
+        //timePicker.backgroundColor?.withAlphaComponent(0.6) /
+        self.view.addSubview(timePicker)
+        
+        UIView.animate(withDuration: 0.65) {
+            
+            blockView.frame.origin.y = 200
+            
+            self.timeTableView.alpha = 0.5
+            self.blockTableView.alpha = 0.5
+        }
+        
+        
+        
+        
+        //addNewBlockView()
+        
+        
+        //        if indexPath.row == blocks?.count ?? 0 {
+        //
+        //            let newBlock = Block()
+        //
+        //            newBlock.name = "cool"
+        //
+        //            do {
+        //                try realm.write {
+        //                    realm.add(newBlock)
+        //                }
+        //            } catch {
+        //                print ("Error adding a new block \(error)")
+        //            }
+        //            tableView.reloadData()
+        //        }
+        //performSegue(withIdentifier: "moveToTest", sender: self)
+        
+    }
+    
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         if scrollView == timeTableView {
@@ -149,33 +224,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             timeTableView.contentOffset = scrollView.contentOffset
             timeTableView.contentSize.height = scrollView.contentSize.height
         }
-    }
-    
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        
-        addNewBlockView()
-        
-        
-        
-//        if indexPath.row == blocks?.count ?? 0 {
-//
-//            let newBlock = Block()
-//
-//            newBlock.name = "cool"
-//
-//            do {
-//                try realm.write {
-//                    realm.add(newBlock)
-//                }
-//            } catch {
-//                print ("Error adding a new block \(error)")
-//            }
-//            tableView.reloadData()
-//        }
-        //performSegue(withIdentifier: "moveToTest", sender: self)
-        
     }
     
     
@@ -201,71 +249,45 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    func addNewBlockView () {
-        
-        
-        let customView = UIView()
-        var blockName: UITextField = createTextField(xCord: 20, yCord: 100, width: 300, height: 40, placeholderText: "TimeBlock Name", keyboard: "default")
-        var blockStart = UITextField()
-        var blockEnd = UITextField()
-        
-        customView.frame = CGRect.init(x: 12.5, y: 1000, width: 350, height: 200)
-        customView.backgroundColor = UIColor.blue
-        customView.layer.cornerRadius = 0.05 * customView.bounds.size.width
-        customView.clipsToBounds = true
-        self.view.addSubview(customView)
-        
-        let sampleTextField = UITextField(frame: CGRect(x: 20, y: 100, width: 300, height: 40))
-        sampleTextField.placeholder = "placeholderText"
-        sampleTextField.font = UIFont.systemFont(ofSize: 15)
-        sampleTextField.borderStyle = UITextField.BorderStyle.roundedRect
-        sampleTextField.autocorrectionType = UITextAutocorrectionType.no
-        sampleTextField.keyboardType = UIKeyboardType.alphabet
-        sampleTextField.returnKeyType = UIReturnKeyType.done
-        sampleTextField.clearButtonMode = UITextField.ViewMode.whileEditing;
-        sampleTextField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        //sampleTextField.delegate = self as! UITextFieldDelegate
-        customView.addSubview(blockName)
-        
-        //blockName.frame = CGRect.init(x: 12.5, y: 1100, width: 200, height: 30)
-        //customView.addSubview(blockName)
-        
-        UIView.animate(withDuration: 0.8) {
-            //customView.center = self.view.center
-            
-            customView.frame.origin = CGPoint(x: 12.5, y: 200.0)
-            //blockName.frame.origin = CGPoint(x: 12.5, y: 300)
-            
-            self.timeTableView.alpha = 0.3
-            self.blockTableView.alpha = 0.3
-            print (sampleTextField.frame.origin)
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+
+        if textField == enterBlockTitle {
+        print ("1")
         }
-        
+        else if textField == enterBlockStart {
+            UIView.animate(withDuration: 0.5) {
+                self.timePicker.frame.origin.y = 450
+            }
+        }
+        else if textField == enterBlockEnd {
+            UIView.animate(withDuration: 0.5) {
+                self.timePicker.frame.origin.y = 450
+            }
+        }
+        print (timePicker.frame.origin)
     }
     
-    func createTextField (xCord: CGFloat, yCord: CGFloat, width: CGFloat, height: CGFloat, placeholderText: String, keyboard: String) -> UITextField {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         
-        let textField = UITextField(frame: CGRect(x: xCord, y: yCord, width: width, height: height))
+        if textField == enterBlockStart {
+            
+        }
+    }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
-        textField.placeholder = placeholderText
-        textField.font = UIFont.systemFont(ofSize: 15)
-        textField.borderStyle = UITextField.BorderStyle.roundedRect
-        textField.autocorrectionType = UITextAutocorrectionType.no
-        textField.returnKeyType = UIReturnKeyType.done
-        textField.clearButtonMode = UITextField.ViewMode.whileEditing;
-        textField.contentVerticalAlignment = UIControl.ContentVerticalAlignment.center
-        
-        switch keyboard {
-        case "default":
-            textField.keyboardType = UIKeyboardType.default
-        case "number":
-            textField.keyboardType = UIKeyboardType.numberPad
-        default:
-            textField.keyboardType = UIKeyboardType.default
+        if component == 0 {
+            userSelectedTime[0] = testObject.hours[row]
         }
         
-        return textField
+        else if component == 1 {
+            userSelectedTime[1] = testObject.minutes[row]
+        }
+        
+        else if component == 2 {
+            userSelectedTime[2] = testObject.timePeriods[row]
+        }
+        print (userSelectedTime)
     }
     
 }
-
