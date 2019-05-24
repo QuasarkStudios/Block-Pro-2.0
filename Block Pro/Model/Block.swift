@@ -12,7 +12,14 @@ import RealmSwift
 class Block: Object {
  
     @objc dynamic var name: String = ""
-    @objc dynamic var start: String = ""
-    @objc dynamic var end: String = ""
+    
+    @objc dynamic var startHour: String = ""
+    @objc dynamic var startMinute: String = ""
+    @objc dynamic var startPeriod: String = ""
+    
+    @objc dynamic var endHour: String = ""
+    @objc dynamic var endMinute: String = ""
+    @objc dynamic var endPeriod: String = ""
+    
     //@objc dynamic var color: String = ""
 }

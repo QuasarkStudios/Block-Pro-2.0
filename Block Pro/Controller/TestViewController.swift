@@ -31,24 +31,24 @@ class TestViewController: UIViewController {
     }
     
 
-    @IBAction func testButton(_ sender: Any) {
-
-        let newBlock = Block()
-        
-        newBlock.name = blockName.text!
-        newBlock.start = startTime.text!
-        newBlock.end = endTime.text!
-        
-        do {
-            try realm.write {
-                realm.add(newBlock)
-            }
-        } catch {
-            print ("Awhhh shit \(error)")
-        }
-
-    }
-    
+//    @IBAction func testButton(_ sender: Any) {
+//
+//        let newBlock = Block()
+//
+//        newBlock.name = blockName.text!
+//        newBlock.start = startTime.text!
+//        newBlock.end = endTime.text!
+//
+//        do {
+//            try realm.write {
+//                realm.add(newBlock)
+//            }
+//        } catch {
+//            print ("Awhhh shit \(error)")
+//        }
+//
+//    }
+//
     
     @IBAction func goBack(_ sender: Any) {
         performSegue(withIdentifier: "goBack", sender: self)

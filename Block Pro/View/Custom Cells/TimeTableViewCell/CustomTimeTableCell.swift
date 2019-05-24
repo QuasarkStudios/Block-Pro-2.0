@@ -18,8 +18,8 @@ class CustomTimeTableCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        timeLabel.frame.origin.y += 18.0
-        cellSeperator.frame.origin.y += 79.0
+        timeLabel.frame.origin.y += 20.25
+        cellSeperator.frame.origin.y += 89.0
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

@@ -21,8 +21,14 @@ class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITa
     
     var cellAnimated = [Bool](repeating: false, count: 24) //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
-    var userSelectedStartTime = [String](repeating: "", count: 3)
-    var userSelectedEndTime = [String](repeating: "", count: 3)
+    var userSelectedStartHour: String = ""
+    var userSelectedStartMinute: String = ""
+    var userSelectedStartPeriod: String = ""
+    
+    var userSelectedEndHour: String = ""
+    var userSelectedEndMinute: String = ""
+    var userSelectedEndPeriod: String = ""
+    
     var tag: String = ""
     
     @IBOutlet weak var timeTableView: UITableView!
@@ -136,8 +142,10 @@ class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITa
                         let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
                         
                         cell.eventLabel.text = blockData.name
-                        cell.startLabel.text = blockData.start
-                        cell.endLabel.text = blockData.end
+                        cell.startLabel.text = blockData.startHour + ":" + blockData.startMinute + " " + blockData.startPeriod
+                        cell.endLabel.text = blockData.endHour + ":" + blockData.endMinute + " " + blockData.endPeriod
+                        
+                        cell.cellContainerView.frame = CGRect(x: 0, y: 2, width: 280, height: (cell.frame.height - 2.0)) //Beginning adjustments for the cellContainerView
                         
                         animateBlock(cell, indexPath)
                         return cell
@@ -166,35 +174,56 @@ class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITa
         
         if indexPath.row == blocks?.count ?? 0 {
         
-        let blockView: UIView = createView
+            let blockView: UIView = createView
 
-        blockView.addSubview(blockTitleLabel)
-        blockView.addSubview(enterBlockTitle)
-        blockView.addSubview(blockStartLabel)
-        blockView.addSubview(enterBlockStart)
-        blockView.addSubview(blockEndLabel)
-        blockView.addSubview(enterBlockEnd)
-        
-        
-        self.view.addSubview(blockView)
-        self.view.addSubview(createBlockButton)
-        
-        //timePicker.center = self.view.center
-        //timePicker.backgroundColor?.withAlphaComponent(0.6) /
-        self.view.addSubview(timePicker)
-        
-        UIView.animate(withDuration: 0.65) {
+            blockView.addSubview(blockTitleLabel)
+            blockView.addSubview(enterBlockTitle)
+            blockView.addSubview(blockStartLabel)
+            blockView.addSubview(enterBlockStart)
+            blockView.addSubview(blockEndLabel)
+            blockView.addSubview(enterBlockEnd)
             
-            blockView.frame.origin.y = 200
-            self.createBlockButton.frame.origin.y = 410
             
-            self.timeTableView.alpha = 0.5
-            self.blockTableView.alpha = 0.5
+            self.view.addSubview(blockView)
+            self.view.addSubview(createBlockButton)
+            
+            //timePicker.center = self.view.center
+            //timePicker.backgroundColor?.withAlphaComponent(0.6) /
+            self.view.addSubview(timePicker)
+            
+            UIView.animate(withDuration: 0.65) {
+                
+                blockView.frame.origin.y = 200
+                self.createBlockButton.frame.origin.y = 410
+                
+                self.timeTableView.alpha = 0.5
+                self.blockTableView.alpha = 0.5
             }
         
         }
 
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        var count: Int = 0
         
+        var returnHeight: CGFloat = 90.0
+        
+        if tableView == blockTableView && indexPath.row < blocks?.count ?? 0 {
+            
+            while count < blocks?.count ?? 1 {
+                
+                returnHeight = configureBlockHeight(indexPath: indexPath)
+                count += 1
+                
+                return returnHeight
+            }
+        }
+        
+        else {
+            return 90.0
+        }
+        return returnHeight
     }
     
     
@@ -209,6 +238,52 @@ class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITa
             timeTableView.contentSize.height = scrollView.contentSize.height
         }
     }
+    
+    func configureBlockHeight (indexPath: IndexPath) -> CGFloat{
+        
+        var rowHeight: CGFloat = 0.0
+        var calcHour: Double = 0
+        var calcMinute: Double = 0
+
+        let amDictionaries: [String : Double] = ["12" : 0, "1" : 1, "2" : 2, "3" : 3, "4" : 4, "5" : 5, "6" : 6, "7" : 7, "8" : 8, "9" : 9, "10" : 10, "11" : 11]
+        let pmDictionaries: [String : Double] = ["12" : 12, "1" : 13, "2" : 14, "3" : 15, "4" : 16, "5" : 17, "6" : 18, "7" : 19, "8" : 20, "9" : 21, "10" : 22, "11" : 23]
+        
+        if let blockData = blocks?[indexPath.row] {
+           
+            if blockData.startPeriod == "AM" && blockData.endPeriod == "AM" {
+                
+                calcHour = (amDictionaries[blockData.endHour]! - amDictionaries[blockData.startHour]!) * 60
+                calcMinute = Double(blockData.startMinute)! + Double(blockData.endMinute)!
+                rowHeight = CGFloat(calcHour + calcMinute) * 1.5
+                
+                return rowHeight
+            }
+            
+            else if blockData.startPeriod == "AM" && blockData.endPeriod == "PM" {
+                
+                calcHour = (amDictionaries[blockData.endHour]! - pmDictionaries[blockData.startHour]!) * 60
+                calcMinute = Double(blockData.startMinute)! + Double(blockData.endMinute)!
+                rowHeight = CGFloat(calcHour + calcMinute) * 1.5
+                
+                return rowHeight
+            }
+            
+            else {
+                
+                calcHour = (pmDictionaries[blockData.endHour]! - pmDictionaries[blockData.startHour]!) * 60
+                calcMinute = Double(blockData.startMinute)! + Double(blockData.endMinute)!
+                rowHeight = CGFloat(calcHour + calcMinute) * 1.5
+                
+                return rowHeight
+            }
+        }
+        
+        else {
+            return 90.0
+        }
+        
+    }
+    
     
     
     func animateBlock (_ cell: CustomBlockTableCell, _ indexPath: IndexPath) {
@@ -252,44 +327,43 @@ class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITa
                 self.timePicker.frame.origin.y = 450
             }
         }
-        print (timePicker.frame.origin)
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         
         if textField == enterBlockStart {
-            enterBlockStart.text = ("\(userSelectedStartTime[0]):" + "\(userSelectedStartTime[1]) " + "\(userSelectedStartTime[2])")
+            enterBlockStart.text = ("\(userSelectedStartHour):" + "\(userSelectedStartMinute) " + userSelectedStartPeriod)
         }
         
         else if textField == enterBlockEnd {
-            enterBlockEnd.text = ("\(userSelectedEndTime[0]):" + "\(userSelectedEndTime[1]) " + "\(userSelectedEndTime[2])")
+            enterBlockEnd.text = ("\(userSelectedEndHour):" + "\(userSelectedEndMinute) " + userSelectedEndPeriod)
         }
     }
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
         if component == 0 && tag == "start" {
-            userSelectedStartTime[0] = hours[row]
+            userSelectedStartHour = hours[row]
         }
         else if component == 0 && tag == "end" {
-            userSelectedEndTime[0] = hours[row]
+            userSelectedEndHour = hours[row]
         }
         
         if component == 1 && tag == "start" {
-            userSelectedStartTime[1] = minutes[row]
+            userSelectedStartMinute = minutes[row]
         }
         else if component == 1 && tag == "end" {
-            userSelectedEndTime[1] = minutes[row]
+            userSelectedEndMinute = minutes[row]
         }
         
         if component == 2 && tag == "start" {
-            userSelectedStartTime[2] = timePeriods[row]
+            userSelectedStartPeriod = timePeriods[row]
         }
         else if component == 2 && tag == "end" {
-            userSelectedEndTime[2] = timePeriods[row]
+            userSelectedEndPeriod = timePeriods[row]
         }
-        print ("userSelectedStartTime = \(userSelectedStartTime)")
-        print ("userSelectedEndTime = \(userSelectedEndTime)")
+        print ("userSelectedStartTime = \(userSelectedStartHour)" + "\(userSelectedStartMinute)" + userSelectedStartPeriod)
+        print ("userSelectedEndTime = \(userSelectedEndHour)" + "\(userSelectedEndMinute)" + userSelectedEndPeriod )
         
     }
     
@@ -298,8 +372,15 @@ class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITa
         let newBlock = Block()
         
         newBlock.name = enterBlockTitle.text!
-        newBlock.start = enterBlockStart.text!
-        newBlock.end = enterBlockEnd.text!
+        
+        newBlock.startHour = userSelectedStartHour
+        newBlock.startMinute = userSelectedStartMinute
+        newBlock.startPeriod = userSelectedStartPeriod
+        
+        newBlock.endHour = userSelectedEndHour
+        newBlock.endMinute = userSelectedEndMinute
+        newBlock.endPeriod = userSelectedEndPeriod
+        
         
         do {
             try realm.write {
