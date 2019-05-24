@@ -12,9 +12,11 @@ class AddBlockViewController: UIViewController, UITextFieldDelegate, UIPickerVie
 
     let blockView = UIView()
     
-    let blockTitleLabel = UILabel(frame: CGRect(x: 22, y: 5, width: 255, height: 30))
-    let blockStartLabel = UILabel(frame: CGRect(x: 22, y: 80, width: 70, height: 30))
-    let blockEndLabel = UILabel(frame: CGRect(x: 252, y: 80, width: 70, height: 30))
+    let blockTitleLabel = UILabel()
+    let blockStartLabel = UILabel()
+    let blockEndLabel = UILabel()
+    
+    let createBlockButton = UIButton()
     
     let textField = UITextField ()
     let pickerView = UIPickerView()
@@ -100,44 +102,44 @@ class AddBlockViewController: UIViewController, UITextFieldDelegate, UIPickerVie
         return pickerView
     }
     
+    @objc func createBlockButtonPressed () {
+        
+    }
     
-    func createNewBlockView () -> [String : UIView]  {
+    
+    func createNewBlockView () -> UIView  {
         
-        let returnDictionary: [String : UIView]
         
-        
-        blockView.frame = CGRect.init(x: 12.5, y: 1200, width: 350, height: 200) 
+        blockView.frame = CGRect(x: 12.5, y: 1200, width: 350, height: 200)
         blockView.backgroundColor = UIColor.blue
         blockView.layer.cornerRadius = 0.05 * blockView.bounds.size.width
         blockView.clipsToBounds = true
-        //view.addSubview(blockView)
         
+        blockTitleLabel.frame = CGRect(x: 22, y: 5, width: 255, height: 30)
         blockTitleLabel.text = "Enter the title of your TimeBlock below: "
         blockTitleLabel.font = UIFont(name: "Helvetica Neue", size: 20)
         blockTitleLabel.adjustsFontSizeToFitWidth = true
         blockTitleLabel.textColor = UIColor.white
         
-        let enterBlockTitle: UITextField = createTextField(xCord: 20, yCord: 35, width: 300, height: 40, placeholderText: "TimeBlock Name", keyboard: "default")
-        
+        blockStartLabel.frame = CGRect(x: 22, y: 80, width: 70, height: 30)
         blockStartLabel.text = "Start time:"
         blockStartLabel.font = UIFont(name: "Helvetica Neue", size: 20)
         blockStartLabel.adjustsFontSizeToFitWidth = true
         blockStartLabel.textColor = UIColor.white
         
-        let enterBlockStart: UITextField = createTextField(xCord: 20, yCord: 110, width: 70, height: 40, placeholderText: "0:00", keyboard: "picker")
-
+        blockEndLabel.frame = CGRect(x: 252, y: 80, width: 70, height: 30)
         blockEndLabel.text = "End time:"
         blockEndLabel.font = UIFont(name: "Helvetica Neue", size: 20)
         blockEndLabel.adjustsFontSizeToFitWidth = true
         blockEndLabel.textColor = UIColor.white
         
-        let enterBlockEnd: UITextField = createTextField(xCord: 250, yCord: 110, width: 70, height: 40, placeholderText: "0:00", keyboard: "picker")
+        createBlockButton.setTitle("Create Block", for: .normal)
+        createBlockButton.backgroundColor = UIColor.gray
+        createBlockButton.setTitleColor(UIColor.white, for: .normal)
+        createBlockButton.frame = CGRect(x: 17, y: 950, width: 350, height: 40)
+        createBlockButton.addTarget(self, action: #selector(self.createBlockButtonPressed), for: .touchUpInside)
         
-        let timePicker: UIPickerView = createPickerView()
-        
-        returnDictionary = ["blockView" : blockView, "blockTitleLabel" : blockTitleLabel, "enterBlockTitle" : enterBlockTitle, "blockStartLabel" : blockStartLabel, "enterBlockStart" : enterBlockStart, "blockEndLabel" : blockEndLabel, "enterBlockEnd" : enterBlockEnd, "timePicker" : timePicker]
-        
-        return returnDictionary
+        return blockView
     }
     
     
