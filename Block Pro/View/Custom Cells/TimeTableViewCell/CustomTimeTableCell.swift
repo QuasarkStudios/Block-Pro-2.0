@@ -13,13 +13,16 @@ class CustomTimeTableCell: UITableViewCell {
     
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var cellSeperator: UIView!
+    @IBOutlet weak var cellContentView: UIView!
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        timeLabel.frame.origin.y += 20.25
-        cellSeperator.frame.origin.y += 89.0
+        //timeLabel.frame.origin = cellContentView.center
+        
+        //timeLabel.frame.origin.y += 27
+        //cellSeperator.frame.origin.y += 119.0
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

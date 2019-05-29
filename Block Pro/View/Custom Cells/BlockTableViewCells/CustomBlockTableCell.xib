@@ -24,20 +24,14 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Homework" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="br2-6t-Qyv">
-                                <rect key="frame" x="16" y="11" width="209" height="21"/>
+                                <rect key="frame" x="16" y="9" width="209" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pMR-bs-scJ">
-                                <rect key="frame" x="225" y="2" width="52" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.98012525579999998" green="0.98137647400000005" blue="0.83891512059999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
-                                <state key="normal" title="Edit"/>
-                            </button>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pTX-zT-iUk">
-                                <rect key="frame" x="16" y="40" width="260" height="3"/>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pTX-zT-iUk" userLabel="blockBar">
+                                <rect key="frame" x="16" y="35" width="265" height="1.5"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
@@ -55,6 +49,15 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pMR-bs-scJ">
+                                <rect key="frame" x="237" y="3.5" width="39" height="28"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" image="Navigation_Compose.png"/>
+                                <connections>
+                                    <action selector="editButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="bkv-LX-W4U"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
@@ -62,7 +65,9 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="blockBar" destination="pTX-zT-iUk" id="lTe-1Z-VOw"/>
                 <outlet property="cellContainerView" destination="zdd-iK-oAl" id="IDX-kI-23g"/>
+                <outlet property="editButton" destination="pMR-bs-scJ" id="lu5-hF-2J8"/>
                 <outlet property="endLabel" destination="abe-0t-bJ1" id="ruK-jA-ReX"/>
                 <outlet property="eventLabel" destination="br2-6t-Qyv" id="vb4-U1-3Cc"/>
                 <outlet property="startLabel" destination="CJx-xQ-D64" id="JBj-v3-M4k"/>
@@ -70,4 +75,7 @@
             <point key="canvasLocation" x="137.59999999999999" y="154.72263868065968"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <image name="Navigation_Compose.png" width="23" height="23"/>
+    </resources>
 </document>

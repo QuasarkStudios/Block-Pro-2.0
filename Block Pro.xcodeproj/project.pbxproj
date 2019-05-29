@@ -22,6 +22,7 @@
 		0D9330102293720200B6191D /* CustomAddBlockTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300E2293720200B6191D /* CustomAddBlockTableCell.swift */; };
 		0D9330112293720200B6191D /* CustomAddBlockTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D93300F2293720200B6191D /* CustomAddBlockTableCell.xib */; };
 		0D9330152295E2CE00B6191D /* AddBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D9330142295E2CE00B6191D /* AddBlockViewController.swift */; };
+		0D9330172298D21700B6191D /* Navigation_Compose.png in Resources */ = {isa = PBXBuildFile; fileRef = 0D9330162298D21700B6191D /* Navigation_Compose.png */; };
 		561AFCE3BCA2CC53CAB19872 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +44,7 @@
 		0D93300E2293720200B6191D /* CustomAddBlockTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAddBlockTableCell.swift; sourceTree = "<group>"; };
 		0D93300F2293720200B6191D /* CustomAddBlockTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomAddBlockTableCell.xib; sourceTree = "<group>"; };
 		0D9330142295E2CE00B6191D /* AddBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBlockViewController.swift; sourceTree = "<group>"; };
+		0D9330162298D21700B6191D /* Navigation_Compose.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Navigation_Compose.png; sourceTree = "<group>"; };
 		2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		991FA64DF47C5695E2C3A1F0 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
 		FFB4066A6F6866CBFB450C85 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 		0D2CECE3228FB55600CC9180 = {
 			isa = PBXGroup;
 			children = (
+				0D9330162298D21700B6191D /* Navigation_Compose.png */,
 				0D2CECEE228FB55600CC9180 /* Block Pro */,
 				0D2CECED228FB55600CC9180 /* Products */,
 				FF1C50C6473D8305D2DF4369 /* Pods */,
@@ -227,6 +230,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D2CECFA228FB55800CC9180 /* LaunchScreen.storyboard in Resources */,
+				0D9330172298D21700B6191D /* Navigation_Compose.png in Resources */,
 				0D2CECF7228FB55800CC9180 /* Assets.xcassets in Resources */,
 				0D2CED172291EDE200CC9180 /* CustomBlockTableCell.xib in Resources */,
 				0D9330112293720200B6191D /* CustomAddBlockTableCell.xib in Resources */,
