@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D1E0B19229F856000638772 /* CreateBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1E0B18229F856000638772 /* CreateBlockViewController.swift */; };
 		0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECEF228FB55600CC9180 /* AppDelegate.swift */; };
 		0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */; };
 		0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CECF3228FB55600CC9180 /* Main.storyboard */; };
@@ -18,7 +19,6 @@
 		0D2CED172291EDE200CC9180 /* CustomBlockTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */; };
 		0D93300822927C7500B6191D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300722927C7500B6191D /* Block.swift */; };
 		0D93300A22927C8800B6191D /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300922927C8800B6191D /* Note.swift */; };
-		0D93300D2292835C00B6191D /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300C2292835C00B6191D /* TestViewController.swift */; };
 		0D9330102293720200B6191D /* CustomAddBlockTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300E2293720200B6191D /* CustomAddBlockTableCell.swift */; };
 		0D9330112293720200B6191D /* CustomAddBlockTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D93300F2293720200B6191D /* CustomAddBlockTableCell.xib */; };
 		0D9330152295E2CE00B6191D /* AddBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D9330142295E2CE00B6191D /* AddBlockViewController.swift */; };
@@ -27,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0D1E0B18229F856000638772 /* CreateBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBlockViewController.swift; sourceTree = "<group>"; };
 		0D2CECEC228FB55600CC9180 /* Block Pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Block Pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D2CECEF228FB55600CC9180 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockViewController.swift; sourceTree = "<group>"; };
@@ -40,7 +41,6 @@
 		0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomBlockTableCell.xib; sourceTree = "<group>"; };
 		0D93300722927C7500B6191D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
 		0D93300922927C8800B6191D /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
-		0D93300C2292835C00B6191D /* TestViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		0D93300E2293720200B6191D /* CustomAddBlockTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAddBlockTableCell.swift; sourceTree = "<group>"; };
 		0D93300F2293720200B6191D /* CustomAddBlockTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomAddBlockTableCell.xib; sourceTree = "<group>"; };
 		0D9330142295E2CE00B6191D /* AddBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBlockViewController.swift; sourceTree = "<group>"; };
@@ -98,9 +98,9 @@
 		0D2CED01228FC73A00CC9180 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				0D9330142295E2CE00B6191D /* AddBlockViewController.swift */,
 				0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */,
-				0D93300C2292835C00B6191D /* TestViewController.swift */,
+				0D9330142295E2CE00B6191D /* AddBlockViewController.swift */,
+				0D1E0B18229F856000638772 /* CreateBlockViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -297,12 +297,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0D93300D2292835C00B6191D /* TestViewController.swift in Sources */,
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
 				0D93300822927C7500B6191D /* Block.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
 				0D9330152295E2CE00B6191D /* AddBlockViewController.swift in Sources */,
+				0D1E0B19229F856000638772 /* CreateBlockViewController.swift in Sources */,
 				0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */,
 				0D93300A22927C8800B6191D /* Note.swift in Sources */,
 				0D9330102293720200B6191D /* CustomAddBlockTableCell.swift in Sources */,

@@ -85,6 +85,10 @@ class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITa
         //print(sortBlockResults())
 
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        blockTableView.reloadData()
+    }
 
     
     //MARK: - TableView Datasource Methods
@@ -122,40 +126,15 @@ class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITa
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let cell = tableView.cellForRow(at: indexPath)
-        
-        print (cell!.frame.height)
-        
         if indexPath.row == blocks?.count ?? 0 {
-        
-            let blockView: UIView = createView
-
-            blockView.addSubview(blockTitleLabel)
-            blockView.addSubview(enterBlockTitle)
-            blockView.addSubview(blockStartLabel)
-            blockView.addSubview(enterBlockStart)
-            blockView.addSubview(blockEndLabel)
-            blockView.addSubview(enterBlockEnd)
             
-            
-            self.view.addSubview(blockView)
-            self.view.addSubview(createBlockButton)
-            
-            //timePicker.center = self.view.center
-            //timePicker.backgroundColor?.withAlphaComponent(0.6) /
-            self.view.addSubview(timePicker)
-            
-            UIView.animate(withDuration: 0.65) {
-                
-                blockView.frame.origin.y = 200
-                self.createBlockButton.frame.origin.y = 410
-                
-                self.timeTableView.alpha = 0.5
-                self.blockTableView.alpha = 0.5
-            }
-        
+            performSegue(withIdentifier: "performSegue", sender: self)
+            blockTableView.deselectRow(at: indexPath, animated: true)
         }
-
+        else {
+            
+            blockTableView.deselectRow(at: indexPath, animated: true)
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -196,6 +175,7 @@ class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITa
         
         for timeBlocks in blocks! {
             
+            print(blocks?.count)
             if timeBlocks.startPeriod == "AM" {
                 sortedBlocks[Int(amDictionaries[timeBlocks.startHour]! + timeBlocks.startMinute)!] = timeBlocks
                 //print (sortedBlocks)
@@ -253,11 +233,6 @@ class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITa
                         cell.eventLabel.text = sortedBlocks[indexPath.row].value.name
                         cell.startLabel.text = sortedBlocks[indexPath.row].value.startHour + ":" + sortedBlocks[indexPath.row].value.startMinute + " " + sortedBlocks[indexPath.row].value.startPeriod
                         cell.endLabel.text = sortedBlocks[indexPath.row].value.endHour + ":" + sortedBlocks[indexPath.row].value.endMinute + " " + sortedBlocks[indexPath.row].value.endPeriod
-
-                        
-//                        cell.eventLabel.text = blockData.name
-//                        cell.startLabel.text = blockData.startHour + ":" + blockData.startMinute + " " + blockData.startPeriod
-//                        cell.endLabel.text = blockData.endHour + ":" + blockData.endMinute + " " + blockData.endPeriod
                         
                         cell.cellContainerView.frame = CGRect(x: 0, y: 2, width: 280, height: (cell.frame.height - 2.0)) //Beginning adjustments for the cellContainerView
                         
@@ -290,7 +265,7 @@ class TimeBlockViewController: AddBlockViewController, UITableViewDelegate, UITa
         if (blocks?[indexPath.row]) != nil {
             
             var sortedBlocks = sortBlockResults()
-            
+            print (sortedBlocks.count)
             if Int(sortedBlocks[indexPath.row].value.endMinute)! > Int(sortedBlocks[indexPath.row].value.startMinute)! {
                 
                 if sortedBlocks[indexPath.row].value.startPeriod == "AM" && sortedBlocks[indexPath.row].value.endPeriod == "AM" {
