@@ -21,7 +21,7 @@ class CustomTimeTableCell: UITableViewCell {
         
         //timeLabel.frame.origin = cellContentView.center
         
-        //timeLabel.frame.origin.y += 27
+        //timeLabel.frame.origin.x += 3
         //cellSeperator.frame.origin.y += 119.0
     }
 

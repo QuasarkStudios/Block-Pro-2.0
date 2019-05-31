@@ -12,6 +12,7 @@ import RealmSwift
 class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 
     let realm = try! Realm()
+    var blocks: Results<Block>?
     
     @IBOutlet weak var blockNameTextField: UITextField!
     @IBOutlet weak var startTimeTextField: UITextField!
@@ -35,6 +36,18 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
     var userSelectedEndMinute: String = ""
     var userSelectedEndPeriod: String = ""
     
+    let amDictionaries: [String : String] = ["12" : "0", "1" : "1", "2" : "2", "3" : "3", "4" : "4", "5" : "5", "6" : "6", "7" : "7", "8" : "8", "9" : "9", "10" : "10", "11" : "11"]
+    let pmDictionaries: [String : String] = ["12" : "12", "1" : "13", "2" : "14", "3" : "15", "4" : "16", "5" : "17", "6" : "18", "7" : "19", "8" : "20", "9" : "21", "10" : "22", "11" : "23"]
+    
+    var bufferStartHour: Int = 0
+    var bufferStartMinute: Int = 0
+    var bufferStartPeriod: Int = 0
+    
+    var bufferEndHour: Int = 0
+    var bufferEndMinute: Int = 0
+    var bufferEndPeriod: Int = 0
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -52,6 +65,8 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
         
         note1TextView.layer.cornerRadius = 0.05 * note1TextView.bounds.size.width
         note1TextView.clipsToBounds = true
+        
+        blocks = realm.objects(Block.self)
     }
     
     
@@ -180,6 +195,30 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
         
     }
     
+    
+    func configureBufferBlocks () {
+        
+        let timeBlockViewObject = TimeBlockViewController()
+        
+        var sortedBlocks = timeBlockViewObject.sortBlockResults()
+        
+        for timeBlocks in sortedBlocks {
+            
+            if (bufferStartHour == Int(timeBlocks.value.startHour)!) && (bufferStartMinute == Int(timeBlocks.value.startMinute)!) && (bufferStartPeriod == Int(timeBlocks.value.startPeriod)!) {
+                
+                bufferStartMinute += 5
+                
+                if bufferStartMinute == 60 {
+                    
+                    bufferStartHour += 1
+                    bufferStartMinute = 0
+                }
+            }
+        }
+        
+    }
+    
+    
     @IBAction func cancelPressed(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -208,15 +247,7 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
             }
         
         dismiss(animated: true, completion: nil)
-        }
+    }
     
     
 }
-
-/*
- // MARK: - Navigation
- override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
- // Get the new view controller using segue.destination.
- // Pass the selected object to the new view controller.
- }
- */
