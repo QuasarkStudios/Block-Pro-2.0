@@ -16,6 +16,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     let realm = try! Realm() //Initializing a new "Realm"
     var blocks: Results<Block>? //Setting the variable "blocks" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
+    let createBlockViewObject = CreateBlockViewController()
     
     //Variable storing "CustomTimeTableCell" text for each indexPath
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
@@ -68,6 +69,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewWillAppear(_ animated: Bool) {
         blockTableView.reloadData()
+        
     }
 
     
@@ -156,9 +158,10 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         var sortedBlocks: [Int : Block] = [:]
         
+        blocks = realm.objects(Block.self)
+        
         for timeBlocks in blocks! {
             
-            print(blocks?.count)
             if timeBlocks.startPeriod == "AM" {
                 sortedBlocks[Int(amDictionaries[timeBlocks.startHour]! + timeBlocks.startMinute)!] = timeBlocks
                 //print (sortedBlocks)
@@ -205,7 +208,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 //If "blocks" container isn't empty, a "CustomBlockTableCell" is going to be used for every "indexPath.row" that is less than the count of the "blocks" container
             else {
-                
                 if indexPath.row < blocks?.count ?? 0 {
                     
                     //Boolean test to check that the "blocks" container isn't nil; if so, a "CustomBlockTableCell" will be created using a "Block" object returned from the "sortBlockResults" function
@@ -213,7 +215,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                         
                         var sortedBlocks = sortBlockResults()
                         
-                        //if sortedBlocks[indexPath.row].value.startHour != "" {
+                        if sortedBlocks[indexPath.row].value.startHour != "Buffer Cell" {
                             let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
                             
                             cell.eventLabel.text = sortedBlocks[indexPath.row].value.name
@@ -224,12 +226,13 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                             
                             animateBlock(cell, indexPath)
                             return cell
-                        //}
+                        }
                         
-//                        else {
-//                            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-//                            return cell
-//                        }
+                        else {
+                            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                            cell.textLabel?.text = sortedBlocks[indexPath.row].value.name
+                            return cell
+                        }
                         
                         
                     }
@@ -259,7 +262,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         if (blocks?[indexPath.row]) != nil {
             
             var sortedBlocks = sortBlockResults()
-            print (sortedBlocks.count)
+            
             if Int(sortedBlocks[indexPath.row].value.endMinute)! > Int(sortedBlocks[indexPath.row].value.startMinute)! {
                 
                 if sortedBlocks[indexPath.row].value.startPeriod == "AM" && sortedBlocks[indexPath.row].value.endPeriod == "AM" {

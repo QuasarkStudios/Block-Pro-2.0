@@ -39,14 +39,18 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
     let amDictionaries: [String : String] = ["12" : "0", "1" : "1", "2" : "2", "3" : "3", "4" : "4", "5" : "5", "6" : "6", "7" : "7", "8" : "8", "9" : "9", "10" : "10", "11" : "11"]
     let pmDictionaries: [String : String] = ["12" : "12", "1" : "13", "2" : "14", "3" : "15", "4" : "16", "5" : "17", "6" : "18", "7" : "19", "8" : "20", "9" : "21", "10" : "22", "11" : "23"]
     
-    var bufferStartHour: Int = 0
-    var bufferStartMinute: Int = 0
-    var bufferStartPeriod: Int = 0
-    
-    var bufferEndHour: Int = 0
-    var bufferEndMinute: Int = 0
-    var bufferEndPeriod: Int = 0
+//    var bufferStartHour: Int = 0
+//    var bufferStartMinute: Int = 0
+//    var bufferStartPeriod: String = "AM"
+//
+//    var bufferEndHour: Int = 0
+//    var bufferEndMinute: Int = 0
+//    var bufferEndPeriod: String = "AM"
 
+    var bufferTuple = (bufferName: "Buffer Block", bufferStartHour: 0, bufferStartMinute: 0, bufferStartPeriod: "AM", bufferEndHour: 0, bufferEndMinute: 0, bufferEndPeriod: "AM")
+    
+    var blockArray: [(bufferName: String, bufferStartHour: Int, bufferStartMinute: Int, bufferStartPeriod: String, bufferEndHour: Int, bufferEndMinute: Int, bufferEndPeriod: String)] = []
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,6 +71,8 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
         note1TextView.clipsToBounds = true
         
         blocks = realm.objects(Block.self)
+        
+        //print(blocks)
     }
     
     
@@ -132,7 +138,7 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
                 
                 self.timePicker.frame.origin.y = 450
             }
-            
+
             timePicker.selectRow(0, inComponent: 0, animated: true)
             timePicker.selectRow(0, inComponent: 1, animated: true)
             timePicker.selectRow(0, inComponent: 2, animated: true)
@@ -199,21 +205,258 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
     func configureBufferBlocks () {
         
         let timeBlockViewObject = TimeBlockViewController()
+        let sortedBlocks = timeBlockViewObject.sortBlockResults()
+        var count: Int = 0
         
-        var sortedBlocks = timeBlockViewObject.sortBlockResults()
-        
-        for timeBlocks in sortedBlocks {
+        while count < sortedBlocks.count {
             
-            if (bufferStartHour == Int(timeBlocks.value.startHour)!) && (bufferStartMinute == Int(timeBlocks.value.startMinute)!) && (bufferStartPeriod == Int(timeBlocks.value.startPeriod)!) {
+            if sortedBlocks[count].value.startPeriod == "AM" && sortedBlocks[count].value.endPeriod == "AM" {
                 
-                bufferStartMinute += 5
-                
-                if bufferStartMinute == 60 {
+                if count == 0 {
                     
-                    bufferStartHour += 1
-                    bufferStartMinute = 0
+                    bufferTuple.bufferEndHour = Int(amDictionaries[sortedBlocks[count].value.startHour]!)!
+                    bufferTuple.bufferEndMinute = Int(sortedBlocks[count].value.startMinute)!
+                    bufferTuple.bufferEndPeriod = sortedBlocks[count].value.startPeriod
+                    
+                    //bufferArray.append(bufferTuple)
+                    
+                    if ((count + 1) < sortedBlocks.count) && (sortedBlocks[count].value.endPeriod == "AM" && sortedBlocks[count + 1].value.startPeriod == "AM") {
+                        
+                        bufferTuple.bufferStartHour = Int(amDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        bufferTuple.bufferEndHour = Int(amDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                        
+                    }
+                    
+                    else if ((count + 1) < sortedBlocks.count) && (sortedBlocks[count].value.endPeriod == "AM" && sortedBlocks[count + 1].value.startPeriod == "PM") {
+                        
+                        bufferTuple.bufferStartHour = Int(amDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        bufferTuple.bufferEndHour = Int(pmDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
+                    
+                    else if ((count + 1) < sortedBlocks.count) && (sortedBlocks[count].value.endPeriod == "PM" && sortedBlocks[count + 1].value.startPeriod == "PM") {
+                        
+                        bufferTuple.bufferStartHour = Int(pmDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        bufferTuple.bufferEndHour = Int(pmDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
+                    
+                }
+                
+                else {
+                    
+                    bufferTuple.bufferStartHour = Int(amDictionaries[sortedBlocks[count].value.endHour]!)!
+                    bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                    bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                    
+                    if (count + 1) < sortedBlocks.count {
+                        
+                        bufferTuple.bufferEndHour = Int(amDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
+                    
+                    else {
+                        
+                        bufferTuple.bufferEndHour = Int(amDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
                 }
             }
+            
+            else if sortedBlocks[count].value.startPeriod == "AM" && sortedBlocks[count].value.endPeriod == "PM" {
+            
+                if count == 0 {
+                    
+                    bufferTuple.bufferEndHour = Int(amDictionaries[sortedBlocks[count].value.startHour]!)!
+                    bufferTuple.bufferEndMinute = Int(sortedBlocks[count].value.startMinute)!
+                    bufferTuple.bufferEndPeriod = sortedBlocks[count].value.startPeriod
+                    
+                    //bufferArray.append(bufferTuple)
+                    
+                    if ((count + 1) < sortedBlocks.count) && (sortedBlocks[count].value.endPeriod == "AM" && sortedBlocks[count + 1].value.startPeriod == "AM") {
+                        
+                        bufferTuple.bufferStartHour = Int(amDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        bufferTuple.bufferEndHour = Int(amDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                        
+                    }
+                        
+                    else if ((count + 1) < sortedBlocks.count) && (sortedBlocks[count].value.endPeriod == "AM" && sortedBlocks[count + 1].value.startPeriod == "PM") {
+                        
+                        bufferTuple.bufferStartHour = Int(amDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        bufferTuple.bufferEndHour = Int(pmDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
+                        
+                    else if ((count + 1) < sortedBlocks.count) && (sortedBlocks[count].value.endPeriod == "PM" && sortedBlocks[count + 1].value.startPeriod == "PM") {
+                        
+                        bufferTuple.bufferStartHour = Int(pmDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        bufferTuple.bufferEndHour = Int(pmDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
+                }
+                    
+                else {
+                    print ("check1", count)
+                    bufferTuple.bufferStartHour = Int(pmDictionaries[sortedBlocks[count].value.endHour]!)!
+                    bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                    bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                    
+                    if (count + 1) < sortedBlocks.count {
+                        
+                        bufferTuple.bufferEndHour = Int(pmDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
+                        
+                    else {
+                        
+                        bufferTuple.bufferEndHour = Int(pmDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
+                }
+            }
+            
+                
+            else if sortedBlocks[count].value.startPeriod == "PM" && sortedBlocks[count].value.endPeriod == "PM" {
+                print("PMcheck")
+                if count == 0 {
+                    
+                    bufferTuple.bufferEndHour = Int(pmDictionaries[sortedBlocks[count].value.startHour]!)!
+                    bufferTuple.bufferEndMinute = Int(sortedBlocks[count].value.startMinute)!
+                    bufferTuple.bufferEndPeriod = sortedBlocks[count].value.startPeriod
+                    
+                    //bufferArray.append(bufferTuple)
+                    
+                    if ((count + 1) < sortedBlocks.count) && (sortedBlocks[count].value.endPeriod == "AM" && sortedBlocks[count + 1].value.startPeriod == "AM") {
+                        
+                        bufferTuple.bufferStartHour = Int(amDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        bufferTuple.bufferEndHour = Int(amDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                        
+                    }
+                        
+                    else if ((count + 1) < sortedBlocks.count) && (sortedBlocks[count].value.endPeriod == "AM" && sortedBlocks[count + 1].value.startPeriod == "PM") {
+                        
+                        bufferTuple.bufferStartHour = Int(amDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        bufferTuple.bufferEndHour = Int(pmDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
+                        
+                    else if ((count + 1) < sortedBlocks.count) && (sortedBlocks[count].value.endPeriod == "PM" && sortedBlocks[count + 1].value.startPeriod == "PM") {
+                        
+                        bufferTuple.bufferStartHour = Int(pmDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        bufferTuple.bufferEndHour = Int(pmDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
+                }
+                    
+                else {
+                    print ("check2", count)
+                    bufferTuple.bufferStartHour = Int(pmDictionaries[sortedBlocks[count].value.endHour]!)!
+                    bufferTuple.bufferStartMinute = Int(sortedBlocks[count].value.endMinute)!
+                    bufferTuple.bufferStartPeriod = sortedBlocks[count].value.endPeriod
+                    
+                    if (count + 1) < sortedBlocks.count {
+                        
+                        bufferTuple.bufferEndHour = Int(pmDictionaries[sortedBlocks[count + 1].value.startHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count + 1].value.startMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
+                        
+                    else {
+                        
+                        bufferTuple.bufferEndHour = Int(pmDictionaries[sortedBlocks[count].value.endHour]!)!
+                        bufferTuple.bufferEndMinute = Int(sortedBlocks[count].value.endMinute)!
+                        bufferTuple.bufferEndPeriod = sortedBlocks[count].value.endPeriod
+                        
+                        //bufferArray.append(bufferTuple)
+                    }
+                }
+            }
+            
+            
+            //  MOVE ALL BUFFERARRAY.APPEND TO THE BOTTOM BEFORE COUNT INCREMENT; ONLY PLACE IT SHOULD BE NECCASARY
+            // CREATE A FUNC THAT SAVES BUFFER DATA TO REALM EACH ITERATION OF THE WHILE LOOP
+            
+            blockArray.append(bufferTuple)
+            
+            print (count,":", blockArray[count])
+            
+           
+            
+            count += 1
+            
+            
+            
         }
         
     }
@@ -238,13 +481,17 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
         newBlock.endMinute = userSelectedEndMinute
         newBlock.endPeriod = userSelectedEndPeriod
         
+//        blockArray.append((bufferName: newBlock.name, bufferStartHour: newBlock.startHour, bufferStartMinute: newBlock.startMinute, bufferStartPeriod: newBlock.startPeriod = userSelectedStartPeriod, bufferEndHour: newBlock.endHour, bufferEndMinute: newBlock.endMinute, bufferEndPeriod: newBlock.endPeriod))
+        
         do {
             try realm.write {
                 realm.add(newBlock)
-                }
-            } catch {
-                print ("Error adding a new block \(error)")
             }
+        } catch {
+            print ("Error adding a new block \(error)")
+        }
+        
+        configureBufferBlocks()
         
         dismiss(animated: true, completion: nil)
     }
