@@ -34,6 +34,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     var userSelectedEndMinute: String = ""
     var userSelectedEndPeriod: String = ""
     
+    //Creation of to pre-define the block tuple's structure and allow for it to be used as a return of a function
+    typealias blockTuple = (blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String)
+    var functionTuple: blockTuple = (blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "")
     
     @IBOutlet weak var timeTableView: UITableView!
     @IBOutlet weak var blockTableView: UITableView!
@@ -64,7 +67,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         blockTableView.register(UINib(nibName: "CustomAddBlockTableCell", bundle: nil), forCellReuseIdentifier: "addBlockCell")
         
         blocks = realm.objects(Block.self)
-
+        print(configureBufferBlocks(sortedBlocks: sortBlockResults(), blockTuple: functionTuple))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -174,6 +177,79 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         }
 
         return sortedBlocks.sorted(by: {$0.key < $1.key})
+    }
+    
+    func configureBufferBlocks (sortedBlocks: [(key: Int, value: Block)], blockTuple: blockTuple) -> [(blockTuple)] {
+        
+        var blockArray = [blockTuple]
+        var firstIteration: Bool = true
+        var count: Int = 0
+        
+        var bufferBlockTuple = blockTuple //Tuples must be passed by value, not by reference
+        var timeBlockTuple = blockTuple //Tuples must be passed by value, not by reference
+        
+        for blocks in sortedBlocks {
+            
+            if firstIteration == true {
+                
+                //Creating the first Buffer Block starting at 12:00 AM until the first TimeBlocks
+                bufferBlockTuple.blockName = "Buffer Block"
+                bufferBlockTuple.blockStartHour = "0"; bufferBlockTuple.blockStartMinute = "0"; bufferBlockTuple.blockStartPeriod = "AM"
+                bufferBlockTuple.blockEndHour = blocks.value.startHour; bufferBlockTuple.blockEndMinute = blocks.value.startMinute; bufferBlockTuple.blockEndPeriod = blocks.value.startPeriod
+
+                //Creating the first TimeBlock from the values returned from the sortBlocks func
+                timeBlockTuple.blockName = blocks.value.name
+                timeBlockTuple.blockStartHour = blocks.value.startHour; timeBlockTuple.blockStartMinute = blocks.value.startMinute; timeBlockTuple.blockStartPeriod = blocks.value.startPeriod
+                timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
+                
+                blockArray.append(bufferBlockTuple) //Appending the first BufferBlock
+                blockArray.append(timeBlockTuple) //Appending the first TimeBlock
+                firstIteration = false
+                
+                if (count + 1) < sortedBlocks.count {
+                    
+                    //Creating the second Buffer Block after the last TimeBlock
+                    bufferBlockTuple.blockStartHour = blocks.value.endHour; bufferBlockTuple.blockStartMinute = blocks.value.endMinute; bufferBlockTuple.blockStartPeriod = blocks.value.endPeriod
+                    
+                    bufferBlockTuple.blockEndHour = sortedBlocks[count + 1].value.startHour; bufferBlockTuple.blockEndMinute = sortedBlocks[count + 1].value.startMinute; bufferBlockTuple.blockEndPeriod = sortedBlocks[count + 1].value.startPeriod
+            
+                    blockArray.append(bufferBlockTuple) //Appending the second BufferBlock after the first TimeBlock
+                }
+                count += 1
+            }
+            
+            else { //If there is more than one TimeBlock left
+                
+                if (count + 1) < sortedBlocks.count {
+                    
+                    //Creating the next TimeBlock from the values returned from the sortBlocks func
+                    timeBlockTuple.blockName = blocks.value.name
+                    timeBlockTuple.blockStartHour = blocks.value.startHour; timeBlockTuple.blockStartMinute = blocks.value.startMinute; timeBlockTuple.blockStartPeriod = blocks.value.startPeriod
+                    timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
+                    
+                    //Creating the next Buffer Block after the last TimeBlock
+                    bufferBlockTuple.blockStartHour = blocks.value.endHour; bufferBlockTuple.blockStartMinute = blocks.value.endMinute; bufferBlockTuple.blockStartPeriod = blocks.value.endPeriod
+                    
+                    bufferBlockTuple.blockEndHour = sortedBlocks[count + 1].value.startHour; bufferBlockTuple.blockEndMinute = sortedBlocks[count + 1].value.startMinute; bufferBlockTuple.blockEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                    
+                    blockArray.append(timeBlockTuple) 
+                    blockArray.append(bufferBlockTuple)
+                    count += 1
+                }
+                
+                else { //If there is only one more TimeBlock left
+                    
+                    //Creating the next TimeBlock from the values returned from the sortBlocks func
+                    timeBlockTuple.blockName = blocks.value.name
+                    timeBlockTuple.blockStartHour = blocks.value.startHour; timeBlockTuple.blockStartMinute = blocks.value.startMinute; timeBlockTuple.blockStartPeriod = blocks.value.startPeriod
+                    timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
+                    
+                    blockArray.append(timeBlockTuple)
+                    count += 1
+                }
+            }
+        }
+        return blockArray
     }
     
     
