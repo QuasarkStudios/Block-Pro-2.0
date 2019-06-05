@@ -95,9 +95,7 @@ class AddBlockViewController: UIViewController, UITextFieldDelegate, UIPickerVie
         
         let pickerView = UIPickerView(frame: CGRect(x: 37.5, y: 950, width: 300, height: 180))
 
-        
         pickerView.backgroundColor = UIColor.white
-        
         
         return pickerView
     }
