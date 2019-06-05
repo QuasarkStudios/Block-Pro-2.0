@@ -29,6 +29,8 @@ class CustomBlockTableCell: UITableViewCell {
         blockBar.layer.cornerRadius = 0.01 * blockBar.bounds.size.width
         blockBar.clipsToBounds = true
         
+        blockBar.backgroundColor = UIColor.flatWhiteColorDark()
+        
         cellContainerView.backgroundColor = UIColor.flatSkyBlue()
     }
 

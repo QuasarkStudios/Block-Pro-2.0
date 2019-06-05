@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -49,15 +49,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pMR-bs-scJ">
-                                <rect key="frame" x="237" y="3.5" width="39" height="28"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <state key="normal" image="Navigation_Compose.png"/>
-                                <connections>
-                                    <action selector="editButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="bkv-LX-W4U"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
@@ -67,7 +58,6 @@
             <connections>
                 <outlet property="blockBar" destination="pTX-zT-iUk" id="lTe-1Z-VOw"/>
                 <outlet property="cellContainerView" destination="zdd-iK-oAl" id="IDX-kI-23g"/>
-                <outlet property="editButton" destination="pMR-bs-scJ" id="lu5-hF-2J8"/>
                 <outlet property="endLabel" destination="abe-0t-bJ1" id="ruK-jA-ReX"/>
                 <outlet property="eventLabel" destination="br2-6t-Qyv" id="vb4-U1-3Cc"/>
                 <outlet property="startLabel" destination="CJx-xQ-D64" id="JBj-v3-M4k"/>
@@ -75,7 +65,4 @@
             <point key="canvasLocation" x="137.59999999999999" y="154.72263868065968"/>
         </tableViewCell>
     </objects>
-    <resources>
-        <image name="Navigation_Compose.png" width="23" height="23"/>
-    </resources>
 </document>

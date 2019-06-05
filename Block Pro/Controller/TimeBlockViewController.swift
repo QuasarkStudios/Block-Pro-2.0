@@ -51,7 +51,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         timeTableView.dataSource = self
         
         timeTableView.showsVerticalScrollIndicator = false
-        //timeTableView.allowsSelection = false
+        timeTableView.allowsSelection = false
         timeTableView.separatorStyle = .none
         timeTableView.rowHeight = 120.0
         
@@ -326,6 +326,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                         
                         else {
                             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                            cell.selectionStyle = .none
                             //cell.textLabel?.text = blockArray[indexPath.row].blockName
                             return cell
                         }

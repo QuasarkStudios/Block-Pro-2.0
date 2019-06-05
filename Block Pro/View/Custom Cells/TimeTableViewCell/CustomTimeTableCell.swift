@@ -22,7 +22,7 @@ class CustomTimeTableCell: UITableViewCell {
         //timeLabel.frame.origin = cellContentView.center
         
         //timeLabel.frame.origin.x += 3
-        //cellSeperator.frame.origin.y += 119.0
+        cellSeperator.frame.origin.y += 3.0
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
