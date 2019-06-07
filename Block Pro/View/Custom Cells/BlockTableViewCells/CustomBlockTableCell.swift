@@ -46,7 +46,7 @@ class CustomBlockTableCell: UITableViewCell {
 //        self.cellContainerView.bringSubviewToFront(note2TextView)
 //        self.cellContainerView.bringSubviewToFront(note3TextView)
         
-        alphaView.layer.cornerRadius = 0.05 * alphaView.bounds.size.width
+        //alphaView.layer.cornerRadius = 0.05 * alphaView.bounds.size.width
         alphaView.clipsToBounds = true
         
         note1TextView.backgroundColor = UIColor.flatWhite()

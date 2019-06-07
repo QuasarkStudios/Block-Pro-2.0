@@ -66,7 +66,6 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UITextVi
 
         note3TextView.layer.cornerRadius = 0.05 * note3TextView.bounds.size.width
         note3TextView.clipsToBounds = true
-        
 
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)

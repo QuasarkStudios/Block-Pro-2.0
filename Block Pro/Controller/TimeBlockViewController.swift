@@ -16,7 +16,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     let realm = try! Realm() //Initializing a new "Realm"
     var blocks: Results<Block>? //Setting the variable "blocks" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
-    
     //Variable storing "CustomTimeTableCell" text for each indexPath
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
@@ -24,14 +23,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     let pmDictionaries: [String : String] = ["12" : "12", "1" : "13", "2" : "14", "3" : "15", "4" : "16", "5" : "17", "6" : "18", "7" : "19", "8" : "20", "9" : "21", "10" : "22", "11" : "23"]
     
     var cellAnimated = [Bool](repeating: false, count: 24) //Variable that helps track whether or not a certain cell has been animated onto the screen yet
-    
-    var userSelectedStartHour: String = ""
-    var userSelectedStartMinute: String = ""
-    var userSelectedStartPeriod: String = ""
-    
-    var userSelectedEndHour: String = ""
-    var userSelectedEndMinute: String = ""
-    var userSelectedEndPeriod: String = ""
     
     //Creation of to pre-define the block tuple's structure and allow for it to be used as a return of a function
     typealias blockTuple = (blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String, note1: String, note2: String, note3: String)
@@ -57,7 +48,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         blockTableView.delegate = self
         blockTableView.dataSource = self
         blockTableView.separatorStyle = .none
-        blockTableView.rowHeight = 90.0
+        //blockTableView.rowHeight = 90.0
         
         verticalTableViewSeperator.layer.cornerRadius = 0.5 * verticalTableViewSeperator.bounds.size.width
         verticalTableViewSeperator.clipsToBounds = true
@@ -68,13 +59,13 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         blocks = realm.objects(Block.self)
         
-        blockArray = configureBufferBlocks(sortBlockResults(), functionTuple)
+        blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
         print("Test 1:", blockArray)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
-        blockArray = configureBufferBlocks(sortBlockResults(), functionTuple)
+        blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
         blockTableView.reloadData()
         // TODO: Add code to allow for tableView to be loaded back at the top of screen or at the first timeBlock
     }
@@ -96,8 +87,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 return 1
             }
             
-            else { //Return the count of the "blocks" container plus one more
-                return blockArray.count + 1//(blocks?.count ?? 1) + 1
+            else {
+                return blockArray.count //(blocks?.count ?? 1) + 1
             }
         }
     }
@@ -161,7 +152,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     //MARK: - Sort TimeBlocks Function
     
-    func sortBlockResults () -> [(key: Int, value: Block)] {
+    func sortRealmBlocks () -> [(key: Int, value: Block)] {
         
         var sortedBlocks: [Int : Block] = [:]
         
@@ -181,7 +172,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     
-    func configureBufferBlocks (_ sortedBlocks: [(key: Int, value: Block)],_ blockTuple: blockTuple) -> [(blockTuple)] {
+    func organizeBlocks (_ sortedBlocks: [(key: Int, value: Block)],_ blockTuple: blockTuple) -> [(blockTuple)] {
         
         var returnBlockArray = [blockTuple]
         var firstIteration: Bool = true
@@ -296,23 +287,15 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
         else {
             
-            var blockData = configureBufferBlocks(sortBlockResults(), functionTuple)
-            
-            //If "blocks" container is empty, a "CustomAddBlockTableCell" is going to be used in the tableView to allow the user to add another "blockCell"
             if blockArray.count == 0 {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "addBlockCell", for: indexPath) as! CustomAddBlockTableCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) //(withIdentifier: "addBlockCell", for: indexPath) as! CustomAddBlockTableCell
+                cell.textLabel?.text = "Add a new cell below"
                 return cell
             }
                 
-                //If "blocks" container isn't empty, a "CustomBlockTableCell" is going to be used for every "indexPath.row" that is less than the count of the "blocks" container
             else {
                 if indexPath.row < blockArray.count {
-                    
-                    //Boolean test to check that the "blocks" container isn't nil; if so, a "CustomBlockTableCell" will be created using a "Block" object returned from the "sortBlockResults" function
-                    if indexPath.row < blockArray.count {//(blocks?[indexPath.row]) != nil {
-                        
-                        //var sortedBlocks = sortBlockResults()
                         
                         if blockArray[indexPath.row].blockName != "Buffer Block" {
                             let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
@@ -321,43 +304,158 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                             cell.startLabel.text = blockArray[indexPath.row].blockStartHour + ":" + blockArray[indexPath.row].blockStartMinute + " " + blockArray[indexPath.row].blockStartPeriod
                             cell.endLabel.text = blockArray[indexPath.row].blockEndHour + ":" + blockArray[indexPath.row].blockEndMinute + " " + blockArray[indexPath.row].blockEndPeriod
                             
-                            cell.note1TextView.text = blockArray[indexPath.row].note1//; cell.note1TextView.isHidden = true
-                            cell.note2TextView.text = blockArray[indexPath.row].note2//; cell.note2TextView.isHidden = true
-                            cell.note3TextView.text = blockArray[indexPath.row].note3//; cell.note3TextView.isHidden = true
+                            cell.note1TextView.text = blockArray[indexPath.row].note1; cell.note1Bullet.isHidden = true; cell.note1TextView.isHidden = true
+                            cell.note2TextView.text = blockArray[indexPath.row].note2; cell.note2Bullet.isHidden = true; cell.note2TextView.isHidden = true
+                            cell.note3TextView.text = blockArray[indexPath.row].note3; cell.note3Bullet.isHidden = true; cell.note3TextView.isHidden = true
                             
-                            cell.cellContainerView.frame = CGRect(x: 0, y: 2, width: 280, height: (cell.frame.height - 2.0)) //Beginning adjustments for the cellContainerView
-                            cell.alphaView.frame = CGRect(x: 7, y: 44, width: 265, height: cell.cellContainerView.frame.height - 55.0)
+                            cell.cellContainerView.frame = CGRect(x: 0, y: 2, width: 280, height: (cell.frame.height - 2.0)) //POSSIBLY TAKE 1 POINT OFF Y AND 1 OFF HEIGHT TO MAKE CELL LOOK MORE SYMETRICAL
+                            //cell.alphaView.frame = CGRect(x: 7, y: 44, width: 265, height: cell.cellContainerView.frame.height - 55.0)
+                            
+                            configureBlock(cell: cell)
                             
                             animateBlock(cell, indexPath)
                             return cell
                         }
                         
-                        else {
+                        else { //Creation of a buffer block
+                            
                             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
                             cell.selectionStyle = .none
                             //cell.textLabel?.text = blockArray[indexPath.row].blockName
                             return cell
                         }
-                        
-                        
                     }
                         //UHHHH NOT SURE YET
-                    else {
-                        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                        cell.textLabel!.text = "Error Creating Time Block"
-                        return cell
-                    }
-                }
-                    
-                    //For every last cell in the tableView, a "CustomAddBlockTableCell" is going to be used
                 else {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "addBlockCell", for: indexPath) as! CustomAddBlockTableCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                    cell.textLabel!.text = "Error Creating Time Block"
                     return cell
                 }
             }
         }
     }
     
+    
+    func configureBlock (cell: CustomBlockTableCell) {
+        
+        let cellHeight: CGFloat = cell.frame.height
+        
+        switch cellHeight {
+            
+        case 10.0:
+            cell.cellContainerView.layer.cornerRadius = 0.015 * cell.cellContainerView.bounds.size.width
+
+            cell.alphaView.isHidden = true
+            
+            cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 9.0)
+            cell.nameLabel.frame.origin = CGPoint(x: 18.0, y: -7.0)
+            
+        case 20.0:
+            cell.cellContainerView.layer.cornerRadius = 0.03 * cell.cellContainerView.bounds.size.width
+            
+            cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
+            cell.nameLabel.frame.origin.y = -2.0
+            
+            cell.alphaView.frame = CGRect(x: 116.0, y: 2.0, width: 160.0, height: 13.5)
+            cell.alphaView.layer.cornerRadius = 0.04 * cell.alphaView.bounds.size.width
+            
+            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
+            cell.startLabel.frame.origin = CGPoint(x: 128.0, y: 0.0)
+            
+            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
+            cell.toLabel.frame.origin = CGPoint(x: 193.0, y: 1.5)
+            
+            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
+            cell.endLabel.frame.origin = CGPoint(x: 213.0, y: 0.0)
+            
+        case 30.0:
+            cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
+            
+            cell.nameLabel.frame.origin.y = 4.0
+            
+            cell.alphaView.frame = CGRect(x: 116.0, y: 4.0, width: 160.0, height: 19.5)
+            cell.alphaView.layer.cornerRadius = 0.06 * cell.alphaView.bounds.size.width
+            
+            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
+            cell.startLabel.frame.origin = CGPoint(x: 128.0, y: 5.0)
+            
+            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
+            cell.toLabel.frame.origin = CGPoint(x: 193.0, y: 6.5)
+            
+            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
+            cell.endLabel.frame.origin = CGPoint(x: 213.0, y: 5.0)
+            
+        case 40.0:
+            cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
+            
+            cell.nameLabel.frame.origin.y = 8.0
+            
+            cell.alphaView.frame = CGRect(x: 116.0, y: 6.0, width: 160.0, height: 25.5)
+            cell.alphaView.layer.cornerRadius = 0.08 * cell.alphaView.bounds.size.width
+            
+            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13.5)
+            cell.startLabel.frame.origin = CGPoint(x: 128.0, y: 9.0)
+            
+            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
+            cell.toLabel.frame.origin = CGPoint(x: 196.0, y: 10.5)
+            
+            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13.5)
+            cell.endLabel.frame.origin = CGPoint(x: 213.0, y: 9.0)
+            
+        case 50.0:
+            cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
+            
+            cell.nameLabel.frame.origin.y = 13.0
+            
+            cell.alphaView.frame = CGRect(x: 116.0, y: 8.0, width: 160.0, height: 31.5)
+            cell.alphaView.layer.cornerRadius = 0.095 * cell.alphaView.bounds.size.width
+            
+            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
+            cell.startLabel.frame.origin = CGPoint(x: 128.0, y: 14.0)
+            
+            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
+            cell.toLabel.frame.origin = CGPoint(x: 194.0, y: 15.5)
+            
+            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
+            cell.endLabel.frame.origin = CGPoint(x: 213.0, y: 14.0)
+            
+        case 60.0:
+            cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
+            
+            cell.nameLabel.frame.origin.y = 19.0
+            
+            cell.alphaView.frame = CGRect(x: 116.0, y: 10.0, width: 160.0, height: 37.5)
+            cell.alphaView.layer.cornerRadius = 0.115 * cell.alphaView.bounds.size.width
+            
+            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
+            cell.startLabel.frame.origin = CGPoint(x: 128.0, y: 19.0)
+            
+            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
+            cell.toLabel.frame.origin = CGPoint(x: 193.0, y: 20.5)
+            
+            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
+            cell.endLabel.frame.origin = CGPoint(x: 213.0, y: 19.0)
+
+        default:
+            cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
+            
+            cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 17.0)
+            cell.nameLabel.frame.origin.y = 8.0
+            
+            cell.alphaView.isHidden = false
+            cell.alphaView.frame = CGRect(x: 7, y: 35, width: 266, height: cell.cellContainerView.frame.height - 40.0)
+            cell.alphaView.layer.cornerRadius = 0.05 * cell.alphaView.bounds.size.width
+            
+            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
+            cell.startLabel.frame.origin = CGPoint(x: 25.0, y: 40.0)
+            
+            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
+            cell.toLabel.frame.origin = CGPoint(x: 90.0, y: 42.0)
+            
+            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
+            cell.endLabel.frame.origin = CGPoint(x: 110.0, y: 40.0)
+        }
+    }
     
     func configureBlockHeight (indexPath: IndexPath/*, blockTuples: [(blockTuple)]*/) -> CGFloat {
         
@@ -467,4 +565,11 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    
+    
+    @IBAction func segueButton(_ sender: Any) {
+        
+        performSegue(withIdentifier: "performSegue", sender: self)
+        
+    }
 }
