@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class CreateBlockViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 
     let realm = try! Realm()
     //var blocks: Results<Block>?
@@ -19,6 +19,8 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
     @IBOutlet weak var endTimeTextField: UITextField!
     
     @IBOutlet weak var note1TextView: UITextView!
+    @IBOutlet weak var note2TextView: UITextView!
+    @IBOutlet weak var note3TextView: UITextView!
     
     @IBOutlet weak var timePicker: UIPickerView!
     
@@ -44,6 +46,10 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
         startTimeTextField.delegate = self
         endTimeTextField.delegate = self
         
+        note1TextView.delegate = self
+        note2TextView.delegate = self
+        note3TextView.delegate = self
+        
         timePicker.delegate = self
         timePicker.dataSource = self
         timePicker.frame.origin.y = 700
@@ -55,8 +61,15 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
         note1TextView.layer.cornerRadius = 0.05 * note1TextView.bounds.size.width
         note1TextView.clipsToBounds = true
         
-        //blocks = realm.objects(Block.self)
+        note2TextView.layer.cornerRadius = 0.05 * note2TextView.bounds.size.width
+        note2TextView.clipsToBounds = true
+
+        note3TextView.layer.cornerRadius = 0.05 * note3TextView.bounds.size.width
+        note3TextView.clipsToBounds = true
         
+
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
     }
     
     
@@ -99,7 +112,7 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
     }
     
     
-    //MARK: - TextView Delegate Methods
+    //MARK: - TextField Delegate Methods
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
@@ -151,6 +164,63 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
             
         else if textField == endTimeTextField {
             endTimeTextField.text = ("\(userSelectedEndHour):" + "\(userSelectedEndMinute) " + userSelectedEndPeriod)
+        }
+    }
+    
+    
+    //MARK: - TextView Delegate Methods
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        
+        if textView == note1TextView {
+            
+            UIView.animate(withDuration: 0.2) {
+                
+                self.timePicker.frame.origin.y = 700
+            }
+            
+            timePicker.selectRow(0, inComponent: 0, animated: true)
+            timePicker.selectRow(0, inComponent: 1, animated: true)
+            timePicker.selectRow(0, inComponent: 2, animated: true)
+        }
+        
+        else if textView == note2TextView {
+            
+            UIView.animate(withDuration: 0.2) {
+                
+                self.timePicker.frame.origin.y = 700
+            }
+            
+            timePicker.selectRow(0, inComponent: 0, animated: true)
+            timePicker.selectRow(0, inComponent: 1, animated: true)
+            timePicker.selectRow(0, inComponent: 2, animated: true)
+        }
+        
+        else if textView == note3TextView {
+            
+            UIView.animate(withDuration: 0.2) {
+                
+                self.timePicker.frame.origin.y = 700
+            }
+            
+            timePicker.selectRow(0, inComponent: 0, animated: true)
+            timePicker.selectRow(0, inComponent: 1, animated: true)
+            timePicker.selectRow(0, inComponent: 2, animated: true)
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        
+        if textView == note1TextView {
+            
+        }
+        
+        else if textView == note2TextView {
+            
+        }
+        
+        else if textView == note3TextView {
+            
         }
     }
     
@@ -208,6 +278,9 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
         newBlock.endMinute = userSelectedEndMinute
         newBlock.endPeriod = userSelectedEndPeriod
         
+        newBlock.note1 = note1TextView.text
+        newBlock.note2 = note2TextView.text
+        newBlock.note3 = note3TextView.text
         
         do {
             try realm.write {
@@ -221,5 +294,19 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UIPicker
         dismiss(animated: true, completion: nil)
     }
     
+    @objc func dismissKeyboard () {
+        
+        view.endEditing(true)
+        
+        UIView.animate(withDuration: 0.2) {
+            
+            self.timePicker.frame.origin.y = 700
+        }
+        
+        timePicker.selectRow(0, inComponent: 0, animated: true)
+        timePicker.selectRow(0, inComponent: 1, animated: true)
+        timePicker.selectRow(0, inComponent: 2, animated: true)
+    
+    }
     
 }

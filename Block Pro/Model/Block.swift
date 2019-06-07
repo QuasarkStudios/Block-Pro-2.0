@@ -12,6 +12,7 @@ import RealmSwift
 class Block: Object {
  
     @objc dynamic var name: String = ""
+    @objc dynamic var blockCategory: String = ""
     
     @objc dynamic var startHour: String = ""
     @objc dynamic var startMinute: String = ""
@@ -21,5 +22,9 @@ class Block: Object {
     @objc dynamic var endMinute: String = ""
     @objc dynamic var endPeriod: String = ""
     
-    //@objc dynamic var color: String = ""
+    @objc dynamic var note1: String = ""
+    @objc dynamic var note2: String = ""
+    @objc dynamic var note3: String = ""
+    
+    var dateForTimeBlock = LinkingObjects(fromType: TimeBlocksDate.self, property: "timeBlocks")
 }

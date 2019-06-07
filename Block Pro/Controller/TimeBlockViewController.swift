@@ -16,7 +16,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     let realm = try! Realm() //Initializing a new "Realm"
     var blocks: Results<Block>? //Setting the variable "blocks" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
-    let createBlockViewObject = CreateBlockViewController()
     
     //Variable storing "CustomTimeTableCell" text for each indexPath
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
@@ -35,8 +34,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     var userSelectedEndPeriod: String = ""
     
     //Creation of to pre-define the block tuple's structure and allow for it to be used as a return of a function
-    typealias blockTuple = (blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String)
-    var functionTuple: blockTuple = (blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "")
+    typealias blockTuple = (blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String, note1: String, note2: String, note3: String)
+    var functionTuple: blockTuple = (blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "", note1: "", note2: "", note3: "")
     var blockArray = [blockTuple]()
     
     @IBOutlet weak var timeTableView: UITableView!
@@ -77,6 +76,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         blockArray = configureBufferBlocks(sortBlockResults(), functionTuple)
         blockTableView.reloadData()
+        // TODO: Add code to allow for tableView to be loaded back at the top of screen or at the first timeBlock
     }
 
     
@@ -204,6 +204,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 timeBlockTuple.blockName = blocks.value.name
                 timeBlockTuple.blockStartHour = blocks.value.startHour; timeBlockTuple.blockStartMinute = blocks.value.startMinute; timeBlockTuple.blockStartPeriod = blocks.value.startPeriod
                 timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
+                timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                 
                 returnBlockArray.append(bufferBlockTuple) //Appending the first BufferBlock
                 returnBlockArray.append(timeBlockTuple) //Appending the first TimeBlock
@@ -229,6 +230,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     timeBlockTuple.blockName = blocks.value.name
                     timeBlockTuple.blockStartHour = blocks.value.startHour; timeBlockTuple.blockStartMinute = blocks.value.startMinute; timeBlockTuple.blockStartPeriod = blocks.value.startPeriod
                     timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
+                    timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
                     //Creating the next Buffer Block after the last TimeBlock
                     bufferBlockTuple.blockStartHour = blocks.value.endHour; bufferBlockTuple.blockStartMinute = blocks.value.endMinute; bufferBlockTuple.blockStartPeriod = blocks.value.endPeriod
@@ -246,6 +248,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     timeBlockTuple.blockName = blocks.value.name
                     timeBlockTuple.blockStartHour = blocks.value.startHour; timeBlockTuple.blockStartMinute = blocks.value.startMinute; timeBlockTuple.blockStartPeriod = blocks.value.startPeriod
                     timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
+                    timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
                     returnBlockArray.append(timeBlockTuple)
                     count += 1
@@ -314,11 +317,16 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                         if blockArray[indexPath.row].blockName != "Buffer Block" {
                             let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
                             
-                            cell.eventLabel.text = blockArray[indexPath.row].blockName
+                            cell.nameLabel.text = blockArray[indexPath.row].blockName
                             cell.startLabel.text = blockArray[indexPath.row].blockStartHour + ":" + blockArray[indexPath.row].blockStartMinute + " " + blockArray[indexPath.row].blockStartPeriod
                             cell.endLabel.text = blockArray[indexPath.row].blockEndHour + ":" + blockArray[indexPath.row].blockEndMinute + " " + blockArray[indexPath.row].blockEndPeriod
                             
+                            cell.note1TextView.text = blockArray[indexPath.row].note1//; cell.note1TextView.isHidden = true
+                            cell.note2TextView.text = blockArray[indexPath.row].note2//; cell.note2TextView.isHidden = true
+                            cell.note3TextView.text = blockArray[indexPath.row].note3//; cell.note3TextView.isHidden = true
+                            
                             cell.cellContainerView.frame = CGRect(x: 0, y: 2, width: 280, height: (cell.frame.height - 2.0)) //Beginning adjustments for the cellContainerView
+                            cell.alphaView.frame = CGRect(x: 7, y: 44, width: 265, height: cell.cellContainerView.frame.height - 55.0)
                             
                             animateBlock(cell, indexPath)
                             return cell
