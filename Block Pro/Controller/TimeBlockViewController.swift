@@ -33,6 +33,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var blockTableView: UITableView!
     @IBOutlet weak var verticalTableViewSeperator: UIImageView!
 
+    var bigBlockDictionary: [String : String] = ["blockName" : "", "startTime" : "", "endTime" : ""]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -106,14 +107,15 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-        if indexPath.row == blockArray.count {
-            
-            performSegue(withIdentifier: "performSegue", sender: self)
-            blockTableView.deselectRow(at: indexPath, animated: true)
-        }
-        else {
-            blockTableView.deselectRow(at: indexPath, animated: true)
-        }
+        let cell = tableView.cellForRow(at: indexPath) as! CustomBlockTableCell
+        
+        bigBlockDictionary["blockName"] = cell.nameLabel.text
+        bigBlockDictionary["blockStart"] = cell.startLabel.text
+        bigBlockDictionary["blockEnd"] = cell.endLabel.text
+        
+        
+        performSegue(withIdentifier: "presentBlockPopover", sender: self)
+        tableView.deselectRow(at: indexPath, animated: false)
     }
     
     
@@ -320,8 +322,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                         else { //Creation of a buffer block
                             
                             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                            cell.selectionStyle = .none
-                            //cell.textLabel?.text = blockArray[indexPath.row].blockName
+                            cell.isUserInteractionEnabled = false
+                            
                             return cell
                         }
                     }
@@ -565,7 +567,15 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+
+        if segue.identifier == "presentBlockPopover" {
+
+            let bigBlockVC = segue.destination as! BlockPopoverViewController
+
+            bigBlockVC.bigBlockData = bigBlockDictionary
+        }
+    }
     
     @IBAction func segueButton(_ sender: Any) {
         

@@ -21,13 +21,13 @@
 		0D93300A22927C8800B6191D /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300922927C8800B6191D /* Note.swift */; };
 		0D9330102293720200B6191D /* CustomAddBlockTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300E2293720200B6191D /* CustomAddBlockTableCell.swift */; };
 		0D9330112293720200B6191D /* CustomAddBlockTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D93300F2293720200B6191D /* CustomAddBlockTableCell.xib */; };
-		0D9330152295E2CE00B6191D /* AddBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D9330142295E2CE00B6191D /* AddBlockViewController.swift */; };
 		0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83422A84833008BECAE /* FreeTime.storyboard */; };
 		0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83622A84862008BECAE /* Pomodoro.storyboard */; };
 		0DA9F83922A84879008BECAE /* TimeBlock.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83822A84879008BECAE /* TimeBlock.storyboard */; };
 		0DA9F83B22A8488E008BECAE /* Collab.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83A22A8488E008BECAE /* Collab.storyboard */; };
 		0DA9F83D22A848A5008BECAE /* Setttings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83C22A848A5008BECAE /* Setttings.storyboard */; };
 		0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */; };
+		0DA9F84122AC7C42008BECAE /* BlockPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */; };
 		561AFCE3BCA2CC53CAB19872 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
@@ -48,13 +48,13 @@
 		0D93300922927C8800B6191D /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		0D93300E2293720200B6191D /* CustomAddBlockTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAddBlockTableCell.swift; sourceTree = "<group>"; };
 		0D93300F2293720200B6191D /* CustomAddBlockTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomAddBlockTableCell.xib; sourceTree = "<group>"; };
-		0D9330142295E2CE00B6191D /* AddBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBlockViewController.swift; sourceTree = "<group>"; };
 		0DA9F83422A84833008BECAE /* FreeTime.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FreeTime.storyboard; sourceTree = "<group>"; };
 		0DA9F83622A84862008BECAE /* Pomodoro.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Pomodoro.storyboard; sourceTree = "<group>"; };
 		0DA9F83822A84879008BECAE /* TimeBlock.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TimeBlock.storyboard; sourceTree = "<group>"; };
 		0DA9F83A22A8488E008BECAE /* Collab.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Collab.storyboard; sourceTree = "<group>"; };
 		0DA9F83C22A848A5008BECAE /* Setttings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Setttings.storyboard; sourceTree = "<group>"; };
 		0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlocksDate.swift; sourceTree = "<group>"; };
+		0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockPopoverViewController.swift; sourceTree = "<group>"; };
 		2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		991FA64DF47C5695E2C3A1F0 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
 		FFB4066A6F6866CBFB450C85 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
@@ -107,8 +107,8 @@
 			isa = PBXGroup;
 			children = (
 				0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */,
-				0D9330142295E2CE00B6191D /* AddBlockViewController.swift */,
 				0D1E0B18229F856000638772 /* CreateBlockViewController.swift */,
+				0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -327,10 +327,10 @@
 			files = (
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
+				0DA9F84122AC7C42008BECAE /* BlockPopoverViewController.swift in Sources */,
 				0D93300822927C7500B6191D /* Block.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
-				0D9330152295E2CE00B6191D /* AddBlockViewController.swift in Sources */,
 				0D1E0B19229F856000638772 /* CreateBlockViewController.swift in Sources */,
 				0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */,
 				0D93300A22927C8800B6191D /* Note.swift in Sources */,
