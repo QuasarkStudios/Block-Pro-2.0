@@ -12,7 +12,6 @@ import RealmSwift
 class CreateBlockViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 
     let realm = try! Realm()
-    //var blocks: Results<Block>?
     
     @IBOutlet weak var blockNameTextField: UITextField!
     @IBOutlet weak var startTimeTextField: UITextField!

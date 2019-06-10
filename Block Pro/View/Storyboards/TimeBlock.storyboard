@@ -110,7 +110,7 @@
         <!--Block Popover View Controller-->
         <scene sceneID="mbT-xo-EBi">
             <objects>
-                <viewController modalPresentationStyle="overCurrentContext" id="3Ks-03-1b0" customClass="BlockPopoverViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalTransitionStyle="crossDissolve" modalPresentationStyle="overCurrentContext" id="3Ks-03-1b0" customClass="BlockPopoverViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <visualEffectView key="view" opaque="NO" contentMode="scaleToFill" id="eMZ-v9-eeF">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

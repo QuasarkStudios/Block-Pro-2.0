@@ -9,12 +9,11 @@
 import UIKit
 import RealmSwift
 
+
 class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    
-
     let realm = try! Realm() //Initializing a new "Realm"
-    var blocks: Results<Block>? //Setting the variable "blocks" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
+    var realmData: Results<Block>? //Setting the variable "blocks" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
     //Variable storing "CustomTimeTableCell" text for each indexPath
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
@@ -25,15 +24,15 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     var cellAnimated = [Bool](repeating: false, count: 24) //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
     //Creation of to pre-define the block tuple's structure and allow for it to be used as a return of a function
-    typealias blockTuple = (blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String, note1: String, note2: String, note3: String)
-    var functionTuple: blockTuple = (blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "", note1: "", note2: "", note3: "")
+    typealias blockTuple = (blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String, note1: String, note2: String, note3: String, blockIndex: Int)
+    var functionTuple: blockTuple = (blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "", note1: "", note2: "", note3: "", blockIndex: 0)
     var blockArray = [blockTuple]()
     
     @IBOutlet weak var timeTableView: UITableView!
     @IBOutlet weak var blockTableView: UITableView!
     @IBOutlet weak var verticalTableViewSeperator: UIImageView!
 
-    var bigBlockDictionary: [String : String] = ["blockName" : "", "startTime" : "", "endTime" : ""]
+    var indexForBigBlock: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,20 +56,18 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         timeTableView.register(UINib(nibName: "CustomTimeTableCell", bundle: nil), forCellReuseIdentifier: "timeCell")
         blockTableView.register(UINib(nibName: "CustomBlockTableCell", bundle: nil), forCellReuseIdentifier: "blockCell")
         blockTableView.register(UINib(nibName: "CustomAddBlockTableCell", bundle: nil), forCellReuseIdentifier: "addBlockCell")
-        
-        blocks = realm.objects(Block.self)
-        
-        blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
-        print("Test 1:", blockArray)
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
+        realmData = realm.objects(Block.self)
         blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
         blockTableView.reloadData()
+        
         // TODO: Add code to allow for tableView to be loaded back at the top of screen or at the first timeBlock
     }
-
+    
     
     //MARK: - TableView Datasource Methods
     
@@ -109,10 +106,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
 
         let cell = tableView.cellForRow(at: indexPath) as! CustomBlockTableCell
         
-        bigBlockDictionary["blockName"] = cell.nameLabel.text
-        bigBlockDictionary["blockStart"] = cell.startLabel.text
-        bigBlockDictionary["blockEnd"] = cell.endLabel.text
-        
+        indexForBigBlock = blockArray[indexPath.row].blockIndex
         
         performSegue(withIdentifier: "presentBlockPopover", sender: self)
         tableView.deselectRow(at: indexPath, animated: false)
@@ -158,7 +152,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         var sortedBlocks: [Int : Block] = [:]
         
-        for timeBlocks in blocks! {
+        for timeBlocks in realmData! {
             
             if timeBlocks.startPeriod == "AM" {
                 sortedBlocks[Int(amDictionaries[timeBlocks.startHour]! + timeBlocks.startMinute)!] = timeBlocks
@@ -199,6 +193,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
                 timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                 
+                timeBlockTuple.blockIndex = (realmData?.index(of: blocks.value))! //Assigning the blockIndex of this timeBlock to its original index in the "realmData" container
+                
                 returnBlockArray.append(bufferBlockTuple) //Appending the first BufferBlock
                 returnBlockArray.append(timeBlockTuple) //Appending the first TimeBlock
                 firstIteration = false
@@ -225,6 +221,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
                     timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
+                    timeBlockTuple.blockIndex = (realmData?.index(of: blocks.value))! //Assigning the blockIndex of this timeBlock to its original index in the "realmData" container
+                    
                     //Creating the next Buffer Block after the last TimeBlock
                     bufferBlockTuple.blockStartHour = blocks.value.endHour; bufferBlockTuple.blockStartMinute = blocks.value.endMinute; bufferBlockTuple.blockStartPeriod = blocks.value.endPeriod
                     
@@ -243,9 +241,12 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
                     timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
+                    timeBlockTuple.blockIndex = (realmData?.index(of: blocks.value))! //Assigning the blockIndex of this timeBlock to its original index in the "realmData" container
+                    
                     returnBlockArray.append(timeBlockTuple)
                     count += 1
                 }
+                
             }
         }
         
@@ -347,10 +348,14 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         case 10.0:
             cell.cellContainerView.layer.cornerRadius = 0.015 * cell.cellContainerView.bounds.size.width
 
-            cell.alphaView.isHidden = true
+            cell.alphaView.frame.origin = CGPoint(x: 200.0, y: 200.0) //Done to remove alphaView from 5 minute block without lingering effects of reusing cells
             
             cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 9.0)
             cell.nameLabel.frame.origin = CGPoint(x: 18.0, y: -7.0)
+            
+            cell.startLabel.frame.origin = CGPoint(x: 200.0, y: 200.0)
+            cell.toLabel.frame.origin = CGPoint(x: 200.0, y: 200.0)     //Done to remove labels from 5 minute block without lingering effects of reusing cells
+            cell.endLabel.frame.origin = CGPoint(x: 200.0, y: 200.0)
             
         case 20.0:
             cell.cellContainerView.layer.cornerRadius = 0.03 * cell.cellContainerView.bounds.size.width
@@ -378,14 +383,14 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             cell.alphaView.frame = CGRect(x: 116.0, y: 4.0, width: 160.0, height: 19.5)
             cell.alphaView.layer.cornerRadius = 0.06 * cell.alphaView.bounds.size.width
             
-            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
-            cell.startLabel.frame.origin = CGPoint(x: 128.0, y: 5.0)
+            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
+            cell.startLabel.frame.origin = CGPoint(x: 127.0, y: 5.0)
             
-            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
-            cell.toLabel.frame.origin = CGPoint(x: 193.0, y: 6.5)
+            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 21)
+            cell.toLabel.frame.origin = CGPoint(x: 192.0, y: 6.5)
             
-            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
-            cell.endLabel.frame.origin = CGPoint(x: 213.0, y: 5.0)
+            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
+            cell.endLabel.frame.origin = CGPoint(x: 212.0, y: 5.0)
             
         case 40.0:
             cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
@@ -573,7 +578,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
 
             let bigBlockVC = segue.destination as! BlockPopoverViewController
 
-            bigBlockVC.bigBlockData = bigBlockDictionary
+            bigBlockVC.bigBlockDataIndex = indexForBigBlock
+            
+            bigBlockVC.delegate = self
         }
     }
     
@@ -581,5 +588,28 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         performSegue(withIdentifier: "performSegue", sender: self)
         
+    }
+}
+
+extension TimeBlockViewController: BlockDeleted {
+    
+    func deleteBlock() {
+        
+        if let timeBlock = realmData?[indexForBigBlock] {
+            
+            do {
+                try realm.write {
+                    realm.delete(timeBlock)
+                }
+            } catch {
+                print ("Error deleting timeBlock, \(error)")
+            }
+        }
+        
+        realmData = realm.objects(Block.self)
+        
+        blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
+        
+        blockTableView.reloadData()
     }
 }

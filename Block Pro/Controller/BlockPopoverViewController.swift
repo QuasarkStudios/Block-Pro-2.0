@@ -7,9 +7,22 @@
 //
 
 import UIKit
+import RealmSwift
+
+protocol BlockDeleted {
+    
+    func deleteBlock ()
+}
 
 class BlockPopoverViewController: UIViewController {
 
+    let realm = try! Realm()
+    var realmData: Results<Block>?
+    
+    let timeBlockViewObject = TimeBlockViewController()
+    
+    var delegate: BlockDeleted?
+    
     @IBOutlet weak var bigTimeBlock: UIView!
     
     @IBOutlet weak var alphaView: UIView!
@@ -32,16 +45,15 @@ class BlockPopoverViewController: UIViewController {
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var exitButton: UIButton!
     
-    var bigBlockData = [String : String]()
+    var bigBlockDataIndex: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        realmData = realm.objects(Block.self)
         
         viewAdjustments()
-        
-        blockName.text = bigBlockData["blockName"]
-        blockStartTime.text = bigBlockData["blockStart"]
-        blockEndTime.text = bigBlockData["blockEnd"]
+        configureBigBlock()
     }
     
     
@@ -88,6 +100,17 @@ class BlockPopoverViewController: UIViewController {
         deleteButton.layer.cornerRadius = 0.1 * deleteButton.bounds.size.width
         deleteButton.clipsToBounds = true
     }
+    
+    func configureBigBlock () {
+        
+        blockName.text = realmData![bigBlockDataIndex].name
+        blockStartTime.text = realmData![bigBlockDataIndex].startHour + ":" + realmData![bigBlockDataIndex].startMinute + " " + realmData![bigBlockDataIndex].startPeriod
+        blockEndTime.text = realmData![bigBlockDataIndex].endHour + ":" + realmData![bigBlockDataIndex].endMinute + " " + realmData![bigBlockDataIndex].endPeriod
+        
+        note1TextView.text = realmData![bigBlockDataIndex].note1
+        note2TextView.text = realmData![bigBlockDataIndex].note2
+        note3TextView.text = realmData![bigBlockDataIndex].note3
+    }
 
     @IBAction func editButton(_ sender: Any) {
         
@@ -96,6 +119,10 @@ class BlockPopoverViewController: UIViewController {
     
     
     @IBAction func deleteButton(_ sender: Any) {
+
+        delegate?.deleteBlock()
+
+        dismiss(animated: true, completion: nil)
     }
     
     
