@@ -106,14 +106,33 @@ class BlockPopoverViewController: UIViewController {
         guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
         
         blockName.text = bigBlockData.name
-        blockStartTime.text = bigBlockData.startHour + ":" + bigBlockData.startMinute + " " + bigBlockData.startPeriod
-        blockEndTime.text = bigBlockData.endHour + ":" + bigBlockData.endMinute + " " + bigBlockData.endPeriod
+        blockStartTime.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)
+        blockEndTime.text = convertTo12Hour(bigBlockData.endHour, bigBlockData.endMinute) 
         
         note1TextView.text = bigBlockData.note1
         note2TextView.text = bigBlockData.note2
         note3TextView.text = bigBlockData.note3
     }
 
+    func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
+        
+        if funcHour == "0" {
+            return "12" + ":" + funcMinute + " " + "AM"
+        }
+        else if funcHour == "12" {
+            return "12" + ":" + funcMinute + " " + "PM"
+        }
+        else if Int(funcHour)! < 12 {
+            return funcHour + ":" + funcMinute + " " + "AM"
+        }
+        else if Int(funcHour)! > 12 {
+            return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
+        }
+        else {
+            return "YOU GOT IT WRONG BEYOTCH"
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "moveToUpdateBlockView" {

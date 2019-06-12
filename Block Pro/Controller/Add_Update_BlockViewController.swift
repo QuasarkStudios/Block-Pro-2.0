@@ -26,19 +26,22 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     
     @IBOutlet weak var create_edit_blockButton: UIButton!
     
+    let amDictionaries: [String : String] = ["12" : "0", "1" : "1", "2" : "2", "3" : "3", "4" : "4", "5" : "5", "6" : "6", "7" : "7", "8" : "8", "9" : "9", "10" : "10", "11" : "11"]
+    let pmDictionaries: [String : String] = ["12" : "12", "1" : "13", "2" : "14", "3" : "15", "4" : "16", "5" : "17", "6" : "18", "7" : "19", "8" : "20", "9" : "21", "10" : "22", "11" : "23"]
+    
     let hours: [String] = [" ", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
     let minutes: [String] = [" ", "00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"]
     let timePeriods: [String] = [" ", "AM", "PM"]
     
     var tag: String = ""
     
-    var userSelectedStartHour: String = ""
-    var userSelectedStartMinute: String = ""
-    var userSelectedStartPeriod: String = ""
+    var selectedStartHour: String = ""
+    var selectedStartMinute: String = ""
+    var selectedStartPeriod: String = ""
     
-    var userSelectedEndHour: String = ""
-    var userSelectedEndMinute: String = ""
-    var userSelectedEndPeriod: String = ""
+    var selectedEndHour: String = ""
+    var selectedEndMinute: String = ""
+    var selectedEndPeriod: String = ""
     
     var bigBlockData = (blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "", note1: "", note2: "", note3: "")
     
@@ -79,7 +82,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
 
         configureEditView()
         
-        calcInvalidTimeRanges()
+        //calcInvalidTimeRanges()
     }
     
     
@@ -169,11 +172,11 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     func textFieldDidEndEditing(_ textField: UITextField) {
         
         if textField == startTimeTextField {
-            startTimeTextField.text = ("\(userSelectedStartHour):" + "\(userSelectedStartMinute) " + userSelectedStartPeriod)
+            startTimeTextField.text = ("\(selectedStartHour):" + "\(selectedStartMinute) " + selectedStartPeriod)
         }
             
         else if textField == endTimeTextField {
-            endTimeTextField.text = ("\(userSelectedEndHour):" + "\(userSelectedEndMinute) " + userSelectedEndPeriod)
+            endTimeTextField.text = ("\(selectedEndHour):" + "\(selectedEndMinute) " + selectedEndPeriod)
         }
     }
     
@@ -240,29 +243,44 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
         if component == 0 && tag == "start" {
-            userSelectedStartHour = hours[row]
-            print(userSelectedStartHour)
+            selectedStartHour = hours[row]
         }
         else if component == 0 && tag == "end" {
-            userSelectedEndHour = hours[row]
+            selectedEndHour = hours[row]
         }
         
         if component == 1 && tag == "start" {
-            userSelectedStartMinute = minutes[row]
+            selectedStartMinute = minutes[row]
         }
         else if component == 1 && tag == "end" {
-            userSelectedEndMinute = minutes[row]
+            selectedEndMinute = minutes[row]
         }
         
         if component == 2 && tag == "start" {
-            userSelectedStartPeriod = timePeriods[row]
+            selectedStartPeriod = timePeriods[row]
         }
         else if component == 2 && tag == "end" {
-            userSelectedEndPeriod = timePeriods[row]
+            selectedEndPeriod = timePeriods[row]
         }
-        print ("userSelectedStartTime = \(userSelectedStartHour)" + "\(userSelectedStartMinute)" + userSelectedStartPeriod)
-        print ("userSelectedEndTime = \(userSelectedEndHour)" + "\(userSelectedEndMinute)" + userSelectedEndPeriod )
         
+        print ("userSelectedStartTime = \(selectedStartHour)" + "\(selectedStartMinute)" + selectedStartPeriod)
+        print ("userSelectedEndTime = \(selectedEndHour)" + "\(selectedEndMinute)" + selectedEndPeriod )
+        
+    }
+    
+    func convertTo24Hour (_ funcStartHour: String, _ funcStartPeriod: String, _ funcEndHour: String, _ funcEndPeriod: String) {
+        
+        if funcStartHour == "12" && funcStartPeriod == "AM" {
+            selectedStartHour = "0"
+        }
+        
+        if funcStartPeriod == "PM" && funcStartHour != "12" {
+            selectedStartHour = "\(Int(funcStartHour)! + 12)"
+        }
+        
+        if funcEndPeriod == "PM" && funcEndPeriod != "12" {
+            selectedEndHour = "\(Int(funcEndHour)! + 12)"
+        }
     }
     
     func configureEditView () {
@@ -270,14 +288,33 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
         
             blockNameTextField.text = bigBlockData.name
-            startTimeTextField.text = bigBlockData.startHour + ":" + bigBlockData.startMinute + " " + bigBlockData.startPeriod
-            endTimeTextField.text = bigBlockData.endHour + ":" + bigBlockData.endMinute + " " + bigBlockData.endPeriod
+            startTimeTextField.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)
+            endTimeTextField.text = convertTo12Hour(bigBlockData.endHour, bigBlockData.endMinute)
         
             note1TextView.text = bigBlockData.note1
             note2TextView.text = bigBlockData.note2
             note3TextView.text = bigBlockData.note3
         
             create_edit_blockButton.setTitle("Edit", for: .normal)
+    }
+    
+    func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
+        
+        if funcHour == "0" {
+            return "12" + ":" + funcMinute + " " + "AM"
+        }
+        else if funcHour == "12" {
+            return "12" + ":" + funcMinute + " " + "PM"
+        }
+        else if Int(funcHour)! < 12 {
+            return funcHour + ":" + funcMinute + " " + "AM"
+        }
+        else if Int(funcHour)! > 12 {
+            return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
+        }
+        else {
+            return "YOU GOT IT WRONG BEYOTCH"
+        }
     }
     
     func calcInvalidTimeRanges () {
@@ -296,15 +333,15 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             
             invalidTimeRanges.append([blockStartTime])
             print(invalidTimeRanges)
-//            while incremStartTime != blockEndTime {
-//
-//                incremStartMinute = "\(Int(incremStartMinute)! + 5)"
-//
-//                if incremStartMinute == "60" && incremStartHour == "12" {
-//
-//
-//                }
-//            }
+            while incremStartTime != blockEndTime {
+
+                incremStartMinute = "\(Int(incremStartMinute)! + 5)"
+
+                if incremStartMinute == "60" && incremStartHour == "12" {
+
+
+                }
+            }
             
             
             
@@ -320,19 +357,24 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     
     @IBAction func create_edit_ButtonPressed(_ sender: Any) {
         
+        convertTo24Hour(selectedStartHour, selectedStartPeriod, selectedEndHour, selectedEndPeriod)
+        
+        print (selectedStartHour)
+        print (selectedEndHour)
+        
         if create_edit_blockButton.titleLabel?.text == "Create" {
         
             let newBlock = Block()
             
             newBlock.name = blockNameTextField.text!
             
-            newBlock.startHour = userSelectedStartHour
-            newBlock.startMinute = userSelectedStartMinute
-            newBlock.startPeriod = userSelectedStartPeriod
+            newBlock.startHour = selectedStartHour
+            newBlock.startMinute = selectedStartMinute
+            newBlock.startPeriod = selectedStartPeriod
             
-            newBlock.endHour = userSelectedEndHour
-            newBlock.endMinute = userSelectedEndMinute
-            newBlock.endPeriod = userSelectedEndPeriod
+            newBlock.endHour = selectedEndHour
+            newBlock.endMinute = selectedEndMinute
+            newBlock.endPeriod = selectedEndPeriod
             
             newBlock.note1 = note1TextView.text
             newBlock.note2 = note2TextView.text
@@ -357,13 +399,13 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             
             updatedBlock.name = blockNameTextField.text!
             
-            updatedBlock.startHour = userSelectedStartHour
-            updatedBlock.startMinute = userSelectedStartMinute
-            updatedBlock.startPeriod = userSelectedStartPeriod
+            updatedBlock.startHour = selectedStartHour
+            updatedBlock.startMinute = selectedStartMinute
+            updatedBlock.startPeriod = selectedStartPeriod
 
-            updatedBlock.endHour = userSelectedEndHour
-            updatedBlock.endMinute = userSelectedEndMinute
-            updatedBlock.endPeriod = userSelectedEndPeriod
+            updatedBlock.endHour = selectedEndHour
+            updatedBlock.endMinute = selectedEndMinute
+            updatedBlock.endPeriod = selectedEndPeriod
 
             updatedBlock.note1 = note1TextView.text
             updatedBlock.note2 = note2TextView.text

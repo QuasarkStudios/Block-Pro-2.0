@@ -18,8 +18,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     //Variable storing "CustomTimeTableCell" text for each indexPath
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
-    let amDictionaries: [String : String] = ["12" : "0", "1" : "1", "2" : "2", "3" : "3", "4" : "4", "5" : "5", "6" : "6", "7" : "7", "8" : "8", "9" : "9", "10" : "10", "11" : "11"]
-    let pmDictionaries: [String : String] = ["12" : "12", "1" : "13", "2" : "14", "3" : "15", "4" : "16", "5" : "17", "6" : "18", "7" : "19", "8" : "20", "9" : "21", "10" : "22", "11" : "23"]
+    //Add 24 time setting
     
     var cellAnimated = [Bool](repeating: false, count: 24) //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
@@ -66,7 +65,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
         blockTableView.reloadData()
         
-        //print(realmData![0].blockID)
+        
         // TODO: Add code to allow for tableView to be loaded back at the top of screen or at the first timeBlock
     }
     
@@ -125,7 +124,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
 
             while count < blockArray.count {//blocks?.count ?? 1 {
 
-                returnHeight = configureBlockHeight(indexPath: indexPath)
+                returnHeight = configureBlockHeight2(indexPath: indexPath)
                 count += 1
                 //print (returnHeight)
                 return returnHeight
@@ -157,12 +156,12 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         for timeBlocks in realmData! {
             
             if timeBlocks.startPeriod == "AM" {
-                sortedBlocks[Int(amDictionaries[timeBlocks.startHour]! + timeBlocks.startMinute)!] = timeBlocks
+                sortedBlocks[Int(timeBlocks.startHour + timeBlocks.startMinute)!] = timeBlocks
                 //print (sortedBlocks)
             }
 
             else if timeBlocks.startPeriod == "PM" {
-                sortedBlocks[Int(pmDictionaries[timeBlocks.startHour]! + timeBlocks.startMinute)!] = timeBlocks
+                sortedBlocks[Int(timeBlocks.startHour + timeBlocks.startMinute)!] = timeBlocks
                 //print (sortedBlocks)
             }
         }
@@ -186,7 +185,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 //Creating the first Buffer Block starting at 12:00 AM until the first TimeBlocks
                 bufferBlockTuple.blockName = "Buffer Block"
-                bufferBlockTuple.blockStartHour = "12"; bufferBlockTuple.blockStartMinute = "0"; bufferBlockTuple.blockStartPeriod = "AM"
+                bufferBlockTuple.blockStartHour = "0"; bufferBlockTuple.blockStartMinute = "0"; bufferBlockTuple.blockStartPeriod = "AM"
                 bufferBlockTuple.blockEndHour = blocks.value.startHour; bufferBlockTuple.blockEndMinute = blocks.value.startMinute; bufferBlockTuple.blockEndPeriod = blocks.value.startPeriod
 
                 //Creating the first TimeBlock from the values returned from the sortBlocks func
@@ -306,18 +305,16 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                             let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
                             
                             cell.nameLabel.text = blockArray[indexPath.row].blockName
-                            cell.startLabel.text = blockArray[indexPath.row].blockStartHour + ":" + blockArray[indexPath.row].blockStartMinute + " " + blockArray[indexPath.row].blockStartPeriod
-                            cell.endLabel.text = blockArray[indexPath.row].blockEndHour + ":" + blockArray[indexPath.row].blockEndMinute + " " + blockArray[indexPath.row].blockEndPeriod
+                            cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].blockStartHour, blockArray[indexPath.row].blockStartMinute)
+                            cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].blockEndHour, blockArray[indexPath.row].blockEndMinute)
                             
                             cell.note1TextView.text = blockArray[indexPath.row].note1; cell.note1Bullet.isHidden = true; cell.note1TextView.isHidden = true
                             cell.note2TextView.text = blockArray[indexPath.row].note2; cell.note2Bullet.isHidden = true; cell.note2TextView.isHidden = true
                             cell.note3TextView.text = blockArray[indexPath.row].note3; cell.note3Bullet.isHidden = true; cell.note3TextView.isHidden = true
                             
                             cell.cellContainerView.frame = CGRect(x: 0, y: 2, width: 280, height: (cell.frame.height - 2.0)) //POSSIBLY TAKE 1 POINT OFF Y AND 1 OFF HEIGHT TO MAKE CELL LOOK MORE SYMETRICAL
-                            //cell.alphaView.frame = CGRect(x: 7, y: 44, width: 265, height: cell.cellContainerView.frame.height - 55.0)
                             
-                            configureBlock(cell: cell)
-                            
+                            configureBlockLayout(cell)
                             animateBlock(cell, indexPath)
                             return cell
                         }
@@ -340,8 +337,26 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
+        
+        if funcHour == "0" {
+            return "12" + ":" + funcMinute + " " + "AM"
+        }
+        else if funcHour == "12" {
+            return "12" + ":" + funcMinute + " " + "PM"
+        }
+        else if Int(funcHour)! < 12 {
+            return funcHour + ":" + funcMinute + " " + "AM"
+        }
+        else if Int(funcHour)! > 12 {
+            return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
+        }
+        else {
+            return "YOU GOT IT WRONG BEYOTCH"
+        }
+    }
     
-    func configureBlock (cell: CustomBlockTableCell) {
+    func configureBlockLayout (_ cell: CustomBlockTableCell) {
         
         let cellHeight: CGFloat = cell.frame.height
         
@@ -466,83 +481,31 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    func configureBlockHeight (indexPath: IndexPath/*, blockTuples: [(blockTuple)]*/) -> CGFloat {
-        
+    func configureBlockHeight2 (indexPath: IndexPath) -> CGFloat{
+
         var calcHour: Int = 0
         var calcMinute: Int = 0
+
+        if indexPath.row < blockArray.count {
         
-        if indexPath.row < blockArray.count { //(blocks?[indexPath.row]) != nil {
-            
-            //var sortedBlocks = sortBlockResults()
-            //var blockData = blockTuples
-            
             if Int(blockArray[indexPath.row].blockEndMinute)! > Int(blockArray[indexPath.row].blockStartMinute)! {
-                
-                if blockArray[indexPath.row].blockStartPeriod == "AM" && blockArray[indexPath.row].blockEndPeriod == "AM" {
-                    
-                    calcHour = Int(amDictionaries[blockArray[indexPath.row].blockEndHour]!)! - Int(amDictionaries[blockArray[indexPath.row].blockStartHour]!)!
-                    calcMinute = (Int(blockArray[indexPath.row].blockEndMinute)! - Int(blockArray[indexPath.row].blockStartMinute)!)
-                    return CGFloat((calcHour * 120) + (calcMinute * 2))
-                }
-                
-                else if blockArray[indexPath.row].blockStartPeriod == "AM" && blockArray[indexPath.row].blockEndPeriod == "PM" {
-                    
-                    calcHour = Int(pmDictionaries[blockArray[indexPath.row].blockEndHour]!)! - Int(amDictionaries[blockArray[indexPath.row].blockStartHour]!)!
-                    calcMinute = (Int(blockArray[indexPath.row].blockEndMinute)! - Int(blockArray[indexPath.row].blockStartMinute)!)
-                    return CGFloat((calcHour * 120) + (calcMinute * 2))
-                }
-                
-                else {
-                    calcHour = Int(pmDictionaries[blockArray[indexPath.row].blockEndHour]!)! - Int(pmDictionaries[blockArray[indexPath.row].blockStartHour]!)!
-                    calcMinute = (Int(blockArray[indexPath.row].blockEndMinute)! - Int(blockArray[indexPath.row].blockStartMinute)!)
-                    return CGFloat((calcHour * 120) + (calcMinute * 2))
-                }
-                
+                print(indexPath.row)
+                calcHour = Int(blockArray[indexPath.row].blockEndHour)! - Int(blockArray[indexPath.row].blockStartHour)!
+                calcMinute = Int(blockArray[indexPath.row].blockEndMinute)! - Int(blockArray[indexPath.row].blockStartMinute)!
+                return CGFloat((calcHour * 120) + calcMinute * 2)
             }
-            
+
             else if Int(blockArray[indexPath.row].blockEndMinute)! == Int(blockArray[indexPath.row].blockStartMinute)! {
-                
-                if blockArray[indexPath.row].blockStartPeriod == "AM" && blockArray[indexPath.row].blockEndPeriod == "AM" {
-                    //Add a 0 key and value in am dictionary
-                    calcHour = Int(amDictionaries[blockArray[indexPath.row].blockEndHour]!)! - Int(amDictionaries[blockArray[indexPath.row].blockStartHour]!)!
-                    return CGFloat(calcHour * 120)
-                }
-                
-                else if blockArray[indexPath.row].blockStartPeriod == "AM" && blockArray[indexPath.row].blockEndPeriod == "PM" {
-                    
-                    calcHour = Int(pmDictionaries[blockArray[indexPath.row].blockEndHour]!)! - Int(amDictionaries[blockArray[indexPath.row].blockStartHour]!)!
-                    return CGFloat(calcHour * 120)
-                }
-                
-                else {
-                    
-                    calcHour = Int(pmDictionaries[blockArray[indexPath.row].blockEndHour]!)! - Int(pmDictionaries[blockArray[indexPath.row].blockStartHour]!)!
-                    return CGFloat(calcHour * 120)
-                }
+                print(indexPath.row)
+                calcHour = Int(blockArray[indexPath.row].blockEndHour)! - Int(blockArray[indexPath.row].blockStartHour)!
+                return CGFloat(calcHour * 120)
             }
             
             else {
-                
-                if blockArray[indexPath.row].blockStartPeriod == "AM" && blockArray[indexPath.row].blockEndPeriod == "AM" {
-                
-                    calcHour = (Int(amDictionaries[blockArray[indexPath.row].blockEndHour]!)! - 1) - Int(amDictionaries[blockArray[indexPath.row].blockStartHour]!)!
-                    calcMinute = ((Int(blockArray[indexPath.row].blockEndMinute)! + 60) - Int(blockArray[indexPath.row].blockStartMinute)!)
-                    return CGFloat((calcHour * 120) + (calcMinute * 2))
-                }
-                
-                else if blockArray[indexPath.row].blockStartPeriod == "AM" && blockArray[indexPath.row].blockEndPeriod == "PM" {
-                    
-                    calcHour = (Int(pmDictionaries[blockArray[indexPath.row].blockEndHour]!)! - 1) - Int(amDictionaries[blockArray[indexPath.row].blockStartHour]!)!
-                    calcMinute = ((Int(blockArray[indexPath.row].blockEndMinute)! + 60) - Int(blockArray[indexPath.row].blockStartMinute)!)
-                    return CGFloat((calcHour * 120) + (calcMinute * 2))
-                }
-                
-                else {
-                   
-                    calcHour = (Int(pmDictionaries[blockArray[indexPath.row].blockEndHour]!)! - 1) - Int(pmDictionaries[blockArray[indexPath.row].blockStartHour]!)!
-                    calcMinute = ((Int(blockArray[indexPath.row].blockEndMinute)! + 60) - Int(blockArray[indexPath.row].blockStartMinute)!)
-                    return CGFloat((calcHour * 120) + (calcMinute * 2))
-                }
+                print(indexPath.row)
+                calcHour = (Int(blockArray[indexPath.row].blockEndHour)! - 1) - Int(blockArray[indexPath.row].blockStartHour)!
+                calcMinute = ((Int(blockArray[indexPath.row].blockEndMinute)! + 60) - Int(blockArray[indexPath.row].blockStartMinute)!)
+                return CGFloat((calcHour * 120) + (calcMinute * 2))
             }
         }
         
@@ -550,8 +513,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             return 90.0
         }
     }
-    
-    
+
     func animateBlock (_ cell: CustomBlockTableCell, _ indexPath: IndexPath) {
         
         //If statement checking to see if a certain cell has been animated onto the screen or not
