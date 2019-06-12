@@ -17,9 +17,9 @@ protocol BlockDeleted {
 class BlockPopoverViewController: UIViewController {
 
     let realm = try! Realm()
-    var realmData: Results<Block>?
+    //var realmData: Results<Block>?
     
-    let timeBlockViewObject = TimeBlockViewController()
+    //let timeBlockViewObject = TimeBlockViewController()
     
     var delegate: BlockDeleted?
     
@@ -40,17 +40,15 @@ class BlockPopoverViewController: UIViewController {
     @IBOutlet weak var note2TextView: UITextView!
     @IBOutlet weak var note3TextView: UITextView!
     
-    
     @IBOutlet weak var editButton: UIButton!
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var exitButton: UIButton!
     
-    var bigBlockDataIndex: Int = 0
+    var blockID: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        realmData = realm.objects(Block.self)
         
         viewAdjustments()
         configureBigBlock()
@@ -103,26 +101,52 @@ class BlockPopoverViewController: UIViewController {
     
     func configureBigBlock () {
         
-        blockName.text = realmData![bigBlockDataIndex].name
-        blockStartTime.text = realmData![bigBlockDataIndex].startHour + ":" + realmData![bigBlockDataIndex].startMinute + " " + realmData![bigBlockDataIndex].startPeriod
-        blockEndTime.text = realmData![bigBlockDataIndex].endHour + ":" + realmData![bigBlockDataIndex].endMinute + " " + realmData![bigBlockDataIndex].endPeriod
+        print(blockID)
         
-        note1TextView.text = realmData![bigBlockDataIndex].note1
-        note2TextView.text = realmData![bigBlockDataIndex].note2
-        note3TextView.text = realmData![bigBlockDataIndex].note3
+        guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
+        
+        blockName.text = bigBlockData.name
+        blockStartTime.text = bigBlockData.startHour + ":" + bigBlockData.startMinute + " " + bigBlockData.startPeriod
+        blockEndTime.text = bigBlockData.endHour + ":" + bigBlockData.endMinute + " " + bigBlockData.endPeriod
+        
+        note1TextView.text = bigBlockData.note1
+        note2TextView.text = bigBlockData.note2
+        note3TextView.text = bigBlockData.note3
     }
 
-    @IBAction func editButton(_ sender: Any) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        performSegue(withIdentifier: "moveToEditBlock", sender: self)
+        if segue.identifier == "moveToUpdateBlockView" {
+            
+            let editBlockView = segue.destination as! Add_Update_BlockViewController
+            
+            editBlockView.blockID = blockID
+        }
     }
     
+    @IBAction func editButton(_ sender: Any) {
+        
+        performSegue(withIdentifier: "moveToUpdateBlockView", sender: self)
+    }
     
     @IBAction func deleteButton(_ sender: Any) {
 
-        delegate?.deleteBlock()
-
-        dismiss(animated: true, completion: nil)
+        let deleteAlert = UIAlertController(title: "Delete Time Block", message: "Are you sure you would like to delete this Time Block?", preferredStyle: .alert)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .default) { (deleteAction) in
+            
+            self.delegate?.deleteBlock()
+            
+            self.dismiss(animated: true, completion: nil)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        deleteAlert.addAction(deleteAction)
+        deleteAlert.addAction(cancelAction)
+        
+        present(deleteAlert, animated: true, completion: nil)
+        
     }
     
     

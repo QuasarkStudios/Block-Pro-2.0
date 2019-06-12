@@ -11,6 +11,8 @@ import RealmSwift
 
 class Block: Object {
  
+    @objc dynamic var blockID = UUID().uuidString
+    
     @objc dynamic var name: String = ""
     @objc dynamic var blockCategory: String = ""
     
@@ -27,4 +29,8 @@ class Block: Object {
     @objc dynamic var note3: String = ""
     
     var dateForTimeBlock = LinkingObjects(fromType: TimeBlocksDate.self, property: "timeBlocks")
+    
+    override static func primaryKey() -> String? {
+        return "blockID"
+    }
 }

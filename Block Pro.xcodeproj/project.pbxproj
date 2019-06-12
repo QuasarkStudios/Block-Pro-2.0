@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0D1E0B19229F856000638772 /* CreateBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1E0B18229F856000638772 /* CreateBlockViewController.swift */; };
+		0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */; };
 		0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECEF228FB55600CC9180 /* AppDelegate.swift */; };
 		0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */; };
 		0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CECF3228FB55600CC9180 /* Main.storyboard */; };
@@ -28,11 +28,13 @@
 		0DA9F83D22A848A5008BECAE /* Setttings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83C22A848A5008BECAE /* Setttings.storyboard */; };
 		0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */; };
 		0DA9F84122AC7C42008BECAE /* BlockPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */; };
+		0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */; };
+		0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */; };
 		561AFCE3BCA2CC53CAB19872 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0D1E0B18229F856000638772 /* CreateBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBlockViewController.swift; sourceTree = "<group>"; };
+		0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Add_Update_BlockViewController.swift; sourceTree = "<group>"; };
 		0D2CECEC228FB55600CC9180 /* Block Pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Block Pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D2CECEF228FB55600CC9180 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockViewController.swift; sourceTree = "<group>"; };
@@ -55,6 +57,10 @@
 		0DA9F83C22A848A5008BECAE /* Setttings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Setttings.storyboard; sourceTree = "<group>"; };
 		0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlocksDate.swift; sourceTree = "<group>"; };
 		0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockPopoverViewController.swift; sourceTree = "<group>"; };
+		0DBF3E9322B03DC700E180D2 /* Block Pro-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Block Pro-Bridging-Header.h"; sourceTree = "<group>"; };
+		0DBF3E9422B03DC800E180D2 /* ProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
+		0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
+		0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
 		2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		991FA64DF47C5695E2C3A1F0 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
 		FFB4066A6F6866CBFB450C85 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
@@ -77,6 +83,7 @@
 			children = (
 				0D2CECEE228FB55600CC9180 /* Block Pro */,
 				0D2CECED228FB55600CC9180 /* Products */,
+				0DBF3E9222B03D7A00E180D2 /* Supporting Files */,
 				FF1C50C6473D8305D2DF4369 /* Pods */,
 				EF9F319EE4A9BB4E5C098186 /* Frameworks */,
 			);
@@ -107,7 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */,
-				0D1E0B18229F856000638772 /* CreateBlockViewController.swift */,
+				0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */,
 				0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */,
 			);
 			path = Controller;
@@ -173,6 +180,17 @@
 				0DA9F83C22A848A5008BECAE /* Setttings.storyboard */,
 			);
 			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		0DBF3E9222B03D7A00E180D2 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */,
+				0DBF3E9422B03DC800E180D2 /* ProgressHUD.h */,
+				0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */,
+				0DBF3E9322B03DC700E180D2 /* Block Pro-Bridging-Header.h */,
+			);
+			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		EF9F319EE4A9BB4E5C098186 /* Frameworks */ = {
@@ -261,6 +279,7 @@
 				0D9330112293720200B6191D /* CustomAddBlockTableCell.xib in Resources */,
 				0DA9F83B22A8488E008BECAE /* Collab.storyboard in Resources */,
 				0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */,
+				0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */,
 				0D2CED0B2290829300CC9180 /* CustomTimeTableCell.xib in Resources */,
 				0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */,
 				0DA9F83922A84879008BECAE /* TimeBlock.storyboard in Resources */,
@@ -331,7 +350,8 @@
 				0D93300822927C7500B6191D /* Block.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
-				0D1E0B19229F856000638772 /* CreateBlockViewController.swift in Sources */,
+				0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */,
+				0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */,
 				0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */,
 				0D93300A22927C8800B6191D /* Note.swift in Sources */,
 				0D9330102293720200B6191D /* CustomAddBlockTableCell.swift in Sources */,
@@ -481,6 +501,7 @@
 			baseConfigurationReference = FFB4066A6F6866CBFB450C85 /* Pods-Block Pro.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4H335NG4DV;
 				INFOPLIST_FILE = "Block Pro/Info.plist";
@@ -490,6 +511,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "Nimat.Block-Pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Block Pro-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -500,6 +523,7 @@
 			baseConfigurationReference = 991FA64DF47C5695E2C3A1F0 /* Pods-Block Pro.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4H335NG4DV;
 				INFOPLIST_FILE = "Block Pro/Info.plist";
@@ -509,6 +533,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "Nimat.Block-Pro";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Block Pro-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

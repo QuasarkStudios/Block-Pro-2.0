@@ -99,7 +99,7 @@
                         <outlet property="blockTableView" destination="iI0-0F-O4B" id="4B6-Q1-5h3"/>
                         <outlet property="timeTableView" destination="fve-Nh-PIx" id="bHo-dC-7QP"/>
                         <outlet property="verticalTableViewSeperator" destination="rkP-bt-Lnq" id="X5Q-qQ-vna"/>
-                        <segue destination="Mbg-tS-1pY" kind="presentation" identifier="performSegue" modalTransitionStyle="flipHorizontal" id="XNG-de-0He"/>
+                        <segue destination="Mbg-tS-1pY" kind="presentation" identifier="moveToAddBlockView" modalTransitionStyle="flipHorizontal" id="XNG-de-0He"/>
                         <segue destination="3Ks-03-1b0" kind="presentation" identifier="presentBlockPopover" modalPresentationStyle="overCurrentContext" modalTransitionStyle="crossDissolve" id="mTq-Bj-12n"/>
                     </connections>
                 </viewController>
@@ -251,17 +251,17 @@
                         <outlet property="note2TextView" destination="ht8-jz-whY" id="7hC-z4-MsS"/>
                         <outlet property="note3Bullet" destination="hqY-1m-uiy" id="9Fl-OM-jj0"/>
                         <outlet property="note3TextView" destination="D4K-4X-gy8" id="JMw-fa-mHQ"/>
-                        <segue destination="Mbg-tS-1pY" kind="presentation" identifier="moveToEditBlock" id="AeA-2W-EV6"/>
+                        <segue destination="Mbg-tS-1pY" kind="presentation" identifier="moveToUpdateBlockView" id="AeA-2W-EV6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wyQ-TA-n0F" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2110" y="-309"/>
         </scene>
-        <!--Create Block View Controller-->
+        <!--Add Update Block View Controller-->
         <scene sceneID="c8Y-oU-nDU">
             <objects>
-                <viewController id="Mbg-tS-1pY" customClass="CreateBlockViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Mbg-tS-1pY" customClass="Add_Update_BlockViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="jXO-Is-Omx">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -270,12 +270,12 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="76"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="01S-WZ-HLi">
-                                        <rect key="frame" x="308" y="38" width="46" height="30"/>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="01S-WZ-HLi" userLabel="Create/Update Block Button">
+                                        <rect key="frame" x="288" y="38" width="66" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" title="Create"/>
                                         <connections>
-                                            <action selector="createPressed:" destination="Mbg-tS-1pY" eventType="touchUpInside" id="7b2-zX-uCG"/>
+                                            <action selector="create_edit_ButtonPressed:" destination="Mbg-tS-1pY" eventType="touchUpInside" id="RgG-8x-c95"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MYg-ac-loR">
@@ -397,6 +397,7 @@
                     </view>
                     <connections>
                         <outlet property="blockNameTextField" destination="PlE-At-oYL" id="F3G-8E-NFg"/>
+                        <outlet property="create_edit_blockButton" destination="01S-WZ-HLi" id="Ow6-Zk-BKE"/>
                         <outlet property="endTimeTextField" destination="o8q-60-GHL" id="5BW-kA-SAe"/>
                         <outlet property="note1TextView" destination="ADX-b0-leH" id="2EA-m0-YCb"/>
                         <outlet property="note2TextView" destination="5tW-0C-6I2" id="uSD-5W-JZH"/>
@@ -407,7 +408,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fzh-Za-0vE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2985" y="80"/>
+            <point key="canvasLocation" x="2984.8000000000002" y="79.802955665024641"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

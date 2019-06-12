@@ -9,9 +9,10 @@
 import UIKit
 import RealmSwift
 
-class CreateBlockViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 
     let realm = try! Realm()
+    var realmData: Results<Block>?
     
     @IBOutlet weak var blockNameTextField: UITextField!
     @IBOutlet weak var startTimeTextField: UITextField!
@@ -22,6 +23,8 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UITextVi
     @IBOutlet weak var note3TextView: UITextView!
     
     @IBOutlet weak var timePicker: UIPickerView!
+    
+    @IBOutlet weak var create_edit_blockButton: UIButton!
     
     let hours: [String] = [" ", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
     let minutes: [String] = [" ", "00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"]
@@ -37,6 +40,11 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UITextVi
     var userSelectedEndMinute: String = ""
     var userSelectedEndPeriod: String = ""
     
+    var bigBlockData = (blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "", note1: "", note2: "", note3: "")
+    
+    var blockID: String = ""
+    
+    var invalidTimeRanges = [[String]]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,6 +76,10 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UITextVi
 
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
+
+        configureEditView()
+        
+        calcInvalidTimeRanges()
     }
     
     
@@ -253,7 +265,51 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UITextVi
         
     }
     
+    func configureEditView () {
+        
+        guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
+        
+            blockNameTextField.text = bigBlockData.name
+            startTimeTextField.text = bigBlockData.startHour + ":" + bigBlockData.startMinute + " " + bigBlockData.startPeriod
+            endTimeTextField.text = bigBlockData.endHour + ":" + bigBlockData.endMinute + " " + bigBlockData.endPeriod
+        
+            note1TextView.text = bigBlockData.note1
+            note2TextView.text = bigBlockData.note2
+            note3TextView.text = bigBlockData.note3
+        
+            create_edit_blockButton.setTitle("Edit", for: .normal)
+    }
     
+    func calcInvalidTimeRanges () {
+        
+        realmData = realm.objects(Block.self)
+
+        for blocks in realmData! {
+            
+            var incremStartHour = blocks.startHour
+            var incremStartMinute = blocks.startMinute
+            var incremStartPeriod = blocks.startPeriod
+            
+            let incremStartTime = blocks.startHour + blocks.startMinute + blocks.startPeriod
+            let blockStartTime = blocks.startHour + blocks.startMinute + blocks.startPeriod
+            let blockEndTime = blocks.endHour + blocks.endMinute + blocks.endPeriod
+            
+            invalidTimeRanges.append([blockStartTime])
+            print(invalidTimeRanges)
+//            while incremStartTime != blockEndTime {
+//
+//                incremStartMinute = "\(Int(incremStartMinute)! + 5)"
+//
+//                if incremStartMinute == "60" && incremStartHour == "12" {
+//
+//
+//                }
+//            }
+            
+            
+            
+        }
+    }
 
     
     
@@ -262,33 +318,69 @@ class CreateBlockViewController: UIViewController, UITextFieldDelegate, UITextVi
     }
     
     
-    @IBAction func createPressed(_ sender: Any) {
+    @IBAction func create_edit_ButtonPressed(_ sender: Any) {
         
-        let newBlock = Block()
+        if create_edit_blockButton.titleLabel?.text == "Create" {
         
-        newBlock.name = blockNameTextField.text!
-        
-        newBlock.startHour = userSelectedStartHour
-        newBlock.startMinute = userSelectedStartMinute
-        newBlock.startPeriod = userSelectedStartPeriod
-        
-        newBlock.endHour = userSelectedEndHour
-        newBlock.endMinute = userSelectedEndMinute
-        newBlock.endPeriod = userSelectedEndPeriod
-        
-        newBlock.note1 = note1TextView.text
-        newBlock.note2 = note2TextView.text
-        newBlock.note3 = note3TextView.text
-        
-        do {
-            try realm.write {
-                realm.add(newBlock)
+            let newBlock = Block()
+            
+            newBlock.name = blockNameTextField.text!
+            
+            newBlock.startHour = userSelectedStartHour
+            newBlock.startMinute = userSelectedStartMinute
+            newBlock.startPeriod = userSelectedStartPeriod
+            
+            newBlock.endHour = userSelectedEndHour
+            newBlock.endMinute = userSelectedEndMinute
+            newBlock.endPeriod = userSelectedEndPeriod
+            
+            newBlock.note1 = note1TextView.text
+            newBlock.note2 = note2TextView.text
+            newBlock.note3 = note3TextView.text
+            
+            do {
+                try realm.write {
+                    realm.add(newBlock)
+                }
+            } catch {
+                print ("Error adding a new block \(error)")
             }
-        } catch {
-            print ("Error adding a new block \(error)")
         }
         
+        else if create_edit_blockButton.titleLabel?.text == "Edit" {
+        print("cool")
+            let updatedBlock = Block()
             
+            //realmData = realm.objects(Block.self)
+            
+            updatedBlock.blockID = blockID
+            
+            updatedBlock.name = blockNameTextField.text!
+            
+            updatedBlock.startHour = userSelectedStartHour
+            updatedBlock.startMinute = userSelectedStartMinute
+            updatedBlock.startPeriod = userSelectedStartPeriod
+
+            updatedBlock.endHour = userSelectedEndHour
+            updatedBlock.endMinute = userSelectedEndMinute
+            updatedBlock.endPeriod = userSelectedEndPeriod
+
+            updatedBlock.note1 = note1TextView.text
+            updatedBlock.note2 = note2TextView.text
+            updatedBlock.note3 = note3TextView.text
+        
+            do {
+                try self.realm.write {
+                    
+                    realm.add(updatedBlock, update: true)
+                    
+                }
+            } catch {
+                print ("Error updating block \(error)")
+        
+            }
+        }
+        
         dismiss(animated: true, completion: nil)
     }
     

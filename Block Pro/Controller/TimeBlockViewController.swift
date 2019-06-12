@@ -24,15 +24,16 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     var cellAnimated = [Bool](repeating: false, count: 24) //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
     //Creation of to pre-define the block tuple's structure and allow for it to be used as a return of a function
-    typealias blockTuple = (blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String, note1: String, note2: String, note3: String, blockIndex: Int)
-    var functionTuple: blockTuple = (blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "", note1: "", note2: "", note3: "", blockIndex: 0)
+    typealias blockTuple = ( blockID: String, blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String, note1: String, note2: String, note3: String)
+    var functionTuple: blockTuple = (blockID: "", blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "", note1: "", note2: "", note3: "")
     var blockArray = [blockTuple]()
+    
+    var bigBlockID: String = ""
     
     @IBOutlet weak var timeTableView: UITableView!
     @IBOutlet weak var blockTableView: UITableView!
     @IBOutlet weak var verticalTableViewSeperator: UIImageView!
 
-    var indexForBigBlock: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,6 +66,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
         blockTableView.reloadData()
         
+        //print(realmData![0].blockID)
         // TODO: Add code to allow for tableView to be loaded back at the top of screen or at the first timeBlock
     }
     
@@ -106,7 +108,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
 
         let cell = tableView.cellForRow(at: indexPath) as! CustomBlockTableCell
         
-        indexForBigBlock = blockArray[indexPath.row].blockIndex
+        bigBlockID = blockArray[indexPath.row].blockID
         
         performSegue(withIdentifier: "presentBlockPopover", sender: self)
         tableView.deselectRow(at: indexPath, animated: false)
@@ -193,7 +195,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
                 timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                 
-                timeBlockTuple.blockIndex = (realmData?.index(of: blocks.value))! //Assigning the blockIndex of this timeBlock to its original index in the "realmData" container
+                timeBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this timeBlock
                 
                 returnBlockArray.append(bufferBlockTuple) //Appending the first BufferBlock
                 returnBlockArray.append(timeBlockTuple) //Appending the first TimeBlock
@@ -221,7 +223,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
                     timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
-                    timeBlockTuple.blockIndex = (realmData?.index(of: blocks.value))! //Assigning the blockIndex of this timeBlock to its original index in the "realmData" container
+                    timeBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this timeBlock
                     
                     //Creating the next Buffer Block after the last TimeBlock
                     bufferBlockTuple.blockStartHour = blocks.value.endHour; bufferBlockTuple.blockStartMinute = blocks.value.endMinute; bufferBlockTuple.blockStartPeriod = blocks.value.endPeriod
@@ -241,7 +243,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
                     timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
-                    timeBlockTuple.blockIndex = (realmData?.index(of: blocks.value))! //Assigning the blockIndex of this timeBlock to its original index in the "realmData" container
+                    timeBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this timeBlock
                     
                     returnBlockArray.append(timeBlockTuple)
                     count += 1
@@ -578,15 +580,22 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
 
             let bigBlockVC = segue.destination as! BlockPopoverViewController
 
-            bigBlockVC.bigBlockDataIndex = indexForBigBlock
+            bigBlockVC.blockID = bigBlockID
             
-            bigBlockVC.delegate = self
+            bigBlockVC.delegate = self //Neccasary for Delegates and Protocols of deleting blocks
+            
+        }
+        
+        else if segue.identifier == "moveToAddBlockView" {
+            
+            let createBlockVC = segue.destination as! Add_Update_BlockViewController
+            
         }
     }
     
     @IBAction func segueButton(_ sender: Any) {
         
-        performSegue(withIdentifier: "performSegue", sender: self)
+        performSegue(withIdentifier: "moveToAddBlockView", sender: self)
         
     }
 }
@@ -595,21 +604,22 @@ extension TimeBlockViewController: BlockDeleted {
     
     func deleteBlock() {
         
-        if let timeBlock = realmData?[indexForBigBlock] {
-            
+        guard let deletedBlock = realm.object(ofType: Block.self, forPrimaryKey: bigBlockID) else { return }
+
             do {
                 try realm.write {
-                    realm.delete(timeBlock)
+                    realm.delete(deletedBlock)
                 }
             } catch {
                 print ("Error deleting timeBlock, \(error)")
             }
-        }
-        
-        realmData = realm.objects(Block.self)
-        
-        blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
-        
-        blockTableView.reloadData()
+
+            realmData = realm.objects(Block.self)
+
+            blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
+
+            blockTableView.reloadData()
+    
     }
+    
 }
