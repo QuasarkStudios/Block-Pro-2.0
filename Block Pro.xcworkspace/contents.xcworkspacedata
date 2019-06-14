@@ -10,5 +10,11 @@
    <Group
       location = "group:"
       name = "Supporting Files">
+      <FileRef
+         location = "group:/Users/nimat/Desktop/Block Pro/Block Pro/plus.pdf">
+      </FileRef>
+      <FileRef
+         location = "group:list.pdf">
+      </FileRef>
    </Group>
 </Workspace>

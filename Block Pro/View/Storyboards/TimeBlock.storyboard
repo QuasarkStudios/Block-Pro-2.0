@@ -22,7 +22,8 @@
                                 <rect key="frame" x="0.0" y="120" width="82" height="609"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="82" id="uMU-wf-gTM"/>
+                                    <constraint firstAttribute="width" constant="82" id="4dk-lA-Ikp"/>
+                                    <constraint firstAttribute="height" constant="609" id="BFX-fk-g5g"/>
                                 </constraints>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="timeCell" id="mhD-aZ-ovr">
@@ -37,27 +38,13 @@
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zjp-3g-y2g">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="120"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GaM-KL-57A">
-                                        <rect key="frame" x="308" y="52" width="44" height="30"/>
-                                        <state key="normal" title="Segue"/>
-                                        <connections>
-                                            <action selector="segueButton:" destination="hyC-FP-KMM" eventType="touchUpInside" id="ueK-ws-7p2"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
                                 <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstItem="GaM-KL-57A" firstAttribute="top" secondItem="Zjp-3g-y2g" secondAttribute="topMargin" id="Cwj-Cc-7dy"/>
-                                    <constraint firstAttribute="bottom" secondItem="GaM-KL-57A" secondAttribute="bottom" constant="38" id="u92-kZ-t7X"/>
-                                    <constraint firstAttribute="trailing" secondItem="GaM-KL-57A" secondAttribute="trailing" constant="23" id="zNA-he-27f"/>
-                                </constraints>
                             </view>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rkP-bt-Lnq">
-                                <rect key="frame" x="82" y="134" width="2" height="582"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rkP-bt-Lnq">
+                                <rect key="frame" x="82" y="134" width="2" height="581"/>
                                 <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="2" id="Zfh-7o-lSv"/>
+                                    <constraint firstAttribute="width" constant="2" id="J7r-IF-tUh"/>
                                 </constraints>
                             </imageView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="iI0-0F-O4B" userLabel="blockTableView">
@@ -77,19 +64,19 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="fve-Nh-PIx" firstAttribute="centerY" secondItem="rkP-bt-Lnq" secondAttribute="centerY" id="GbM-lj-zF2"/>
-                            <constraint firstItem="rkP-bt-Lnq" firstAttribute="leading" secondItem="fve-Nh-PIx" secondAttribute="trailing" id="Jhf-EI-b1E"/>
-                            <constraint firstItem="iI0-0F-O4B" firstAttribute="leading" secondItem="rkP-bt-Lnq" secondAttribute="trailing" id="RVh-fx-P06"/>
-                            <constraint firstItem="Zjp-3g-y2g" firstAttribute="trailing" secondItem="iI0-0F-O4B" secondAttribute="trailing" id="TLF-C0-Q74"/>
-                            <constraint firstItem="Zjp-3g-y2g" firstAttribute="leading" secondItem="fve-Nh-PIx" secondAttribute="leading" id="Tg3-SB-cYP"/>
-                            <constraint firstItem="Zjp-3g-y2g" firstAttribute="leading" secondItem="8re-w7-tgS" secondAttribute="leading" id="UKb-tY-tII"/>
-                            <constraint firstAttribute="trailing" secondItem="Zjp-3g-y2g" secondAttribute="trailing" id="ZkP-Hj-zt7"/>
-                            <constraint firstItem="fve-Nh-PIx" firstAttribute="bottom" secondItem="iI0-0F-O4B" secondAttribute="bottom" id="dEf-cB-STz"/>
-                            <constraint firstItem="fve-Nh-PIx" firstAttribute="top" secondItem="Zjp-3g-y2g" secondAttribute="bottom" id="hgZ-RR-5Fg"/>
-                            <constraint firstItem="Zjp-3g-y2g" firstAttribute="top" secondItem="8re-w7-tgS" secondAttribute="top" id="jdF-6x-y5i"/>
-                            <constraint firstItem="fve-Nh-PIx" firstAttribute="bottom" secondItem="Olz-as-Z1f" secondAttribute="bottom" id="kjf-DZ-IiV"/>
-                            <constraint firstItem="fve-Nh-PIx" firstAttribute="top" secondItem="iI0-0F-O4B" secondAttribute="top" id="kzH-Am-lnI"/>
-                            <constraint firstItem="rkP-bt-Lnq" firstAttribute="top" secondItem="8re-w7-tgS" secondAttribute="topMargin" constant="90" id="mLJ-mb-PmU"/>
+                            <constraint firstItem="Zjp-3g-y2g" firstAttribute="leading" secondItem="8re-w7-tgS" secondAttribute="leading" id="Ayf-G7-VIV"/>
+                            <constraint firstItem="fve-Nh-PIx" firstAttribute="centerY" secondItem="rkP-bt-Lnq" secondAttribute="centerY" id="E1y-ew-Wog"/>
+                            <constraint firstItem="rkP-bt-Lnq" firstAttribute="leading" secondItem="fve-Nh-PIx" secondAttribute="trailing" id="HPT-M8-oM9"/>
+                            <constraint firstItem="fve-Nh-PIx" firstAttribute="bottom" secondItem="Olz-as-Z1f" secondAttribute="bottom" id="IJe-VJ-bLl"/>
+                            <constraint firstAttribute="trailing" secondItem="Zjp-3g-y2g" secondAttribute="trailing" id="JE4-Y0-gdl"/>
+                            <constraint firstItem="fve-Nh-PIx" firstAttribute="top" secondItem="iI0-0F-O4B" secondAttribute="top" id="MgO-Sa-bkE"/>
+                            <constraint firstItem="fve-Nh-PIx" firstAttribute="top" secondItem="Zjp-3g-y2g" secondAttribute="bottom" id="RpD-AV-MqW"/>
+                            <constraint firstItem="fve-Nh-PIx" firstAttribute="bottom" secondItem="iI0-0F-O4B" secondAttribute="bottom" id="Vhv-BB-OcE"/>
+                            <constraint firstItem="Zjp-3g-y2g" firstAttribute="trailing" secondItem="iI0-0F-O4B" secondAttribute="trailing" id="XHO-Td-g1F"/>
+                            <constraint firstItem="rkP-bt-Lnq" firstAttribute="top" secondItem="8re-w7-tgS" secondAttribute="topMargin" constant="90" id="eQF-Ae-GRa"/>
+                            <constraint firstItem="Zjp-3g-y2g" firstAttribute="top" secondItem="8re-w7-tgS" secondAttribute="top" id="hHK-O6-crx"/>
+                            <constraint firstItem="iI0-0F-O4B" firstAttribute="leading" secondItem="rkP-bt-Lnq" secondAttribute="trailing" id="i5s-Hh-GQy"/>
+                            <constraint firstItem="Zjp-3g-y2g" firstAttribute="leading" secondItem="fve-Nh-PIx" secondAttribute="leading" id="x9L-Ho-jH9"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Olz-as-Z1f"/>
                     </view>
@@ -97,6 +84,7 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="blockTableView" destination="iI0-0F-O4B" id="4B6-Q1-5h3"/>
+                        <outlet property="tabBarbieItem" destination="qrq-F6-iev" id="DEA-oZ-d26"/>
                         <outlet property="timeTableView" destination="fve-Nh-PIx" id="bHo-dC-7QP"/>
                         <outlet property="verticalTableViewSeperator" destination="rkP-bt-Lnq" id="X5Q-qQ-vna"/>
                         <segue destination="Mbg-tS-1pY" kind="presentation" identifier="moveToAddBlockView" modalTransitionStyle="flipHorizontal" id="XNG-de-0He"/>
@@ -412,6 +400,6 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="AeA-2W-EV6"/>
+        <segue reference="XNG-de-0He"/>
     </inferredMetricsTieBreakers>
 </document>

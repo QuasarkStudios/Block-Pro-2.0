@@ -33,6 +33,10 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var blockTableView: UITableView!
     @IBOutlet weak var verticalTableViewSeperator: UIImageView!
 
+    @IBOutlet weak var tabBarbieItem: UITabBarItem!
+    
+    var timeBlockViewTracker: Bool = false
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +61,10 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         blockTableView.register(UINib(nibName: "CustomBlockTableCell", bundle: nil), forCellReuseIdentifier: "blockCell")
         blockTableView.register(UINib(nibName: "CustomAddBlockTableCell", bundle: nil), forCellReuseIdentifier: "addBlockCell")
 
+        tabBarController?.delegate = self
+        
+        tabBarbieItem.image = UIImage(named: "plus")
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,6 +75,16 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         // TODO: Add code to allow for tableView to be loaded back at the top of screen or at the first timeBlock
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        timeBlockViewTracker = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        tabBarbieItem.image = UIImage(named: "list")
+        
+        timeBlockViewTracker = false
     }
     
     
@@ -126,7 +144,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
 
                 returnHeight = configureBlockHeight2(indexPath: indexPath)
                 count += 1
-                //print (returnHeight)
                 return returnHeight
             }
         }
@@ -158,12 +175,10 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
             if timeBlocks.startPeriod == "AM" {
                 sortedBlocks[Int(timeBlocks.startHour + timeBlocks.startMinute)!] = timeBlocks
-                //print (sortedBlocks)
             }
 
             else if timeBlocks.startPeriod == "PM" {
                 sortedBlocks[Int(timeBlocks.startHour + timeBlocks.startMinute)!] = timeBlocks
-                //print (sortedBlocks)
             }
         }
         return sortedBlocks.sorted(by: {$0.key < $1.key})
@@ -265,7 +280,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             arrayCleanCount -= 1
         }
-        //print(blockArray.count)
         return returnBlockArray
     }
     
@@ -317,6 +331,12 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                             
                             configureBlockLayout(cell)
                             animateBlock(cell, indexPath)
+                            
+                            if indexPath.row <= 1 {
+                                
+                                tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                            }
+                            
                             return cell
                         }
                         
@@ -490,20 +510,20 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         if indexPath.row < blockArray.count {
         
             if Int(blockArray[indexPath.row].blockEndMinute)! > Int(blockArray[indexPath.row].blockStartMinute)! {
-                print(indexPath.row)
+
                 calcHour = Int(blockArray[indexPath.row].blockEndHour)! - Int(blockArray[indexPath.row].blockStartHour)!
                 calcMinute = Int(blockArray[indexPath.row].blockEndMinute)! - Int(blockArray[indexPath.row].blockStartMinute)!
                 return CGFloat((calcHour * 120) + calcMinute * 2)
             }
 
             else if Int(blockArray[indexPath.row].blockEndMinute)! == Int(blockArray[indexPath.row].blockStartMinute)! {
-                print(indexPath.row)
+               
                 calcHour = Int(blockArray[indexPath.row].blockEndHour)! - Int(blockArray[indexPath.row].blockStartHour)!
                 return CGFloat(calcHour * 120)
             }
             
             else {
-                print(indexPath.row)
+                
                 calcHour = (Int(blockArray[indexPath.row].blockEndHour)! - 1) - Int(blockArray[indexPath.row].blockStartHour)!
                 calcMinute = ((Int(blockArray[indexPath.row].blockEndMinute)! + 60) - Int(blockArray[indexPath.row].blockStartMinute)!)
                 return CGFloat((calcHour * 120) + (calcMinute * 2))
@@ -556,10 +576,22 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    @IBAction func segueButton(_ sender: Any) {
+    
+}
+
+extension TimeBlockViewController: UITabBarControllerDelegate {
+
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         
-        performSegue(withIdentifier: "moveToAddBlockView", sender: self)
+//        let tabBarIndex = tabBarController.selectedIndex
+//
+//        if tabBarIndex == 2 {
+//            print (12345)
+//        }
         
+        if timeBlockViewTracker == true {
+            performSegue(withIdentifier: "moveToAddBlockView", sender: self)
+        }
     }
 }
 
