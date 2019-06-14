@@ -151,6 +151,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func sortRealmBlocks () -> [(key: Int, value: Block)] {
         
+        realmData = realm.objects(Block.self)
         var sortedBlocks: [Int : Block] = [:]
         
         for timeBlocks in realmData! {
