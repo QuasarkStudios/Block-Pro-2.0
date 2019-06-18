@@ -24,7 +24,14 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     @IBOutlet weak var note2TextView: UITextView!
     @IBOutlet weak var note3TextView: UITextView!
     
+    @IBOutlet weak var categoryColorIndicator: UIView!
+    @IBOutlet weak var categoryTextField: UITextField!
+    
+    @IBOutlet weak var notificationSwitch: UISwitch!
+    @IBOutlet weak var notificationTimeSegments: UISegmentedControl!
+    
     @IBOutlet weak var timePicker: UIPickerView!
+    @IBOutlet weak var categoryPicker: UIPickerView!
     
     @IBOutlet weak var create_edit_blockButton: UIButton!
     
@@ -43,8 +50,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     var selectedEndPeriod: String = ""
     
     var blockID: String = ""
-    
-    var invalidTimeRanges = [[String]]()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,17 +59,24 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         startTimeTextField.delegate = self
         endTimeTextField.delegate = self
         
+        categoryTextField.delegate = self
+        
         note1TextView.delegate = self
         note2TextView.delegate = self
         note3TextView.delegate = self
         
         timePicker.delegate = self
         timePicker.dataSource = self
-        timePicker.frame.origin.y = 700
+        timePicker.frame.origin.y = 750
+        
+        categoryPicker.delegate = self
+        categoryPicker.dataSource = self
+        categoryPicker.frame.origin.y = 750
         
         //blockNameTextField.inputView = UIView()
         startTimeTextField.inputView = UIView()
         endTimeTextField.inputView = UIView()
+        categoryTextField.inputView = UIView()
         
         note1TextView.layer.cornerRadius = 0.05 * note1TextView.bounds.size.width
         note1TextView.clipsToBounds = true
@@ -74,12 +87,14 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         note3TextView.layer.cornerRadius = 0.05 * note3TextView.bounds.size.width
         note3TextView.clipsToBounds = true
 
+        categoryColorIndicator.layer.cornerRadius = 0.5 * categoryColorIndicator.bounds.size.width
+        categoryColorIndicator.clipsToBounds = true
+        
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
 
         configureEditView()
         
-        //calcInvalidTimeRanges()
     }
     
     
@@ -87,37 +102,57 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         
-        return 3
+        if pickerView == timePicker {
+            return 3
+        }
+        
+        else {
+            return 1
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
-        if component == 0 {
-            return hours.count
-        }
+        if pickerView == timePicker {
             
-        else if component == 1 {
-            return minutes.count
+            if component == 0 {
+                return hours.count
+            }
+                
+            else if component == 1 {
+                return minutes.count
+            }
+                
+            else {
+                return timePeriods.count
+            }
         }
-            
+        
         else {
-            return timePeriods.count
+            return 1
         }
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         
-        if component == 0 {
+        if pickerView == timePicker {
             
-            return hours[row]
+            if component == 0 {
+                
+                return hours[row]
+            }
+            else if component == 1 {
+                
+                return minutes[row]
+            }
+            else {
+                
+                return timePeriods[row]
+            }
         }
-        else if component == 1 {
-            
-            return minutes[row]
-        }
+        
         else {
-            
-            return timePeriods[row]
+            return "Self-Care"
         }
     }
     
@@ -126,45 +161,67 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
-        if textField == blockNameTextField {
-            
-            UIView.animate(withDuration: 0.2) {
-                
-                self.timePicker.frame.origin.y = 700
-            }
-            
-            timePicker.selectRow(0, inComponent: 0, animated: true)
-            timePicker.selectRow(0, inComponent: 1, animated: true)
-            timePicker.selectRow(0, inComponent: 2, animated: true)
-        }
-            
-        else if textField == startTimeTextField {
-            
-            tag = "start"
-            UIView.animate(withDuration: 0.2) {
-                
-                self.timePicker.frame.origin.y = 450
-            }
-
-            timePicker.selectRow(0, inComponent: 0, animated: true)
-            timePicker.selectRow(0, inComponent: 1, animated: true)
-            timePicker.selectRow(0, inComponent: 2, animated: true)
-        }
-            
-        else if textField == endTimeTextField {
-            
-            tag = "end"
-            UIView.animate(withDuration: 0.2) {
-                
-                self.timePicker.frame.origin.y = 450
-            }
-            
-            timePicker.selectRow(0, inComponent: 0, animated: true)
-            timePicker.selectRow(0, inComponent: 1, animated: true)
-            timePicker.selectRow(0, inComponent: 2, animated: true)
-        }
         
+        switch textField {
+            
+        case blockNameTextField:
+            UIView.animate(withDuration: 0.2) {
+                self.timePicker.frame.origin.y = 750
+                self.categoryPicker.frame.origin.y = 750
+            }
+            
+            timePicker.selectRow(0, inComponent: 0, animated: true)
+            timePicker.selectRow(0, inComponent: 1, animated: true)
+            timePicker.selectRow(0, inComponent: 2, animated: true)
+            
+            categoryPicker.selectRow(0, inComponent: 0, animated: true)
+            
+        case startTimeTextField:
+            tag = "start"
+            
+            UIView.animate(withDuration: 0.15, animations: {
+                self.categoryPicker.frame.origin.y = 750
+            }) { (finished: Bool) in
+                
+                UIView.animate(withDuration: 0.15) {
+                    self.timePicker.frame.origin.y = 450
+                }
+            }
+            
+            categoryPicker.selectRow(0, inComponent: 0, animated: true)
+            
+        case endTimeTextField:
+            tag = "end"
+            
+            UIView.animate(withDuration: 0.15, animations: {
+                self.categoryPicker.frame.origin.y = 750
+            }) { (finished: Bool) in
+                
+                UIView.animate(withDuration: 0.15) {
+                    self.timePicker.frame.origin.y = 450
+                }
+            }
+            
+            categoryPicker.selectRow(0, inComponent: 0, animated: true)
+            
+        case categoryTextField:
+            
+            UIView.animate(withDuration: 0.15, animations: {
+                self.timePicker.frame.origin.y = 750
+            }) { (finished: Bool) in
+                
+                UIView.animate(withDuration: 0.15) {
+                    self.categoryPicker.frame.origin.y = 450
+                }
+            }
+        
+            timePicker.selectRow(0, inComponent: 0, animated: true)
+            
+        default:
+            print ("No textField selected")
+        }
     }
+    
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         
@@ -239,29 +296,34 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
-        if component == 0 && tag == "start" {
-            selectedStartHour = hours[row]
-        }
-        else if component == 0 && tag == "end" {
-            selectedEndHour = hours[row]
+        if pickerView == timePicker {
+            
+            if component == 0 && tag == "start" {
+                selectedStartHour = hours[row]
+            }
+            else if component == 0 && tag == "end" {
+                selectedEndHour = hours[row]
+            }
+            if component == 1 && tag == "start" {
+                selectedStartMinute = minutes[row]
+            }
+            else if component == 1 && tag == "end" {
+                selectedEndMinute = minutes[row]
+            }
+            if component == 2 && tag == "start" {
+                selectedStartPeriod = timePeriods[row]
+            }
+            else if component == 2 && tag == "end" {
+                selectedEndPeriod = timePeriods[row]
+            }
+            
+            startTimeTextField.text = selectedStartHour + ":" + selectedStartMinute + " " + selectedStartPeriod
+            endTimeTextField.text = selectedEndHour + ":" + selectedEndMinute + " " + selectedEndPeriod
+            
+            print ("userSelectedStartTime = \(selectedStartHour)" + "\(selectedStartMinute)" + selectedStartPeriod)
+            print ("userSelectedEndTime = \(selectedEndHour)" + "\(selectedEndMinute)" + selectedEndPeriod )
         }
         
-        if component == 1 && tag == "start" {
-            selectedStartMinute = minutes[row]
-        }
-        else if component == 1 && tag == "end" {
-            selectedEndMinute = minutes[row]
-        }
-        
-        if component == 2 && tag == "start" {
-            selectedStartPeriod = timePeriods[row]
-        }
-        else if component == 2 && tag == "end" {
-            selectedEndPeriod = timePeriods[row]
-        }
-        
-        print ("userSelectedStartTime = \(selectedStartHour)" + "\(selectedStartMinute)" + selectedStartPeriod)
-        print ("userSelectedEndTime = \(selectedEndHour)" + "\(selectedEndMinute)" + selectedEndPeriod )
     }
     
     
@@ -317,7 +379,9 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     }
     
     
-    func calcValidTimeBlock (startHour: String, startMinute: String, endHour: String, endMinute: String) -> [String : Bool]{
+    //MARK: - Calculate Valid Time Blocks
+    
+    func calcValidTimeBlock (_ startHour: String, _ startMinute: String, _ endHour: String, _ endMinute: String, _ blockID: String = "0") -> [String : Bool]{
         
         realmData = realm.objects(Block.self)
         let sortedBlocks = timeBlockViewObject.sortRealmBlocks()
@@ -325,41 +389,46 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         var startTimeValidation: Bool = true
         var endTimeValidation: Bool = true
         
+        print(blockID)
+        
         //For loop that checks to see if the new timeBlock falls into the range of any previously created timeBlocks
         for timeBlocks in sortedBlocks {
             
-            if Int(startHour)! < Int(timeBlocks.value.startHour)! { //The new timeBlock's start hour is before this previously created timeBlock's start hour
-                if Int(endHour)! > Int(timeBlocks.value.startHour)! {//The end hour of the new timeBlock is after the start hour of the timeBlock before it; invalid entry
-                    endTimeValidation = false
+            if timeBlocks.value.blockID != blockID {//If the current timeBlock from the loop is not the same timeBlock as the one being updated
+            
+                if Int(startHour)! < Int(timeBlocks.value.startHour)! { //The new timeBlock's start hour is before this previously created timeBlock's start hour
+                    if Int(endHour)! > Int(timeBlocks.value.startHour)! {//The end hour of the new timeBlock is after the start hour of the timeBlock before it; invalid entry
+                        endTimeValidation = false
+                    }
+                    else if Int(endHour)! == Int(timeBlocks.value.startHour)! {//The new timeBlock's end hour is equal to the starting hour of the next timeBlock
+                        if Int(endMinute)! > Int(timeBlocks.value.startMinute)! {//The new timeBlock's ending minute is after the starting minute of the next timeBlock; invalid entry
+                            endTimeValidation = false
+                        }
+                    }
                 }
-                else if Int(endHour)! == Int(timeBlocks.value.startHour)! {//The new timeBlock's end hour is equal to the starting hour of the next timeBlock
-                    if Int(endMinute)! > Int(timeBlocks.value.startMinute)! {//The new timeBlock's ending minute is after the starting minute of the next timeBlock; invalid entry
+                
+                else if Int(startHour)! == Int(timeBlocks.value.startHour)! {//The new timeBlock and the next timeBlock have the same starting hour
+                    if Int(startMinute)! >= Int(timeBlocks.value.startMinute)! {//The new timeBlock and the next timeBlock have the same starting minute; invalid entry
+                        startTimeValidation = false
+                    }
+                    else if (Int(endHour)! > Int(timeBlocks.value.startHour)!) || (Int(endMinute)! > Int(timeBlocks.value.startMinute)!) {
                         endTimeValidation = false
                     }
                 }
-            }
-            
-            else if Int(startHour)! == Int(timeBlocks.value.startHour)! {//The new timeBlock and the next timeBlock have the same starting hour
-                print("hello")
-                if Int(startMinute)! >= Int(timeBlocks.value.startMinute)! {//The new timeBlock and the next timeBlock have the same starting minute; invalid entry
-                    startTimeValidation = false
-                }
-                else if (Int(endHour)! > Int(timeBlocks.value.startHour)!) || (Int(endMinute)! > Int(timeBlocks.value.startMinute)!) {
-                    endTimeValidation = false
-                }
-            }
-            
-            else if Int(startHour)! > Int(timeBlocks.value.startHour)! {//The new timeBlock has a later starting hour than the current timeBlock
-                if Int(startHour)! < Int(timeBlocks.value.endHour)! {//The new timeBlock's starting hour falls within the range of the current timeBlock; invalid entry
-                    startTimeValidation = false
-                }
-                else if Int(startHour)! == Int(timeBlocks.value.endHour)! {//The new timeBlock's starting hour is equal to the current timeBlock's ending hour
-                    if Int(startMinute)! < Int(timeBlocks.value.endMinute)! {//The new timeBlock's starting minute falls within the range of the current timeBlock; invalid entry 
+                
+                else if Int(startHour)! > Int(timeBlocks.value.startHour)! {//The new timeBlock has a later starting hour than the current timeBlock
+                    if Int(startHour)! < Int(timeBlocks.value.endHour)! {//The new timeBlock's starting hour falls within the range of the current timeBlock; invalid entry
                         startTimeValidation = false
+                    }
+                    else if Int(startHour)! == Int(timeBlocks.value.endHour)! {//The new timeBlock's starting hour is equal to the current timeBlock's ending hour
+                        if Int(startMinute)! < Int(timeBlocks.value.endMinute)! {//The new timeBlock's starting minute falls within the range of the current timeBlock; invalid entry
+                            startTimeValidation = false
+                        }
                     }
                 }
             }
         }
+        
         return ["startTimeValid" : startTimeValidation, "endTimeValid" : endTimeValidation]
     }
 
@@ -427,6 +496,28 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         }
     }
     
+    //MARK: - Notification Controls
+    
+    @IBAction func notificationSwitch(_ sender: Any) {
+        
+        if notificationSwitch.isOn == true {
+            notificationTimeSegments.isEnabled = true
+            print ("give it to em")
+        }
+        
+        else {
+            notificationTimeSegments.isEnabled = false
+            print ("they afraid of the truth")
+        }
+    }
+    
+    @IBAction func notificationTimeSegments(_ sender: Any) {
+        
+        let selectedIndex = notificationTimeSegments.selectedSegmentIndex
+        
+        print (selectedIndex)
+    }
+    
     
     @IBAction func cancelPressed(_ sender: Any) {
         dismiss(animated: true, completion: nil)
@@ -449,7 +540,14 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             ProgressHUD.showError("Please finish entering when this Time Block should end")
         }
         else {
-            validTimeBlock = calcValidTimeBlock(startHour: selectedStartHour, startMinute: selectedStartMinute, endHour: selectedEndHour, endMinute: selectedEndMinute)
+            
+            if create_edit_blockButton.titleLabel?.text == "Create" {
+            
+                validTimeBlock = calcValidTimeBlock(selectedStartHour, selectedStartMinute, selectedEndHour, selectedEndMinute)
+            }
+            else {
+                validTimeBlock = calcValidTimeBlock(selectedStartHour, selectedStartMinute, selectedEndHour, selectedEndMinute, blockID)
+            }
             
             if validTimeBlock["startTimeValid"] == false {
                 ProgressHUD.showError("The starting time of this Time Block conflicts with another")
@@ -473,13 +571,15 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         
         UIView.animate(withDuration: 0.2) {
             
-            self.timePicker.frame.origin.y = 700
+            self.timePicker.frame.origin.y = 750
+            self.categoryPicker.frame.origin.y = 750
         }
         
         timePicker.selectRow(0, inComponent: 0, animated: true)
         timePicker.selectRow(0, inComponent: 1, animated: true)
         timePicker.selectRow(0, inComponent: 2, animated: true)
-    
+        
+        categoryPicker.selectRow(0, inComponent: 0, animated: true)
     }
     
 }

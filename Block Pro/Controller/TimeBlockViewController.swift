@@ -79,6 +79,20 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidAppear(_ animated: Bool) {
         timeBlockViewTracker = true
+        
+        if blockArray.count > 0 {
+            if blockArray[0].blockName != "Buffer Block" {
+                
+                let indexPath = NSIndexPath(row: 0, section: 0)
+                blockTableView.scrollToRow(at: indexPath as IndexPath, at: .top, animated: true)
+            }
+            
+            else if blockArray[0].blockName == "Buffer Block" {
+                let indexPath = NSIndexPath(row: 1, section: 0)
+                blockTableView.scrollToRow(at: indexPath as IndexPath, at: .top, animated: true)
+            }
+        }
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -99,14 +113,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         //Assigning the amount of rows for the "blockTableView"
         else {
-            
-            if blockArray.count == 0 { //blocks?.count ?? 0 == 0 { //If the "blocks" container is empty, just return one cell
-                return 1
-            }
-            
-            else {
-                return blockArray.count //(blocks?.count ?? 1) + 1
-            }
+            return blockArray.count
         }
     }
     
@@ -142,7 +149,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
 
             while count < blockArray.count {//blocks?.count ?? 1 {
 
-                returnHeight = configureBlockHeight2(indexPath: indexPath)
+                returnHeight = configureBlockHeight(indexPath: indexPath)
                 count += 1
                 return returnHeight
             }
@@ -306,56 +313,47 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
         else {
             
-            if blockArray.count == 0 {
+            if indexPath.row < blockArray.count {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) //(withIdentifier: "addBlockCell", for: indexPath) as! CustomAddBlockTableCell
-                cell.textLabel?.text = "Add a new cell below"
-                return cell
-            }
+                if blockArray[indexPath.row].blockName != "Buffer Block" {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
+                    
+                    cell.nameLabel.text = blockArray[indexPath.row].blockName
+                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].blockStartHour, blockArray[indexPath.row].blockStartMinute)
+                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].blockEndHour, blockArray[indexPath.row].blockEndMinute)
+                    
+                    cell.note1TextView.text = blockArray[indexPath.row].note1; cell.note1Bullet.isHidden = true; cell.note1TextView.isHidden = true
+                    cell.note2TextView.text = blockArray[indexPath.row].note2; cell.note2Bullet.isHidden = true; cell.note2TextView.isHidden = true
+                    cell.note3TextView.text = blockArray[indexPath.row].note3; cell.note3Bullet.isHidden = true; cell.note3TextView.isHidden = true
+                    
+                    cell.cellContainerView.frame = CGRect(x: 0, y: 2, width: 280, height: (cell.frame.height - 2.0)) //POSSIBLY TAKE 1 POINT OFF Y AND 1 OFF HEIGHT TO MAKE CELL LOOK MORE SYMETRICAL
+                    
+                    configureBlockLayout(cell)
+                    //animateBlock(cell, indexPath)
+                    
+                    //if indexPath.row == 1 {
+                        
+                        //tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                    //}
+                    
+                    return cell
+                }
                 
-            else {
-                if indexPath.row < blockArray.count {
-                        
-                        if blockArray[indexPath.row].blockName != "Buffer Block" {
-                            let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
-                            
-                            cell.nameLabel.text = blockArray[indexPath.row].blockName
-                            cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].blockStartHour, blockArray[indexPath.row].blockStartMinute)
-                            cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].blockEndHour, blockArray[indexPath.row].blockEndMinute)
-                            
-                            cell.note1TextView.text = blockArray[indexPath.row].note1; cell.note1Bullet.isHidden = true; cell.note1TextView.isHidden = true
-                            cell.note2TextView.text = blockArray[indexPath.row].note2; cell.note2Bullet.isHidden = true; cell.note2TextView.isHidden = true
-                            cell.note3TextView.text = blockArray[indexPath.row].note3; cell.note3Bullet.isHidden = true; cell.note3TextView.isHidden = true
-                            
-                            cell.cellContainerView.frame = CGRect(x: 0, y: 2, width: 280, height: (cell.frame.height - 2.0)) //POSSIBLY TAKE 1 POINT OFF Y AND 1 OFF HEIGHT TO MAKE CELL LOOK MORE SYMETRICAL
-                            
-                            configureBlockLayout(cell)
-                            animateBlock(cell, indexPath)
-                            
-                            if indexPath.row <= 1 {
-                                
-                                tableView.scrollToRow(at: indexPath, at: .top, animated: true)
-                            }
-                            
-                            return cell
-                        }
-                        
-                        else { //Creation of a buffer block
-                            
-                            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                            cell.isUserInteractionEnabled = false
-                            
-                            return cell
-                        }
-                    }
-                        //UHHHH NOT SURE YET
-                else {
+                else { //Creation of a buffer block
+                    
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                    cell.textLabel!.text = "Error Creating Time Block"
+                    cell.isUserInteractionEnabled = false
                     return cell
                 }
             }
+                //UHHHH NOT SURE YET
+            else {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                cell.textLabel!.text = "Error Creating Time Block(s)"
+                return cell
+            }
         }
+        
     }
     
     func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
@@ -502,7 +500,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    func configureBlockHeight2 (indexPath: IndexPath) -> CGFloat{
+    func configureBlockHeight (indexPath: IndexPath) -> CGFloat{
 
         var calcHour: Int = 0
         var calcMinute: Int = 0
