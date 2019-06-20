@@ -227,6 +227,7 @@
                     <connections>
                         <outlet property="alphaView" destination="4b6-Ol-Dde" id="QzW-xT-FIu"/>
                         <outlet property="bigTimeBlock" destination="uwz-ec-MQE" id="Hvt-vM-ZMe"/>
+                        <outlet property="blockCategory" destination="JJZ-yw-Xsu" id="jF9-Mj-q0y"/>
                         <outlet property="blockEndTime" destination="jzy-sE-OJh" id="Ilc-cu-Rii"/>
                         <outlet property="blockName" destination="bf4-bB-Hu2" id="Iku-vU-sDa"/>
                         <outlet property="blockStartTime" destination="Jk7-Pr-E6I" id="9gg-1V-qFV"/>
@@ -419,7 +420,7 @@
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7qU-9n-eua">
                                 <rect key="frame" x="7" y="211" width="15" height="15"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="backgroundColor" red="0.93725490199999995" green="0.93725490199999995" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

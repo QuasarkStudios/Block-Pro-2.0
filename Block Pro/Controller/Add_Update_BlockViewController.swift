@@ -39,6 +39,9 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     let minutes: [String] = ["", "00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"]
     let timePeriods: [String] = ["", "AM", "PM"]
     
+    let blockCategories: [String] = ["", "Work", "Creative Time", "Sleep", "Food/Eat", "Leisure", "Exercise", "Self-Care", "Other"]
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
+    
     var tag: String = ""
     
     var selectedStartHour: String = ""
@@ -48,6 +51,8 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     var selectedEndHour: String = ""
     var selectedEndMinute: String = ""
     var selectedEndPeriod: String = ""
+    
+    var selectedCategory: String = ""
     
     var blockID: String = ""
 
@@ -87,14 +92,13 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         note3TextView.layer.cornerRadius = 0.05 * note3TextView.bounds.size.width
         note3TextView.clipsToBounds = true
 
-        categoryColorIndicator.layer.cornerRadius = 0.5 * categoryColorIndicator.bounds.size.width
+        categoryColorIndicator.layer.cornerRadius = 0.25 * categoryColorIndicator.bounds.size.width
         categoryColorIndicator.clipsToBounds = true
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
 
         configureEditView()
-        
     }
     
     
@@ -129,7 +133,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         }
         
         else {
-            return 1
+            return blockCategories.count
         }
     }
     
@@ -152,7 +156,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         }
         
         else {
-            return "Self-Care"
+            return blockCategories[row]
         }
     }
     
@@ -161,6 +165,11 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
+        timePicker.selectRow(0, inComponent: 0, animated: true)
+        timePicker.selectRow(0, inComponent: 1, animated: true)
+        timePicker.selectRow(0, inComponent: 2, animated: true)
+        
+        categoryPicker.selectRow(0, inComponent: 0, animated: true)
         
         switch textField {
             
@@ -170,12 +179,6 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
                 self.categoryPicker.frame.origin.y = 750
             }
             
-            timePicker.selectRow(0, inComponent: 0, animated: true)
-            timePicker.selectRow(0, inComponent: 1, animated: true)
-            timePicker.selectRow(0, inComponent: 2, animated: true)
-            
-            categoryPicker.selectRow(0, inComponent: 0, animated: true)
-            
         case startTimeTextField:
             tag = "start"
             
@@ -184,11 +187,9 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             }) { (finished: Bool) in
                 
                 UIView.animate(withDuration: 0.15) {
-                    self.timePicker.frame.origin.y = 450
+                    self.timePicker.frame.origin.y = 475
                 }
             }
-            
-            categoryPicker.selectRow(0, inComponent: 0, animated: true)
             
         case endTimeTextField:
             tag = "end"
@@ -198,11 +199,9 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             }) { (finished: Bool) in
                 
                 UIView.animate(withDuration: 0.15) {
-                    self.timePicker.frame.origin.y = 450
+                    self.timePicker.frame.origin.y = 475
                 }
             }
-            
-            categoryPicker.selectRow(0, inComponent: 0, animated: true)
             
         case categoryTextField:
             
@@ -211,11 +210,9 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             }) { (finished: Bool) in
                 
                 UIView.animate(withDuration: 0.15) {
-                    self.categoryPicker.frame.origin.y = 450
+                    self.categoryPicker.frame.origin.y = 475
                 }
             }
-        
-            timePicker.selectRow(0, inComponent: 0, animated: true)
             
         default:
             print ("No textField selected")
@@ -324,6 +321,14 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             print ("userSelectedEndTime = \(selectedEndHour)" + "\(selectedEndMinute)" + selectedEndPeriod )
         }
         
+        else if pickerView == categoryPicker {
+            selectedCategory = blockCategories[row]
+            categoryTextField.text = selectedCategory
+            
+            guard let categoryColor = UIColor(hexString: blockCategoryColors[selectedCategory]) else { return }
+            categoryColorIndicator.backgroundColor? = categoryColor
+        }
+        
     }
     
     
@@ -354,12 +359,8 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             selectedStartHour = "0"
         }
         
-        if funcStartPeriod == "PM" && funcStartHour != "12" {
+        if (funcStartHour != "12" || funcEndHour != "12") && (funcStartPeriod == "PM") {
             selectedStartHour = "\(Int(funcStartHour)! + 12)"
-        }
-        
-        if funcEndPeriod == "PM" && funcEndPeriod != "12" {
-            selectedEndHour = "\(Int(funcEndHour)! + 12)"
         }
     }
     
@@ -371,9 +372,14 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             startTimeTextField.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)
             endTimeTextField.text = convertTo12Hour(bigBlockData.endHour, bigBlockData.endMinute)
         
+            selectedStartHour = bigBlockData.startHour; selectedStartMinute = bigBlockData.startMinute; selectedStartPeriod = bigBlockData.startPeriod
+            selectedEndHour = bigBlockData.endHour; selectedEndMinute = bigBlockData.endMinute; selectedEndPeriod = bigBlockData.endPeriod
+        
             note1TextView.text = bigBlockData.note1
             note2TextView.text = bigBlockData.note2
             note3TextView.text = bigBlockData.note3
+        
+            categoryTextField.text = bigBlockData.blockCategory
         
             create_edit_blockButton.setTitle("Edit", for: .normal)
     }
@@ -388,8 +394,6 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         
         var startTimeValidation: Bool = true
         var endTimeValidation: Bool = true
-        
-        print(blockID)
         
         //For loop that checks to see if the new timeBlock falls into the range of any previously created timeBlocks
         for timeBlocks in sortedBlocks {
@@ -448,6 +452,8 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             newBlock.endMinute = selectedEndMinute
             newBlock.endPeriod = selectedEndPeriod
             
+            newBlock.blockCategory = selectedCategory
+            
             newBlock.note1 = note1TextView.text
             newBlock.note2 = note2TextView.text
             newBlock.note3 = note3TextView.text
@@ -465,8 +471,6 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             
             let updatedBlock = Block()
             
-            //realmData = realm.objects(Block.self)
-            
             updatedBlock.blockID = blockID
             
             updatedBlock.name = blockNameTextField.text!
@@ -478,6 +482,8 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             updatedBlock.endHour = selectedEndHour
             updatedBlock.endMinute = selectedEndMinute
             updatedBlock.endPeriod = selectedEndPeriod
+            
+            updatedBlock.blockCategory = categoryTextField.text!
             
             updatedBlock.note1 = note1TextView.text
             updatedBlock.note2 = note2TextView.text
@@ -518,6 +524,8 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         print (selectedIndex)
     }
     
+    
+    //MARK: - Buttons
     
     @IBAction func cancelPressed(_ sender: Any) {
         dismiss(animated: true, completion: nil)

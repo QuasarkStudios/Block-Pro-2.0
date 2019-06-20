@@ -19,7 +19,7 @@ class BlockPopoverViewController: UIViewController {
     let realm = try! Realm()
     //var realmData: Results<Block>?
     
-    //let timeBlockViewObject = TimeBlockViewController()
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
     
     var delegate: BlockDeleted?
     
@@ -39,6 +39,8 @@ class BlockPopoverViewController: UIViewController {
     @IBOutlet weak var note1TextView: UITextView!
     @IBOutlet weak var note2TextView: UITextView!
     @IBOutlet weak var note3TextView: UITextView!
+    
+    @IBOutlet weak var blockCategory: UILabel!
     
     @IBOutlet weak var editButton: UIButton!
     @IBOutlet weak var deleteButton: UIButton!
@@ -105,9 +107,13 @@ class BlockPopoverViewController: UIViewController {
         
         guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
         
+        bigTimeBlock.backgroundColor = UIColor(hexString: blockCategoryColors[bigBlockData.blockCategory])
+        
         blockName.text = bigBlockData.name
         blockStartTime.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)
         blockEndTime.text = convertTo12Hour(bigBlockData.endHour, bigBlockData.endMinute) 
+        
+        blockCategory.text = bigBlockData.blockCategory
         
         note1TextView.text = bigBlockData.note1
         note2TextView.text = bigBlockData.note2

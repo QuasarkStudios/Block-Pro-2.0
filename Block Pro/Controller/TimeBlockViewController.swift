@@ -18,13 +18,15 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     //Variable storing "CustomTimeTableCell" text for each indexPath
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
+    
     //Add 24 time setting
     
     var cellAnimated = [Bool](repeating: false, count: 24) //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
     //Creation of to pre-define the block tuple's structure and allow for it to be used as a return of a function
-    typealias blockTuple = ( blockID: String, blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String, note1: String, note2: String, note3: String)
-    var functionTuple: blockTuple = (blockID: "", blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "", note1: "", note2: "", note3: "")
+    typealias blockTuple = ( blockID: String, blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String, note1: String, note2: String, note3: String, category: String)
+    var functionTuple: blockTuple = (blockID: "", blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "", note1: "", note2: "", note3: "", category: "")
     var blockArray = [blockTuple]()
     
     var bigBlockID: String = ""
@@ -79,20 +81,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidAppear(_ animated: Bool) {
         timeBlockViewTracker = true
-        
-        if blockArray.count > 0 {
-            if blockArray[0].blockName != "Buffer Block" {
-                
-                let indexPath = NSIndexPath(row: 0, section: 0)
-                blockTableView.scrollToRow(at: indexPath as IndexPath, at: .top, animated: true)
-            }
-            
-            else if blockArray[0].blockName == "Buffer Block" {
-                let indexPath = NSIndexPath(row: 1, section: 0)
-                blockTableView.scrollToRow(at: indexPath as IndexPath, at: .top, animated: true)
-            }
-        }
-        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -217,6 +205,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
                 timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                 
+                timeBlockTuple.category = blocks.value.blockCategory
                 timeBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this timeBlock
                 
                 returnBlockArray.append(bufferBlockTuple) //Appending the first BufferBlock
@@ -245,6 +234,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
                     timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
+                    timeBlockTuple.category = blocks.value.blockCategory
                     timeBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this timeBlock
                     
                     //Creating the next Buffer Block after the last TimeBlock
@@ -265,6 +255,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
                     timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
+                    timeBlockTuple.category = blocks.value.blockCategory
                     timeBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this timeBlock
                     
                     returnBlockArray.append(timeBlockTuple)
@@ -328,13 +319,15 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     
                     cell.cellContainerView.frame = CGRect(x: 0, y: 2, width: 280, height: (cell.frame.height - 2.0)) //POSSIBLY TAKE 1 POINT OFF Y AND 1 OFF HEIGHT TO MAKE CELL LOOK MORE SYMETRICAL
                     
+                    if blockArray[indexPath.row].category != "" {
+                        cell.cellContainerView.backgroundColor = UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category])
+                    }
+                    else {
+                        cell.cellContainerView.backgroundColor = UIColor(hexString: "#EFEFF4")
+                    }
+                    
                     configureBlockLayout(cell)
                     //animateBlock(cell, indexPath)
-                    
-                    //if indexPath.row == 1 {
-                        
-                        //tableView.scrollToRow(at: indexPath, at: .top, animated: true)
-                    //}
                     
                     return cell
                 }
@@ -612,7 +605,7 @@ extension TimeBlockViewController: BlockDeleted {
             blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
 
             blockTableView.reloadData()
-    
+        
     }
     
 }
