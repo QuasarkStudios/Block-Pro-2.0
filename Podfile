@@ -8,6 +8,7 @@ target 'Block Pro' do
 
 pod 'RealmSwift'
 pod 'ChameleonFramework'
+pod 'JTAppleCalendar'
 
 end
 
