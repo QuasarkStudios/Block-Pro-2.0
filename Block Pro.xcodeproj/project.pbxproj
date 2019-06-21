@@ -31,6 +31,9 @@
 		0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */; };
 		0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */; };
 		0DBF3E9A22B432FD00E180D2 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9922B432FD00E180D2 /* TabBarController.swift */; };
+		0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA522BB1E7900E180D2 /* DateCell.swift */; };
+		0DBF3EA822BB1F5200E180D2 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA722BB1F5200E180D2 /* CalendarViewController.swift */; };
+		0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */; };
 		561AFCE3BCA2CC53CAB19872 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
@@ -63,6 +66,9 @@
 		0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
 		0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
 		0DBF3E9922B432FD00E180D2 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		0DBF3EA522BB1E7900E180D2 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
+		0DBF3EA722BB1F5200E180D2 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
+		0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHeader.swift; sourceTree = "<group>"; };
 		2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		991FA64DF47C5695E2C3A1F0 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
 		FFB4066A6F6866CBFB450C85 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
@@ -119,6 +125,9 @@
 				0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */,
 				0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */,
 				0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */,
+				0DBF3EA722BB1F5200E180D2 /* CalendarViewController.swift */,
+				0DBF3EA522BB1E7900E180D2 /* DateCell.swift */,
+				0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -349,17 +358,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */,
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
 				0DA9F84122AC7C42008BECAE /* BlockPopoverViewController.swift in Sources */,
 				0D93300822927C7500B6191D /* Block.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
+				0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */,
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
 				0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */,
 				0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */,
 				0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */,
 				0DBF3E9A22B432FD00E180D2 /* TabBarController.swift in Sources */,
 				0D93300A22927C8800B6191D /* Note.swift in Sources */,
+				0DBF3EA822BB1F5200E180D2 /* CalendarViewController.swift in Sources */,
 				0D9330102293720200B6191D /* CustomAddBlockTableCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

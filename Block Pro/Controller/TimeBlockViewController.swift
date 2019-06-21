@@ -15,6 +15,12 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     let realm = try! Realm() //Initializing a new "Realm"
     var realmData: Results<Block>? //Setting the variable "blocks" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
+    
+    @IBOutlet weak var monthlyContainer: UIView!
+    @IBOutlet weak var dailyContainer: UIView!
+    @IBOutlet weak var weeklyContainer: UIView!
+    
+    
     //Variable storing "CustomTimeTableCell" text for each indexPath
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
@@ -66,6 +72,19 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         tabBarController?.delegate = self
         
         tabBarbieItem.image = UIImage(named: "plus")
+        
+        
+        monthlyContainer.layer.cornerRadius = 0.05 * monthlyContainer.bounds.size.width
+        monthlyContainer.clipsToBounds = true
+        monthlyContainer.backgroundColor = UIColor.flatWhiteColorDark()
+        
+        dailyContainer.layer.cornerRadius = 0.05 * dailyContainer.bounds.size.width
+        dailyContainer.clipsToBounds = true
+        dailyContainer.backgroundColor = UIColor.flatPowderBlue()?.darken(byPercentage: 0.2)
+        
+        weeklyContainer.layer.cornerRadius = 0.05 * weeklyContainer.bounds.size.width
+        weeklyContainer.clipsToBounds = true
+        weeklyContainer.backgroundColor = UIColor.flatWhiteColorDark()
         
     }
     
