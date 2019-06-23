@@ -14,7 +14,11 @@ import JTAppleCalendar
 class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let realm = try! Realm() //Initializing a new "Realm"
-    var realmData: Results<Block>? //Setting the variable "blocks" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
+    
+    var currentBlocksDate: Results<TimeBlocksDate>?
+    var currentDate: TimeBlocksDate?
+    
+    var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
     @IBOutlet weak var calendarView: JTAppleCalendarView!
     
@@ -105,12 +109,14 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         weeklyContainer.clipsToBounds = true
         weeklyContainer.backgroundColor = UIColor.flatWhiteColorDark()
         
+        findTimeBlocks()
 
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
-        realmData = realm.objects(Block.self)
+        //blockData = realm.objects(Block.self)
+        //findTimeBlocks()
         blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
         blockTableView.reloadData()
         
@@ -129,12 +135,39 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     
-//    //MARK: - Find TimeBlocks Function
-//
-//    func findTimeBlocks () {
-//
-//
-//    }
+    //MARK: - Find TimeBlocks Function
+
+    func findTimeBlocks () {
+
+        formatter.dateFormat = "yyyy MM dd"
+        let todaysDate: String = formatter.string(from: Date())
+        
+        currentBlocksDate = realm.objects(TimeBlocksDate.self).filter("timeBlocksDate = %@", todaysDate)
+        
+        if currentBlocksDate?.count ?? 0 != 0 {
+            
+            currentDate = currentBlocksDate![0]
+            blockData = currentDate?.timeBlocks.sorted(byKeyPath: "name")
+        }
+        
+        else {
+            
+            let newDate = TimeBlocksDate()
+            newDate.timeBlocksDate = todaysDate
+            
+            do {
+                try realm.write {
+                    
+                    realm.add(newDate)
+                }
+            } catch {
+                print ("Error creating a new date \(error)")
+            }
+            
+            findTimeBlocks()
+        }
+        
+    }
     
     
     //MARK: - TableView Datasource Methods
@@ -164,8 +197,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     //MARK: - TableView Delegate Methods
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
-        let cell = tableView.cellForRow(at: indexPath) as! CustomBlockTableCell
         
         bigBlockID = blockArray[indexPath.row].blockID
         
@@ -210,10 +241,11 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func sortRealmBlocks () -> [(key: Int, value: Block)] {
         
-        realmData = realm.objects(Block.self)
+        //blockData = currentDate?.timeBlocks.sorted(byKeyPath: "name")//realm.objects(Block.self)
+        findTimeBlocks()
         var sortedBlocks: [Int : Block] = [:]
         
-        for timeBlocks in realmData! {
+        for timeBlocks in blockData! {
             
             if timeBlocks.startPeriod == "AM" {
                 sortedBlocks[Int(timeBlocks.startHour + timeBlocks.startMinute)!] = timeBlocks
@@ -227,7 +259,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     
-    func organizeBlocks (_ sortedBlocks: [(key: Int, value: Block)],_ blockTuple: blockTuple) -> [(blockTuple)] {
+    func organizeBlocks (_ sortedBlocks: [(key: Int, value: Block)], _ blockTuple: blockTuple) -> [(blockTuple)] {
         
         var returnBlockArray = [blockTuple]
         var firstIteration: Bool = true
@@ -712,6 +744,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
             let createBlockVC = segue.destination as! Add_Update_BlockViewController
             
+            createBlockVC.currentDate = currentDate
         }
     }
     
@@ -832,7 +865,7 @@ extension TimeBlockViewController: BlockDeleted {
                 print ("Error deleting timeBlock, \(error)")
             }
 
-            realmData = realm.objects(Block.self)
+            blockData = realm.objects(Block.self)
 
             blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
 

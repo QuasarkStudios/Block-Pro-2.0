@@ -53,9 +53,12 @@ class BlockPopoverViewController: UIViewController {
 
         
         viewAdjustments()
-        configureBigBlock()
+        //configureBigBlock()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        configureBigBlock()
+    }
     
     func viewAdjustments () {
        
