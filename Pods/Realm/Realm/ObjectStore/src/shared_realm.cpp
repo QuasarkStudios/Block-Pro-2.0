@@ -272,6 +272,12 @@ SharedRealm Realm::get_shared_realm(Config config)
     return coordinator->get_realm(std::move(config));
 }
 
+void Realm::get_shared_realm(Config config, std::function<void(SharedRealm, std::exception_ptr)> callback)
+{
+    auto coordinator = RealmCoordinator::get_coordinator(config.path);
+    coordinator->get_realm(std::move(config), callback);
+}
+
 void Realm::set_schema(Schema const& reference, Schema schema)
 {
     m_dynamic_schema = false;
@@ -800,6 +806,9 @@ void Realm::notify()
 
     if (m_binding_context) {
         m_binding_context->before_notify();
+        if (is_closed() || is_in_transaction()) {
+            return;
+        }
     }
 
     auto cleanup = util::make_scope_exit([this]() noexcept { m_is_sending_notifications = false; });

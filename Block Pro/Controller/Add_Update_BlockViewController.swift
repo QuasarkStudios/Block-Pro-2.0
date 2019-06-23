@@ -12,7 +12,9 @@ import RealmSwift
 class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 
     let realm = try! Realm()
-    var realmData: Results<Block>?
+    var blockData: Results<Block>?
+    
+    var currentDate: TimeBlocksDate?
     
     let timeBlockViewObject = TimeBlockViewController()
     
@@ -389,7 +391,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     
     func calcValidTimeBlock (_ startHour: String, _ startMinute: String, _ endHour: String, _ endMinute: String, _ blockID: String = "0") -> [String : Bool]{
         
-        realmData = realm.objects(Block.self)
+        blockData = realm.objects(Block.self)
         let sortedBlocks = timeBlockViewObject.sortRealmBlocks()
         
         var startTimeValidation: Bool = true
@@ -460,7 +462,10 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             
             do {
                 try realm.write {
-                    realm.add(newBlock)
+                    //realm.add(newBlock)
+                    
+                    currentDate?.timeBlocks.append(newBlock)
+                    
                 }
             } catch {
                 print ("Error adding a new block \(error)")
@@ -499,6 +504,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
                 print ("Error updating block \(error)")
                 
             }
+            
         }
     }
     

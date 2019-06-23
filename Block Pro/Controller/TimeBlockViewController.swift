@@ -8,12 +8,27 @@
 
 import UIKit
 import RealmSwift
+import JTAppleCalendar
 
 
 class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let realm = try! Realm() //Initializing a new "Realm"
-    var realmData: Results<Block>? //Setting the variable "blocks" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
+    
+    var currentBlocksDate: Results<TimeBlocksDate>?
+    var currentDate: TimeBlocksDate?
+    
+    var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
+    
+    @IBOutlet weak var calendarView: JTAppleCalendarView!
+    
+    @IBOutlet weak var monthlyContainer: UIView!
+    @IBOutlet weak var dailyContainer: UIView!
+    @IBOutlet weak var weeklyContainer: UIView!
+    
+    @IBOutlet weak var monthButton: UIButton!
+    
+    let formatter = DateFormatter()
     
     //Variable storing "CustomTimeTableCell" text for each indexPath
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
@@ -30,6 +45,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     var blockArray = [blockTuple]()
     
     var bigBlockID: String = ""
+    
+    var numberOfRows: Int = 6
     
     @IBOutlet weak var timeTableView: UITableView!
     @IBOutlet weak var blockTableView: UITableView!
@@ -62,16 +79,44 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         timeTableView.register(UINib(nibName: "CustomTimeTableCell", bundle: nil), forCellReuseIdentifier: "timeCell")
         blockTableView.register(UINib(nibName: "CustomBlockTableCell", bundle: nil), forCellReuseIdentifier: "blockCell")
         blockTableView.register(UINib(nibName: "CustomAddBlockTableCell", bundle: nil), forCellReuseIdentifier: "addBlockCell")
+        
+        timeTableView.frame = CGRect(x: 0, y: 136, width: 82, height: 592)
+        verticalTableViewSeperator.frame = CGRect(x: 82, y: 136, width: 2, height: 592)
+        blockTableView.frame = CGRect(x: 84, y: 136, width: 291, height: 592)
 
         tabBarController?.delegate = self
         
         tabBarbieItem.image = UIImage(named: "plus")
         
+        calendarView.calendarDataSource = self
+        calendarView.calendarDelegate = self
+        
+        calendarView.frame.origin.x = 375
+        
+        calendarView.scrollDirection = .horizontal
+        calendarView.scrollingMode = .stopAtEachCalendarFrame
+        calendarView.showsHorizontalScrollIndicator = false
+        
+        monthlyContainer.layer.cornerRadius = 0.05 * monthlyContainer.bounds.size.width
+        monthlyContainer.clipsToBounds = true
+        monthlyContainer.backgroundColor = UIColor.flatWhiteColorDark()
+        
+        dailyContainer.layer.cornerRadius = 0.05 * dailyContainer.bounds.size.width
+        dailyContainer.clipsToBounds = true
+        dailyContainer.backgroundColor = UIColor.flatPowderBlue()?.darken(byPercentage: 0.2)
+        
+        weeklyContainer.layer.cornerRadius = 0.05 * weeklyContainer.bounds.size.width
+        weeklyContainer.clipsToBounds = true
+        weeklyContainer.backgroundColor = UIColor.flatWhiteColorDark()
+        
+        findTimeBlocks()
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
-        realmData = realm.objects(Block.self)
+        //blockData = realm.objects(Block.self)
+        //findTimeBlocks()
         blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
         blockTableView.reloadData()
         
@@ -87,6 +132,41 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         tabBarbieItem.image = UIImage(named: "list")
         
         timeBlockViewTracker = false
+    }
+    
+    
+    //MARK: - Find TimeBlocks Function
+
+    func findTimeBlocks () {
+
+        formatter.dateFormat = "yyyy MM dd"
+        let todaysDate: String = formatter.string(from: Date())
+        
+        currentBlocksDate = realm.objects(TimeBlocksDate.self).filter("timeBlocksDate = %@", todaysDate)
+        
+        if currentBlocksDate?.count ?? 0 != 0 {
+            
+            currentDate = currentBlocksDate![0]
+            blockData = currentDate?.timeBlocks.sorted(byKeyPath: "name")
+        }
+        
+        else {
+            
+            let newDate = TimeBlocksDate()
+            newDate.timeBlocksDate = todaysDate
+            
+            do {
+                try realm.write {
+                    
+                    realm.add(newDate)
+                }
+            } catch {
+                print ("Error creating a new date \(error)")
+            }
+            
+            findTimeBlocks()
+        }
+        
     }
     
     
@@ -117,8 +197,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     //MARK: - TableView Delegate Methods
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
-        let cell = tableView.cellForRow(at: indexPath) as! CustomBlockTableCell
         
         bigBlockID = blockArray[indexPath.row].blockID
         
@@ -163,10 +241,11 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func sortRealmBlocks () -> [(key: Int, value: Block)] {
         
-        realmData = realm.objects(Block.self)
+        //blockData = currentDate?.timeBlocks.sorted(byKeyPath: "name")//realm.objects(Block.self)
+        findTimeBlocks()
         var sortedBlocks: [Int : Block] = [:]
         
-        for timeBlocks in realmData! {
+        for timeBlocks in blockData! {
             
             if timeBlocks.startPeriod == "AM" {
                 sortedBlocks[Int(timeBlocks.startHour + timeBlocks.startMinute)!] = timeBlocks
@@ -180,7 +259,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     
-    func organizeBlocks (_ sortedBlocks: [(key: Int, value: Block)],_ blockTuple: blockTuple) -> [(blockTuple)] {
+    func organizeBlocks (_ sortedBlocks: [(key: Int, value: Block)], _ blockTuple: blockTuple) -> [(blockTuple)] {
         
         var returnBlockArray = [blockTuple]
         var firstIteration: Bool = true
@@ -548,6 +627,107 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    
+    @IBAction func monthlyButton(_ sender: Any) {
+        
+        dailyContainer.backgroundColor = UIColor.flatWhiteColorDark()
+        weeklyContainer.backgroundColor = UIColor.flatWhiteColorDark()
+        monthlyContainer.backgroundColor = UIColor.flatPowderBlue()?.darken(byPercentage: 0.2)
+        
+        numberOfRows = 6
+        calendarView.reloadData(withanchor: Date())
+        
+        if calendarView.frame.origin.x == 375.0 {
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 255)
+                
+                self.timeTableView.frame = CGRect(x: 0, y: 390, width: 82, height: 340)
+                self.blockTableView.frame = CGRect(x: 84, y: 390, width: 291, height: 340)
+                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 390, width: 2, height: 340)
+            }) { (finished: Bool) in
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    self.calendarView.frame.origin.x = 0
+                })
+            }
+        }
+        
+        else {
+            
+            UIView.animate(withDuration: 0.2) {
+                
+                self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 255)
+                
+                self.timeTableView.frame = CGRect(x: 0, y: 390, width: 82, height: 340)
+                self.blockTableView.frame = CGRect(x: 84, y: 390, width: 291, height: 340)
+                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 390, width: 2, height: 340)
+            }
+        }
+    }
+    
+    @IBAction func weeklyButton(_ sender: Any) {
+        
+        dailyContainer.backgroundColor = UIColor.flatWhiteColorDark()
+        weeklyContainer.backgroundColor = UIColor.flatPowderBlue()?.darken(byPercentage: 0.2)
+        monthlyContainer.backgroundColor = UIColor.flatWhiteColorDark()
+        
+        numberOfRows = 1
+        calendarView.reloadData(withanchor: Date())
+        
+        if calendarView.frame.origin.x == 375.0 {
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 100)
+                
+                self.timeTableView.frame = CGRect(x: 0, y: 235, width: 82, height: 494)
+                self.blockTableView.frame = CGRect(x: 84, y: 235, width: 291, height: 494)
+                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 235, width: 2, height: 494)
+                
+            }) { (finished: Bool) in
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 100)
+                })
+            }
+        }
+        
+        else {
+            
+            UIView.animate(withDuration: 0.2) {
+                
+                self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 100)
+                
+                self.timeTableView.frame = CGRect(x: 0, y: 235, width: 82, height: 494)
+                self.blockTableView.frame = CGRect(x: 84, y: 235, width: 291, height: 494)
+                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 235, width: 2, height: 494)
+            }
+        }
+    }
+    
+    @IBAction func dailyButton(_ sender: Any) {
+        
+        dailyContainer.backgroundColor = UIColor.flatPowderBlue()?.darken(byPercentage: 0.2)
+        weeklyContainer.backgroundColor = UIColor.flatWhiteColorDark()
+        monthlyContainer.backgroundColor = UIColor.flatWhiteColorDark()
+        
+        UIView.animate(withDuration: 0.2, animations: {
+            
+            self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: self.calendarView.frame.height)
+            
+        }) { (finished: Bool) in
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                self.timeTableView.frame = CGRect(x: 0, y: 136, width: 82, height: 592)
+                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 136, width: 2, height: 592)
+                self.blockTableView.frame = CGRect(x: 84, y: 136, width: 291, height: 592)
+            })
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
         if segue.identifier == "presentBlockPopover" {
@@ -564,6 +744,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
             let createBlockVC = segue.destination as! Add_Update_BlockViewController
             
+            createBlockVC.currentDate = currentDate
         }
     }
     
@@ -586,6 +767,90 @@ extension TimeBlockViewController: UITabBarControllerDelegate {
     }
 }
 
+extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarViewDataSource {
+    
+    func configureCalendar(_ calendar: JTAppleCalendarView) -> ConfigurationParameters {
+        
+        formatter.dateFormat = "yyyy MM dd"
+        
+        let startDate = formatter.date(from: "2019 05 17")!
+        let endDate = Date()
+        
+        let calendar = Calendar(identifier: .gregorian)
+        
+        calendarView.scrollingMode = .stopAtEachCalendarFrame
+        
+        return ConfigurationParameters(startDate: startDate, endDate: endDate, numberOfRows: numberOfRows, calendar: calendar, generateInDates: .forAllMonths, generateOutDates: .tillEndOfGrid)
+    }
+    
+    func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
+        
+        let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCell
+        self.calendar(calendar, willDisplay: cell, forItemAt: date, cellState: cellState, indexPath: indexPath)
+        
+        return cell
+    }
+    
+    func calendar(_ calendar: JTAppleCalendarView, willDisplay cell: JTAppleCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
+        
+        configureCalendarCell(view: cell, cellState: cellState)
+    }
+    
+    //Function that configures the cell
+    func configureCalendarCell (view: JTAppleCell?, cellState: CellState) {
+        guard let cell = view as? DateCell else { return }
+        cell.dateLabel.text = cellState.text
+        handleCellTextColor(cell: cell, cellState: cellState)
+        handleCellSelected(cell: cell, cellState: cellState)
+    }
+    
+    func handleCellTextColor(cell: DateCell, cellState: CellState) {
+        
+        if cellState.dateBelongsTo == .thisMonth {
+            cell.dateLabel.textColor = UIColor.black
+        }
+            
+        else {
+            cell.dateLabel.textColor = UIColor.gray
+        }
+    }
+    
+    func handleCellSelected (cell: DateCell, cellState: CellState) {
+        
+        if cellState.isSelected == true {
+            cell.selectedView.layer.cornerRadius = 13
+            cell.selectedView.alpha = 0.5
+            cell.selectedView.isHidden = !cell.selectedView.isHidden
+        }
+            
+        else {
+            cell.selectedView.isHidden = true
+        }
+    }
+    
+    func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
+        configureCalendarCell(view: cell, cellState: cellState)
+    }
+    
+    func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
+        configureCalendarCell(view: cell, cellState: cellState)
+    }
+    
+    func calendar(_ calendar: JTAppleCalendarView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTAppleCollectionReusableView {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM"
+
+        let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "DateHeader", for: indexPath) as! DateHeader
+        header.monthLabel.text = formatter.string(from: range.start)
+        return header
+    }
+
+    func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize? {
+        return MonthSize(defaultSize: 50)
+    }
+    
+}
+
 extension TimeBlockViewController: BlockDeleted {
     
     func deleteBlock() {
@@ -600,7 +865,7 @@ extension TimeBlockViewController: BlockDeleted {
                 print ("Error deleting timeBlock, \(error)")
             }
 
-            realmData = realm.objects(Block.self)
+            blockData = realm.objects(Block.self)
 
             blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
 
