@@ -35,7 +35,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var blockTableView: UITableView!
     @IBOutlet weak var verticalTableViewSeperator: UIImageView!
 
-    @IBOutlet weak var tabBarbieItem: UITabBarItem!
+    @IBOutlet weak var tabBarbieItem: UITabBarItem! //Change name later
     
     var timeBlockViewTracker: Bool = false
     
