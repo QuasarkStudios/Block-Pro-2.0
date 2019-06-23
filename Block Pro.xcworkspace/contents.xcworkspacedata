@@ -10,5 +10,9 @@
    <Group
       location = "group:"
       name = "Supporting Files">
+      <Group
+         location = "container:"
+         name = "Images">
+      </Group>
    </Group>
 </Workspace>
