@@ -9,20 +9,30 @@
 import UIKit
 import JTAppleCalendar
 
-class CalendarViewController: UIViewController, JTAppleCalendarViewDataSource, JTAppleCalendarViewDelegate {
+class MonthCalendarViewController: UIViewController, JTAppleCalendarViewDataSource, JTAppleCalendarViewDelegate {
 
-    @IBOutlet weak var calendarView: JTAppleCalendarView!
+    @IBOutlet weak var monthCalendarView: JTAppleCalendarView!
     
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        calendarView.calendarDelegate = self
-        calendarView.calendarDataSource = self
+        monthCalendarView.calendarDelegate = self
+        monthCalendarView.calendarDataSource = self
         
-        calendarView.scrollDirection = .horizontal
+        monthCalendarView.scrollDirection = .horizontal
+        
+        monthCalendarView.frame.origin.x = 375
+        
+        
         // Do any additional setup after loading the view.
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        UIView.animate(withDuration: 0.4) {
+            self.monthCalendarView.frame.origin.x = 0
+        }
     }
     
     //First required delegate for "JTAppleCalendarViewDataSource" protocol
@@ -36,7 +46,7 @@ class CalendarViewController: UIViewController, JTAppleCalendarViewDataSource, J
         
         let calendar = Calendar(identifier: .gregorian)
         
-        calendarView.scrollingMode = .stopAtEachCalendarFrame
+        monthCalendarView.scrollingMode = .stopAtEachCalendarFrame
         
         return ConfigurationParameters(startDate: startDate, endDate: endDate, calendar: calendar, generateInDates: .forAllMonths, generateOutDates: .tillEndOfGrid)
         
@@ -48,9 +58,9 @@ class CalendarViewController: UIViewController, JTAppleCalendarViewDataSource, J
 
     func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
         
-        let myDateFormatter = DateFormatter()
-        myDateFormatter.locale = Locale(identifier: "en_US")
-        myDateFormatter.dateFormat = "dd"
+//        let myDateFormatter = DateFormatter()
+//        myDateFormatter.locale = Locale(identifier: "en_US")
+//        myDateFormatter.dateFormat = "dd"
         
         let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCell
         self.calendar(calendar, willDisplay: cell, forItemAt: date, cellState: cellState, indexPath: indexPath)
@@ -63,7 +73,7 @@ class CalendarViewController: UIViewController, JTAppleCalendarViewDataSource, J
         configureCell(view: cell, cellState: cellState)
     }
     
-/**********************************************************************************************************************************************************/
+/***********************************************ce***********************************************************************************************************/
     
     
     //Function that configures the cell 
