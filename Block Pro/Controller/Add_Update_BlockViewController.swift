@@ -361,9 +361,18 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             selectedStartHour = "0"
         }
         
-        if (funcStartHour != "12" || funcEndHour != "12") && (funcStartPeriod == "PM") {
+        if (funcStartHour != "12") && (funcStartPeriod == "PM") {
             selectedStartHour = "\(Int(funcStartHour)! + 12)"
         }
+        
+        if (funcEndHour != "12") && (funcEndPeriod == "PM") {
+            selectedEndHour = "\(Int(funcEndHour)! + 12)"
+        }
+        
+        if (funcEndHour == "12") && (funcEndPeriod == "PM") {
+            selectedEndHour = "24"
+        }
+        
     }
     
     func configureEditView () {
@@ -386,56 +395,80 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             create_edit_blockButton.setTitle("Edit", for: .normal)
     }
     
+    func sortBlockData () -> [(key: Int, value: Block)] {
+        
+        var sortedBlocks: [Int : Block] = [:]
+        
+        for timeBlocks in blockData! {
+            
+            if timeBlocks.startPeriod == "AM" {
+                sortedBlocks[Int(timeBlocks.startHour + timeBlocks.startMinute)!] = timeBlocks
+            }
+                
+            else if timeBlocks.startPeriod == "PM" {
+                sortedBlocks[Int(timeBlocks.startHour + timeBlocks.startMinute)!] = timeBlocks
+            }
+        }
+        return sortedBlocks.sorted(by: {$0.key < $1.key})
+    }
+    
     
     //MARK: - Calculate Valid Time Blocks
     
     func calcValidTimeBlock (_ startHour: String, _ startMinute: String, _ endHour: String, _ endMinute: String, _ blockID: String = "0") -> [String : Bool]{
         
-        blockData = realm.objects(Block.self)
-        let sortedBlocks = timeBlockViewObject.sortRealmBlocks()
-        
         var startTimeValidation: Bool = true
         var endTimeValidation: Bool = true
         
-        //For loop that checks to see if the new timeBlock falls into the range of any previously created timeBlocks
-        for timeBlocks in sortedBlocks {
+        if blockData != nil {
             
-            if timeBlocks.value.blockID != blockID {//If the current timeBlock from the loop is not the same timeBlock as the one being updated
-            
-                if Int(startHour)! < Int(timeBlocks.value.startHour)! { //The new timeBlock's start hour is before this previously created timeBlock's start hour
-                    if Int(endHour)! > Int(timeBlocks.value.startHour)! {//The end hour of the new timeBlock is after the start hour of the timeBlock before it; invalid entry
-                        endTimeValidation = false
+            let sortedBlocks = sortBlockData()
+        
+        
+            //For loop that checks to see if the new timeBlock falls into the range of any previously created timeBlocks
+            for timeBlocks in sortedBlocks {
+                
+                if timeBlocks.value.blockID != blockID {//If the current timeBlock from the loop is not the same timeBlock as the one being updated
+                
+                    if Int(startHour)! < Int(timeBlocks.value.startHour)! { //The new timeBlock's start hour is before this previously created timeBlock's start hour
+                        if Int(endHour)! > Int(timeBlocks.value.startHour)! {//The end hour of the new timeBlock is after the start hour of the timeBlock before it; invalid entry
+                            endTimeValidation = false
+                        }
+                        else if Int(endHour)! == Int(timeBlocks.value.startHour)! {//The new timeBlock's end hour is equal to the starting hour of the next timeBlock
+                            if Int(endMinute)! > Int(timeBlocks.value.startMinute)! {//The new timeBlock's ending minute is after the starting minute of the next timeBlock; invalid entry
+                                endTimeValidation = false
+                            }
+                        }
                     }
-                    else if Int(endHour)! == Int(timeBlocks.value.startHour)! {//The new timeBlock's end hour is equal to the starting hour of the next timeBlock
-                        if Int(endMinute)! > Int(timeBlocks.value.startMinute)! {//The new timeBlock's ending minute is after the starting minute of the next timeBlock; invalid entry
+                    
+                    else if Int(startHour)! == Int(timeBlocks.value.startHour)! {//The new timeBlock and the next timeBlock have the same starting hour
+                        if Int(startMinute)! >= Int(timeBlocks.value.startMinute)! {//The new timeBlock and the next timeBlock have the same starting minute; invalid entry
+                            startTimeValidation = false
+                        }
+                        else if (Int(endHour)! > Int(timeBlocks.value.startHour)!) || (Int(endMinute)! > Int(timeBlocks.value.startMinute)!) {
                             endTimeValidation = false
                         }
                     }
-                }
-                
-                else if Int(startHour)! == Int(timeBlocks.value.startHour)! {//The new timeBlock and the next timeBlock have the same starting hour
-                    if Int(startMinute)! >= Int(timeBlocks.value.startMinute)! {//The new timeBlock and the next timeBlock have the same starting minute; invalid entry
-                        startTimeValidation = false
-                    }
-                    else if (Int(endHour)! > Int(timeBlocks.value.startHour)!) || (Int(endMinute)! > Int(timeBlocks.value.startMinute)!) {
-                        endTimeValidation = false
-                    }
-                }
-                
-                else if Int(startHour)! > Int(timeBlocks.value.startHour)! {//The new timeBlock has a later starting hour than the current timeBlock
-                    if Int(startHour)! < Int(timeBlocks.value.endHour)! {//The new timeBlock's starting hour falls within the range of the current timeBlock; invalid entry
-                        startTimeValidation = false
-                    }
-                    else if Int(startHour)! == Int(timeBlocks.value.endHour)! {//The new timeBlock's starting hour is equal to the current timeBlock's ending hour
-                        if Int(startMinute)! < Int(timeBlocks.value.endMinute)! {//The new timeBlock's starting minute falls within the range of the current timeBlock; invalid entry
+                    
+                    else if Int(startHour)! > Int(timeBlocks.value.startHour)! {//The new timeBlock has a later starting hour than the current timeBlock
+                        if Int(startHour)! < Int(timeBlocks.value.endHour)! {//The new timeBlock's starting hour falls within the range of the current timeBlock; invalid entry
                             startTimeValidation = false
+                        }
+                        else if Int(startHour)! == Int(timeBlocks.value.endHour)! {//The new timeBlock's starting hour is equal to the current timeBlock's ending hour
+                            if Int(startMinute)! < Int(timeBlocks.value.endMinute)! {//The new timeBlock's starting minute falls within the range of the current timeBlock; invalid entry
+                                startTimeValidation = false
+                            }
                         }
                     }
                 }
             }
+            
+            return ["startTimeValid" : startTimeValidation, "endTimeValid" : endTimeValidation]
         }
         
-        return ["startTimeValid" : startTimeValidation, "endTimeValid" : endTimeValidation]
+        else {
+            return ["startTimeValid" : startTimeValidation, "endTimeValid" : endTimeValidation]
+        }
     }
 
     func add_updateTimeBlock() {

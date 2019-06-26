@@ -15,6 +15,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     let realm = try! Realm() //Initializing a new "Realm"
     
+    var allBlockDates: Results<TimeBlocksDate>?
     var currentBlocksDate: Results<TimeBlocksDate>?
     var currentDate: TimeBlocksDate?
     
@@ -109,15 +110,16 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         weeklyContainer.clipsToBounds = true
         weeklyContainer.backgroundColor = UIColor.flatWhiteColorDark()
         
-        findTimeBlocks()
+        allBlockDates = realm.objects(TimeBlocksDate.self)
+        print(allBlockDates)
 
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
-        //blockData = realm.objects(Block.self)
-        //findTimeBlocks()
-        blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
+        
+        findTimeBlocks()
+        allBlockDates = realm.objects(TimeBlocksDate.self)
         blockTableView.reloadData()
         
         
@@ -137,36 +139,42 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     //MARK: - Find TimeBlocks Function
 
-    func findTimeBlocks () {
+    func findTimeBlocks (todaysDate: Date = Date()) {
 
         formatter.dateFormat = "yyyy MM dd"
-        let todaysDate: String = formatter.string(from: Date())
+        let functionDate: String = formatter.string(from: todaysDate)
         
-        currentBlocksDate = realm.objects(TimeBlocksDate.self).filter("timeBlocksDate = %@", todaysDate)
-        
+        currentBlocksDate = realm.objects(TimeBlocksDate.self).filter("timeBlocksDate = %@", functionDate)
+    
         if currentBlocksDate?.count ?? 0 != 0 {
             
             currentDate = currentBlocksDate![0]
-            blockData = currentDate?.timeBlocks.sorted(byKeyPath: "name")
+            
+            if currentDate?.timeBlocks.count != 0 {
+                
+                blockData = currentDate?.timeBlocks.sorted(byKeyPath: "startHour")
+                blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
+            }
+  
         }
-        
+
         else {
-            
+
             let newDate = TimeBlocksDate()
-            newDate.timeBlocksDate = todaysDate
-            
+            newDate.timeBlocksDate = functionDate
+
             do {
                 try realm.write {
-                    
+
                     realm.add(newDate)
                 }
             } catch {
                 print ("Error creating a new date \(error)")
             }
-            
+
             findTimeBlocks()
         }
-        
+
     }
     
     
@@ -242,7 +250,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     func sortRealmBlocks () -> [(key: Int, value: Block)] {
         
         //blockData = currentDate?.timeBlocks.sorted(byKeyPath: "name")//realm.objects(Block.self)
-        findTimeBlocks()
+        //findTimeBlocks()
         var sortedBlocks: [Int : Block] = [:]
         
         for timeBlocks in blockData! {
@@ -745,6 +753,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             let createBlockVC = segue.destination as! Add_Update_BlockViewController
             
             createBlockVC.currentDate = currentDate
+            createBlockVC.blockData = blockData
+
         }
     }
     
@@ -802,6 +812,7 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         cell.dateLabel.text = cellState.text
         handleCellTextColor(cell: cell, cellState: cellState)
         handleCellSelected(cell: cell, cellState: cellState)
+        handleCellEvents(cell: cell, cellState: cellState)
     }
     
     func handleCellTextColor(cell: DateCell, cellState: CellState) {
@@ -818,14 +829,81 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
     func handleCellSelected (cell: DateCell, cellState: CellState) {
         
         if cellState.isSelected == true {
-            cell.selectedView.layer.cornerRadius = 13
-            cell.selectedView.alpha = 0.5
-            cell.selectedView.isHidden = !cell.selectedView.isHidden
+            
+            if cell.selectedView.isHidden == true {
+                
+                cell.selectedView.isHidden = !cell.selectedView.isHidden
+                
+                UIView.animate(withDuration: 0.05, animations: {
+                    
+                    cell.selectedView.alpha = 0.5
+                    cell.selectedView.frame = CGRect(x: 14, y: 5, width: 25, height: 25)
+                }) { (finished: Bool) in
+                    
+                    UIView.animate(withDuration: 0.05, animations: {
+                        cell.selectedView.layer.cornerRadius = 0.5 * cell.selectedView.bounds.size.width
+                        
+                    })
+                    cell.bringSubviewToFront(cell.dateContainer)
+                }
+            }
+            
+            else {
+                
+                UIView.animate(withDuration: 0.05, animations: {
+                    
+                    cell.selectedView.frame = CGRect(x: 22, y: 22, width: 0, height: 0)
+                }) { (finished: Bool) in
+                    cell.selectedView.isHidden = !cell.selectedView.isHidden
+                    cell.selectedView.layer.cornerRadius = 0.0
+                }
+            }
+            
         }
             
         else {
             cell.selectedView.isHidden = true
         }
+    }
+    
+    func handleCellEvents (cell: DateCell, cellState: CellState) {
+        
+        var calandarData: [String : Results<Block>] = populateDataSource()
+
+        formatter.dateFormat = "yyyy MM dd"
+        let dateString = formatter.string(from: cellState.date)
+
+        if calandarData[dateString] == nil {
+            cell.dotView.isHidden = true
+        }
+        else {
+
+            if calandarData[dateString]?.count != 0 {
+                
+                if cell.selectedView.frame.width < 25 {
+
+                    cell.dotView.isHidden = false
+                    cell.dotView.layer.cornerRadius = 0.5 * cell.dotView.bounds.size.width
+                }
+
+                else {
+                    cell.dotView.isHidden = true
+                }
+            }
+        }
+        
+    }
+    
+    func populateDataSource () -> [String : Results<Block>] {
+
+        var data: [String : Results<Block>] = [:]
+
+        for dates in allBlockDates! {
+
+            data[dates.timeBlocksDate] = dates.timeBlocks.sorted(byKeyPath: "startHour")
+        }
+        
+        return data
     }
     
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
