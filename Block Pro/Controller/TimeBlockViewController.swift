@@ -21,13 +21,23 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
+    @IBOutlet weak var dateLabel: UILabel!
+    
     @IBOutlet weak var calendarView: JTAppleCalendarView!
     
     @IBOutlet weak var monthlyContainer: UIView!
     @IBOutlet weak var dailyContainer: UIView!
     @IBOutlet weak var weeklyContainer: UIView!
     
-    @IBOutlet weak var monthButton: UIButton!
+    @IBOutlet weak var sundayLabel: UILabel!
+    @IBOutlet weak var mondayLabel: UILabel!
+    @IBOutlet weak var tuesdayLabel: UILabel!
+    @IBOutlet weak var wednesdayLabel: UILabel!
+    @IBOutlet weak var thursdayLabel: UILabel!
+    @IBOutlet weak var fridayLabel: UILabel!
+    @IBOutlet weak var saturdayLabel: UILabel!
+    
+    var firstIteration: Bool = true
     
     let formatter = DateFormatter()
     
@@ -72,7 +82,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         blockTableView.delegate = self
         blockTableView.dataSource = self
         blockTableView.separatorStyle = .none
-        //blockTableView.rowHeight = 90.0
         
         verticalTableViewSeperator.layer.cornerRadius = 0.5 * verticalTableViewSeperator.bounds.size.width
         verticalTableViewSeperator.clipsToBounds = true
@@ -98,6 +107,14 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         calendarView.scrollingMode = .stopAtEachCalendarFrame
         calendarView.showsHorizontalScrollIndicator = false
         
+        sundayLabel.frame.origin.x = 393
+        mondayLabel.frame.origin.x = 446
+        tuesdayLabel.frame.origin.x = 495
+        wednesdayLabel.frame.origin.x = 551
+        thursdayLabel.frame.origin.x = 602
+        fridayLabel.frame.origin.x = 664
+        saturdayLabel.frame.origin.x = 716
+        
         monthlyContainer.layer.cornerRadius = 0.05 * monthlyContainer.bounds.size.width
         monthlyContainer.clipsToBounds = true
         monthlyContainer.backgroundColor = UIColor.flatWhiteColorDark()
@@ -111,8 +128,12 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         weeklyContainer.backgroundColor = UIColor.flatWhiteColorDark()
         
         allBlockDates = realm.objects(TimeBlocksDate.self)
-        print(allBlockDates)
+        
+        formatter.dateFormat = "EEEE, MMMM dd"
+        dateLabel.text = formatter.string(from: Date())
+        
 
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -154,6 +175,10 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 blockData = currentDate?.timeBlocks.sorted(byKeyPath: "startHour")
                 blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
+            }
+            
+            else {
+                blockArray.removeAll()
             }
   
         }
@@ -658,6 +683,14 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 UIView.animate(withDuration: 0.2, animations: {
                     self.calendarView.frame.origin.x = 0
+                    
+                    self.sundayLabel.frame.origin.x = 18
+                    self.mondayLabel.frame.origin.x = 71
+                    self.tuesdayLabel.frame.origin.x = 120
+                    self.wednesdayLabel.frame.origin.x = 176.33
+                    self.thursdayLabel.frame.origin.x = 227.33
+                    self.fridayLabel.frame.origin.x = 288.67
+                    self.saturdayLabel.frame.origin.x = 341
                 })
             }
         }
@@ -688,16 +721,24 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
             UIView.animate(withDuration: 0.2, animations: {
                 
-                self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 100)
+                self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 90)
                 
-                self.timeTableView.frame = CGRect(x: 0, y: 235, width: 82, height: 494)
-                self.blockTableView.frame = CGRect(x: 84, y: 235, width: 291, height: 494)
-                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 235, width: 2, height: 494)
+                self.timeTableView.frame = CGRect(x: 0, y: 225, width: 82, height: 504)
+                self.blockTableView.frame = CGRect(x: 84, y: 225, width: 291, height: 504)
+                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 225, width: 2, height: 504)
                 
             }) { (finished: Bool) in
                 
                 UIView.animate(withDuration: 0.2, animations: {
-                    self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 100)
+                    self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 90)
+                    
+                    self.sundayLabel.frame.origin.x = 18
+                    self.mondayLabel.frame.origin.x = 71
+                    self.tuesdayLabel.frame.origin.x = 120
+                    self.wednesdayLabel.frame.origin.x = 176.33
+                    self.thursdayLabel.frame.origin.x = 227.33
+                    self.fridayLabel.frame.origin.x = 288.67
+                    self.saturdayLabel.frame.origin.x = 341
                 })
             }
         }
@@ -724,6 +765,14 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         UIView.animate(withDuration: 0.2, animations: {
             
             self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: self.calendarView.frame.height)
+            
+            self.sundayLabel.frame.origin.x = 393
+            self.mondayLabel.frame.origin.x = 446
+            self.tuesdayLabel.frame.origin.x = 495
+            self.wednesdayLabel.frame.origin.x = 551
+            self.thursdayLabel.frame.origin.x = 602
+            self.fridayLabel.frame.origin.x = 664
+            self.saturdayLabel.frame.origin.x = 716
             
         }) { (finished: Bool) in
             
@@ -784,7 +833,7 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         formatter.dateFormat = "yyyy MM dd"
         
         let startDate = formatter.date(from: "2019 05 17")!
-        let endDate = Date()
+        let endDate = formatter.date(from: "2020 01 01")!
         
         let calendar = Calendar(identifier: .gregorian)
         
@@ -810,9 +859,12 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
     func configureCalendarCell (view: JTAppleCell?, cellState: CellState) {
         guard let cell = view as? DateCell else { return }
         cell.dateLabel.text = cellState.text
+        cell.backgroundColor = UIColor.flatWhite()
+        
         handleCellTextColor(cell: cell, cellState: cellState)
         handleCellSelected(cell: cell, cellState: cellState)
         handleCellEvents(cell: cell, cellState: cellState)
+        
     }
     
     func handleCellTextColor(cell: DateCell, cellState: CellState) {
@@ -828,70 +880,85 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
     
     func handleCellSelected (cell: DateCell, cellState: CellState) {
         
+        formatter.dateFormat = "yyyy MM dd"
+        
+        let cellDate = formatter.string(from: cellState.date)
+        let currentDate = formatter.string(from: Date())
+
         if cellState.isSelected == true {
-            
-            if cell.selectedView.isHidden == true {
-                
-                cell.selectedView.isHidden = !cell.selectedView.isHidden
-                
+
+            cell.selectedView.isHidden = false
+
+            UIView.animate(withDuration: 0.05, animations: {
+
+                cell.selectedView.alpha = 0.45
+                cell.selectedView.frame = CGRect(x: 12, y: 0, width: 27, height: 27)
+
+            }) { (finished: Bool) in
+
                 UIView.animate(withDuration: 0.05, animations: {
-                    
-                    cell.selectedView.alpha = 0.5
-                    cell.selectedView.frame = CGRect(x: 14, y: 5, width: 25, height: 25)
-                }) { (finished: Bool) in
-                    
-                    UIView.animate(withDuration: 0.05, animations: {
-                        cell.selectedView.layer.cornerRadius = 0.5 * cell.selectedView.bounds.size.width
-                        
-                    })
-                    cell.bringSubviewToFront(cell.dateContainer)
-                }
+                    cell.selectedView.layer.cornerRadius = 0.5 * cell.selectedView.bounds.size.width
+
+                })
+                cell.bringSubviewToFront(cell.dateContainer)
             }
+
+            findTimeBlocks(todaysDate: cellState.date)
+            blockTableView.reloadData()
+        }
+
+        else {
             
-            else {
+            if firstIteration == false || cellDate != currentDate {
                 
                 UIView.animate(withDuration: 0.05, animations: {
                     
                     cell.selectedView.frame = CGRect(x: 22, y: 22, width: 0, height: 0)
                 }) { (finished: Bool) in
-                    cell.selectedView.isHidden = !cell.selectedView.isHidden
+                    cell.selectedView.isHidden = true
                     cell.selectedView.layer.cornerRadius = 0.0
                 }
             }
             
         }
-            
-        else {
-            cell.selectedView.isHidden = true
-        }
     }
     
     func handleCellEvents (cell: DateCell, cellState: CellState) {
         
+        
+        formatter.dateFormat = "yyyy MM dd"
+
+        let cellDate = formatter.string(from: cellState.date)
+        let currentDate = formatter.string(from: Date())
+
         var calandarData: [String : Results<Block>] = populateDataSource()
 
-        formatter.dateFormat = "yyyy MM dd"
-        let dateString = formatter.string(from: cellState.date)
 
-        if calandarData[dateString] == nil {
+        if calandarData[cellDate] == nil {
             cell.dotView.isHidden = true
         }
+
         else {
 
-            if calandarData[dateString]?.count != 0 {
+            if calandarData[cellDate]?.count ?? 0 != 0 {
                 
-                if cell.selectedView.frame.width < 25 {
-
-                    cell.dotView.isHidden = false
-                    cell.dotView.layer.cornerRadius = 0.5 * cell.dotView.bounds.size.width
-                }
-
-                else {
-                    cell.dotView.isHidden = true
+                if currentDate != cellDate {
+                    
+                    if cellState.isSelected == false {
+                        cell.dotView.isHidden = false
+                        cell.dotView.layer.cornerRadius = 0.5 * cell.dotView.bounds.size.width
+                    }
+                    
+                    else {
+                        cell.dotView.isHidden = true
+                    }
                 }
             }
+            
+            else {
+                cell.dotView.isHidden = true
+            }
         }
-        
     }
     
     func populateDataSource () -> [String : Results<Block>] {
@@ -920,6 +987,7 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
 
         let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "DateHeader", for: indexPath) as! DateHeader
         header.monthLabel.text = formatter.string(from: range.start)
+        header.backgroundColor = UIColor.flatWhiteColorDark()
         return header
     }
 
