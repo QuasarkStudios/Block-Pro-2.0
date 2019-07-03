@@ -8,9 +8,10 @@
 
 import UIKit
 import RealmSwift
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
@@ -26,7 +27,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print ("Error initializing new realm, \(error)")
         }
         
+        UNUserNotificationCenter.current().delegate = self
+        
+        UNUserNotificationCenter.current().requestAuthorization(options: .badge) { (granted, error) in
+            
+            if granted == true {
+                print ("aye dope")
+            }
+            
+            else {
+                print ("awhhh")
+            }
+        }
+        
+        
         return true
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .sound])
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

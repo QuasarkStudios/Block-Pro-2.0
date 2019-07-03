@@ -8,13 +8,14 @@
 
 import UIKit
 import RealmSwift
+import UserNotifications
 
 class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
 
     let realm = try! Realm()
     var blockData: Results<Block>?
     
-    var currentDate: TimeBlocksDate?
+    var currentDateObject: TimeBlocksDate?
     
     let timeBlockViewObject = TimeBlockViewController()
     
@@ -57,6 +58,9 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     var selectedCategory: String = ""
     
     var blockID: String = ""
+    
+    var notificationTimes: [Int] = [5, 10, 15]
+    var notificationIndex: Int = 0
 
     
     override func viewDidLoad() {
@@ -175,49 +179,49 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         
         switch textField {
             
-        case blockNameTextField:
-            UIView.animate(withDuration: 0.2) {
-                self.timePicker.frame.origin.y = 750
-                self.categoryPicker.frame.origin.y = 750
-            }
-            
-        case startTimeTextField:
-            tag = "start"
-            
-            UIView.animate(withDuration: 0.15, animations: {
-                self.categoryPicker.frame.origin.y = 750
-            }) { (finished: Bool) in
-                
-                UIView.animate(withDuration: 0.15) {
-                    self.timePicker.frame.origin.y = 475
+            case blockNameTextField:
+                UIView.animate(withDuration: 0.2) {
+                    self.timePicker.frame.origin.y = 750
+                    self.categoryPicker.frame.origin.y = 750
                 }
-            }
             
-        case endTimeTextField:
-            tag = "end"
-            
-            UIView.animate(withDuration: 0.15, animations: {
-                self.categoryPicker.frame.origin.y = 750
-            }) { (finished: Bool) in
+            case startTimeTextField:
+                tag = "start"
                 
-                UIView.animate(withDuration: 0.15) {
-                    self.timePicker.frame.origin.y = 475
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.categoryPicker.frame.origin.y = 750
+                }) { (finished: Bool) in
+                    
+                    UIView.animate(withDuration: 0.15) {
+                        self.timePicker.frame.origin.y = 475
+                    }
                 }
-            }
             
-        case categoryTextField:
-            
-            UIView.animate(withDuration: 0.15, animations: {
-                self.timePicker.frame.origin.y = 750
-            }) { (finished: Bool) in
+            case endTimeTextField:
+                tag = "end"
                 
-                UIView.animate(withDuration: 0.15) {
-                    self.categoryPicker.frame.origin.y = 475
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.categoryPicker.frame.origin.y = 750
+                }) { (finished: Bool) in
+                    
+                    UIView.animate(withDuration: 0.15) {
+                        self.timePicker.frame.origin.y = 475
+                    }
                 }
-            }
             
-        default:
-            print ("No textField selected")
+            case categoryTextField:
+                
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.timePicker.frame.origin.y = 750
+                }) { (finished: Bool) in
+                    
+                    UIView.animate(withDuration: 0.15) {
+                        self.categoryPicker.frame.origin.y = 475
+                    }
+                }
+            
+            default:
+                print ("No textField selected")
         }
     }
     
@@ -315,12 +319,10 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             else if component == 2 && tag == "end" {
                 selectedEndPeriod = timePeriods[row]
             }
-            
+    
             startTimeTextField.text = selectedStartHour + ":" + selectedStartMinute + " " + selectedStartPeriod
             endTimeTextField.text = selectedEndHour + ":" + selectedEndMinute + " " + selectedEndPeriod
             
-            print ("userSelectedStartTime = \(selectedStartHour)" + "\(selectedStartMinute)" + selectedStartPeriod)
-            print ("userSelectedEndTime = \(selectedEndHour)" + "\(selectedEndMinute)" + selectedEndPeriod )
         }
         
         else if pickerView == categoryPicker {
@@ -372,7 +374,6 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         if (funcEndHour == "12") && (funcEndPeriod == "PM") {
             selectedEndHour = "24"
         }
-        
     }
     
     func configureEditView () {
@@ -395,23 +396,6 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             create_edit_blockButton.setTitle("Edit", for: .normal)
     }
     
-    func sortBlockData () -> [(key: Int, value: Block)] {
-        
-        var sortedBlocks: [Int : Block] = [:]
-        
-        for timeBlocks in blockData! {
-            
-            if timeBlocks.startPeriod == "AM" {
-                sortedBlocks[Int(timeBlocks.startHour + timeBlocks.startMinute)!] = timeBlocks
-            }
-                
-            else if timeBlocks.startPeriod == "PM" {
-                sortedBlocks[Int(timeBlocks.startHour + timeBlocks.startMinute)!] = timeBlocks
-            }
-        }
-        return sortedBlocks.sorted(by: {$0.key < $1.key})
-    }
-    
     
     //MARK: - Calculate Valid Time Blocks
     
@@ -419,55 +403,148 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         
         var startTimeValidation: Bool = true
         var endTimeValidation: Bool = true
+        var rangeValidation: Bool = true
         
         if blockData != nil {
             
-            let sortedBlocks = sortBlockData()
-        
-        
-            //For loop that checks to see if the new timeBlock falls into the range of any previously created timeBlocks
-            for timeBlocks in sortedBlocks {
-                
-                if timeBlocks.value.blockID != blockID {//If the current timeBlock from the loop is not the same timeBlock as the one being updated
-                
-                    if Int(startHour)! < Int(timeBlocks.value.startHour)! { //The new timeBlock's start hour is before this previously created timeBlock's start hour
-                        if Int(endHour)! > Int(timeBlocks.value.startHour)! {//The end hour of the new timeBlock is after the start hour of the timeBlock before it; invalid entry
-                            endTimeValidation = false
-                        }
-                        else if Int(endHour)! == Int(timeBlocks.value.startHour)! {//The new timeBlock's end hour is equal to the starting hour of the next timeBlock
-                            if Int(endMinute)! > Int(timeBlocks.value.startMinute)! {//The new timeBlock's ending minute is after the starting minute of the next timeBlock; invalid entry
-                                endTimeValidation = false
-                            }
-                        }
-                    }
-                    
-                    else if Int(startHour)! == Int(timeBlocks.value.startHour)! {//The new timeBlock and the next timeBlock have the same starting hour
-                        if Int(startMinute)! >= Int(timeBlocks.value.startMinute)! {//The new timeBlock and the next timeBlock have the same starting minute; invalid entry
-                            startTimeValidation = false
-                        }
-                        else if (Int(endHour)! > Int(timeBlocks.value.startHour)!) || (Int(endMinute)! > Int(timeBlocks.value.startMinute)!) {
-                            endTimeValidation = false
-                        }
-                    }
-                    
-                    else if Int(startHour)! > Int(timeBlocks.value.startHour)! {//The new timeBlock has a later starting hour than the current timeBlock
-                        if Int(startHour)! < Int(timeBlocks.value.endHour)! {//The new timeBlock's starting hour falls within the range of the current timeBlock; invalid entry
-                            startTimeValidation = false
-                        }
-                        else if Int(startHour)! == Int(timeBlocks.value.endHour)! {//The new timeBlock's starting hour is equal to the current timeBlock's ending hour
-                            if Int(startMinute)! < Int(timeBlocks.value.endMinute)! {//The new timeBlock's starting minute falls within the range of the current timeBlock; invalid entry
-                                startTimeValidation = false
-                            }
-                        }
-                    }
-                }
+            let calendar = Calendar.current
+            let now = Date()
+            
+            let newBlockStart = calendar.date(bySettingHour: Int(startHour)!, minute: Int(startMinute)!, second: 0, of: now)!
+            let newBlockEnd = calendar.date(bySettingHour: Int(endHour)!, minute: Int(endMinute)!, second: 0, of: now)!
+            var newBlockArray: [Date] = [newBlockStart]
+            
+            while newBlockArray.contains(newBlockEnd) != true {
+                newBlockArray.append(newBlockArray[newBlockArray.count - 1].addingTimeInterval(300))
             }
             
-            return ["startTimeValid" : startTimeValidation, "endTimeValid" : endTimeValidation]
+            let removeBlockStart = newBlockArray.remove(at: 0)
+            let removeBlockEnd = newBlockArray.remove(at: newBlockArray.count - 1)
+            
+            for timeBlocks in blockData! {
+                
+                if timeBlocks.blockID != blockID {
+                    
+                    let realmBlockStart = calendar.date(bySettingHour: Int(timeBlocks.startHour)!, minute: Int(timeBlocks.startMinute)!, second: 0, of: now)!
+                    let realmBlockEnd = calendar.date(bySettingHour: Int(timeBlocks.endHour)!, minute: Int(timeBlocks.endMinute)!, second: 0, of: now)!
+                    let realmBlockRange: ClosedRange = realmBlockStart...realmBlockEnd
+                    
+                    if newBlockStart >= realmBlockStart && newBlockStart < realmBlockEnd {
+                        startTimeValidation = false
+                        break
+                    }
+                    else if newBlockEnd > realmBlockStart && newBlockEnd <= realmBlockEnd {
+                        endTimeValidation = false
+                        break
+                    }
+                    
+                    for times in newBlockArray {
+                        
+                        if realmBlockRange.contains(times) {
+                            rangeValidation = false
+                        }
+                    }
+                    
+                }
+            }
         }
+        return ["startTimeValid" : startTimeValidation, "endTimeValid" : endTimeValidation, "rangeValid" : rangeValidation]
+    }
+    
+    func scheduleNotification () {
         
-        else {
-            return ["startTimeValid" : startTimeValidation, "endTimeValid" : endTimeValidation]
+        if notificationSwitch.isOn {
+        
+            var dateComponents = DateComponents()
+            dateComponents.calendar = Calendar.current
+            
+            let uuidString = UUID().uuidString
+            let content = UNMutableNotificationContent()
+            let trigger: UNCalendarNotificationTrigger
+            let request: UNNotificationRequest
+            
+            guard let date = currentDateObject?.timeBlocksDate else { return }
+            
+            let initialDate = Array(date)
+            
+            var notificationDate: [String : String] = ["Year": "", "Month" : "", "Day": ""]
+            var count: Int = 0
+            
+            while count < initialDate.count {
+                
+                if count < 4 {
+                    notificationDate["Year"] = notificationDate["Year"]! + "\(initialDate[count])"
+                }
+                    
+                else if count > 4 && count < 7 {
+                    notificationDate["Month"] = notificationDate["Month"]! + "\(initialDate[count])"
+                }
+                    
+                else if count > 7 {
+                    notificationDate["Day"] = notificationDate["Day"]! + "\(initialDate[count])"
+                }
+                
+                count += 1
+            }
+            
+            //If the selectedStartMinute will become negative but the selectedStartHour will remain positive
+            if (Int(selectedStartHour)! >  0) && (Int(selectedStartMinute)! - notificationTimes[notificationIndex] < 0) {
+                
+                dateComponents.year = Int(notificationDate["Year"]!)!
+                dateComponents.month = Int(notificationDate["Month"]!)!
+                dateComponents.day = Int(notificationDate["Day"]!)!
+                
+                switch Int(selectedStartMinute)! {
+                    
+                case -5:
+                    dateComponents.hour = Int(selectedStartHour)! - 1
+                    dateComponents.minute = 60 - 5
+                    
+                case -10:
+                    dateComponents.hour = Int(selectedStartHour)! - 1
+                    dateComponents.minute = 60 - 10
+                    
+                case -15:
+                    dateComponents.hour = Int(selectedStartHour)! - 1
+                    dateComponents.minute = 60 - 15
+                    
+                default:
+                    break
+                }
+                
+                content.title = "Heads Up!!"
+                content.body = blockNameTextField.text! + "in \(notificationTimes[notificationIndex]) mintues"
+                content.sound = UNNotificationSound.default
+                
+                trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                
+                request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+                UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+            }
+                
+            //If the selectedStartMinute will not become negative
+            else if Int(selectedStartMinute)! - notificationTimes[notificationIndex] >= 0 {
+                
+                dateComponents.year = Int(notificationDate["Year"]!)!
+                dateComponents.month = Int(notificationDate["Month"]!)!
+                dateComponents.day = Int(notificationDate["Day"]!)!
+                dateComponents.hour = Int(selectedStartHour)!
+                dateComponents.minute = Int(selectedStartMinute)! - notificationTimes[notificationIndex]
+                
+                content.title = "Heads Up!!"
+                content.body = blockNameTextField.text! + "in \(notificationTimes[notificationIndex]) mintues"
+                content.sound = UNNotificationSound.default
+                
+                trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+                
+                request = UNNotificationRequest(identifier: uuidString, content: content, trigger: trigger)
+                UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+            }
+                
+            //If the selectedStartHour will become negative signifying the user wants the notification to come a day before
+            else if (Int(selectedStartHour)! ==  0) && (Int(selectedStartMinute)! - notificationTimes[notificationIndex] < 0) {
+                ProgressHUD.showError("Sorry, notifications coming a day prior isn't currently supported")
+            }
         }
     }
 
@@ -495,10 +572,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             
             do {
                 try realm.write {
-                    //realm.add(newBlock)
-                    
-                    currentDate?.timeBlocks.append(newBlock)
-                    
+                    currentDateObject?.timeBlocks.append(newBlock)
                 }
             } catch {
                 print ("Error adding a new block \(error)")
@@ -547,7 +621,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         
         if notificationSwitch.isOn == true {
             notificationTimeSegments.isEnabled = true
-            print ("give it to em")
+            print("give it to em")
         }
         
         else {
@@ -558,9 +632,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     
     @IBAction func notificationTimeSegments(_ sender: Any) {
         
-        let selectedIndex = notificationTimeSegments.selectedSegmentIndex
-        
-        print (selectedIndex)
+        notificationIndex = notificationTimeSegments.selectedSegmentIndex
     }
     
     
@@ -586,6 +658,9 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         else if selectedEndHour == "" || selectedEndMinute == "" || selectedEndPeriod == "" {
             ProgressHUD.showError("Please finish entering when this Time Block should end")
         }
+        else if selectedStartHour == selectedEndHour && selectedStartMinute == selectedEndMinute && selectedStartPeriod == selectedEndPeriod {
+            ProgressHUD.showError("Sorry, the times for Time Blocks can't be the same")
+        }
         else {
             
             if create_edit_blockButton.titleLabel?.text == "Create" {
@@ -597,14 +672,21 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             }
             
             if validTimeBlock["startTimeValid"] == false {
-                ProgressHUD.showError("The starting time of this Time Block conflicts with another")
+                ProgressHUD.showError("The starting time of this TimeBlock conflicts with another")
+                timePicker.reloadAllComponents()
             }
             else if validTimeBlock["endTimeValid"] == false {
-                ProgressHUD.showError("The ending time of this Time Block conflicts with another")
+                ProgressHUD.showError("The ending time of this TimeBlock conflicts with another")
+                timePicker.reloadAllComponents()
             }
+            else if validTimeBlock["validRange"] == false {
+                ProgressHUD.showError("This TimeBlock conflicts with another")
+            }
+            
             else {
-                
+
                 add_updateTimeBlock()
+                scheduleNotification()
                 ProgressHUD.showSuccess("Time Block created!")
                 dismiss(animated: true, completion: nil)
             }

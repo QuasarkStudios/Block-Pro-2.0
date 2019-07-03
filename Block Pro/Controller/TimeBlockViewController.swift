@@ -17,7 +17,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var allBlockDates: Results<TimeBlocksDate>?
     var currentBlocksDate: Results<TimeBlocksDate>?
-    var currentDate: TimeBlocksDate?
+    var currentDateObject: TimeBlocksDate?
+    
+    //var currentDate: Date = Date()
     
     var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
@@ -48,7 +50,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     //Add 24 time setting
     
-    var cellAnimated = [Bool](repeating: false, count: 24) //Variable that helps track whether or not a certain cell has been animated onto the screen yet
+    var cellAnimated = [String]() //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
     //Creation of to pre-define the block tuple's structure and allow for it to be used as a return of a function
     typealias blockTuple = ( blockID: String, blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String, note1: String, note2: String, note3: String, category: String)
@@ -56,6 +58,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     var blockArray = [blockTuple]()
     
     var bigBlockID: String = ""
+    
+    var dateDictionary: [String: Int] = [:]
     
     var numberOfRows: Int = 6
     
@@ -129,11 +133,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         allBlockDates = realm.objects(TimeBlocksDate.self)
         
-        formatter.dateFormat = "EEEE, MMMM dd"
+        formatter.dateFormat = "EEEE, MMMM d"
         dateLabel.text = formatter.string(from: Date())
-        
 
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -169,11 +171,11 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
         if currentBlocksDate?.count ?? 0 != 0 {
             
-            currentDate = currentBlocksDate![0]
+            currentDateObject = currentBlocksDate![0]
             
-            if currentDate?.timeBlocks.count != 0 {
+            if currentDateObject?.timeBlocks.count != 0 {
                 
-                blockData = currentDate?.timeBlocks.sorted(byKeyPath: "startHour")
+                blockData = currentDateObject?.timeBlocks.sorted(byKeyPath: "startHour")
                 blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
             }
             
@@ -274,8 +276,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func sortRealmBlocks () -> [(key: Int, value: Block)] {
         
-        //blockData = currentDate?.timeBlocks.sorted(byKeyPath: "name")//realm.objects(Block.self)
-        //findTimeBlocks()
         var sortedBlocks: [Int : Block] = [:]
         
         for timeBlocks in blockData! {
@@ -439,7 +439,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     }
                     
                     configureBlockLayout(cell)
-                    //animateBlock(cell, indexPath)
+                    animateBlock(cell, indexPath)
                     
                     return cell
                 }
@@ -519,7 +519,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         case 30.0:
             cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
             
-            cell.nameLabel.frame.origin.y = 4.0
+            cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.0)
+            cell.nameLabel.frame.origin.y = 2.5
             
             cell.alphaView.frame = CGRect(x: 116.0, y: 4.0, width: 160.0, height: 19.5)
             cell.alphaView.layer.cornerRadius = 0.06 * cell.alphaView.bounds.size.width
@@ -640,18 +641,17 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
 
     func animateBlock (_ cell: CustomBlockTableCell, _ indexPath: IndexPath) {
         
-        //If statement checking to see if a certain cell has been animated onto the screen or not
-        if cellAnimated[indexPath.row] == false {
+        if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
             
             //Sets the x coordinate of the "cellContainerView" for the "CustomBlockTableCell" equal to 500 + (indexPath.row * 150)
             cell.cellContainerView.frame.origin.x = CGFloat(500) + CGFloat(indexPath.row * 150)
         
             //Animates a cell onto the screen
-            UIView.animate(withDuration: 2) {
+            UIView.animate(withDuration: 1) {
                 cell.cellContainerView.frame.origin.x = 5.0
             }
             
-           cellAnimated[indexPath.row] = true
+            cellAnimated.append(blockArray[indexPath.row].blockID)
         }
             
         //If a cell has already been animated, it simply sets the x coordinate of the cell to be 5
@@ -801,7 +801,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
             let createBlockVC = segue.destination as! Add_Update_BlockViewController
             
-            createBlockVC.currentDate = currentDate
+            createBlockVC.currentDateObject = currentDateObject
             createBlockVC.blockData = blockData
 
         }
@@ -883,10 +883,10 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         formatter.dateFormat = "yyyy MM dd"
         
         let cellDate = formatter.string(from: cellState.date)
-        let currentDate = formatter.string(from: Date())
-
+        let currentFunctionDate = formatter.string(from: Date())
+        
         if cellState.isSelected == true {
-
+            
             cell.selectedView.isHidden = false
 
             UIView.animate(withDuration: 0.05, animations: {
@@ -903,13 +903,14 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
                 cell.bringSubviewToFront(cell.dateContainer)
             }
 
+            //currentDate = cellState.date
             findTimeBlocks(todaysDate: cellState.date)
             blockTableView.reloadData()
         }
 
         else {
             
-            if firstIteration == false || cellDate != currentDate {
+            if firstIteration == false || cellDate != currentFunctionDate {
                 
                 UIView.animate(withDuration: 0.05, animations: {
                     
@@ -924,7 +925,6 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
     }
     
     func handleCellEvents (cell: DateCell, cellState: CellState) {
-        
         
         formatter.dateFormat = "yyyy MM dd"
 
@@ -1011,10 +1011,8 @@ extension TimeBlockViewController: BlockDeleted {
                 print ("Error deleting timeBlock, \(error)")
             }
 
-            blockData = realm.objects(Block.self)
 
-            blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
-
+            findTimeBlocks()
             blockTableView.reloadData()
         
     }
