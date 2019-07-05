@@ -513,7 +513,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
                 }
                 
                 content.title = "Heads Up!!"
-                content.body = blockNameTextField.text! + "in \(notificationTimes[notificationIndex]) mintues"
+                content.body = blockNameTextField.text! + " in \(notificationTimes[notificationIndex]) mintues"
                 content.sound = UNNotificationSound.default
                 
                 trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)

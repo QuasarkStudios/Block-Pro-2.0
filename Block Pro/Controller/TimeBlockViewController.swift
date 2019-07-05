@@ -19,7 +19,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     var currentBlocksDate: Results<TimeBlocksDate>?
     var currentDateObject: TimeBlocksDate?
     
-    //var currentDate: Date = Date()
+    var currentDate: Date = Date()
     
     var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
@@ -134,14 +134,13 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         allBlockDates = realm.objects(TimeBlocksDate.self)
         
         formatter.dateFormat = "EEEE, MMMM d"
-        dateLabel.text = formatter.string(from: Date())
-
+        dateLabel.text = formatter.string(from: currentDate)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
-        
-        findTimeBlocks()
+        findTimeBlocks(currentDate)
         allBlockDates = realm.objects(TimeBlocksDate.self)
         blockTableView.reloadData()
         
@@ -151,6 +150,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidAppear(_ animated: Bool) {
         timeBlockViewTracker = true
+        
+        scrollToFirstBlock()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -162,7 +163,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     //MARK: - Find TimeBlocks Function
 
-    func findTimeBlocks (todaysDate: Date = Date()) {
+    func findTimeBlocks (_ todaysDate: Date) {
 
         formatter.dateFormat = "yyyy MM dd"
         let functionDate: String = formatter.string(from: todaysDate)
@@ -199,7 +200,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 print ("Error creating a new date \(error)")
             }
 
-            findTimeBlocks()
+            findTimeBlocks(todaysDate)
         }
 
     }
@@ -660,6 +661,45 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    func scrollToFirstBlock() {
+        
+        if blockArray.count != 0 {
+            print(blockArray[0].blockName)
+            if blockArray[0].blockName != "Buffer Block" {
+                let indexPath = NSIndexPath(row: 0, section: 0)
+                blockTableView.scrollToRow(at: indexPath as IndexPath, at: .top, animated: true)
+            }
+            else {
+                let indexPath = NSIndexPath(row: 1, section: 0)
+                blockTableView.scrollToRow(at: indexPath as IndexPath, at: .top, animated: true)
+            }
+            
+        }
+    }
+    
+    @IBAction func previousDay(_ sender: Any) {
+        
+        currentDate = currentDate.addingTimeInterval(-86400)
+        formatter.dateFormat = "EEEE, MMMM d"
+        dateLabel.text = formatter.string(from: currentDate)
+    
+        calendarView.selectDates([currentDate])
+        findTimeBlocks(currentDate)
+        blockTableView.reloadData()
+    }
+    
+    
+    @IBAction func nextDay(_ sender: Any) {
+        
+        currentDate = currentDate.addingTimeInterval(86400)
+        formatter.dateFormat = "EEEE, MMMM d"
+        dateLabel.text = formatter.string(from: currentDate)
+        
+        calendarView.selectDates([currentDate])
+        findTimeBlocks(currentDate)
+        blockTableView.reloadData()
+    }
+    
     
     @IBAction func monthlyButton(_ sender: Any) {
         
@@ -668,17 +708,18 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         monthlyContainer.backgroundColor = UIColor.flatPowderBlue()?.darken(byPercentage: 0.2)
         
         numberOfRows = 6
-        calendarView.reloadData(withanchor: Date())
+        calendarView.reloadData(withanchor: currentDate)
         
         if calendarView.frame.origin.x == 375.0 {
             
             UIView.animate(withDuration: 0.2, animations: {
                 
-                self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 255)
+                self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 260)
                 
-                self.timeTableView.frame = CGRect(x: 0, y: 390, width: 82, height: 340)
-                self.blockTableView.frame = CGRect(x: 84, y: 390, width: 291, height: 340)
-                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 390, width: 2, height: 340)
+                self.timeTableView.frame = CGRect(x: 0, y: 400, width: 82, height: 330)
+                self.blockTableView.frame = CGRect(x: 84, y: 400, width: 291, height: 330)
+                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 400, width: 2, height: 330)
+                
             }) { (finished: Bool) in
                 
                 UIView.animate(withDuration: 0.2, animations: {
@@ -691,6 +732,10 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     self.thursdayLabel.frame.origin.x = 227.33
                     self.fridayLabel.frame.origin.x = 288.67
                     self.saturdayLabel.frame.origin.x = 341
+                    
+                    //self.calendarView.scrollToDate(self.currentDate, animateScroll: false)
+                    self.calendarView.selectDates([self.currentDate])
+                    self.calendarView.reloadData(withanchor: self.currentDate)
                 })
             }
         }
@@ -699,11 +744,11 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
             UIView.animate(withDuration: 0.2) {
                 
-                self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 255)
-                
-                self.timeTableView.frame = CGRect(x: 0, y: 390, width: 82, height: 340)
-                self.blockTableView.frame = CGRect(x: 84, y: 390, width: 291, height: 340)
-                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 390, width: 2, height: 340)
+                self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 260)
+                //print(self.calendarView.frame.height)
+                self.timeTableView.frame = CGRect(x: 0, y: 400, width: 82, height: 330)
+                self.blockTableView.frame = CGRect(x: 84, y: 400, width: 291, height: 330)
+                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 400, width: 2, height: 330)
             }
         }
     }
@@ -715,7 +760,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         monthlyContainer.backgroundColor = UIColor.flatWhiteColorDark()
         
         numberOfRows = 1
-        calendarView.reloadData(withanchor: Date())
+        calendarView.reloadData(withanchor: currentDate)
         
         if calendarView.frame.origin.x == 375.0 {
             
@@ -723,9 +768,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 90)
                 
-                self.timeTableView.frame = CGRect(x: 0, y: 225, width: 82, height: 504)
-                self.blockTableView.frame = CGRect(x: 84, y: 225, width: 291, height: 504)
-                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 225, width: 2, height: 504)
+                self.timeTableView.frame = CGRect(x: 0, y: 225, width: 82, height: 524)
+                self.blockTableView.frame = CGRect(x: 84, y: 225, width: 291, height: 524)
+                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 225, width: 2, height: 524)
                 
             }) { (finished: Bool) in
                 
@@ -739,6 +784,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     self.thursdayLabel.frame.origin.x = 227.33
                     self.fridayLabel.frame.origin.x = 288.67
                     self.saturdayLabel.frame.origin.x = 341
+                    
+                    self.calendarView.selectDates([self.currentDate])
+                    self.calendarView.reloadData(withanchor: self.currentDate)
                 })
             }
         }
@@ -747,11 +795,11 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
             UIView.animate(withDuration: 0.2) {
                 
-                self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 100)
+                self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 90)
                 
-                self.timeTableView.frame = CGRect(x: 0, y: 235, width: 82, height: 494)
-                self.blockTableView.frame = CGRect(x: 84, y: 235, width: 291, height: 494)
-                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 235, width: 2, height: 494)
+                self.timeTableView.frame = CGRect(x: 0, y: 225, width: 82, height: 524)
+                self.blockTableView.frame = CGRect(x: 84, y: 225, width: 291, height: 524)
+                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 225, width: 2, height: 524)
             }
         }
     }
@@ -839,7 +887,12 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         
         calendarView.scrollingMode = .stopAtEachCalendarFrame
         
-        return ConfigurationParameters(startDate: startDate, endDate: endDate, numberOfRows: numberOfRows, calendar: calendar, generateInDates: .forAllMonths, generateOutDates: .tillEndOfGrid)
+        if numberOfRows == 6 {
+            return ConfigurationParameters(startDate: startDate, endDate: endDate, numberOfRows: numberOfRows, calendar: calendar, generateInDates: .forAllMonths, generateOutDates: .tillEndOfGrid)
+        }
+        else {
+            return ConfigurationParameters(startDate: startDate, endDate: endDate, numberOfRows: numberOfRows, calendar: calendar, generateInDates: .off, generateOutDates: .off)
+        }
     }
     
     func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
@@ -880,47 +933,39 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
     
     func handleCellSelected (cell: DateCell, cellState: CellState) {
         
-        formatter.dateFormat = "yyyy MM dd"
-        
-        let cellDate = formatter.string(from: cellState.date)
-        let currentFunctionDate = formatter.string(from: Date())
-        
         if cellState.isSelected == true {
             
             cell.selectedView.isHidden = false
-
+            cell.selectedView.alpha = 0.45
+            
             UIView.animate(withDuration: 0.05, animations: {
 
-                cell.selectedView.alpha = 0.45
-                cell.selectedView.frame = CGRect(x: 12, y: 0, width: 27, height: 27)
-
+                cell.selectedView.frame = CGRect(x: 12, y: 4, width: 27, height: 27)
+                cell.selectedView.layer.cornerRadius = 0.5 * cell.selectedView.bounds.size.width
+                
             }) { (finished: Bool) in
-
-                UIView.animate(withDuration: 0.05, animations: {
-                    cell.selectedView.layer.cornerRadius = 0.5 * cell.selectedView.bounds.size.width
-
-                })
+                
                 cell.bringSubviewToFront(cell.dateContainer)
             }
-
-            //currentDate = cellState.date
-            findTimeBlocks(todaysDate: cellState.date)
+            currentDate = cellState.date
+            formatter.dateFormat = "EEEE, MMMM d"
+            dateLabel.text = formatter.string(from: currentDate)
+            
+            findTimeBlocks(currentDate)
             blockTableView.reloadData()
+            scrollToFirstBlock()
         }
 
         else {
             
-            if firstIteration == false || cellDate != currentFunctionDate {
-                
                 UIView.animate(withDuration: 0.05, animations: {
                     
-                    cell.selectedView.frame = CGRect(x: 22, y: 22, width: 0, height: 0)
+                    cell.selectedView.frame = CGRect(x: 0, y: -8, width: 50, height: 50)
                 }) { (finished: Bool) in
                     cell.selectedView.isHidden = true
                     cell.selectedView.layer.cornerRadius = 0.0
                 }
-            }
-            
+
         }
     }
     
@@ -929,35 +974,25 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         formatter.dateFormat = "yyyy MM dd"
 
         let cellDate = formatter.string(from: cellState.date)
-        let currentDate = formatter.string(from: Date())
 
         var calandarData: [String : Results<Block>] = populateDataSource()
-
 
         if calandarData[cellDate] == nil {
             cell.dotView.isHidden = true
         }
 
+        else if calandarData[cellDate]?.count ?? 0 != 0 {
+            switch cellState.isSelected {
+                case true:
+                    cell.dotView.isHidden = true
+                case false:
+                    cell.dotView.isHidden = false
+                    cell.dotView.layer.cornerRadius = 0.08 * cell.dotView.bounds.size.width
+            }
+        }
+        
         else {
-
-            if calandarData[cellDate]?.count ?? 0 != 0 {
-                
-                if currentDate != cellDate {
-                    
-                    if cellState.isSelected == false {
-                        cell.dotView.isHidden = false
-                        cell.dotView.layer.cornerRadius = 0.5 * cell.dotView.bounds.size.width
-                    }
-                    
-                    else {
-                        cell.dotView.isHidden = true
-                    }
-                }
-            }
-            
-            else {
-                cell.dotView.isHidden = true
-            }
+            cell.dotView.isHidden = true
         }
     }
     
@@ -1012,7 +1047,7 @@ extension TimeBlockViewController: BlockDeleted {
             }
 
 
-            findTimeBlocks()
+            findTimeBlocks(currentDate)
             blockTableView.reloadData()
         
     }

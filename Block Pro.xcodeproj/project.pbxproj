@@ -18,7 +18,6 @@
 		0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CED142291EDE200CC9180 /* CustomBlockTableCell.swift */; };
 		0D2CED172291EDE200CC9180 /* CustomBlockTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */; };
 		0D93300822927C7500B6191D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300722927C7500B6191D /* Block.swift */; };
-		0D93300A22927C8800B6191D /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300922927C8800B6191D /* Note.swift */; };
 		0D9330102293720200B6191D /* CustomAddBlockTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300E2293720200B6191D /* CustomAddBlockTableCell.swift */; };
 		0D9330112293720200B6191D /* CustomAddBlockTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D93300F2293720200B6191D /* CustomAddBlockTableCell.xib */; };
 		0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83422A84833008BECAE /* FreeTime.storyboard */; };
@@ -50,7 +49,6 @@
 		0D2CED142291EDE200CC9180 /* CustomBlockTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBlockTableCell.swift; sourceTree = "<group>"; };
 		0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomBlockTableCell.xib; sourceTree = "<group>"; };
 		0D93300722927C7500B6191D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
-		0D93300922927C8800B6191D /* Note.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		0D93300E2293720200B6191D /* CustomAddBlockTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAddBlockTableCell.swift; sourceTree = "<group>"; };
 		0D93300F2293720200B6191D /* CustomAddBlockTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomAddBlockTableCell.xib; sourceTree = "<group>"; };
 		0DA9F83422A84833008BECAE /* FreeTime.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FreeTime.storyboard; sourceTree = "<group>"; };
@@ -152,7 +150,6 @@
 			children = (
 				0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */,
 				0D93300722927C7500B6191D /* Block.swift */,
-				0D93300922927C8800B6191D /* Note.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -367,7 +364,6 @@
 				0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */,
 				0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */,
 				0DBF3E9A22B432FD00E180D2 /* TabBarController.swift in Sources */,
-				0D93300A22927C8800B6191D /* Note.swift in Sources */,
 				0D9330102293720200B6191D /* CustomAddBlockTableCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
