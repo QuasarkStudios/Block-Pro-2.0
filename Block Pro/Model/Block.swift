@@ -12,6 +12,7 @@ import RealmSwift
 class Block: Object {
  
     @objc dynamic var blockID = UUID().uuidString
+    @objc dynamic var notificationID: String = ""
     
     @objc dynamic var name: String = ""
     @objc dynamic var blockCategory: String = ""

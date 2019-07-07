@@ -292,8 +292,8 @@
                         <outlet property="monthlyContainer" destination="DMy-JT-F2g" id="mJU-KA-BCT"/>
                         <outlet property="saturdayLabel" destination="xd1-n0-hgM" id="wA6-k2-Img"/>
                         <outlet property="sundayLabel" destination="UEH-TL-WOa" id="4l7-ou-uhH"/>
-                        <outlet property="tabBarbieItem" destination="qrq-F6-iev" id="DEA-oZ-d26"/>
                         <outlet property="thursdayLabel" destination="Bvm-HP-j7e" id="Vqk-s7-Krx"/>
+                        <outlet property="timeBlockBarItem" destination="qrq-F6-iev" id="K9I-Yg-kBi"/>
                         <outlet property="timeTableView" destination="fve-Nh-PIx" id="bHo-dC-7QP"/>
                         <outlet property="tuesdayLabel" destination="ets-Ye-g72" id="wgg-Md-Wni"/>
                         <outlet property="verticalTableViewSeperator" destination="rkP-bt-Lnq" id="X5Q-qQ-vna"/>

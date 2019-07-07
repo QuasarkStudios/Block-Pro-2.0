@@ -17,7 +17,7 @@ protocol BlockDeleted {
 class BlockPopoverViewController: UIViewController {
 
     let realm = try! Realm()
-    //var realmData: Results<Block>?
+    var currentDateObject: TimeBlocksDate?
     
     let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
     
@@ -47,23 +47,19 @@ class BlockPopoverViewController: UIViewController {
     @IBOutlet weak var exitButton: UIButton!
     
     var blockID: String = ""
+    var notificationID: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        
-        viewAdjustments()
-        //configureBigBlock()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
         configureBigBlock()
+        viewAdjustments()
     }
     
+    //Function responsible for adjusting elements of the bigBlock
     func viewAdjustments () {
        
         //bigTimeBlock View Adjustments
-        bigTimeBlock.backgroundColor = UIColor.flatMint()
         bigTimeBlock.layer.cornerRadius = 0.05 * bigTimeBlock.bounds.size.width
         bigTimeBlock.clipsToBounds = true
         
@@ -104,9 +100,8 @@ class BlockPopoverViewController: UIViewController {
         deleteButton.clipsToBounds = true
     }
     
+    //Function that retrieves and sets all the data for the bigBlock
     func configureBigBlock () {
-        
-        print(blockID)
         
         guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
         
@@ -123,6 +118,7 @@ class BlockPopoverViewController: UIViewController {
         note3TextView.text = bigBlockData.note3
     }
 
+    //Function that converts the 24 hour format of the times from Realm to a 12 hour format
     func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
         
         if funcHour == "0" {
@@ -138,7 +134,7 @@ class BlockPopoverViewController: UIViewController {
             return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
         }
         else {
-            return "YOU GOT IT WRONG BEYOTCH"
+            return "Tehee Opps"
         }
     }
     
@@ -148,7 +144,9 @@ class BlockPopoverViewController: UIViewController {
             
             let editBlockView = segue.destination as! Add_Update_BlockViewController
             
-            editBlockView.blockID = blockID
+            editBlockView.blockID = blockID //Setting the blockID in the editBlockView to the blockID of the selected TimeBlock
+            editBlockView.notificationID = notificationID //Setting the notificationID in the editBlockView to the notificationID of the selected TimeBlock
+            editBlockView.currentDateObject = currentDateObject //Setting the currentDateObject of the editBlockView to the currentDateObject of this view
         }
     }
     
@@ -159,8 +157,10 @@ class BlockPopoverViewController: UIViewController {
     
     @IBAction func deleteButton(_ sender: Any) {
 
+        //Setting the title and message of the "deleteAlert"
         let deleteAlert = UIAlertController(title: "Delete Time Block", message: "Are you sure you would like to delete this Time Block?", preferredStyle: .alert)
         
+        //Setting the delete action of the deleteAlert
         let deleteAction = UIAlertAction(title: "Delete", style: .default) { (deleteAction) in
             
             self.delegate?.deleteBlock()
@@ -168,12 +168,13 @@ class BlockPopoverViewController: UIViewController {
             self.dismiss(animated: true, completion: nil)
         }
         
+        //Setting the cancel action of the deleteAlert
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
-        deleteAlert.addAction(deleteAction)
-        deleteAlert.addAction(cancelAction)
+        deleteAlert.addAction(deleteAction) //Adds the delete action to the alert
+        deleteAlert.addAction(cancelAction) //Adds the cancel action to the alert
         
-        present(deleteAlert, animated: true, completion: nil)
+        present(deleteAlert, animated: true, completion: nil) //Presents the deleteAlert
         
     }
     
