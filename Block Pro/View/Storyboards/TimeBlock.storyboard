@@ -299,7 +299,7 @@
                         <outlet property="verticalTableViewSeperator" destination="rkP-bt-Lnq" id="X5Q-qQ-vna"/>
                         <outlet property="wednesdayLabel" destination="ht3-0s-UFd" id="WcO-EQ-2a4"/>
                         <outlet property="weeklyContainer" destination="Yu2-8S-Aed" id="4Pf-eb-qP1"/>
-                        <segue destination="Mbg-tS-1pY" kind="presentation" identifier="moveToAddBlockView" modalTransitionStyle="flipHorizontal" id="XNG-de-0He"/>
+                        <segue destination="Mbg-tS-1pY" kind="presentation" identifier="moveToAddBlockView" modalTransitionStyle="coverVertical" id="XNG-de-0He"/>
                         <segue destination="3Ks-03-1b0" kind="presentation" identifier="presentBlockPopover" modalPresentationStyle="overCurrentContext" modalTransitionStyle="crossDissolve" id="mTq-Bj-12n"/>
                     </connections>
                 </viewController>

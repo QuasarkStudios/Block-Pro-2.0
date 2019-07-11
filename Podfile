@@ -9,6 +9,8 @@ target 'Block Pro' do
 pod 'RealmSwift'
 pod 'ChameleonFramework'
 pod 'JTAppleCalendar'
+pod 'Firebase/Core'
+pod 'Firebase/Firestore'
 
 end
 

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 import RealmSwift
 import UserNotifications
 
@@ -45,6 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         
+        FirebaseApp.configure()
         
         return true
     }

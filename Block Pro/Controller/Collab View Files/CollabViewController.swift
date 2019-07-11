@@ -7,15 +7,18 @@
 //
 
 import UIKit
+import Firebase
 
 class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     
     @IBOutlet weak var friendsButton: UIBarButtonItem!
     @IBOutlet weak var createCollabButton: UIBarButtonItem!
-    
     @IBOutlet weak var upcomingCollabTableView: UITableView!
     
+    var docRef: DocumentReference!
+    
+    let dataToSave: [String : String] = ["quote": "You can do it!!!", "author": "Nimat Azeez"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +29,12 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
         upcomingCollabTableView.register(UINib(nibName: "UpcomingCollabTableCell", bundle: nil), forCellReuseIdentifier: "UpcomingCollabCell")
         
         upcomingCollabTableView.rowHeight = 105
+        
+        docRef = Firestore.firestore().collection("sampleData").document("inspiration")
+        //Can also do
+        //docRef = Firestore.firestore().document("sampleData/inspiration")
+        
+        testFirebase()
         
     }
     
@@ -57,8 +66,32 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
+        fetchData()
+        //performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
     }
-
+    
+    func testFirebase () {
+        docRef.setData(dataToSave) { (error) in
+            
+            if let error = error {
+                print("Oh no! Got an error: \(error.localizedDescription)")
+            }
+            else {
+                print ("Data has been saved")
+            }
+            
+        }
+    }
+    
+    func fetchData () {
+        
+        docRef.getDocument { (docSnapshop, error) in
+            guard let docSnapshot = docSnapshop, docSnapshot.exists else { return }
+                let myData = docSnapshot.data()
+            let latestQuote = myData!["quote"] as? String ?? ""
+            let quoteAuthor = myData!["author"] as? String ?? "(none)"
+                print ("\(latestQuote) - \(quoteAuthor)")
+        }
+    }
 
 }
