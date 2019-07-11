@@ -21,6 +21,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         print (Realm.Configuration.defaultConfiguration.fileURL!) //Used to locate where our Realm database is
         
+        //Sets the intial view of the tabBar to be the TimeBlock view
+        let tabBarController = self.window?.rootViewController as! UITabBarController
+        tabBarController.selectedIndex = 2
+
+        
         do {
             let realm = try Realm() //Creation of a new object from the Realm class
         } catch {
@@ -65,9 +70,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
         
-        //Sets the intial view of the tabBar to be the TimeBlock view 
-        let tabBarController = self.window?.rootViewController as! UITabBarController
-        tabBarController.selectedIndex = 2
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

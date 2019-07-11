@@ -434,7 +434,7 @@
                                 </button>
                             </subviews>
                         </view>
-                        <blurEffect style="light"/>
+                        <blurEffect style="dark"/>
                     </visualEffectView>
                     <connections>
                         <outlet property="alphaView" destination="4b6-Ol-Dde" id="QzW-xT-FIu"/>

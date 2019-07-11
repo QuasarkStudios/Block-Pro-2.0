@@ -8,6 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */; };
+		0D23076322D299DC00A12393 /* CollabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23076222D299DC00A12393 /* CollabViewController.swift */; };
+		0D23076C22D29FE900A12393 /* UpcomingCollabTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23076A22D29FE900A12393 /* UpcomingCollabTableCell.swift */; };
+		0D23076D22D29FE900A12393 /* UpcomingCollabTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D23076B22D29FE900A12393 /* UpcomingCollabTableCell.xib */; };
+		0D23076F22D3B31D00A12393 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23076E22D3B31D00A12393 /* FriendsViewController.swift */; };
+		0D23077222D3B5E000A12393 /* FriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23077022D3B5E000A12393 /* FriendsTableViewCell.swift */; };
+		0D23077322D3B5E000A12393 /* FriendsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D23077122D3B5E000A12393 /* FriendsTableViewCell.xib */; };
+		0D23077622D3DB6D00A12393 /* SelectedFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23077522D3DB6D00A12393 /* SelectedFriendViewController.swift */; };
+		0D23077822D580CF00A12393 /* NewCollabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23077722D580CF00A12393 /* NewCollabViewController.swift */; };
+		0D23077A22D6CD9900A12393 /* CollabBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23077922D6CD9900A12393 /* CollabBlockViewController.swift */; };
 		0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECEF228FB55600CC9180 /* AppDelegate.swift */; };
 		0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */; };
 		0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CECF3228FB55600CC9180 /* Main.storyboard */; };
@@ -18,8 +27,6 @@
 		0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CED142291EDE200CC9180 /* CustomBlockTableCell.swift */; };
 		0D2CED172291EDE200CC9180 /* CustomBlockTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */; };
 		0D93300822927C7500B6191D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300722927C7500B6191D /* Block.swift */; };
-		0D9330102293720200B6191D /* CustomAddBlockTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300E2293720200B6191D /* CustomAddBlockTableCell.swift */; };
-		0D9330112293720200B6191D /* CustomAddBlockTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D93300F2293720200B6191D /* CustomAddBlockTableCell.xib */; };
 		0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83422A84833008BECAE /* FreeTime.storyboard */; };
 		0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83622A84862008BECAE /* Pomodoro.storyboard */; };
 		0DA9F83922A84879008BECAE /* TimeBlock.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83822A84879008BECAE /* TimeBlock.storyboard */; };
@@ -37,6 +44,15 @@
 
 /* Begin PBXFileReference section */
 		0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Add_Update_BlockViewController.swift; sourceTree = "<group>"; };
+		0D23076222D299DC00A12393 /* CollabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabViewController.swift; sourceTree = "<group>"; };
+		0D23076A22D29FE900A12393 /* UpcomingCollabTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingCollabTableCell.swift; sourceTree = "<group>"; };
+		0D23076B22D29FE900A12393 /* UpcomingCollabTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpcomingCollabTableCell.xib; sourceTree = "<group>"; };
+		0D23076E22D3B31D00A12393 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
+		0D23077022D3B5E000A12393 /* FriendsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewCell.swift; sourceTree = "<group>"; };
+		0D23077122D3B5E000A12393 /* FriendsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendsTableViewCell.xib; sourceTree = "<group>"; };
+		0D23077522D3DB6D00A12393 /* SelectedFriendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedFriendViewController.swift; sourceTree = "<group>"; };
+		0D23077722D580CF00A12393 /* NewCollabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCollabViewController.swift; sourceTree = "<group>"; };
+		0D23077922D6CD9900A12393 /* CollabBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabBlockViewController.swift; sourceTree = "<group>"; };
 		0D2CECEC228FB55600CC9180 /* Block Pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Block Pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D2CECEF228FB55600CC9180 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockViewController.swift; sourceTree = "<group>"; };
@@ -49,8 +65,6 @@
 		0D2CED142291EDE200CC9180 /* CustomBlockTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBlockTableCell.swift; sourceTree = "<group>"; };
 		0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomBlockTableCell.xib; sourceTree = "<group>"; };
 		0D93300722927C7500B6191D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
-		0D93300E2293720200B6191D /* CustomAddBlockTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAddBlockTableCell.swift; sourceTree = "<group>"; };
-		0D93300F2293720200B6191D /* CustomAddBlockTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomAddBlockTableCell.xib; sourceTree = "<group>"; };
 		0DA9F83422A84833008BECAE /* FreeTime.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FreeTime.storyboard; sourceTree = "<group>"; };
 		0DA9F83622A84862008BECAE /* Pomodoro.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Pomodoro.storyboard; sourceTree = "<group>"; };
 		0DA9F83822A84879008BECAE /* TimeBlock.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TimeBlock.storyboard; sourceTree = "<group>"; };
@@ -82,6 +96,55 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0D23076022D284F500A12393 /* JTAppleCalendar Files */ = {
+			isa = PBXGroup;
+			children = (
+				0DBF3EA522BB1E7900E180D2 /* DateCell.swift */,
+				0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */,
+			);
+			path = "JTAppleCalendar Files";
+			sourceTree = "<group>";
+		};
+		0D23076122D2851C00A12393 /* TimeBlock View Files  */ = {
+			isa = PBXGroup;
+			children = (
+				0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */,
+				0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */,
+				0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */,
+			);
+			path = "TimeBlock View Files ";
+			sourceTree = "<group>";
+		};
+		0D23076422D299E700A12393 /* Collab View Files */ = {
+			isa = PBXGroup;
+			children = (
+				0D23076222D299DC00A12393 /* CollabViewController.swift */,
+				0D23077722D580CF00A12393 /* NewCollabViewController.swift */,
+				0D23076E22D3B31D00A12393 /* FriendsViewController.swift */,
+				0D23077522D3DB6D00A12393 /* SelectedFriendViewController.swift */,
+				0D23077922D6CD9900A12393 /* CollabBlockViewController.swift */,
+			);
+			path = "Collab View Files";
+			sourceTree = "<group>";
+		};
+		0D23076922D29F6900A12393 /* UpcomingCollabViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				0D23076A22D29FE900A12393 /* UpcomingCollabTableCell.swift */,
+				0D23076B22D29FE900A12393 /* UpcomingCollabTableCell.xib */,
+			);
+			path = UpcomingCollabViewCell;
+			sourceTree = "<group>";
+		};
+		0D23077422D3B5E500A12393 /* FriendsTableViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				0D23077022D3B5E000A12393 /* FriendsTableViewCell.swift */,
+				0D23077122D3B5E000A12393 /* FriendsTableViewCell.xib */,
+			);
+			path = FriendsTableViewCell;
+			sourceTree = "<group>";
+		};
 		0D2CECE3228FB55600CC9180 = {
 			isa = PBXGroup;
 			children = (
@@ -118,11 +181,9 @@
 			isa = PBXGroup;
 			children = (
 				0DBF3E9922B432FD00E180D2 /* TabBarController.swift */,
-				0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */,
-				0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */,
-				0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */,
-				0DBF3EA522BB1E7900E180D2 /* DateCell.swift */,
-				0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */,
+				0D23076422D299E700A12393 /* Collab View Files */,
+				0D23076122D2851C00A12393 /* TimeBlock View Files  */,
+				0D23076022D284F500A12393 /* JTAppleCalendar Files */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -141,6 +202,8 @@
 			children = (
 				0D933012229373B000B6191D /* TimeTableViewCell */,
 				0D933013229373D200B6191D /* BlockTableViewCells */,
+				0D23076922D29F6900A12393 /* UpcomingCollabViewCell */,
+				0D23077422D3B5E500A12393 /* FriendsTableViewCell */,
 			);
 			path = "Custom Cells";
 			sourceTree = "<group>";
@@ -168,8 +231,6 @@
 			children = (
 				0D2CED142291EDE200CC9180 /* CustomBlockTableCell.swift */,
 				0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */,
-				0D93300E2293720200B6191D /* CustomAddBlockTableCell.swift */,
-				0D93300F2293720200B6191D /* CustomAddBlockTableCell.xib */,
 			);
 			path = BlockTableViewCells;
 			sourceTree = "<group>";
@@ -282,11 +343,12 @@
 				0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */,
 				0D2CECF7228FB55800CC9180 /* Assets.xcassets in Resources */,
 				0D2CED172291EDE200CC9180 /* CustomBlockTableCell.xib in Resources */,
-				0D9330112293720200B6191D /* CustomAddBlockTableCell.xib in Resources */,
 				0DA9F83B22A8488E008BECAE /* Collab.storyboard in Resources */,
+				0D23077322D3B5E000A12393 /* FriendsTableViewCell.xib in Resources */,
 				0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */,
 				0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */,
 				0D2CED0B2290829300CC9180 /* CustomTimeTableCell.xib in Resources */,
+				0D23076D22D29FE900A12393 /* UpcomingCollabTableCell.xib in Resources */,
 				0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */,
 				0DA9F83922A84879008BECAE /* TimeBlock.storyboard in Resources */,
 			);
@@ -353,7 +415,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */,
+				0D23076F22D3B31D00A12393 /* FriendsViewController.swift in Sources */,
+				0D23076322D299DC00A12393 /* CollabViewController.swift in Sources */,
+				0D23077222D3B5E000A12393 /* FriendsTableViewCell.swift in Sources */,
+				0D23077822D580CF00A12393 /* NewCollabViewController.swift in Sources */,
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
+				0D23077A22D6CD9900A12393 /* CollabBlockViewController.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
 				0DA9F84122AC7C42008BECAE /* BlockPopoverViewController.swift in Sources */,
 				0D93300822927C7500B6191D /* Block.swift in Sources */,
@@ -361,10 +428,11 @@
 				0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */,
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
 				0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */,
+				0D23077622D3DB6D00A12393 /* SelectedFriendViewController.swift in Sources */,
 				0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */,
+				0D23076C22D29FE900A12393 /* UpcomingCollabTableCell.swift in Sources */,
 				0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */,
 				0DBF3E9A22B432FD00E180D2 /* TabBarController.swift in Sources */,
-				0D9330102293720200B6191D /* CustomAddBlockTableCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
