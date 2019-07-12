@@ -8,6 +8,9 @@ PODS:
   - ChameleonFramework (2.1.0):
     - ChameleonFramework/Default (= 2.1.0)
   - ChameleonFramework/Default (2.1.0)
+  - Firebase/Auth (6.4.0):
+    - Firebase/CoreOnly
+    - FirebaseAuth (~> 6.2.0)
   - Firebase/Core (6.4.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 6.0.3)
@@ -25,6 +28,12 @@ PODS:
     - GoogleUtilities/Network (~> 6.0)
     - "GoogleUtilities/NSData+zlib (~> 6.0)"
     - nanopb (~> 0.3)
+  - FirebaseAuth (6.2.0):
+    - FirebaseAuthInterop (~> 1.0)
+    - FirebaseCore (~> 6.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.2)
+    - GoogleUtilities/Environment (~> 6.2)
+    - GTMSessionFetcher/Core (~> 1.1)
   - FirebaseAuthInterop (1.0.0)
   - FirebaseCore (6.0.4):
     - GoogleUtilities/Environment (~> 6.0)
@@ -88,6 +97,7 @@ PODS:
     - gRPC-Core/Interface (= 1.21.0)
     - nanopb (~> 0.3)
   - gRPC-Core/Interface (1.21.0)
+  - GTMSessionFetcher/Core (1.2.2)
   - JTAppleCalendar (7.1.7)
   - leveldb-library (1.20)
   - nanopb (0.3.901):
@@ -104,6 +114,7 @@ PODS:
 
 DEPENDENCIES:
   - ChameleonFramework
+  - Firebase/Auth
   - Firebase/Core
   - Firebase/Firestore
   - JTAppleCalendar
@@ -115,6 +126,7 @@ SPEC REPOS:
     - ChameleonFramework
     - Firebase
     - FirebaseAnalytics
+    - FirebaseAuth
     - FirebaseAuthInterop
     - FirebaseCore
     - FirebaseFirestore
@@ -123,6 +135,7 @@ SPEC REPOS:
     - GoogleUtilities
     - "gRPC-C++"
     - gRPC-Core
+    - GTMSessionFetcher
     - JTAppleCalendar
     - leveldb-library
     - nanopb
@@ -135,6 +148,7 @@ SPEC CHECKSUMS:
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   Firebase: 9445469655a98e9010737f4bc4720e5bda465873
   FirebaseAnalytics: 69fe25866d2ec87c6f02d72c3c9a82bce9c065a0
+  FirebaseAuth: 68cfa47997f53d29ce978e7a615fb78d7925fcbe
   FirebaseAuthInterop: 0ffa57668be100582bb7643d4fcb7615496c41fc
   FirebaseCore: 7ea99e200f0024262650be56623fbe6a7bef1707
   FirebaseFirestore: f9d8dbe06cb1e50b5025d0d9ece41e173d0c7e00
@@ -143,6 +157,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: dddd0d5b60f75bbd338da76587d6f667ec353b23
   "gRPC-C++": 9dfe7b44821e7b3e44aacad2af29d2c21f7cde83
   gRPC-Core: c9aef9a261a1247e881b18059b84d597293c9947
+  GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
   JTAppleCalendar: 96da4d8388fa6dc82d6a60d41ef36a015e167e2f
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
@@ -150,6 +165,6 @@ SPEC CHECKSUMS:
   Realm: c204f1a890f07dea43b14132a6aad118c054b8f2
   RealmSwift: 4d3c9233544b9cd08a8913e0872b9038eb99b054
 
-PODFILE CHECKSUM: e8dbd39fe481df97a339bfba481516c5583d54aa
+PODFILE CHECKSUM: 861d3824040bf64b3f4ff4e5fb3865aa6c7a48ae
 
 COCOAPODS: 1.5.3

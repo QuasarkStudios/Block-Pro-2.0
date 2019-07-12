@@ -40,6 +40,7 @@
 		0DBF3E9A22B432FD00E180D2 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9922B432FD00E180D2 /* TabBarController.swift */; };
 		0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA522BB1E7900E180D2 /* DateCell.swift */; };
 		0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */; };
+		0DDDA64F22D7D61B00B69A4E /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA64E22D7D61B00B69A4E /* LogInViewController.swift */; };
 		561AFCE3BCA2CC53CAB19872 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,7 @@
 		0DBF3E9922B432FD00E180D2 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		0DBF3EA522BB1E7900E180D2 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHeader.swift; sourceTree = "<group>"; };
+		0DDDA64E22D7D61B00B69A4E /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		991FA64DF47C5695E2C3A1F0 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
 		FFB4066A6F6866CBFB450C85 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 		0D23076422D299E700A12393 /* Collab View Files */ = {
 			isa = PBXGroup;
 			children = (
+				0DDDA64E22D7D61B00B69A4E /* LogInViewController.swift */,
 				0D23076222D299DC00A12393 /* CollabViewController.swift */,
 				0D23077722D580CF00A12393 /* NewCollabViewController.swift */,
 				0D23076E22D3B31D00A12393 /* FriendsViewController.swift */,
@@ -372,6 +375,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
 				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
@@ -388,6 +392,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTAppleCalendar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
@@ -440,6 +445,7 @@
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
 				0D23077A22D6CD9900A12393 /* CollabBlockViewController.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
+				0DDDA64F22D7D61B00B69A4E /* LogInViewController.swift in Sources */,
 				0DA9F84122AC7C42008BECAE /* BlockPopoverViewController.swift in Sources */,
 				0D93300822927C7500B6191D /* Block.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,

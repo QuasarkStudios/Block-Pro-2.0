@@ -11,6 +11,7 @@ pod 'ChameleonFramework'
 pod 'JTAppleCalendar'
 pod 'Firebase/Core'
 pod 'Firebase/Firestore'
+pod 'Firebase/Auth'
 
 end
 

@@ -18,6 +18,8 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     var docRef: DocumentReference!
     
+    var handle: AuthStateDidChangeListenerHandle?
+    
     let dataToSave: [String : String] = ["quote": "You can do it!!!", "author": "Nimat Azeez"]
     
     override func viewDidLoad() {
@@ -30,11 +32,13 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         upcomingCollabTableView.rowHeight = 105
         
-        docRef = Firestore.firestore().collection("sampleData").document("inspiration")
-        //Can also do
-        //docRef = Firestore.firestore().document("sampleData/inspiration")
+        //docRef = Firestore.firestore().collection("sampleData").document("inspiration")
+//        //Can also do
+//        //docRef = Firestore.firestore().document("sampleData/inspiration")
+//
+       // testFirebase()
         
-        testFirebase()
+        performSegue(withIdentifier: "moveToLogIn", sender: self)
         
     }
     
@@ -93,5 +97,60 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 print ("\(latestQuote) - \(quoteAuthor)")
         }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "moveToLogIn" {
+            
+            let login_registerVC = segue.destination as! LogInViewController
+            login_registerVC.attachListenerDelegate = self
+            login_registerVC.registerUserDelegate = self
+        }
+    }
+}
 
+extension CollabViewController: UserSignIn {
+    
+    func attachListener() {
+        
+        //ProgressHUD.dismiss()
+        //ProgressHUD.showSuccess("Logged In!")
+        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
+            
+            if let user = user {
+                let uid = user.uid
+                let email = user.email
+
+                
+                print (uid, email)
+            }
+            else {
+                print("damn")
+            }
+        }
+    }
+}
+
+extension CollabViewController: UserRegistration {
+    
+    func newUser(_ firstName: String, _ lastName: String) {
+        
+        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
+            
+            if let user = user {
+                let uid = user.uid
+                let email = user.email
+                
+                print("check")
+                self.docRef = Firestore.firestore().collection("Users").document(uid)
+                self.docRef.setData(["first name" : firstName, "second name" : lastName])
+                
+                print (uid, email)
+            }
+            else {
+                print("damn")
+            }
+        }
+        
+    }
 }
