@@ -141,9 +141,8 @@ extension CollabViewController: UserRegistration {
                 let uid = user.uid
                 let email = user.email
                 
-                print("check")
                 self.docRef = Firestore.firestore().collection("Users").document(uid)
-                self.docRef.setData(["first name" : firstName, "second name" : lastName])
+                self.docRef.setData(["first name" : firstName, "last name" : lastName])
                 
                 print (uid, email)
             }

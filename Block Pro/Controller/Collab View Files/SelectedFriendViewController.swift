@@ -26,12 +26,16 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     @IBOutlet weak var deleteFriendButton: UIButton!
     
     @IBOutlet weak var dismissTableViewIndicator: UIButton!
-    @IBOutlet weak var dismissTableViewButton: UIButton!
+    @IBOutlet weak var dismissGestureView: UIView!
     @IBOutlet weak var exitButton: UIButton!
     
     var collabSelectedDelegate: CollabSelected?
     
     var timer: Timer?
+    
+    var dismissViewOrigin: CGPoint! //Variable that holds the original position of the "dismissView"
+    var dismissIndicatorOrigin: CGPoint! //Variable that holds the original position of the "dismissIndicator"
+    var tableViewOrigin: CGPoint! //Variable that holds the original position of the "tableView"
     
     var animateButtonTracker: Bool = true
     var animateDown: Bool = true
@@ -61,10 +65,11 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         deleteFriendButton.clipsToBounds = true
         
         dismissTableViewIndicator.frame.origin.y = 525
-        dismissTableViewButton.isEnabled = false
         
         exitButton.layer.cornerRadius = 0.5 * exitButton.bounds.size.width
         exitButton.clipsToBounds = true
+        
+        addPanGesture(view: dismissGestureView) //Function that adds the pan gesture to the "dismissGestureView"
         
     }
     
@@ -95,6 +100,103 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
     }
     
+    func addPanGesture (view: UIView) {
+        
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:))) //Initialization of the pan gesture
+        
+        view.addGestureRecognizer(pan) //Adds the pan gesture to the view that was passed in
+    }
+    
+    @objc func handlePan (sender: UIPanGestureRecognizer) {
+        
+        let dismissView = sender.view!
+        
+        switch sender.state {
+            
+        //Case that handles when the gesture begins and changes
+        case .began, .changed:
+            
+            moveViewWithPan(dismissView: dismissView, dismissIndicator: dismissTableViewIndicator, tableView: upcoming_historyTableView, sender: sender)
+            
+        //Case that handles when the gesture has ended
+        case .ended:
+            
+            //If the dimissIndicator has reached a certain point when the gesture ends, dismiss it along with the "dismissView", and the tableView
+            if dismissTableViewIndicator.frame.origin.y >= 250 {
+                
+                self.dismissView(dismissView: dismissView, dismissIndicator: dismissTableViewIndicator, tableView: upcoming_historyTableView)
+            }
+            
+                //Otherwise, return them to their origin point
+            else {
+                returnViewToOrigin(dismissView: dismissView, dismissIndicator: dismissTableViewIndicator, tableView: upcoming_historyTableView)
+            }
+            
+        default:
+            break
+        }
+    }
+    
+    //Function that handles when the pan gesture is taking place
+    func moveViewWithPan (dismissView: UIView, dismissIndicator: UIView, tableView: UIView, sender: UIPanGestureRecognizer) {
+        
+        let translation = sender.translation(in: friendView) //The translation of the pan gesture in the coordinate system of the specified view
+        
+        animateButtonTracker = false
+        animateDown = true
+        timer?.invalidate()
+        
+        dismissView.center = CGPoint(x: dismissView.center.x, y: dismissView.center.y + translation.y)
+        dismissIndicator.center = CGPoint(x: dismissIndicator.center.x, y: dismissIndicator.center.y + translation.y)
+        tableView.center = CGPoint(x: tableView.center.x, y: tableView.center.y + translation.y)
+        
+        sender.setTranslation(CGPoint.zero, in: friendView) //Sets the translation value in the coordinate system of the specified view
+    }
+    
+    //Function that returns the views back to their origin point
+    func returnViewToOrigin (dismissView: UIView, dismissIndicator: UIView, tableView: UIView) {
+        
+        //Restarting the timer and animation
+        let date = Date()
+        timer = Timer(fireAt: date, interval: 3, target: self, selector: #selector(self.animateDismissButton), userInfo: nil, repeats: true)
+        animateButtonTracker = true
+        
+        UIView.animate(withDuration: 0.2, animations: {
+            
+            dismissView.frame.origin = self.dismissViewOrigin
+            dismissIndicator.frame = CGRect(x: 103, y: 80, width: 100, height: 35)
+            tableView.frame.origin = self.tableViewOrigin
+            
+        }) { (finished: Bool) in
+            RunLoop.main.add(self.timer!, forMode: .common)
+        }
+    }
+    
+    //Function that dismisses the views
+    func dismissView (dismissView: UIView, dismissIndicator: UIView, tableView: UIView) {
+        
+        UIView.animate(withDuration: 0.2, animations: {
+            
+            dismissIndicator.frame.origin.y = 500
+            tableView.frame.origin.y = 500
+            
+        }) { (finished: Bool) in
+            UIView.animate(withDuration: 0.2) {
+                
+                self.newCollabButton.frame.origin.x = 23
+                self.upcomingButton.frame.origin.x = 23
+                self.historyButton.frame.origin.x = 23
+                self.deleteFriendButton.frame.origin.x = 23
+            }
+        }
+        
+        //Ending the timer and the animations
+        animateButtonTracker = false
+        animateDown = true
+        timer?.invalidate()
+    }
+    
+    
     @objc func animateDismissButton (timer: Timer) {
 
         print("check")
@@ -111,6 +213,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                     
                     self.animateDown = false
                 }
+                dismissIndicatorOrigin = CGPoint(x: 133, y: 100)
             }
             
             else if animateDown == false {
@@ -124,22 +227,22 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                 }) { (finished: Bool) in
                     self.animateDown = true
                 }
+                dismissIndicatorOrigin = CGPoint(x: 103, y: 80)
             }
         }
         print(animateDown)
-
+        
     }
 
     
     
     @IBAction func upcomingButton(_ sender: Any) {
         
-        animateButtonTracker = true
-        
         let date = Date()
         timer = Timer(fireAt: date, interval: 3, target: self, selector: #selector(self.animateDismissButton), userInfo: nil, repeats: true)
+        animateButtonTracker = true
         
-        dismissTableViewButton.isEnabled = true
+        //dismissTableViewButton.isEnabled = true
         
         UIView.animate(withDuration: 0.2, animations: {
             
@@ -151,26 +254,25 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }) { (finished: Bool) in
             UIView.animate(withDuration: 0.2, animations: {
                 
+                self.dismissGestureView.frame.origin.y = 75
                 self.dismissTableViewIndicator.frame.origin.y = 80
                 self.upcoming_historyTableView.frame = CGRect(x: 0, y: 130, width: 306, height: 370)
-                
             }, completion: { (finished: Bool) in
                 RunLoop.main.add(self.timer!, forMode: .common)
-                
             })
-            
         }
         
+        dismissViewOrigin = CGPoint(x: 8, y: 75)
+        tableViewOrigin = CGPoint(x: 0, y: 130)
     }
     
     @IBAction func historyButton(_ sender: Any) {
         
-        animateButtonTracker = true
-        
         let date = Date()
         timer = Timer(fireAt: date, interval: 3, target: self, selector: #selector(self.animateDismissButton), userInfo: nil, repeats: true)
+        animateButtonTracker = true
         
-        dismissTableViewButton.isEnabled = true
+        //dismissTableViewButton.isEnabled = true
         
         UIView.animate(withDuration: 0.2, animations: {
             
@@ -182,6 +284,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }) { (finished: Bool) in
             UIView.animate(withDuration: 0.2, animations: {
                 
+                self.dismissGestureView.frame.origin.y = 75
                 self.dismissTableViewIndicator.frame.origin.y = 80
                 self.upcoming_historyTableView.frame = CGRect(x: 0, y: 130, width: 306, height: 370)
                 
@@ -189,15 +292,15 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                 RunLoop.main.add(self.timer!, forMode: .common)
                 
             })
-            
         }
+        
+        dismissViewOrigin = CGPoint(x: 8, y: 75)
+        tableViewOrigin = CGPoint(x: 0, y: 130)
     }
     
     @IBAction func dismissTableViewButton(_ sender: Any) {
         
-        animateButtonTracker = false
-        animateDown = true
-        timer?.invalidate()
+
         
         UIView.animate(withDuration: 0.2, animations: {
             

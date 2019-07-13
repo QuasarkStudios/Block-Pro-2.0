@@ -488,13 +488,10 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <state key="normal" image="icons8-expand-arrow-50"/>
                                         </button>
-                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gwn-yC-Xog">
-                                            <rect key="frame" x="112" y="81" width="83" height="55"/>
+                                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CoG-7s-AFe">
+                                            <rect key="frame" x="8" y="75" width="290" height="53"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <connections>
-                                                <action selector="dismissTableViewButton:" destination="jHn-gl-SHU" eventType="touchUpInside" id="aEf-vM-INB"/>
-                                            </connections>
-                                        </button>
+                                        </view>
                                     </subviews>
                                     <color key="backgroundColor" red="0.98012525579999998" green="0.98137647400000005" blue="0.83891512059999995" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 </view>
@@ -513,7 +510,7 @@
                     </visualEffectView>
                     <connections>
                         <outlet property="deleteFriendButton" destination="dDg-Oh-UUl" id="hfE-d4-eYF"/>
-                        <outlet property="dismissTableViewButton" destination="Gwn-yC-Xog" id="egs-FG-Ow6"/>
+                        <outlet property="dismissGestureView" destination="CoG-7s-AFe" id="N9g-wZ-5wF"/>
                         <outlet property="dismissTableViewIndicator" destination="1rg-eu-Hhf" id="ZnE-1g-Otx"/>
                         <outlet property="exitButton" destination="PQG-KV-ahZ" id="PJh-z1-btb"/>
                         <outlet property="friendView" destination="Hcs-x9-OLJ" id="Zf4-5Y-pEZ"/>
@@ -525,7 +522,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sNT-IJ-WM8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3846" y="-464"/>
+            <point key="canvasLocation" x="3845.5999999999999" y="-464.03940886699507"/>
         </scene>
         <!--Time Block View-->
         <scene sceneID="wR7-h5-cKm">
