@@ -16,7 +16,7 @@ protocol UserSignIn {
 
 protocol UserRegistration {
     
-    func newUser(_ firstName: String, _ lastName: String)
+    func newUser(_ firstName: String, _ lastName: String, _ username: String)
 }
 
 class LogInViewController: UIViewController {
@@ -40,6 +40,7 @@ class LogInViewController: UIViewController {
     
     @IBOutlet weak var firstNameTextField: UITextField!
     @IBOutlet weak var lastNameTextField: UITextField!
+    @IBOutlet weak var usernameTextField: UITextField!
     
     @IBOutlet weak var registerEmailTextField: UITextField!
     @IBOutlet weak var registerPasswordTextField_1: UITextField!
@@ -108,54 +109,47 @@ class LogInViewController: UIViewController {
     
     @IBAction func registerButton(_ sender: Any) {
         
-        if firstNameTextField.text != "" && lastNameTextField.text != "" {
-            
-            if registerEmailTextField.text != "" {
-
-                if (registerPasswordTextField_1.text != "" || registerReenterPasswordTextField_2.text != "") {
-                
-                    if registerPasswordTextField_1.text == registerReenterPasswordTextField_2.text {
-
-                        Auth.auth().createUser(withEmail: registerEmailTextField.text!, password: registerPasswordTextField_1.text!) { authResult, error in
-
-                            if error != nil {
-                                
-                                ProgressHUD.showError(error?.localizedDescription)
-                            }
-                            else {
-
-                                
-                                ProgressHUD.showSuccess("Account Created!")
-                                
-                                self.registerUserDelegate?.newUser(self.firstNameTextField.text!, self.lastNameTextField.text!)
-                                
-                                //self.attachListenerDelegate?.attachListener()
-                                
-                                self.dismiss(animated: true, completion: nil)
-                            }
-                        }
-                    }
-                    
-                    else {
-                        ProgressHUD.showError("Sorry, your passwords don't match. PLease try again!")
-                    }
-                }
-                
-                else {
-                    ProgressHUD.showError("Please finish entering in your password")
-                }
-            }
-            
-            else {
-                ProgressHUD.showError("Please enter in a email address")
-            }
-        }
-        
-        else {
-            ProgressHUD.showError("Please finish entering in your name")
-        }
+        registerUser()
     }
     
+    func registerUser () {
+        
+        if firstNameTextField.text == "" || lastNameTextField.text == "" {
+            ProgressHUD.showError("Please finish entering in your name.")
+        }
+        else if usernameTextField.text == "" {
+            ProgressHUD.showError("Please enter in your username.")
+        }
+        else if registerEmailTextField.text == "" {
+            ProgressHUD.showError("Please enter in a email address.")
+        }
+        else if (registerPasswordTextField_1.text == "" || registerReenterPasswordTextField_2.text == "") {
+            ProgressHUD.showError("Please finish entering in your password.")
+        }
+        else if registerPasswordTextField_1.text != registerReenterPasswordTextField_2.text {
+            ProgressHUD.showError("Sorry, your passwords don't match. Please try again.")
+        }
+        else {
+            
+            Auth.auth().createUser(withEmail: registerEmailTextField.text!, password: registerPasswordTextField_1.text!) { authResult, error in
+                
+                if error != nil {
+                    
+                    ProgressHUD.showError(error?.localizedDescription)
+                }
+                else {
+                    
+                    ProgressHUD.showSuccess("Account Created!")
+                    
+                    self.registerUserDelegate?.newUser(self.firstNameTextField.text!, self.lastNameTextField.text!, self.usernameTextField.text!)
+                    
+                    //self.attachListenerDelegate?.attachListener()
+                    
+                    self.dismiss(animated: true, completion: nil)
+                }
+            }
+        }
+    }
     
     @IBAction func newRegisterButton(_ sender: Any) {
         

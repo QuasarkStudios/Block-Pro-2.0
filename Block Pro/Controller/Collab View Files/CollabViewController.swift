@@ -70,7 +70,7 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        fetchData()
+        //fetchData()
         //performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
     }
     
@@ -133,7 +133,7 @@ extension CollabViewController: UserSignIn {
 
 extension CollabViewController: UserRegistration {
     
-    func newUser(_ firstName: String, _ lastName: String) {
+    func newUser(_ firstName: String, _ lastName: String, _ username: String) {
         
         handle = Auth.auth().addStateDidChangeListener { (auth, user) in
             
@@ -142,7 +142,7 @@ extension CollabViewController: UserRegistration {
                 let email = user.email
                 
                 self.docRef = Firestore.firestore().collection("Users").document(uid)
-                self.docRef.setData(["first name" : firstName, "last name" : lastName])
+                self.docRef.setData(["first name" : firstName, "last name" : lastName, "username" : username, "userID" : uid])
                 
                 print (uid, email)
             }

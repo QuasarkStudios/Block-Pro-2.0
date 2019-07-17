@@ -27,6 +27,7 @@
 		0D2CED0B2290829300CC9180 /* CustomTimeTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CED092290829300CC9180 /* CustomTimeTableCell.xib */; };
 		0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CED142291EDE200CC9180 /* CustomBlockTableCell.swift */; };
 		0D2CED172291EDE200CC9180 /* CustomBlockTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */; };
+		0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7522DBE435001D35B4 /* FriendRequest.swift */; };
 		0D93300822927C7500B6191D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300722927C7500B6191D /* Block.swift */; };
 		0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83422A84833008BECAE /* FreeTime.storyboard */; };
 		0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83622A84862008BECAE /* Pomodoro.storyboard */; };
@@ -41,6 +42,10 @@
 		0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA522BB1E7900E180D2 /* DateCell.swift */; };
 		0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */; };
 		0DDDA64F22D7D61B00B69A4E /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA64E22D7D61B00B69A4E /* LogInViewController.swift */; };
+		0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA65022DA59BE00B69A4E /* AddFriendViewController.swift */; };
+		0DDDA65522DA842A00B69A4E /* NewFriendSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA65422DA842A00B69A4E /* NewFriendSearchResults.swift */; };
+		0DDDA65822DB16C500B69A4E /* AddFriendTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA65622DB16C500B69A4E /* AddFriendTableViewCell.swift */; };
+		0DDDA65922DB16C500B69A4E /* AddFriendTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DDDA65722DB16C500B69A4E /* AddFriendTableViewCell.xib */; };
 		561AFCE3BCA2CC53CAB19872 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
@@ -67,6 +72,7 @@
 		0D2CED092290829300CC9180 /* CustomTimeTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomTimeTableCell.xib; sourceTree = "<group>"; };
 		0D2CED142291EDE200CC9180 /* CustomBlockTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBlockTableCell.swift; sourceTree = "<group>"; };
 		0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomBlockTableCell.xib; sourceTree = "<group>"; };
+		0D872F7522DBE435001D35B4 /* FriendRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequest.swift; sourceTree = "<group>"; };
 		0D93300722927C7500B6191D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
 		0DA9F83422A84833008BECAE /* FreeTime.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FreeTime.storyboard; sourceTree = "<group>"; };
 		0DA9F83622A84862008BECAE /* Pomodoro.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Pomodoro.storyboard; sourceTree = "<group>"; };
@@ -83,6 +89,10 @@
 		0DBF3EA522BB1E7900E180D2 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHeader.swift; sourceTree = "<group>"; };
 		0DDDA64E22D7D61B00B69A4E /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		0DDDA65022DA59BE00B69A4E /* AddFriendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendViewController.swift; sourceTree = "<group>"; };
+		0DDDA65422DA842A00B69A4E /* NewFriendSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFriendSearchResults.swift; sourceTree = "<group>"; };
+		0DDDA65622DB16C500B69A4E /* AddFriendTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendTableViewCell.swift; sourceTree = "<group>"; };
+		0DDDA65722DB16C500B69A4E /* AddFriendTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddFriendTableViewCell.xib; sourceTree = "<group>"; };
 		2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		991FA64DF47C5695E2C3A1F0 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
 		FFB4066A6F6866CBFB450C85 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
@@ -126,6 +136,7 @@
 				0D23076222D299DC00A12393 /* CollabViewController.swift */,
 				0D23077722D580CF00A12393 /* NewCollabViewController.swift */,
 				0D23076E22D3B31D00A12393 /* FriendsViewController.swift */,
+				0DDDA65022DA59BE00B69A4E /* AddFriendViewController.swift */,
 				0D23077522D3DB6D00A12393 /* SelectedFriendViewController.swift */,
 				0D23077922D6CD9900A12393 /* CollabBlockViewController.swift */,
 			);
@@ -210,6 +221,7 @@
 				0D933013229373D200B6191D /* BlockTableViewCells */,
 				0D23076922D29F6900A12393 /* UpcomingCollabViewCell */,
 				0D23077422D3B5E500A12393 /* FriendsTableViewCell */,
+				0DDDA65A22DB16D200B69A4E /* AddFriendViewCell */,
 			);
 			path = "Custom Cells";
 			sourceTree = "<group>";
@@ -219,6 +231,8 @@
 			children = (
 				0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */,
 				0D93300722927C7500B6191D /* Block.swift */,
+				0D872F7522DBE435001D35B4 /* FriendRequest.swift */,
+				0DDDA65422DA842A00B69A4E /* NewFriendSearchResults.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -264,6 +278,15 @@
 				0DBF3E9322B03DC700E180D2 /* Block Pro-Bridging-Header.h */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0DDDA65A22DB16D200B69A4E /* AddFriendViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				0DDDA65622DB16C500B69A4E /* AddFriendTableViewCell.swift */,
+				0DDDA65722DB16C500B69A4E /* AddFriendTableViewCell.xib */,
+			);
+			path = AddFriendViewCell;
 			sourceTree = "<group>";
 		};
 		EF9F319EE4A9BB4E5C098186 /* Frameworks */ = {
@@ -345,6 +368,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D2CECFA228FB55800CC9180 /* LaunchScreen.storyboard in Resources */,
+				0DDDA65922DB16C500B69A4E /* AddFriendTableViewCell.xib in Resources */,
 				0DA9F83D22A848A5008BECAE /* Setttings.storyboard in Resources */,
 				0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */,
 				0D2CECF7228FB55800CC9180 /* Assets.xcassets in Resources */,
@@ -438,8 +462,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */,
+				0DDDA65822DB16C500B69A4E /* AddFriendTableViewCell.swift in Sources */,
 				0D23076F22D3B31D00A12393 /* FriendsViewController.swift in Sources */,
 				0D23076322D299DC00A12393 /* CollabViewController.swift in Sources */,
+				0DDDA65522DA842A00B69A4E /* NewFriendSearchResults.swift in Sources */,
 				0D23077222D3B5E000A12393 /* FriendsTableViewCell.swift in Sources */,
 				0D23077822D580CF00A12393 /* NewCollabViewController.swift in Sources */,
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
@@ -452,11 +478,13 @@
 				0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */,
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
 				0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */,
+				0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */,
 				0D23077622D3DB6D00A12393 /* SelectedFriendViewController.swift in Sources */,
 				0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */,
 				0D23076C22D29FE900A12393 /* UpcomingCollabTableCell.swift in Sources */,
 				0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */,
 				0DBF3E9A22B432FD00E180D2 /* TabBarController.swift in Sources */,
+				0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

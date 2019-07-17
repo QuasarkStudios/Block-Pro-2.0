@@ -24,6 +24,21 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
     }
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
+        if section == 0 {
+            return "Pending Friends"
+        }
+        else {
+            return "Friends"
+        }
+        
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
