@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 protocol CollabSelected {
     
@@ -16,6 +17,8 @@ protocol CollabSelected {
 
 class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
+    var db = Firestore.firestore()
+    
     @IBOutlet weak var upcoming_historyTableView: UITableView!
     
     @IBOutlet weak var friendView: UIView!

@@ -430,6 +430,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="friendsTableView" destination="nd9-Jl-g0V" id="OLz-na-fwl"/>
+                        <outlet property="searchBar" destination="q1b-pE-kCD" id="RgH-c7-Gmq"/>
                         <segue destination="jHn-gl-SHU" kind="presentation" identifier="moveToSelectedFriend" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="zny-7C-gOa"/>
                         <segue destination="63B-Tp-sbw" kind="show" identifier="moveToCollabBlockView" id="cQA-cy-9SS"/>
                     </connections>
