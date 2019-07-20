@@ -10,15 +10,16 @@ import UIKit
 
 class UpcomingCollabTableCell: UITableViewCell {
     
-    @IBOutlet weak var collabNameContainer: UIView!
+    @IBOutlet weak var collabContainer: UIView!
+    @IBOutlet weak var collabWithLabel: UILabel!
     @IBOutlet weak var collabNameLabel: UILabel!
     
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        collabNameContainer.layer.cornerRadius = 0.06 * collabNameContainer.bounds.size.width
-        collabNameContainer.clipsToBounds = true
+        collabContainer.layer.cornerRadius = 0.06 * collabContainer.bounds.size.width
+        collabContainer.clipsToBounds = true
         
     }
 

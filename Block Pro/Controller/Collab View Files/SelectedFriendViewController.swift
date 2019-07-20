@@ -17,11 +17,10 @@ protocol CollabSelected {
 
 class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var db = Firestore.firestore()
-    
     @IBOutlet weak var upcoming_historyTableView: UITableView!
     
     @IBOutlet weak var friendView: UIView!
+    @IBOutlet weak var friendName: UILabel!
     
     @IBOutlet weak var newCollabButton: UIButton!
     @IBOutlet weak var upcomingButton: UIButton!
@@ -31,6 +30,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     @IBOutlet weak var dismissTableViewIndicator: UIButton!
     @IBOutlet weak var dismissGestureView: UIView!
     @IBOutlet weak var exitButton: UIButton!
+    
+    var db = Firestore.firestore()
+    var selectedFriend: Friend?
     
     var collabSelectedDelegate: CollabSelected?
     
@@ -73,6 +75,8 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         exitButton.clipsToBounds = true
         
         addPanGesture(view: dismissGestureView) //Function that adds the pan gesture to the "dismissGestureView"
+        
+        friendName.text = selectedFriend!.firstName + " " + selectedFriend!.lastName
         
     }
     

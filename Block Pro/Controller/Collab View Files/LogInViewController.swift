@@ -19,6 +19,7 @@ protocol UserRegistration {
     func newUser(_ firstName: String, _ lastName: String, _ username: String)
 }
 
+
 class LogInViewController: UIViewController {
     
     var attachListenerDelegate: UserSignIn?

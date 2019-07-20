@@ -18,7 +18,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var pendingObjectArray: [PendingFriend] = [PendingFriend]()
     var friendObjectArray: [Friend] = [Friend]()
+    
     var allFriends: [Friend] = [Friend]()
+    var selectedFriend: Friend?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -123,6 +125,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if pendingObjectArray.count == 0 {
+            
+            selectedFriend = friendObjectArray[indexPath.row]
             performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
         }
         
@@ -131,6 +135,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                 rescindFriendRequest(indexPath)
             }
             else {
+                selectedFriend = friendObjectArray[indexPath.row]
                 performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
             }
         }
@@ -310,7 +315,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         if segue.identifier == "moveToSelectedFriend" {
             
             let selectedFriendVC = segue.destination as! SelectedFriendViewController
-            
+            selectedFriendVC.selectedFriend = selectedFriend
             selectedFriendVC.collabSelectedDelegate = self
         }
     }

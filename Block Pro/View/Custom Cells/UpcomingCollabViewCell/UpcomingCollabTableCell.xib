@@ -49,8 +49,9 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="collabNameContainer" destination="9fp-KT-v8d" id="TZK-9A-eKg"/>
+                <outlet property="collabContainer" destination="9fp-KT-v8d" id="YeG-bC-z5s"/>
                 <outlet property="collabNameLabel" destination="9Jx-bJ-XzW" id="knD-UY-iO8"/>
+                <outlet property="collabWithLabel" destination="Uut-gq-vAQ" id="uk3-ES-LlF"/>
             </connections>
             <point key="canvasLocation" x="21.739130434782609" y="157.70089285714286"/>
         </tableViewCell>
