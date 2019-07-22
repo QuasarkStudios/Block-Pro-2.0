@@ -302,7 +302,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         
-        
         rescindRequestAlert.addAction(rescindAction)
         rescindRequestAlert.addAction(cancelAction)
         

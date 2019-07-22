@@ -93,6 +93,8 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
                 cell.textLabel?.text = "No Friend Requests Found"
+                cell.isUserInteractionEnabled = false
+                
                 return cell
             }
             else {
@@ -149,6 +151,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         if tableViewTracker == "Requests" {
             
             presentRequestAlert(indexPath.row)
+            
         }
         
         else {

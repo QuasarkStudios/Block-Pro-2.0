@@ -9,6 +9,11 @@
 import UIKit
 import Firebase
 
+protocol GetNewCollab {
+    
+    func getNewCollab ()
+}
+
 class NewCollabViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
 
     @IBOutlet weak var newCollabView: UIView!
@@ -27,6 +32,8 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @IBOutlet weak var datePickerContainer: UIView!
     @IBOutlet weak var datePicker: UIDatePicker!
+    
+    var getCollabDelegate: GetNewCollab?
     
     var db = Firestore.firestore()
 
@@ -76,7 +83,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         
         friendsTableView.frame = CGRect(x: friendsTableView.frame.origin.x, y: 850, width: friendsTableView.frame.width, height: 810)
         
-        formatter.dateFormat = "MM/dd/yyyy"
+        formatter.dateFormat = "MMMM dd, yyyy"
         dateTextField.text = formatter.string(from: datePicker.date)
         
     }
@@ -218,8 +225,6 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @objc func dateSelected (datePicker: UIDatePicker) {
         
-        formatter.dateFormat = "MM/dd/yyyy"
-        
         dateTextField.text = formatter.string(from: datePicker.date)
         
         //print(formatter.string(from: datePicker.date))
@@ -240,6 +245,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         else {
             createCollab()
             animateButton()
+            getCollabDelegate?.getNewCollab()
         }
         
     }
