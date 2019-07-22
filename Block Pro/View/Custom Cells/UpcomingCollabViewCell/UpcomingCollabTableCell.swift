@@ -12,6 +12,7 @@ class UpcomingCollabTableCell: UITableViewCell {
     
     @IBOutlet weak var collabContainer: UIView!
     @IBOutlet weak var collabWithLabel: UILabel!
+    @IBOutlet weak var seperatorView: UIView!
     @IBOutlet weak var collabNameLabel: UILabel!
     
     

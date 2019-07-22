@@ -32,8 +32,15 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     @IBOutlet weak var exitButton: UIButton!
     
     var db = Firestore.firestore()
+    
+    let currentUser = UserData.singletonUser
+    
     var selectedFriend: Friend?
     
+    var collabObjectArray: [UpcomingCollab] = [UpcomingCollab]()
+    var sectionDateArray: [String] = [String]()
+    var sectionContentArray: [[UpcomingCollab]]?
+
     var collabSelectedDelegate: CollabSelected?
     
     var timer: Timer?
@@ -53,6 +60,8 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         upcoming_historyTableView.register(UINib(nibName: "UpcomingCollabTableCell", bundle: nil), forCellReuseIdentifier: "UpcomingCollabCell")
         
         upcoming_historyTableView.frame = CGRect(x: 0, y: 550, width: 306, height: 370)
+        
+        upcoming_historyTableView.rowHeight = 80
         
         friendView.layer.cornerRadius = 0.1 * friendView.bounds.size.width
         friendView.clipsToBounds = true
@@ -78,19 +87,44 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         friendName.text = selectedFriend!.firstName + " " + selectedFriend!.lastName
         
+        print(selectedFriend!.friendID)
+        
+        getCollabsWithFriend()
+        
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return sectionDateArray.count
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
+        return sectionDateArray[section]
+    }
+    
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        
+        if section < sectionDateArray.count {
+            return sectionContentArray![section].count
+        }
+        else {
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "UpcomingCollabCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "UpcomingCollabCell", for: indexPath) as! UpcomingCollabTableCell
+        
+        print(cell.collabWithLabel.font)
+        
+        reconfigureCollabCell(cell: cell)
+        
+        let collabWithText = sectionContentArray![indexPath.section][indexPath.row].collaborator!["firstName"]! + " " + sectionContentArray![indexPath.section][indexPath.row].collaborator!["lastName"]!
+        
+        cell.collabWithLabel.text = "Collab with " + collabWithText
+        cell.collabNameLabel.text = sectionContentArray![indexPath.section][indexPath.row].collabName
         
         return cell
     }
@@ -100,12 +134,91 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         animateButtonTracker = false
         timer?.invalidate()
         
-        dismiss(animated: true) {
+        dismiss(animated: true) { 
             
             self.collabSelectedDelegate?.performSegue()
         }
         
     }
+    
+    func reconfigureCollabCell (cell: UpcomingCollabTableCell) {
+        
+        cell.collabContainer.frame = CGRect(x: 5, y: 5, width: 296, height: 70)
+        
+        cell.collabWithLabel.frame.origin.y = 8
+        cell.collabWithLabel.font = UIFont(name: ".SFUIText-Bold", size: 13)
+        cell.collabWithLabel.adjustsFontSizeToFitWidth = true
+        
+        cell.seperatorView.frame.origin.y = 32
+        
+        cell.collabNameLabel.frame.origin.y = 32
+        cell.collabNameLabel.font = UIFont(name: ".SFUIText-Bold", size: 20)
+        cell.collabNameLabel.adjustsFontSizeToFitWidth = true
+    }
+    
+    func getCollabsWithFriend () {
+        
+        db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                print(error as Any)
+            }
+            
+            else {
+                if snapshot!.isEmpty {
+                    print ("no collabs")
+                }
+                else {
+                    
+                    for document in snapshot!.documents {
+                        
+                        let upcomingCollab = UpcomingCollab()
+                        
+                        upcomingCollab.collabID = document.data()["collabID"] as! String
+                        upcomingCollab.collabName = document.data()["collabName"] as! String
+                        upcomingCollab.collabDate = document.data()["collabDate"] as! String
+                        upcomingCollab.collaborator = (document.data()["with"] as! [String : String])
+                        
+                        
+                        if upcomingCollab.collaborator!["userID"] == self.selectedFriend!.friendID {
+                            
+                            self.collabObjectArray.append(upcomingCollab)
+                        }
+                    }
+                    
+                    self.collabObjectArray = self.collabObjectArray.sorted(by: {$0.collabDate < $1.collabDate})
+                    self.sortCollabs()
+                    self.upcoming_historyTableView.reloadData()
+                    
+                }
+            }
+            
+        }
+    }
+    
+    func sortCollabs () {
+        
+        sectionDateArray.removeAll()
+        sectionContentArray?.removeAll()
+        
+        for collab in collabObjectArray {
+            
+            if sectionDateArray.contains(collab.collabDate) == false {
+                sectionDateArray.append(collab.collabDate)
+            }
+        }
+        
+        sectionContentArray = Array(repeating: Array(repeating: collabObjectArray[0], count: 0), count: sectionDateArray.count)
+        
+        for collab in collabObjectArray {
+            
+            if let index = sectionDateArray.firstIndex(of: collab.collabDate) {
+                sectionContentArray![index].append(collab)
+            }
+        }
+        
+    }
+    
     
     func addPanGesture (view: UIView) {
         
