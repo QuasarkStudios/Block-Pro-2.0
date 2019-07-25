@@ -73,38 +73,39 @@ class LogInViewController: UIViewController {
     
     @IBAction func loginButton(_ sender: Any) {
         
-        //ProgressHUD.show()
+        logInButton.isEnabled = false
         
-        if loginEmailTextField.text != "" {
-            
-            if loginPasswordTextField.text != "" {
-                
-                Auth.auth().signIn(withEmail: loginEmailTextField.text!, password: loginPasswordTextField.text!) { (user, error) in
-                    
-                    if error != nil {
-                        
-                        ProgressHUD.showError(error?.localizedDescription)
-                    }
-                    else {
-                        
-                        ProgressHUD.showSuccess("Logged In!")
-                        
-                        self.attachListenerDelegate?.attachListener()
-                        
-                        self.dismiss(animated: true, completion: nil)
-                    }
-                }
-            }
-            
-            else {
-                ProgressHUD.showError("Please enter in your password")
-            }
+        #warning("disable log in button and registration button once pressed")
+    
+        
+        if loginEmailTextField.text == "" {
+            ProgressHUD.showError("Please enter in your email")
+            logInButton.isEnabled = true
         }
-        
+        else if loginPasswordTextField.text == "" {
+            ProgressHUD.showError("Please enter in your password")
+            logInButton.isEnabled = true
+        }
         else {
             
-            ProgressHUD.showError("Please enter in your email")
+            Auth.auth().signIn(withEmail: loginEmailTextField.text!, password: loginPasswordTextField.text!) { (user, error) in
+                
+                if error != nil {
+                    
+                    ProgressHUD.showError(error?.localizedDescription)
+                    self.logInButton.isEnabled = true
+                }
+                else {
+                    //ProgressHUD.show()
+                    ProgressHUD.showSuccess("Logged In!")
+                    
+                    self.attachListenerDelegate?.attachListener()
+                    
+                    self.dismiss(animated: true, completion: nil)
+                }
+            }
         }
+        
     }
     
     
@@ -115,20 +116,27 @@ class LogInViewController: UIViewController {
     
     func registerUser () {
         
+        registerButton.isEnabled = false
+        
         if firstNameTextField.text == "" || lastNameTextField.text == "" {
             ProgressHUD.showError("Please finish entering in your name.")
+            registerButton.isEnabled = true
         }
         else if usernameTextField.text == "" {
             ProgressHUD.showError("Please enter in your username.")
+            registerButton.isEnabled = true
         }
         else if registerEmailTextField.text == "" {
             ProgressHUD.showError("Please enter in a email address.")
+            registerButton.isEnabled = true
         }
         else if (registerPasswordTextField_1.text == "" || registerReenterPasswordTextField_2.text == "") {
             ProgressHUD.showError("Please finish entering in your password.")
+            registerButton.isEnabled = true
         }
         else if registerPasswordTextField_1.text != registerReenterPasswordTextField_2.text {
             ProgressHUD.showError("Sorry, your passwords don't match. Please try again.")
+            registerButton.isEnabled = true
         }
         else {
             

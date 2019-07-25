@@ -232,8 +232,8 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                         print("Friend Requests: ", document.data())
                         
                         friendRequest.requesterID = document.data()["userID"] as! String
-                        friendRequest.requesterFirstName = document.data()["first name"] as! String
-                        friendRequest.requesterLastName = document.data()["last name"] as! String
+                        friendRequest.requesterFirstName = document.data()["firstName"] as! String
+                        friendRequest.requesterLastName = document.data()["lastName"] as! String
                         friendRequest.requesterUsername = document.data()["username"] as! String
                         
                         self.requestsObjectArray.append(friendRequest)
@@ -270,8 +270,8 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                         
                         //print("Search Results: ", document.data())
                         
-                        let friendFirstName = document.data()["first name"] as! String
-                        let friendLastName = document.data()["last name"] as! String
+                        let friendFirstName = document.data()["firstName"] as! String
+                        let friendLastName = document.data()["lastName"] as! String
                         let friendID = document.data()["userID"] as! String
                         
                         friendSearchResults.userID = friendID
@@ -301,8 +301,11 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
             self.declineRequest(selectedRequest)
         }
         
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
         handleRequestAlert.addAction(acceptAction)
         handleRequestAlert.addAction(declineAction)
+        handleRequestAlert.addAction(cancelAction)
         
         present(handleRequestAlert, animated: true, completion: nil)
     }
@@ -362,13 +365,12 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
             else {
                 
                 for document in snapshot!.documents {
-                    
-                    let userFirstName = document.data()["first name"] as! String
-                    let userLastName = document.data()["last name"] as! String
+                                        let userFirstName = document.data()["firstName"] as! String
+                    let userLastName = document.data()["lastName"] as! String
                     let username = document.data()["username"] as! String
                     let userID = document.data()["userID"] as! String
                     
-                    let requestDict: [String : String] = [ "userID" : userID, "first name" : userFirstName, "last name" : userLastName, "username" : username]
+                    let requestDict: [String : String] = [ "userID" : userID, "firstName" : userFirstName, "lastName" : userLastName, "username" : username]
                     
                     self.db.collection("Users").document(self.resultsObjectArray[indexPath.row].userID).collection("FriendRequests").document(Auth.auth().currentUser!.uid).setData(requestDict)
                     

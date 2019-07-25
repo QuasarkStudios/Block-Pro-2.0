@@ -117,8 +117,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "UpcomingCollabCell", for: indexPath) as! UpcomingCollabTableCell
         
-        print(cell.collabWithLabel.font)
-        
         reconfigureCollabCell(cell: cell)
         
         let collabWithText = sectionContentArray![indexPath.section][indexPath.row].collaborator!["firstName"]! + " " + sectionContentArray![indexPath.section][indexPath.row].collaborator!["lastName"]!
@@ -158,6 +156,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     
     func getCollabsWithFriend () {
         
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM dd, yyyy"
+        
         db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").getDocuments { (snapshot, error) in
             
             if error != nil {
@@ -186,7 +187,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                         }
                     }
                     
-                    self.collabObjectArray = self.collabObjectArray.sorted(by: {$0.collabDate < $1.collabDate})
+                    self.collabObjectArray = self.collabObjectArray.sorted(by: {formatter.date(from: $0.collabDate)! < formatter.date(from: $1.collabDate)!})
                     self.sortCollabs()
                     self.upcoming_historyTableView.reloadData()
                     

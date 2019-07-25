@@ -227,8 +227,6 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         
         dateTextField.text = formatter.string(from: datePicker.date)
         
-        //print(formatter.string(from: datePicker.date))
-        
     }
     
 

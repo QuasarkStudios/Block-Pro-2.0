@@ -32,6 +32,7 @@
 		0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7922E01F7C001D35B4 /* Friend.swift */; };
 		0D872F7C22E25350001D35B4 /* UserSingleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7B22E25350001D35B4 /* UserSingleton.swift */; };
 		0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7E22E2ABF0001D35B4 /* UpcomingCollab.swift */; };
+		0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F8022E65F8D001D35B4 /* PendingCollab.swift */; };
 		0D93300822927C7500B6191D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300722927C7500B6191D /* Block.swift */; };
 		0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83422A84833008BECAE /* FreeTime.storyboard */; };
 		0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83622A84862008BECAE /* Pomodoro.storyboard */; };
@@ -80,6 +81,7 @@
 		0D872F7922E01F7C001D35B4 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		0D872F7B22E25350001D35B4 /* UserSingleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSingleton.swift; sourceTree = "<group>"; };
 		0D872F7E22E2ABF0001D35B4 /* UpcomingCollab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingCollab.swift; sourceTree = "<group>"; };
+		0D872F8022E65F8D001D35B4 /* PendingCollab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingCollab.swift; sourceTree = "<group>"; };
 		0D93300722927C7500B6191D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
 		0DA9F83422A84833008BECAE /* FreeTime.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FreeTime.storyboard; sourceTree = "<group>"; };
 		0DA9F83622A84862008BECAE /* Pomodoro.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Pomodoro.storyboard; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 			isa = PBXGroup;
 			children = (
 				0D872F7B22E25350001D35B4 /* UserSingleton.swift */,
+				0D872F8022E65F8D001D35B4 /* PendingCollab.swift */,
 				0D872F7E22E2ABF0001D35B4 /* UpcomingCollab.swift */,
 				0D872F7722DEE925001D35B4 /* PendingFriend.swift */,
 				0D872F7922E01F7C001D35B4 /* Friend.swift */,
@@ -482,6 +485,7 @@
 				0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */,
 				0DDDA65822DB16C500B69A4E /* AddFriendTableViewCell.swift in Sources */,
 				0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */,
+				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
 				0D23076F22D3B31D00A12393 /* FriendsViewController.swift in Sources */,
 				0D23076322D299DC00A12393 /* CollabViewController.swift in Sources */,
 				0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */,
