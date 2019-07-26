@@ -519,6 +519,9 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" red="0.49000011609999999" green="1" blue="0.44546259580000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                             <state key="normal" title="Delete Friend"/>
+                                            <connections>
+                                                <action selector="deleteFriendButton:" destination="jHn-gl-SHU" eventType="touchUpInside" id="v7I-ub-2a3"/>
+                                            </connections>
                                         </button>
                                         <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="arz-2O-QTs">
                                             <rect key="frame" x="0.0" y="419" width="306" height="81"/>

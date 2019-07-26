@@ -15,6 +15,11 @@ protocol CollabSelected {
     
 }
 
+protocol FriendDeleted {
+    
+    func reloadFriends ()
+}
+
 class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var upcoming_historyTableView: UITableView!
@@ -33,6 +38,8 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     
     var db = Firestore.firestore()
     
+    let formatter = DateFormatter()
+    
     let currentUser = UserData.singletonUser
     
     var selectedFriend: Friend?
@@ -42,6 +49,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     var sectionContentArray: [[UpcomingCollab]]?
 
     var collabSelectedDelegate: CollabSelected?
+    var friendDeletedDelegate: FriendDeleted?
     
     var timer: Timer?
     
@@ -89,8 +97,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         print(selectedFriend!.friendID)
         
-        getCollabsWithFriend()
+        //getUpcomingCollabs()
         
+//        getHistoricCollabs()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -154,12 +163,13 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         cell.collabNameLabel.adjustsFontSizeToFitWidth = true
     }
     
-    func getCollabsWithFriend () {
+    func getUpcomingCollabs () {
         
-        let formatter = DateFormatter()
+        collabObjectArray.removeAll()
+        
         formatter.dateFormat = "MMMM dd, yyyy"
         
-        db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").getDocuments { (snapshot, error) in
+        db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
             
             if error != nil {
                 print(error as Any)
@@ -180,20 +190,55 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                         upcomingCollab.collabDate = document.data()["collabDate"] as! String
                         upcomingCollab.collaborator = (document.data()["with"] as! [String : String])
                         
-                        
-                        if upcomingCollab.collaborator!["userID"] == self.selectedFriend!.friendID {
-                            
-                            self.collabObjectArray.append(upcomingCollab)
-                        }
+                        self.collabObjectArray.append(upcomingCollab)
                     }
                     
-                    self.collabObjectArray = self.collabObjectArray.sorted(by: {formatter.date(from: $0.collabDate)! < formatter.date(from: $1.collabDate)!})
+                    self.collabObjectArray = self.collabObjectArray.sorted(by: {self.formatter.date(from: $0.collabDate)! < self.formatter.date(from: $1.collabDate)!})
                     self.sortCollabs()
                     self.upcoming_historyTableView.reloadData()
                     
                 }
             }
             
+        }
+    }
+    
+    func getHistoricCollabs () {
+        
+        collabObjectArray.removeAll()
+        
+        formatter.dateFormat = "MMMM dd, yyyy"
+        
+        db.collection("Users").document(currentUser.userID).collection("CollabHistory").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                print(error as Any)
+            }
+            else {
+                
+                if snapshot?.isEmpty == true {
+                    print ("damn")
+                }
+                else {
+                    print("ayeeee")
+                    
+                    for document in snapshot!.documents {
+                    
+                        let historicCollab = UpcomingCollab()
+                        
+                        historicCollab.collabID = document.data()["collabID"] as! String
+                        historicCollab.collabName = document.data()["collabName"] as! String
+                        historicCollab.collabDate = document.data()["collabDate"] as! String
+                        historicCollab.collaborator = (document.data()["with"] as! [String : String])
+                        
+                        self.collabObjectArray.append(historicCollab)
+                    }
+                    
+                    self.collabObjectArray = self.collabObjectArray.sorted(by: {self.formatter.date(from: $0.collabDate)! > self.formatter.date(from: $1.collabDate)!})
+                    self.sortCollabs()
+                    self.upcoming_historyTableView.reloadData()
+                }
+            }
         }
     }
     
@@ -220,6 +265,102 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
     }
     
+    func presentDeleteAlert () {
+        
+        let selectedFriendName: String = selectedFriend!.firstName + " " + selectedFriend!.lastName
+        
+        let deleteAlert = UIAlertController(title: "Delete " + selectedFriendName + "?", message: "All data with " + selectedFriendName + " will also be deleted", preferredStyle: .alert)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (deleteAction) in
+            
+            self.deleteFriend(selectedFriendName)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        deleteAlert.addAction(deleteAction)
+        deleteAlert.addAction(cancelAction)
+        
+        present(deleteAlert, animated: true, completion: nil)
+    }
+    
+    func deleteFriend (_ selectedFriendName: String) {
+        
+        self.db.collection("Users").document(currentUser.userID).collection("Friends").document(selectedFriend!.friendID).delete()
+
+        self.db.collection("Users").document(currentUser.userID).collection("PendingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                print(error as Any)
+            }
+            else {
+                
+                if snapshot?.isEmpty == true {
+                    print("no pending to delete")
+                }
+                
+                else {
+                    
+                    for document in snapshot!.documents {
+                        
+                        let deletedPending = document.data()["collabID"] as! String
+                        
+                        self.db.collection("Users").document(self.currentUser.userID).collection("PendingCollabs").document(deletedPending).delete()
+                    }
+                }
+            }
+        }
+
+        self.db.collection("Users").document(self.currentUser.userID).collection("UpcomingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                print(error as Any)
+            }
+            
+            else {
+                
+                if snapshot?.isEmpty == true {
+                    print("no upcoming to delete")
+                }
+                else {
+                    
+                    for document in snapshot!.documents {
+                        
+                        let deletedUpcoming = document.data()["collabID"] as! String
+                        
+                        self.db.collection("Users").document(self.currentUser.userID).collection("UpcomingCollabs").document(deletedUpcoming).delete()
+                    }
+                }
+            }
+        }
+
+        self.db.collection("Users").document(self.currentUser.userID).collection("CollabHistory").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                print (error as Any)
+            }
+            else {
+                
+                if snapshot?.isEmpty == true {
+                    print("no history to delete")
+                }
+                
+                else {
+                    for document in snapshot!.documents {
+                        
+                        let deletedHistoric = document.data()["collabID"] as! String
+                        
+                        self.db.collection("Users").document(self.currentUser.userID).collection("CollabHistory").document(deletedHistoric).delete()
+                    }
+                }
+            }
+        }
+
+        friendDeletedDelegate?.reloadFriends()
+        
+        dismiss(animated: true, completion: nil)
+        
+    }
     
     func addPanGesture (view: UIView) {
         
@@ -359,6 +500,8 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     
     @IBAction func upcomingButton(_ sender: Any) {
         
+        getUpcomingCollabs()
+        
         let date = Date()
         timer = Timer(fireAt: date, interval: 3, target: self, selector: #selector(self.animateDismissButton), userInfo: nil, repeats: true)
         animateButtonTracker = true
@@ -389,6 +532,8 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     
     @IBAction func historyButton(_ sender: Any) {
         
+        getHistoricCollabs()
+        
         let date = Date()
         timer = Timer(fireAt: date, interval: 3, target: self, selector: #selector(self.animateDismissButton), userInfo: nil, repeats: true)
         animateButtonTracker = true
@@ -417,6 +562,11 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         dismissViewOrigin = CGPoint(x: 8, y: 75)
         tableViewOrigin = CGPoint(x: 0, y: 130)
+    }
+    
+    @IBAction func deleteFriendButton (_ sender: Any) {
+        
+        presentDeleteAlert()
     }
     
     @IBAction func dismissTableViewButton(_ sender: Any) {

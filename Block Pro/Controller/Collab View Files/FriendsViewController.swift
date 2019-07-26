@@ -225,8 +225,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                         
                     }
                     self.pendingObjectArray = self.pendingObjectArray.sorted(by: {$0.pendingLastName < $1.pendingLastName})
+                    self.friendsTableView.reloadData()
                     completion()
-                    //self.friendsTableView.reloadData()
                 }
             }
         }
@@ -315,7 +315,10 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             let selectedFriendVC = segue.destination as! SelectedFriendViewController
             selectedFriendVC.selectedFriend = selectedFriend
+            
             selectedFriendVC.collabSelectedDelegate = self
+            selectedFriendVC.friendDeletedDelegate = self
+            
         }
     }
     
@@ -326,5 +329,17 @@ extension FriendsViewController: CollabSelected {
     func performSegue () {
         
         performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
+    }
+}
+
+extension FriendsViewController: FriendDeleted {
+    
+    func reloadFriends() {
+        
+        friendObjectArray.removeAll()
+        getFriends()
+        friendsTableView.reloadData()
+        
+        ProgressHUD.showSuccess(selectedFriend!.firstName + " " + selectedFriend!.lastName + " has been deleted")
     }
 }

@@ -80,6 +80,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         dateTextField.inputView = UIView()
         
         datePickerContainer.frame.origin.y = 850
+        datePicker.minimumDate = Date()
         
         friendsTableView.frame = CGRect(x: friendsTableView.frame.origin.x, y: 850, width: friendsTableView.frame.width, height: 810)
         

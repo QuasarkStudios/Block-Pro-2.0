@@ -22,6 +22,8 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     let currentUser = UserData.singletonUser
     
+    let formatter = DateFormatter()
+    
     var pendingCollabObjectArray: [PendingCollab] = [PendingCollab]()
     var collabObjectArray: [UpcomingCollab] = [UpcomingCollab]()
     
@@ -377,7 +379,6 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         collabObjectArray.removeAll()
         
-        let formatter = DateFormatter()
         formatter.dateFormat = "MMMM dd, yyyy"
         
         db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").getDocuments { (snapshot, error) in
@@ -408,7 +409,7 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     }
                     
                     //self.collabObjectArray = self.collabObjectArray.sorted(by: {$0.collabDate < $1.collabDate})
-                    self.collabObjectArray = self.collabObjectArray.sorted(by: {formatter.date(from: $0.collabDate)! < formatter.date(from: $1.collabDate)!})
+                    self.collabObjectArray = self.collabObjectArray.sorted(by: {self.formatter.date(from: $0.collabDate)! < self.formatter.date(from: $1.collabDate)!})
                     self.sortCollabs()
                     self.upcomingCollabTableView.reloadData()
                 }
@@ -484,8 +485,46 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
     }
     
-    func addHistoricCollab () {
+    func addHistoricCollabs (completion: @escaping () -> ()) {
         
+        formatter.dateFormat = "MMMM dd, yyyy"
+        
+        let currentDate: Date = formatter.date(from: formatter.string(from: Date()))!
+        
+        db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                print (error as Any)
+            }
+            
+            else {
+                
+                if snapshot?.isEmpty == true {
+                    print ("no collabs")
+                }
+                else {
+                    
+                    for document in snapshot!.documents {
+                        
+                        var collabData: [String : Any] = [:]
+                        
+                        collabData["collabID"] = document.data()["collabID"] as! String
+                        collabData["collabName"] = document.data()["collabName"] as! String
+                        collabData["collabDate"] = document.data()["collabDate"] as! String
+                        collabData["with"] = (document.data()["with"] as! [String : String])
+                        
+                        if self.formatter.date(from: collabData["collabDate"] as! String)! < currentDate {
+                            
+                            self.db.collection("Users").document(self.currentUser.userID).collection("CollabHistory").document(collabData["collabID"] as! String).setData(collabData)
+                            
+                            self.db.collection("Users").document(self.currentUser.userID).collection("UpcomingCollabs").document(collabData["collabID"] as! String).delete()
+                            
+                        }
+                    }
+                }
+                completion()
+            }
+        }
     }
     
     func presentRequestAlert (_ selectedRequest: Int) {
@@ -587,9 +626,11 @@ extension CollabViewController: UserSignIn {
                 let email = user.email
                 
                 self.getUserData(uid, completion: {
-                    self.getCollabs()
-                    self.getCollabRequests()
-                    
+                    self.addHistoricCollabs(completion: {
+                        self.getCollabs()
+                        self.getCollabRequests()
+                        
+                    })
                 })
                 print (uid, email)
             }
