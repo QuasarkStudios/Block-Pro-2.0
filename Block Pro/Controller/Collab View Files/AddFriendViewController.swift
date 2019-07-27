@@ -9,6 +9,7 @@
 import UIKit
 import Firebase
 
+
 class AddFriendViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 
     
@@ -18,6 +19,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
     let db = Firestore.firestore()
     
     var handle: AuthStateDidChangeListenerHandle?
+    
     
     var resultsObjectArray: [SearchResult] = [SearchResult]() 
     var requestsObjectArray: [FriendRequest] = [FriendRequest]()
@@ -381,6 +383,11 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
             }
         }
+    }
+    
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        
+        findFriendRequests()
     }
 }
 

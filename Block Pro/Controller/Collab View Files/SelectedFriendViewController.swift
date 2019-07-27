@@ -9,12 +9,13 @@
 import UIKit
 import Firebase
 
-protocol CollabSelected {
+//Protocol neccasary to move user to Collab Blocks view
+protocol CollabView {
     
-    func performSegue ()
-    
+    func performSegue (_ collabID: String)
 }
 
+//Protocol required to delete a friend
 protocol FriendDeleted {
     
     func reloadFriends ()
@@ -48,7 +49,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     var sectionDateArray: [String] = [String]()
     var sectionContentArray: [[UpcomingCollab]]?
 
-    var collabSelectedDelegate: CollabSelected?
+    var collabBlocksDelegate: CollabView?
     var friendDeletedDelegate: FriendDeleted?
     
     var timer: Timer?
@@ -143,7 +144,10 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         dismiss(animated: true) { 
             
-            self.collabSelectedDelegate?.performSegue()
+            guard let collabID = self.sectionContentArray?[indexPath.section][indexPath.row].collabID else { return }
+            
+                self.collabBlocksDelegate?.performSegue(collabID)
+            print(collabID)
         }
         
     }
@@ -497,7 +501,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     }
 
     
-    
     @IBAction func upcomingButton(_ sender: Any) {
         
         getUpcomingCollabs()
@@ -569,6 +572,12 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         presentDeleteAlert()
     }
     
+    
+    @IBAction func newCollabButton(_ sender: Any) {
+        
+        performSegue(withIdentifier: "moveToCreateCollab", sender: self)
+    }
+    
     @IBAction func dismissTableViewButton(_ sender: Any) {
         
 
@@ -599,6 +608,31 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         dismiss(animated: true, completion: nil)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "moveToCreateCollab" {
+            
+            let createCollabView = segue.destination as! NewCollabViewController
+            
+            createCollabView.selectedFriend = selectedFriend
+            createCollabView.dismissViewDelegate = self
+        }
+    }
+    
 }
+
+extension SelectedFriendViewController: DismissView {
+    
+    func dismissSelectedFriend(_ collabID: String) {
+        
+        dismiss(animated: true) {
+
+            self.collabBlocksDelegate?.performSegue(collabID)
+            print(collabID)
+        }
+    }
+    
+}
+
 
 

@@ -55,6 +55,17 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+        if currentUser.userID != "" {
+            addHistoricCollabs(completion: {
+                self.getCollabs()
+                self.getCollabRequests()
+                
+            })
+        }
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         
         if pendingCollabObjectArray.count > 0 {
@@ -573,6 +584,14 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
     }
 
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        
+        addHistoricCollabs(completion: {
+            self.getCollabs()
+            self.getCollabRequests()
+
+        })
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         

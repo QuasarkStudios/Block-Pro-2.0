@@ -308,6 +308,12 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         present(rescindRequestAlert, animated: true, completion: nil)
     }
     
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        
+        getPendingFriends {
+            self.getFriends()
+        }
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -316,7 +322,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             let selectedFriendVC = segue.destination as! SelectedFriendViewController
             selectedFriendVC.selectedFriend = selectedFriend
             
-            selectedFriendVC.collabSelectedDelegate = self
+            selectedFriendVC.collabBlocksDelegate = self
             selectedFriendVC.friendDeletedDelegate = self
             
         }
@@ -324,9 +330,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
 }
 
-extension FriendsViewController: CollabSelected {
+extension FriendsViewController: CollabView {
     
-    func performSegue () {
+    func performSegue (_ collabID: String) {
         
         performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
     }

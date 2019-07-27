@@ -145,6 +145,7 @@ class LogInViewController: UIViewController {
                 if error != nil {
                     
                     ProgressHUD.showError(error?.localizedDescription)
+                    self.registerButton.isEnabled = true
                 }
                 else {
                     

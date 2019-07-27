@@ -9,9 +9,16 @@
 import UIKit
 import Firebase
 
+//Protocol required to reload collabs on the UpcomingCollabViewController
 protocol GetNewCollab {
     
     func getNewCollab ()
+}
+
+//Protocol required to dismiss the SelectedFriendViewController
+protocol DismissView {
+    
+    func dismissSelectedFriend (_ collabID: String)
 }
 
 class NewCollabViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
@@ -34,11 +41,13 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var datePicker: UIDatePicker!
     
     var getCollabDelegate: GetNewCollab?
+    var dismissViewDelegate: DismissView?
     
     var db = Firestore.firestore()
 
     let currentUser = UserData.singletonUser
     
+    var collabID: String = ""
     var friendObjectArray: [Friend] = [Friend]()
     var selectedFriend: Friend?
     
@@ -87,6 +96,8 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         formatter.dateFormat = "MMMM dd, yyyy"
         dateTextField.text = formatter.string(from: datePicker.date)
         
+        friendPreselected()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -110,18 +121,39 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         let cell = tableView.dequeueReusableCell(withIdentifier: "FriendName", for: indexPath)
         
         cell.backgroundColor = UIColor(hexString: "2E2E2E")
+        cell.tintColor = UIColor.white
         cell.textLabel?.textColor = UIColor.white
+        
         cell.textLabel!.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
-        return cell
+        
+        guard selectedFriend != nil else { return cell }
+        
+            if friendObjectArray[indexPath.row].friendID == selectedFriend?.friendID {
+                cell.accessoryType = .checkmark
+            }
+        
+            return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
         
-        collabWithTextField.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
+            if cell.accessoryType == .none {
+                
+                cell.accessoryType = .checkmark
+                selectedFriend = friendObjectArray[indexPath.row]
+                collabWithTextField.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
+            }
+            else {
+               
+                cell.accessoryType = .none
+                selectedFriend = nil
+                collabWithTextField.text = ""
+        }
         
-        selectedFriend = friendObjectArray[indexPath.row]
+            tableView.deselectRow(at: indexPath, animated: false)
         
-        tableView.deselectRow(at: indexPath, animated: false)
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -152,6 +184,13 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         default:
             break
         }
+    }
+    
+    func friendPreselected () {
+        
+        guard let friend = selectedFriend else { return }
+        
+            collabWithTextField.text! = friend.firstName + " " + friend.lastName
     }
     
     func getFriends () {
@@ -190,7 +229,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func createCollab () {
         
-        let collabID = UUID().uuidString
+        collabID = UUID().uuidString
         
         let collabData: [String : String] = ["collabID" : collabID, "collabName" : collabNameTextField.text!, "collabDate" : dateTextField.text!]
         
@@ -220,7 +259,11 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
             self.buttonAnimationView.clipsToBounds = true
             
         }) { (finished: Bool) in
-            self.dismiss(animated: true, completion: nil)
+
+            self.dismiss(animated: true, completion: {
+                
+                self.dismissViewDelegate?.dismissSelectedFriend(self.collabID)
+            })
         }
     }
     

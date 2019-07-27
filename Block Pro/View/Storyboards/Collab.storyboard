@@ -66,7 +66,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qcN-Cv-65N" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2160.8000000000002" y="849.7536945812808"/>
+            <point key="canvasLocation" x="991" y="827"/>
         </scene>
         <!--New Collab View Controller-->
         <scene sceneID="9UL-NZ-HMJ">
@@ -193,7 +193,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="42P-rZ-sL7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3109.5999999999999" y="1405.4187192118227"/>
+            <point key="canvasLocation" x="1785" y="-299"/>
         </scene>
         <!--Log In View Controller-->
         <scene sceneID="Omu-Wz-jyz">
@@ -392,7 +392,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Sre-qZ-C35" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2160.8000000000002" y="1639.6551724137933"/>
+            <point key="canvasLocation" x="1785" y="1564"/>
         </scene>
         <!--Friends-->
         <scene sceneID="nt0-qp-hYT">
@@ -452,7 +452,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7yp-y3-m2b" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3110" y="111"/>
+            <point key="canvasLocation" x="2540" y="423"/>
         </scene>
         <!--Selected Friend View Controller-->
         <scene sceneID="6sY-X0-DgH">
@@ -495,6 +495,9 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" red="0.49000011609999999" green="1" blue="0.44546259580000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                             <state key="normal" title="New Collab"/>
+                                            <connections>
+                                                <action selector="newCollabButton:" destination="jHn-gl-SHU" eventType="touchUpInside" id="1NG-C1-2ro"/>
+                                            </connections>
                                         </button>
                                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3eU-aG-9bB">
                                             <rect key="frame" x="23" y="214" width="260" height="35"/>
@@ -555,11 +558,12 @@
                         <outlet property="newCollabButton" destination="3xs-bS-Rli" id="6mx-dZ-X9g"/>
                         <outlet property="upcomingButton" destination="3eU-aG-9bB" id="zts-Nb-1kD"/>
                         <outlet property="upcoming_historyTableView" destination="arz-2O-QTs" id="dhV-xZ-Ho2"/>
+                        <segue destination="zxe-O6-hky" kind="presentation" identifier="moveToCreateCollab" id="iTD-aJ-FDE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sNT-IJ-WM8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3884" y="-476.60098522167488"/>
+            <point key="canvasLocation" x="4166" y="-299"/>
         </scene>
         <!--Time Block View-->
         <scene sceneID="wR7-h5-cKm">
@@ -616,7 +620,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="t1b-X4-cIc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4134" y="850"/>
+            <point key="canvasLocation" x="2540" y="1243"/>
         </scene>
         <!--Add Friends-->
         <scene sceneID="o0m-7p-kXi">
@@ -657,7 +661,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="a64-UY-S7B" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4837.6000000000004" y="110.83743842364532"/>
+            <point key="canvasLocation" x="4166" y="423"/>
         </scene>
         <!--Collab-->
         <scene sceneID="fhz-u2-QAR">
@@ -677,7 +681,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Emr-yh-EO7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1250.7246376811595" y="849.77678571428567"/>
+            <point key="canvasLocation" x="-36" y="827"/>
         </scene>
     </scenes>
     <resources>
@@ -686,6 +690,7 @@
         <image name="people" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="qny-Qz-1HN"/>
+        <segue reference="cQA-cy-9SS"/>
+        <segue reference="iTD-aJ-FDE"/>
     </inferredMetricsTieBreakers>
 </document>
