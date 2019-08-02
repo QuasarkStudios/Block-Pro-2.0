@@ -22,6 +22,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     var allFriends: [Friend] = [Friend]()
     var selectedFriend: Friend?
     
+    var collabID: String = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -164,11 +166,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             for friend in friendObjectArray {
                 if friend.firstName.localizedCaseInsensitiveContains(searchBar.text!) == true {
                     filteredFriends.append(friend)
-                    print ("first name check", friend.firstName)
                 }
                 else if friend.lastName.localizedCaseInsensitiveContains(searchBar.text!) == true {
                     filteredFriends.append(friend)
-                    print ("last name check", friend.lastName)
                 }
             }
             
@@ -183,7 +183,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         db.collection("Users").document(Auth.auth().currentUser!.uid).collection("PendingFriends").getDocuments { (snapshot, error) in
             
             if error != nil {
-                print (error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             else {
                 
@@ -197,8 +197,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                     for document in snapshot!.documents {
                         
                         let pendingFriend = PendingFriend()
-                        
-                        print("Pending Friend: ", document.data())
                         
                         if let pendingID = document.data()["friendID"] as? String {
                             
@@ -253,7 +251,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         db.collection("Users").document(Auth.auth().currentUser!.uid).collection("Friends").getDocuments { (snapshot, error) in
             
             if error != nil {
-                print (error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             else {
                 
@@ -266,8 +264,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                     for document in snapshot!.documents {
                        
                         let friend = Friend()
-                        
-                        print("Friend: ", document.data())
                         
                         friend.friendID = document.data()["friendID"] as! String
                         friend.firstName = document.data()["firstName"] as! String
@@ -326,6 +322,12 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             selectedFriendVC.friendDeletedDelegate = self
             
         }
+        
+        else if segue.identifier == "moveToCollabBlockView" {
+            
+            let collabBlockVC = segue.destination as! CollabBlockViewController
+            collabBlockVC.collabID = collabID
+        }
     }
     
 }
@@ -334,6 +336,7 @@ extension FriendsViewController: CollabView {
     
     func performSegue (_ collabID: String) {
         
+        self.collabID = collabID
         performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
     }
 }

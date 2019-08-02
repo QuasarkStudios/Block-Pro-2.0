@@ -198,7 +198,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         db.collection("Users").document(Auth.auth().currentUser!.uid).collection("Friends").getDocuments { (snapshot, error) in
             
             if error != nil {
-                print (error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             else {
                 
@@ -210,8 +210,6 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
                     for document in snapshot!.documents {
                         
                         let friend = Friend()
-                        
-                        print("Friend: ", document.data())
                         
                         friend.friendID = document.data()["friendID"] as! String
                         friend.firstName = document.data()["firstName"] as! String

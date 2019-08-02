@@ -216,7 +216,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         db.collection("Users").document(Auth.auth().currentUser!.uid).collection("FriendRequests").getDocuments { (snapshot, error) in
             
             if error != nil {
-                print (error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             
             else {
@@ -230,8 +230,6 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                     for document in snapshot!.documents {
                         
                         let friendRequest = FriendRequest()
-                        
-                        print("Friend Requests: ", document.data())
                         
                         friendRequest.requesterID = document.data()["userID"] as! String
                         friendRequest.requesterFirstName = document.data()["firstName"] as! String
@@ -254,12 +252,12 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         db.collection("Users").whereField("username", isEqualTo: searchEntry).getDocuments { (snapshot, error) in
 
             if error != nil {
-                print(error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             else {
                 
                 if snapshot?.isEmpty == true {
-                    print ("that nigga dont exist smh")
+                    //print ("that nigga dont exist smh")
                     self.tableViewTracker = "Results"
                     self.resultsTableView.reloadData()
                 }
@@ -269,8 +267,6 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                     let friendSearchResults = SearchResult()
                     
                     for document in snapshot!.documents {
-                        
-                        //print("Search Results: ", document.data())
                         
                         let friendFirstName = document.data()["firstName"] as! String
                         let friendLastName = document.data()["lastName"] as! String
@@ -319,7 +315,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         db.collection("Users").document(requestsObjectArray[selectedRequest].requesterID).collection("PendingFriends").whereField("friendID", isEqualTo: Auth.auth().currentUser!.uid).getDocuments { (snapshot, error) in
             
             if error != nil {
-                print (error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             else {
                 
@@ -361,7 +357,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         db.collection("Users").whereField("userID", isEqualTo: Auth.auth().currentUser!.uid).getDocuments { (snapshot, error) in
             
             if error != nil {
-                print (error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             
             else {

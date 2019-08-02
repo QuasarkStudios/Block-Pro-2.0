@@ -95,12 +95,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         addPanGesture(view: dismissGestureView) //Function that adds the pan gesture to the "dismissGestureView"
         
         friendName.text = selectedFriend!.firstName + " " + selectedFriend!.lastName
-        
-        print(selectedFriend!.friendID)
-        
-        //getUpcomingCollabs()
-        
-//        getHistoricCollabs()
+
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -147,7 +142,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             guard let collabID = self.sectionContentArray?[indexPath.section][indexPath.row].collabID else { return }
             
                 self.collabBlocksDelegate?.performSegue(collabID)
-            print(collabID)
         }
         
     }
@@ -176,12 +170,16 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
             
             if error != nil {
-                print(error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             
             else {
                 if snapshot!.isEmpty {
                     print ("no collabs")
+                    
+                    self.sectionDateArray.removeAll()
+                    self.sectionContentArray?.removeAll()
+                    self.upcoming_historyTableView.reloadData()
                 }
                 else {
                     
@@ -216,7 +214,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         db.collection("Users").document(currentUser.userID).collection("CollabHistory").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
             
             if error != nil {
-                print(error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             else {
                 
@@ -224,7 +222,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                     print ("damn")
                 }
                 else {
-                    print("ayeeee")
                     
                     for document in snapshot!.documents {
                     
@@ -295,7 +292,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         self.db.collection("Users").document(currentUser.userID).collection("PendingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
             
             if error != nil {
-                print(error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             else {
                 
@@ -318,7 +315,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         self.db.collection("Users").document(self.currentUser.userID).collection("UpcomingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
             
             if error != nil {
-                print(error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             
             else {
@@ -341,7 +338,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         self.db.collection("Users").document(self.currentUser.userID).collection("CollabHistory").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
             
             if error != nil {
-                print (error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             else {
                 
@@ -628,7 +625,6 @@ extension SelectedFriendViewController: DismissView {
         dismiss(animated: true) {
 
             self.collabBlocksDelegate?.performSegue(collabID)
-            print(collabID)
         }
     }
     

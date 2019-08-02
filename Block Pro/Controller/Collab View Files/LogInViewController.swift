@@ -88,16 +88,19 @@ class LogInViewController: UIViewController {
         }
         else {
             
+            ProgressHUD.show()
+            
             Auth.auth().signIn(withEmail: loginEmailTextField.text!, password: loginPasswordTextField.text!) { (user, error) in
                 
                 if error != nil {
                     
+                    //ProgressHUD.dismiss()
                     ProgressHUD.showError(error?.localizedDescription)
                     self.logInButton.isEnabled = true
                 }
                 else {
                     //ProgressHUD.show()
-                    ProgressHUD.showSuccess("Logged In!")
+                    //ProgressHUD.showSuccess("Logged In!")
                     
                     self.attachListenerDelegate?.attachListener()
                     

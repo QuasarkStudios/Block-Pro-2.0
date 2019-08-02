@@ -152,11 +152,8 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
             
             if collabObjectArray.count > 0 {
                 
-                print("sectionContent :", sectionContentArray)
-                
                 if let sectionCount = sectionContentArray?[section].count {
-                    print("sectionCount: ", sectionCount)
-//                    print(sectionContentArray![section])
+
                     return sectionCount
                 }
                 else {
@@ -204,7 +201,7 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 else {
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                    cell.textLabel?.text = "You have no Upcoming Collabs"
+                    cell.textLabel?.text = "You have no upcoming Collabs"
                     cell.isUserInteractionEnabled = false
                     return cell
                 }
@@ -369,7 +366,7 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
         db.collection("Users").document(uid).getDocument { (snapshot, error) in
 
             if error != nil {
-                print ("try again")
+                ProgressHUD.showError(error?.localizedDescription)
             }
             else {
                 
@@ -395,7 +392,7 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
         db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").getDocuments { (snapshot, error) in
 
             if error != nil {
-                print (error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
                 
             else {
@@ -407,8 +404,6 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
                     for document in snapshot!.documents {
 
-                        //print("Upcoming Collab: ", document.data())
-
                         let upcomingCollab = UpcomingCollab()
 
                         upcomingCollab.collabID = document.data()["collabID"] as! String
@@ -419,7 +414,6 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
                         self.collabObjectArray.append(upcomingCollab)
                     }
                     
-                    //self.collabObjectArray = self.collabObjectArray.sorted(by: {$0.collabDate < $1.collabDate})
                     self.collabObjectArray = self.collabObjectArray.sorted(by: {self.formatter.date(from: $0.collabDate)! < self.formatter.date(from: $1.collabDate)!})
                     self.sortCollabs()
                     self.upcomingCollabTableView.reloadData()
@@ -440,7 +434,11 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
         }
     
-        sectionContentArray = Array(repeating: Array(repeating: collabObjectArray[0], count: 0), count: sectionDateArray.count)
+        #warning("quick bug fix to prevent crash when user has no upcoming collabs; may require more testing")
+        if collabObjectArray.count > 0 {
+            
+            sectionContentArray = Array(repeating: Array(repeating: collabObjectArray[0], count: 0), count: sectionDateArray.count)
+        }
         
         for collab in collabObjectArray {
             
@@ -464,7 +462,7 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
         db.collection("Users").document(currentUser.userID).collection("PendingCollabs").getDocuments { (snapshot, error) in
             
             if error != nil {
-                print (error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             
             else {
@@ -477,8 +475,6 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
                     for document in snapshot!.documents {
                         
                         let pendingCollab = PendingCollab()
-                        
-                        print(document.data())
                         
                         pendingCollab.collabID = document.data()["collabID"] as! String
                         pendingCollab.collabName = document.data()["collabName"] as! String
@@ -505,7 +501,7 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
         db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").getDocuments { (snapshot, error) in
             
             if error != nil {
-                print (error as Any)
+                ProgressHUD.showError(error?.localizedDescription)
             }
             
             else {
@@ -544,12 +540,10 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         let acceptAction = UIAlertAction(title: "Accept", style: .default) { (acceptAction) in
             self.acceptRequest(selectedRequest)
-            print("accepted")
         }
         
         let declineAction = UIAlertAction(title: "Decline", style: .destructive) { (declineAction) in
             self.declineRequest(selectedRequest)
-            print("decline")
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
