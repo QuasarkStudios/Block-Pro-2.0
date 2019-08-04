@@ -14,6 +14,7 @@ class CollabBlockTableCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     
     @IBOutlet weak var initialContainer: UIView!
+    @IBOutlet weak var initialLabel: UILabel!
     
     @IBOutlet weak var startLabel: UILabel!
     @IBOutlet weak var toLabel: UILabel!

@@ -13,6 +13,7 @@ class CollabBlock {
     var blockID: String = ""
     var notificationID: String = ""
     
+    var creator: [String : String] = ["userID" : "", "firstName" : "", "lastName" : ""]
     var name: String = ""
     var blockCategory: String = ""
     

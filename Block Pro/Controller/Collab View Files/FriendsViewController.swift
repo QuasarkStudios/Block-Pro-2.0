@@ -23,6 +23,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     var selectedFriend: Friend?
     
     var collabID: String = ""
+    var collabName: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -327,6 +328,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             let collabBlockVC = segue.destination as! CollabBlockViewController
             collabBlockVC.collabID = collabID
+            collabBlockVC.collabName = collabName
         }
     }
     
@@ -334,9 +336,10 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
 
 extension FriendsViewController: CollabView {
     
-    func performSegue (_ collabID: String) {
+    func performSegue (_ collabID: String, _ collabName: String) {
         
         self.collabID = collabID
+        self.collabName = collabName
         performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
     }
 }

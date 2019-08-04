@@ -18,20 +18,27 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var addBlockButton: UIBarButtonItem!
     
     let db = Firestore.firestore()
+    let currentUser = UserData.singletonUser
     
     let formatter = DateFormatter()
     
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
+    
     var collabID: String = ""
+    var collabName: String = ""
     
-        var cellAnimated = [String]() //Variable that helps track whether or not a certain cell has been animated onto the screen yet
+    var cellAnimated = [String]() //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
-    typealias blockTuple = ( blockID: String, notificationID: String, name: String, startHour: String, startMinute: String, startPeriod: String, endHour: String, endMinute: String, endPeriod: String, category: String)
-    var functionTuple: blockTuple = (blockID: "", notificationID : "", name: "", startHour: "", startMinute: "", startPeriod: "", endHour: "", endMinute: "", endPeriod: "", category: "")
+    typealias blockTuple = (creator: [String : String], blockID: String, notificationID: String, name: String, startHour: String, startMinute: String, startPeriod: String, endHour: String, endMinute: String, endPeriod: String, category: String)
+    var functionTuple: blockTuple = (creator: ["" : ""], blockID: "", notificationID : "", name: "", startHour: "", startMinute: "", startPeriod: "", endHour: "", endMinute: "", endPeriod: "", category: "")
     
     var blockObjectArray: [CollabBlock] = [CollabBlock]()
     var blockArray = [blockTuple]()
+    
+    var bigBlockID: String = ""
+    var notificationID: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,8 +63,15 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         formatter.dateFormat = "EEEE, MMMM d"
         
         //self.title = formatter.string(from: Date())
-        navigationItem.title = formatter.string(from: Date())
+        navigationItem.title = collabName
         
+//        db.clearPersistence { (error) in
+//
+//            if error != nil {
+//                print("error clearing persistent data:", error)
+//            }
+//        }
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -69,6 +83,11 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
             self.blockTableView.reloadData()
         }
 
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        scrollToFirstBlock()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -103,6 +122,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         if tableView == blockTableView && indexPath.row < blockArray.count {
 
             returnHeight = configureBlockHeight(indexPath: indexPath)
+            print(returnHeight, blockArray[indexPath.row])
             return returnHeight
         }
 
@@ -114,8 +134,10 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        performSegue(withIdentifier: "presentBlockPopover", sender: self)
+        bigBlockID = blockArray[indexPath.row].blockID
+        notificationID = blockArray[indexPath.row].notificationID
         
+        performSegue(withIdentifier: "presentBlockPopover", sender: self)
         tableView.deselectRow(at: indexPath, animated: false)
     }
     
@@ -129,6 +151,23 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         else {
             timeTableView.contentOffset = scrollView.contentOffset
             timeTableView.contentSize.height = scrollView.contentSize.height
+        }
+    }
+    
+    //Function that allows the tableViews to scroll to the first TimeBlock
+    func scrollToFirstBlock() {
+        
+        if blockArray.count != 0 {
+            
+            if blockArray[0].name != "Buffer Block" {
+                let indexPath = NSIndexPath(row: 0, section: 0)
+                blockTableView.scrollToRow(at: indexPath as IndexPath, at: .top, animated: true)
+            }
+            else {
+                let indexPath = NSIndexPath(row: 1, section: 0)
+                blockTableView.scrollToRow(at: indexPath as IndexPath, at: .top, animated: true)
+            }
+            
         }
     }
     
@@ -157,7 +196,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         else {
-                print(blockArray[indexPath.row].name)
+            
                 if blockArray[indexPath.row].name != "Buffer Block" {
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "collabCell", for: indexPath) as! CollabBlockTableCell
@@ -168,6 +207,28 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     
                     cell.cellContainerView.frame = CGRect(x: 0, y: 2, width: 301, height: (cell.frame.height - 2.0)) //POSSIBLY TAKE 1 POINT OFF Y AND 1 OFF HEIGHT TO MAKE CELL LOOK MORE SYMETRICAL
                     
+                    //If the user didn't select a category for this TimeBlock
+                    if blockArray[indexPath.row].category != "" {
+                        cell.cellContainerView.backgroundColor = UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category])
+                    }
+                        //If the user did select a category for this TimeBlock
+                    else {
+                        cell.cellContainerView.backgroundColor = UIColor(hexString: "#EFEFF4")
+                    }
+                    
+                    if blockArray[indexPath.row].creator["userID"] == currentUser.userID {
+                        
+                        cell.initialLabel.text = "Me"
+                        
+                    }
+                    else {
+                        
+                        let firstNameArray = Array(blockArray[indexPath.row].creator["firstName"]!)
+                        let lastNameArray = Array(blockArray[indexPath.row].creator["lastName"]!)
+                        
+                        cell.initialLabel.text = "\(firstNameArray[0])" + "\(lastNameArray[0])"
+                    }
+                    
                     animateBlock(cell, indexPath)
                     
                     return cell
@@ -177,8 +238,6 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
                     cell.isUserInteractionEnabled = false
-                    
-                    print(blockArray[indexPath.row].endMinute)
                     
                     return cell
                     
@@ -191,18 +250,17 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         
         blockObjectArray.removeAll()
         
-        db.collection("Collaborations").document(collabID).collection("CollabBlocks").getDocuments { (snapshot, error) in
+        db.collection("Collaborations").document(collabID).collection("CollabBlocks").addSnapshotListener { (snapshot, error) in
             
             if error != nil {
                 
                 ProgressHUD.showError(error?.localizedDescription)
             }
-            
+                
             else {
                 
                 if snapshot?.isEmpty == true {
-                    
-                    print ("no collab blocks")
+                    print ("no collabblocks")
                 }
                 
                 else {
@@ -210,27 +268,33 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     for document in snapshot!.documents {
                         
                         let collabBlock = CollabBlock()
-                        
+
                         collabBlock.blockID = document.data()["blockID"] as! String
                         collabBlock.notificationID = document.data()["notificationID"] as! String
                         collabBlock.name = document.data()["name"] as! String
+
+                        collabBlock.creator = document.data()["creator"] as! [String : String]
                         
                         collabBlock.startHour = document.data()["startHour"] as! String
                         collabBlock.startMinute = document.data()["startMinute"] as! String
                         collabBlock.startPeriod = document.data()["startPeriod"] as! String
-                        
+
                         collabBlock.endHour = document.data()["endHour"] as! String
                         collabBlock.endMinute = document.data()["endMinute"] as! String
                         collabBlock.endPeriod = document.data()["endPeriod"] as! String
-                        
+
                         collabBlock.blockCategory = document.data()["blockCategory"] as! String
-                        
+
                         self.blockObjectArray.append(collabBlock)
+                        
                     }
-                    
+
                     self.blockTableView.reloadData()
                     completion()
+                    
                 }
+                
+
             }
         }
     }
@@ -270,6 +334,9 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                 bufferBlockTuple.endHour = blocks.value.startHour; bufferBlockTuple.endMinute = blocks.value.startMinute; bufferBlockTuple.endPeriod = blocks.value.startPeriod
                 
                 //Creating the first CollabBlock from the values returned from the sortBlocks function
+                
+                collabBlockTuple.creator = blocks.value.creator
+                
                 collabBlockTuple.name = blocks.value.name
                 collabBlockTuple.startHour = blocks.value.startHour; collabBlockTuple.startMinute = blocks.value.startMinute; collabBlockTuple.startPeriod = blocks.value.startPeriod
                 collabBlockTuple.endHour = blocks.value.endHour; collabBlockTuple.endMinute = blocks.value.endMinute; collabBlockTuple.endPeriod = blocks.value.endPeriod
@@ -301,6 +368,9 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                 if (count + 1) < sortedBlocks.count {
                     
                     //Creating the next CollabBlock from the values returned from the sortBlocks func
+                    
+                    collabBlockTuple.creator = blocks.value.creator
+                    
                     collabBlockTuple.name = blocks.value.name
                     collabBlockTuple.startHour = blocks.value.startHour; collabBlockTuple.startMinute = blocks.value.startMinute; collabBlockTuple.startPeriod = blocks.value.startPeriod
                     collabBlockTuple.endHour = blocks.value.endHour; collabBlockTuple.endMinute = blocks.value.endMinute; collabBlockTuple.endPeriod = blocks.value.endPeriod
@@ -323,6 +393,9 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                 else {
                     
                     //Creating the next CollabBlock from the values returned from the sortBlocks func
+                    
+                    collabBlockTuple.creator = blocks.value.creator
+                    
                     collabBlockTuple.name = blocks.value.name
                     collabBlockTuple.startHour = blocks.value.startHour; collabBlockTuple.startMinute = blocks.value.startMinute; collabBlockTuple.startPeriod = blocks.value.startPeriod
                     collabBlockTuple.endHour = blocks.value.endHour; collabBlockTuple.endMinute = blocks.value.endMinute; collabBlockTuple.endPeriod = blocks.value.endPeriod
@@ -441,10 +514,20 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if segue.identifier == "moveToAddBlockView" {
+        if segue.identifier == "presentBlockPopover" {
+            
+            let bigBlockVC = segue.destination as! CollabBlockPopoverViewController
+            
+            bigBlockVC.collabID = collabID
+            bigBlockVC.blockID = bigBlockID
+            bigBlockVC.notificationID = notificationID
+        }
+        
+        else if segue.identifier == "moveToAddBlockView" {
             
             let addBlockVC = segue.destination as! AUCollabBlockViewController
             addBlockVC.collabID = collabID
+            addBlockVC.selectedView = "Add"
             
             let backItem = UIBarButtonItem()
             backItem.title = "Cancel"

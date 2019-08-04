@@ -25,6 +25,8 @@ class LogInViewController: UIViewController {
     var attachListenerDelegate: UserSignIn?
     var registerUserDelegate: UserRegistration?
     
+    lazy var db = Firestore.firestore()
+    
     @IBOutlet weak var logInContainer: UIView!
     
     @IBOutlet weak var emailLabel: UILabel!
@@ -68,6 +70,9 @@ class LogInViewController: UIViewController {
         
         registerButton.layer.cornerRadius = 0.07 * registerButton.bounds.size.width
         registerButton.clipsToBounds = true
+        
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
     }
     
     
@@ -94,17 +99,16 @@ class LogInViewController: UIViewController {
                 
                 if error != nil {
                     
-                    //ProgressHUD.dismiss()
                     ProgressHUD.showError(error?.localizedDescription)
                     self.logInButton.isEnabled = true
                 }
                 else {
-                    //ProgressHUD.show()
-                    //ProgressHUD.showSuccess("Logged In!")
+
                     
-                    self.attachListenerDelegate?.attachListener()
+//                    self.attachListenerDelegate?.attachListener()
+
                     
-                    self.dismiss(animated: true, completion: nil)
+                    self.performSegue(withIdentifier: "moveToUpcomingCollabs", sender: self)
                 }
             }
         }
@@ -113,11 +117,6 @@ class LogInViewController: UIViewController {
     
     
     @IBAction func registerButton(_ sender: Any) {
-        
-        registerUser()
-    }
-    
-    func registerUser () {
         
         registerButton.isEnabled = false
         
@@ -152,17 +151,34 @@ class LogInViewController: UIViewController {
                 }
                 else {
                     
-                    ProgressHUD.showSuccess("Account Created!")
+                    guard let userID = authResult?.user.uid else { return }
                     
-                    self.registerUserDelegate?.newUser(self.firstNameTextField.text!, self.lastNameTextField.text!, self.usernameTextField.text!)
+                        self.createNewUser(userID, completion: {
+                            
+                            ProgressHUD.showSuccess("Account Created!")
+                            
+                            self.performSegue(withIdentifier: "moveToUpcomingCollabs", sender: self)
+                        })
+                    
+                    //self.registerUserDelegate?.newUser(self.firstNameTextField.text!, self.lastNameTextField.text!, self.usernameTextField.text!)
                     
                     //self.attachListenerDelegate?.attachListener()
                     
-                    self.dismiss(animated: true, completion: nil)
+                    //self.dismiss(animated: true, completion: nil)
                 }
             }
         }
     }
+    
+    func createNewUser (_ userID: String, completion: @escaping () -> ()) {
+        
+        self.db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : self.firstNameTextField.text!, "lastName" : self.lastNameTextField.text!, "username" : self.usernameTextField.text!])
+        
+        completion()
+    }
+    
+    
+    
     
     @IBAction func newRegisterButton(_ sender: Any) {
         
@@ -170,6 +186,8 @@ class LogInViewController: UIViewController {
             
             self.logInContainer.frame.origin.y = -500
         }) { (finished: Bool) in
+            
+            self.navigationItem.title = "Register"
             
             UIView.animate(withDuration: 0.2, animations: {
                 
@@ -187,11 +205,19 @@ class LogInViewController: UIViewController {
             
         }) { (finished: Bool) in
             
+            self.navigationItem.title = "Log In"
+            
             UIView.animate(withDuration: 0.2, animations: {
                 
                 self.logInContainer.frame.origin.y = 100
             })
         }
+    }
+    
+    //Function that dismisses the keyboard and the PickerViews
+    @objc func dismissKeyboard () {
+        
+        view.endEditing(true)
     }
     
 }

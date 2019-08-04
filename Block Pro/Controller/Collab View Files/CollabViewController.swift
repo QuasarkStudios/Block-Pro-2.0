@@ -9,9 +9,10 @@
 import UIKit
 import Firebase
 
+
+#warning("change the name of this class and file associated with it")
 class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 
-    
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var friendsButton: UIBarButtonItem!
     @IBOutlet weak var createCollabButton: UIBarButtonItem!
@@ -51,7 +52,13 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
 //        //docRef = Firestore.firestore().document("sampleData/inspiration")
 //
         
-        performSegue(withIdentifier: "moveToLogIn", sender: self)
+        self.getUserData(completion: {
+            self.addHistoricCollabs(completion: {
+                self.getCollabs()
+                self.getCollabRequests()
+
+            })
+        })
         
     }
     
@@ -258,10 +265,14 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 presentRequestAlert(indexPath.row)
             }
             else {
-              performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
+                
+                selectedCollab = sectionContentArray![indexPath.section][indexPath.row]
+                performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
             }
         }
         else {
+            
+            selectedCollab = sectionContentArray![indexPath.section][indexPath.row]
             performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
         }
         
@@ -361,26 +372,60 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     
     
-    func getUserData (_ uid: String, completion: @escaping () -> ()) {
+    func getUserData (completion: @escaping () -> ()) {
 
-        db.collection("Users").document(uid).getDocument { (snapshot, error) in
-
-            if error != nil {
-                ProgressHUD.showError(error?.localizedDescription)
-            }
-            else {
+        handle = Auth.auth().addStateDidChangeListener({ (auth, user) in
+            
+            if let user = user {
                 
-                let currentUser = UserData.singletonUser
+                let userID = user.uid
                 
-                currentUser.userID = snapshot?.data()!["userID"] as! String
-                currentUser.firstName = snapshot?.data()!["firstName"] as! String
-                currentUser.lastName = snapshot?.data()!["lastName"] as! String
-                currentUser.username = snapshot?.data()!["username"] as! String
-                
-                completion()
-                
+                self.db.collection("Users").document(userID).getDocument { (snapshot, error) in
+                    
+                    if error != nil {
+                        ProgressHUD.showError(error?.localizedDescription)
+                    }
+                    else {
+                        
+                        let currentUser = UserData.singletonUser
+                        
+                        currentUser.userID = snapshot?.data()!["userID"] as! String
+                        currentUser.firstName = snapshot?.data()!["firstName"] as! String
+                        currentUser.lastName = snapshot?.data()!["lastName"] as! String
+                        currentUser.username = snapshot?.data()!["username"] as! String
+                        
+                        completion()
+                        
+                    }
                 }
             }
+            
+            else {
+                ProgressHUD.showError("Sorry, there was an error getting your info")
+            }
+        })
+        
+        
+        
+        
+//        db.collection("Users").document(uid).getDocument { (snapshot, error) in
+//
+//            if error != nil {
+//                ProgressHUD.showError(error?.localizedDescription)
+//            }
+//            else {
+//
+//                let currentUser = UserData.singletonUser
+//
+//                currentUser.userID = snapshot?.data()!["userID"] as! String
+//                currentUser.firstName = snapshot?.data()!["firstName"] as! String
+//                currentUser.lastName = snapshot?.data()!["lastName"] as! String
+//                currentUser.username = snapshot?.data()!["username"] as! String
+//
+//                completion()
+//
+//                }
+//            }
     }
     
     func getCollabs () {
@@ -589,17 +634,27 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if segue.identifier == "moveToLogIn" {
-            
-            let login_registerVC = segue.destination as! LogInViewController
-            login_registerVC.attachListenerDelegate = self
-            login_registerVC.registerUserDelegate = self
-        }
+//        if segue.identifier == "moveToLogIn" {
+//
+//            let login_registerVC = segue.destination as! LogInViewController
+//            login_registerVC.attachListenerDelegate = self
+//            login_registerVC.registerUserDelegate = self
+//        }
         
-        else if segue.identifier == "moveToCreateCollab" {
+        if segue.identifier == "moveToCreateCollab" {
             
             let newCollabVC = segue.destination as! NewCollabViewController
             newCollabVC.getCollabDelegate = self
+        }
+        
+        else if segue.identifier == "moveToCollabBlockView" {
+            
+            let collabBlockVC = segue.destination as! CollabBlockViewController
+            
+            guard let collabData = selectedCollab else { return }
+            
+            collabBlockVC.collabID = collabData.collabID
+            collabBlockVC.collabName = collabData.collabName
         }
     }
 }
@@ -614,7 +669,7 @@ extension CollabViewController: UserRegistration {
                 let uid = user.uid
                 let email = user.email
                 
-                self.getUserData(uid, completion: {})
+                //self.getUserData(uid, completion: {})
                 
                 self.db.collection("Users").document(uid).setData(["userID" : uid, "firstName" : firstName, "lastName" : lastName, "username" : username])
                 
@@ -638,13 +693,13 @@ extension CollabViewController: UserSignIn {
                 let uid = user.uid
                 let email = user.email
                 
-                self.getUserData(uid, completion: {
-                    self.addHistoricCollabs(completion: {
-                        self.getCollabs()
-                        self.getCollabRequests()
-                        
-                    })
-                })
+//                self.getUserData(uid, completion: {
+//                    self.addHistoricCollabs(completion: {
+//                        self.getCollabs()
+//                        self.getCollabRequests()
+//
+//                    })
+//                })
                 print (uid, email)
             }
             else {

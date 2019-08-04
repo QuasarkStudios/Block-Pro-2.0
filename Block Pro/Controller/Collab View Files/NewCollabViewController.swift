@@ -18,7 +18,7 @@ protocol GetNewCollab {
 //Protocol required to dismiss the SelectedFriendViewController
 protocol DismissView {
     
-    func dismissSelectedFriend (_ collabID: String)
+    func dismissSelectedFriend (_ collabID: String, _ collabName: String)
 }
 
 class NewCollabViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
@@ -48,6 +48,8 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     let currentUser = UserData.singletonUser
     
     var collabID: String = ""
+    var collabName: String = ""
+    
     var friendObjectArray: [Friend] = [Friend]()
     var selectedFriend: Friend?
     
@@ -228,6 +230,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     func createCollab () {
         
         collabID = UUID().uuidString
+        collabName = collabNameTextField.text!
         
         let collabData: [String : String] = ["collabID" : collabID, "collabName" : collabNameTextField.text!, "collabDate" : dateTextField.text!]
         
@@ -260,7 +263,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
 
             self.dismiss(animated: true, completion: {
                 
-                self.dismissViewDelegate?.dismissSelectedFriend(self.collabID)
+                self.dismissViewDelegate?.dismissSelectedFriend(self.collabID, self.collabName)
             })
         }
     }

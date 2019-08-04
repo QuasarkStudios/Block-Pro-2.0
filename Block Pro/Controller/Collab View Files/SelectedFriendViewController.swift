@@ -12,7 +12,7 @@ import Firebase
 //Protocol neccasary to move user to Collab Blocks view
 protocol CollabView {
     
-    func performSegue (_ collabID: String)
+    func performSegue (_ collabID: String, _ collabName: String)
 }
 
 //Protocol required to delete a friend
@@ -139,9 +139,13 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         dismiss(animated: true) { 
             
-            guard let collabID = self.sectionContentArray?[indexPath.section][indexPath.row].collabID else { return }
+            guard let collabData = self.sectionContentArray?[indexPath.section][indexPath.row] else { return }
             
-                self.collabBlocksDelegate?.performSegue(collabID)
+                self.collabBlocksDelegate?.performSegue(collabData.collabID, collabData.collabName)
+            
+//            guard let collabID = self.sectionContentArray?[indexPath.section][indexPath.row].collabID else { return }
+//
+//                self.collabBlocksDelegate?.performSegue(collabID, collabName)
         }
         
     }
@@ -620,11 +624,11 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
 
 extension SelectedFriendViewController: DismissView {
     
-    func dismissSelectedFriend(_ collabID: String) {
+    func dismissSelectedFriend(_ collabID: String, _ collabName: String) {
         
         dismiss(animated: true) {
 
-            self.collabBlocksDelegate?.performSegue(collabID)
+            self.collabBlocksDelegate?.performSegue(collabID, collabName)
         }
     }
     

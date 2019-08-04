@@ -80,6 +80,7 @@
                 <outlet property="cellContainerView" destination="KAx-sg-TXg" id="CTR-MS-S6w"/>
                 <outlet property="endLabel" destination="K0A-5o-T4E" id="DV4-lC-5IF"/>
                 <outlet property="initialContainer" destination="gh1-PA-LUy" id="T0h-b5-asH"/>
+                <outlet property="initialLabel" destination="gW8-Ei-dBF" id="tMX-GZ-vNy"/>
                 <outlet property="nameLabel" destination="Dom-9r-AQO" id="TSO-Tg-Oux"/>
                 <outlet property="startLabel" destination="TKI-Uw-wSl" id="cyR-sf-hJd"/>
                 <outlet property="toLabel" destination="0NZ-6n-bQi" id="IHh-7d-hhk"/>
