@@ -181,6 +181,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func getPendingFriends (completion: @escaping () -> ()) {
         
+        pendingObjectArray.removeAll()
+        
         db.collection("Users").document(Auth.auth().currentUser!.uid).collection("PendingFriends").getDocuments { (snapshot, error) in
             
             if error != nil {
@@ -248,6 +250,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func getFriends () {
+        
+        friendObjectArray.removeAll()
         
         db.collection("Users").document(Auth.auth().currentUser!.uid).collection("Friends").getDocuments { (snapshot, error) in
             

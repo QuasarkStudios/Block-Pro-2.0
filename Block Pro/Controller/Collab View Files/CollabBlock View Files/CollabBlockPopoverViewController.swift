@@ -9,6 +9,16 @@
 import UIKit
 import Firebase
 
+protocol UpdateCollabBlock {
+    
+    func moveToUpdateView ()
+}
+
+protocol DeleteCollabBlock {
+    
+    func deleteBlock ()
+}
+
 class CollabBlockPopoverViewController: UIViewController {
 
     @IBOutlet weak var bigCollabBlock: UIView!
@@ -29,6 +39,9 @@ class CollabBlockPopoverViewController: UIViewController {
     
     var db = Firestore.firestore()
     let currentUser = UserData.singletonUser
+    
+    var updateCollabBlockDelegate: UpdateCollabBlock?
+    var deleteCollabBlockDelegate: DeleteCollabBlock?
     
     var collabID: String = ""
     var blockID: String = ""
@@ -102,7 +115,13 @@ class CollabBlockPopoverViewController: UIViewController {
                         self.initialLabel.text = "\(firstNameArray[0])" + "\(lastNameArray[0])"
                     }
                     
-                    self.bigCollabBlock.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String])
+                    if data["blockCategory"] as! String == "" {
+                        self.bigCollabBlock.backgroundColor = UIColor(hexString: "#EFEFF4")
+                    }
+                    else {
+                       self.bigCollabBlock.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String])
+                    }
+                    
                     self.blockName.text = (data["name"] as! String)
                     self.blockStartTime.text = self.convertTo12Hour(data["startHour"] as! String, data["startMinute"] as! String)
                     self.blockEndTime.text = self.convertTo12Hour(data["endHour"] as! String, data["endMinute"] as! String)
@@ -139,9 +158,31 @@ class CollabBlockPopoverViewController: UIViewController {
     
     @IBAction func editButton(_ sender: Any) {
         
+        dismiss(animated: true, completion: nil)
+        
+        updateCollabBlockDelegate?.moveToUpdateView()
     }
     
     @IBAction func deleteButton(_ sender: Any) {
+        
+        //Setting the title and message of the "deleteAlert"
+        let deleteAlert = UIAlertController(title: "Delete Collab Block", message: "Are you sure you would like to delete this Collab Block?", preferredStyle: .alert)
+        
+        //Setting the delete action of the deleteAlert
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (deleteAction) in
+            
+            self.deleteCollabBlockDelegate?.deleteBlock()
+            
+            self.dismiss(animated: true, completion: nil)
+        }
+        
+        //Setting the cancel action of the deleteAlert
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        deleteAlert.addAction(deleteAction) //Adds the delete action to the alert
+        deleteAlert.addAction(cancelAction) //Adds the cancel action to the alert
+        
+        present(deleteAlert, animated: true, completion: nil) //Presents the deleteAlert
         
     }
     

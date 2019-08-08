@@ -36,9 +36,12 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     
     var blockObjectArray: [CollabBlock] = [CollabBlock]()
     var blockArray = [blockTuple]()
+    var selectedBlock: CollabBlock?
     
     var bigBlockID: String = ""
     var notificationID: String = ""
+    
+    var selectedView: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,18 +79,25 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewWillAppear(_ animated: Bool) {
         
-        getCollabBlocks {
-            
-            self.blockArray = self.organizeBlocks(self.sortCollabBlocks(), self.functionTuple)
-            print("blockArray", self.blockArray.count)
-            self.blockTableView.reloadData()
-        }
+//        getCollabBlocks {
+//
+//            self.blockArray = self.organizeBlocks(self.sortCollabBlocks(), self.functionTuple)
+//            self.blockTableView.reloadData()
+//            self.scrollToFirstBlock()
+//        }
 
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
-        scrollToFirstBlock()
+        getCollabBlocks {
+            
+            self.blockArray = self.organizeBlocks(self.sortCollabBlocks(), self.functionTuple)
+            self.blockTableView.reloadData()
+            self.scrollToFirstBlock()
+        }
+        
+        //scrollToFirstBlock()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -122,7 +132,6 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         if tableView == blockTableView && indexPath.row < blockArray.count {
 
             returnHeight = configureBlockHeight(indexPath: indexPath)
-            print(returnHeight, blockArray[indexPath.row])
             return returnHeight
         }
 
@@ -133,6 +142,14 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        for block in blockObjectArray {
+            
+            if block.blockID == blockArray[indexPath.row].blockID {
+                
+                selectedBlock = block
+            }
+        }
         
         bigBlockID = blockArray[indexPath.row].blockID
         notificationID = blockArray[indexPath.row].notificationID
@@ -248,10 +265,12 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     
     func getCollabBlocks (completion: @escaping () -> ()) {
         
-        blockObjectArray.removeAll()
+//        blockObjectArray.removeAll()
         
         db.collection("Collaborations").document(collabID).collection("CollabBlocks").addSnapshotListener { (snapshot, error) in
             
+            self.blockObjectArray.removeAll()
+
             if error != nil {
                 
                 ProgressHUD.showError(error?.localizedDescription)
@@ -261,6 +280,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                 
                 if snapshot?.isEmpty == true {
                     print ("no collabblocks")
+                    completion()
                 }
                 
                 else {
@@ -424,8 +444,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         return returnBlockArray
     }
     
-    
-    
+
     func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
         
         if funcHour == "0" {
@@ -509,7 +528,8 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     
     @IBAction func addBlockButton(_ sender: Any) {
         
-        performSegue(withIdentifier: "moveToAddBlockView", sender: self)
+        selectedView = "Add"
+        performSegue(withIdentifier: "moveToAUBlockView", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -518,21 +538,61 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
             
             let bigBlockVC = segue.destination as! CollabBlockPopoverViewController
             
+            bigBlockVC.updateCollabBlockDelegate = self
+            bigBlockVC.deleteCollabBlockDelegate = self
+            
             bigBlockVC.collabID = collabID
             bigBlockVC.blockID = bigBlockID
             bigBlockVC.notificationID = notificationID
         }
         
-        else if segue.identifier == "moveToAddBlockView" {
+        else if segue.identifier == "moveToAUBlockView" {
             
-            let addBlockVC = segue.destination as! AUCollabBlockViewController
-            addBlockVC.collabID = collabID
-            addBlockVC.selectedView = "Add"
+            let add_updateBlockVC = segue.destination as! AUCollabBlockViewController
+            add_updateBlockVC.collabID = collabID
+            add_updateBlockVC.selectedView = selectedView
+            
+            if selectedView == "Edit" {
+                add_updateBlockVC.selectedBlock = selectedBlock
+            }
             
             let backItem = UIBarButtonItem()
             backItem.title = "Cancel"
             navigationItem.backBarButtonItem = backItem
             
+        }
+    }
+}
+
+extension CollabBlockViewController: UpdateCollabBlock {
+    
+    func moveToUpdateView () {
+        
+        selectedView = "Edit"
+        performSegue(withIdentifier: "moveToAUBlockView", sender: self)
+    }
+}
+
+extension CollabBlockViewController: DeleteCollabBlock {
+    
+    func deleteBlock () {
+        
+        db.collection("Collaborations").document(collabID).collection("CollabBlocks").document(bigBlockID).delete { (error) in
+            
+            if error != nil {
+                ProgressHUD.showError(error?.localizedDescription)
+            }
+            else {
+                ProgressHUD.showSuccess("Collab Block deleted!")
+                
+                self.getCollabBlocks {
+                    
+                    self.blockArray = self.organizeBlocks(self.sortCollabBlocks(), self.functionTuple)
+                    self.blockTableView.reloadData()
+                    self.scrollToFirstBlock()
+                }
+                
+            }
         }
     }
 }

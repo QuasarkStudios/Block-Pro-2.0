@@ -640,7 +640,7 @@
                         <outlet property="blockTableView" destination="AJI-Ts-PHZ" id="ZLw-38-1Ld"/>
                         <outlet property="timeTableView" destination="gSK-SJ-uiS" id="zmO-92-xtB"/>
                         <outlet property="verticalTableSeperator" destination="CLy-13-b9j" id="XIP-8r-rER"/>
-                        <segue destination="WdP-Oj-Bd8" kind="show" identifier="moveToAddBlockView" id="ONn-M3-Sm1"/>
+                        <segue destination="WdP-Oj-Bd8" kind="show" identifier="moveToAUBlockView" id="ONn-M3-Sm1"/>
                         <segue destination="7rV-aV-Ha6" kind="presentation" identifier="presentBlockPopover" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="G3A-SN-FnO"/>
                     </connections>
                 </viewController>
@@ -763,11 +763,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="9KH-mr-AzH">
                         <barButtonItem key="backBarButtonItem" title="Cancel." id="riL-i6-zkW"/>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="ruI-jq-ONV">
-                            <connections>
-                                <action selector="create_editButtonPressed:" destination="WdP-Oj-Bd8" id="LgL-q7-akW"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="blockContainer" destination="MZY-Gb-yue" id="3YA-8Q-kUs"/>
@@ -905,7 +900,6 @@
                         <outlet property="exitButton" destination="AAZ-uH-0FP" id="1QE-IL-pqn"/>
                         <outlet property="initialContainer" destination="eyz-UY-fkV" id="IVB-XS-fwi"/>
                         <outlet property="initialLabel" destination="fsT-mK-BrG" id="Yor-Gm-zpf"/>
-                        <segue destination="WdP-Oj-Bd8" kind="presentation" id="mhc-el-KNF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y7S-ST-fx8" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -980,7 +974,6 @@
         <image name="people" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="mhc-el-KNF"/>
         <segue reference="qny-Qz-1HN"/>
         <segue reference="iTD-aJ-FDE"/>
     </inferredMetricsTieBreakers>

@@ -513,7 +513,7 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
             else {
                 
                 if snapshot?.isEmpty == true {
-                    print("no upcoming collabs")
+                    print("no collab requests")
                 }
                 else {
                     
