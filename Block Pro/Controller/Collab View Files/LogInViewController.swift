@@ -167,70 +167,11 @@ class LogInViewController: UIViewController {
                             self.performSegue(withIdentifier: "moveToUpcomingCollabs", sender: self)
                         })
                         
-                        //self.registerUserDelegate?.newUser(self.firstNameTextField.text!, self.lastNameTextField.text!, self.usernameTextField.text!)
-                        
-                        //self.attachListenerDelegate?.attachListener()
-                        
-                        //self.dismiss(animated: true, completion: nil)
                     }
                 }
             }
         }
         
-        
-        
-//        if firstNameTextField.text == "" || lastNameTextField.text == "" {
-//            ProgressHUD.showError("Please finish entering in your name.")
-//            registerButton.isEnabled = true
-//        }
-//        else if usernameTextField.text == "" {
-//            ProgressHUD.showError("Please enter in your username.")
-//            registerButton.isEnabled = true
-//        }
-//        else if uniqueUsername ?? false == false {
-//            ProgressHUD.showError("Sorry, that username already exists. Please enter in a new one.")
-//            registerButton.isEnabled = true
-//        }
-//        else if registerEmailTextField.text == "" {
-//            ProgressHUD.showError("Please enter in a email address.")
-//            registerButton.isEnabled = true
-//        }
-//        else if (registerPasswordTextField_1.text == "" || registerReenterPasswordTextField_2.text == "") {
-//            ProgressHUD.showError("Please finish entering in your password.")
-//            registerButton.isEnabled = true
-//        }
-//        else if registerPasswordTextField_1.text != registerReenterPasswordTextField_2.text {
-//            ProgressHUD.showError("Sorry, your passwords don't match. Please try again.")
-//            registerButton.isEnabled = true
-//        }
-//        else {
-//
-//            Auth.auth().createUser(withEmail: registerEmailTextField.text!, password: registerPasswordTextField_1.text!) { authResult, error in
-//
-//                if error != nil {
-//
-//                    ProgressHUD.showError(error?.localizedDescription)
-//                    self.registerButton.isEnabled = true
-//                }
-//                else {
-//
-//                    guard let userID = authResult?.user.uid else { return }
-//
-//                        self.createNewUser(userID, completion: {
-//
-//                            ProgressHUD.showSuccess("Account Created!")
-//
-//                            self.performSegue(withIdentifier: "moveToUpcomingCollabs", sender: self)
-//                        })
-//
-//                    //self.registerUserDelegate?.newUser(self.firstNameTextField.text!, self.lastNameTextField.text!, self.usernameTextField.text!)
-//
-//                    //self.attachListenerDelegate?.attachListener()
-//
-//                    //self.dismiss(animated: true, completion: nil)
-//                }
-//            }
-//        }
     }
     
     func usernameVerification (completion: @escaping () -> ()) {
@@ -239,6 +180,7 @@ class LogInViewController: UIViewController {
             //print("check")
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
+                self.registerButton.isEnabled = true
             }
             
             else {

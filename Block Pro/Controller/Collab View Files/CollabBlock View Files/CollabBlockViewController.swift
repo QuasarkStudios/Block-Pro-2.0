@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import UserNotifications
 
 class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -18,6 +19,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var addBlockButton: UIBarButtonItem!
     
     let db = Firestore.firestore()
+    var listener: ListenerRegistration?
     let currentUser = UserData.singletonUser
     
     let formatter = DateFormatter()
@@ -28,18 +30,20 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     
     var collabID: String = ""
     var collabName: String = ""
+    var collabDate: String = ""
     
     var cellAnimated = [String]() //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
-    typealias blockTuple = (creator: [String : String], blockID: String, notificationID: String, name: String, startHour: String, startMinute: String, startPeriod: String, endHour: String, endMinute: String, endPeriod: String, category: String)
-    var functionTuple: blockTuple = (creator: ["" : ""], blockID: "", notificationID : "", name: "", startHour: "", startMinute: "", startPeriod: "", endHour: "", endMinute: "", endPeriod: "", category: "")
+    typealias blockTuple = (creator: [String : String], blockID: String, name: String, startHour: String, startMinute: String, startPeriod: String, endHour: String, endMinute: String, endPeriod: String, category: String, notificationSettings: [String : Any])
+    var functionTuple: blockTuple = (creator: ["" : ""], blockID: "", name: "", startHour: "", startMinute: "", startPeriod: "", endHour: "", endMinute: "", endPeriod: "", category: "", notificationSettings: ["" : ""])
     
     var blockObjectArray: [CollabBlock] = [CollabBlock]()
     var blockArray = [blockTuple]()
     var selectedBlock: CollabBlock?
     
     var bigBlockID: String = ""
-    var notificationID: String = ""
+    //var notificationID: String = ""
+    var notificationSettings: [String : Any] = [:]
     
     var selectedView: String = ""
     
@@ -77,17 +81,6 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
 
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        
-//        getCollabBlocks {
-//
-//            self.blockArray = self.organizeBlocks(self.sortCollabBlocks(), self.functionTuple)
-//            self.blockTableView.reloadData()
-//            self.scrollToFirstBlock()
-//        }
-
-    }
-    
     override func viewDidAppear(_ animated: Bool) {
         
         getCollabBlocks {
@@ -98,6 +91,11 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         //scrollToFirstBlock()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        
+        listener?.remove()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -152,7 +150,8 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         bigBlockID = blockArray[indexPath.row].blockID
-        notificationID = blockArray[indexPath.row].notificationID
+        //notificationID = blockArray[indexPath.row].notificationID
+        notificationSettings = blockArray[indexPath.row].notificationSettings
         
         performSegue(withIdentifier: "presentBlockPopover", sender: self)
         tableView.deselectRow(at: indexPath, animated: false)
@@ -267,7 +266,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         
 //        blockObjectArray.removeAll()
         
-        db.collection("Collaborations").document(collabID).collection("CollabBlocks").addSnapshotListener { (snapshot, error) in
+        listener = db.collection("Collaborations").document(collabID).collection("CollabBlocks").addSnapshotListener { (snapshot, error) in
             
             self.blockObjectArray.removeAll()
 
@@ -288,23 +287,23 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     for document in snapshot!.documents {
                         
                         let collabBlock = CollabBlock()
-
+                            
                         collabBlock.blockID = document.data()["blockID"] as! String
-                        collabBlock.notificationID = document.data()["notificationID"] as! String
                         collabBlock.name = document.data()["name"] as! String
-
                         collabBlock.creator = document.data()["creator"] as! [String : String]
                         
                         collabBlock.startHour = document.data()["startHour"] as! String
                         collabBlock.startMinute = document.data()["startMinute"] as! String
                         collabBlock.startPeriod = document.data()["startPeriod"] as! String
-
+                        
                         collabBlock.endHour = document.data()["endHour"] as! String
                         collabBlock.endMinute = document.data()["endMinute"] as! String
                         collabBlock.endPeriod = document.data()["endPeriod"] as! String
-
+                        
                         collabBlock.blockCategory = document.data()["blockCategory"] as! String
-
+                        
+                        collabBlock.notificationSettings = document.data()["notificationSettings"] as! [String : [String : Any]]
+                        
                         self.blockObjectArray.append(collabBlock)
                         
                     }
@@ -363,7 +362,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                 
                 collabBlockTuple.category = blocks.value.blockCategory
                 collabBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this CollabBlock
-                collabBlockTuple.notificationID = blocks.value.notificationID //Assigning the notificationID of this CollabBlock
+                collabBlockTuple.notificationSettings = blocks.value.notificationSettings //Assigning the notificationID of this CollabBlock
                 
                 returnBlockArray.append(bufferBlockTuple) //Appending the first BufferBlock
                 returnBlockArray.append(collabBlockTuple) //Appending the first CollabBlock
@@ -397,7 +396,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     
                     collabBlockTuple.category = blocks.value.blockCategory
                     collabBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this CollabBlock
-                    collabBlockTuple.notificationID = blocks.value.notificationID //Assigning the notificationID of this CollabBlock
+                    collabBlockTuple.notificationSettings = blocks.value.notificationSettings //Assigning the notificationID of this CollabBlock
                     
                     //Creating the next Buffer Block after the last CollabBlock
                     bufferBlockTuple.startHour = blocks.value.endHour; bufferBlockTuple.startMinute = blocks.value.endMinute; bufferBlockTuple.startPeriod = blocks.value.endPeriod
@@ -422,7 +421,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     
                     collabBlockTuple.category = blocks.value.blockCategory
                     collabBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this CollabBlock
-                    collabBlockTuple.notificationID = blocks.value.notificationID //Assigning the notificationID of this CollabBlock
+                    collabBlockTuple.notificationSettings = blocks.value.notificationSettings //Assigning the notificationID of this CollabBlock
                     
                     returnBlockArray.append(collabBlockTuple)
                     count += 1
@@ -543,13 +542,14 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
             
             bigBlockVC.collabID = collabID
             bigBlockVC.blockID = bigBlockID
-            bigBlockVC.notificationID = notificationID
+            //bigBlockVC.notificationID = notificationID
         }
         
         else if segue.identifier == "moveToAUBlockView" {
             
             let add_updateBlockVC = segue.destination as! AUCollabBlockViewController
             add_updateBlockVC.collabID = collabID
+            add_updateBlockVC.collabDate = collabDate
             add_updateBlockVC.selectedView = selectedView
             
             if selectedView == "Edit" {
@@ -583,7 +583,12 @@ extension CollabBlockViewController: DeleteCollabBlock {
                 ProgressHUD.showError(error?.localizedDescription)
             }
             else {
+                
                 ProgressHUD.showSuccess("Collab Block deleted!")
+                
+                if let notifSettings = self.selectedBlock?.notificationSettings[self.currentUser.userID] {
+                    UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notifSettings["notificationID"] as! String])
+                }
                 
                 self.getCollabBlocks {
                     

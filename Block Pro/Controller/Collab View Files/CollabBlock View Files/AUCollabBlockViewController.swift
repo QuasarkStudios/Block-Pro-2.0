@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import UserNotifications
 
 //Add or update collab block
 class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
@@ -19,7 +20,10 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     @IBOutlet weak var blockContainer: UIView!
     @IBOutlet weak var categoryTextField: UITextField!
     
+    
+    @IBOutlet weak var notificationSwitchContainer: UIView!
     @IBOutlet weak var notificationSwitch: UISwitch!
+    
     @IBOutlet weak var notificationTimeSegments: UISegmentedControl!
     @IBOutlet weak var timeSegmentContainer: UIView!
     
@@ -41,7 +45,8 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     var selectedView: String = ""
     
     var collabID: String = ""
-    var selectedBlock: CollabBlock? //Variable that holds the "blockID" of the CollabBlock being updated
+    var collabDate: String = ""
+    var selectedBlock: CollabBlock? //Variable that holds the CollabBlock being updated
     
     //Arrays that holds the title for each row of the "categoryPicker"
     let blockCategories: [String] = ["", "Work", "Creative Time", "Sleep", "Food/Eat", "Leisure", "Exercise", "Self-Care", "Other"]
@@ -62,6 +67,8 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     var notificationID: String = UUID().uuidString //Variable that holds either the notficationID of a new TimeBlock or the "notficationID" of a TimeBlock being updated
     var notificationTimes: [Int] = [5, 10, 15] //Variable that holds values that will be used after user selects the "Notification Time Segment"
     var notificationIndex: Int = 0 //Variable that tracks which segment of the "Notification Time Segment" is selected
+    
+    var notificationSettings: [String : [String : Any]] = [:] //["notificationID" : "", "scheduled" : false, "minsBefore" : 0]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,6 +98,8 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         categoryPickerContainer.layer.cornerRadius = 0.1 * categoryPickerContainer.bounds.size.width
         categoryPickerContainer.clipsToBounds = true
         
+        notificationSwitchContainer.layer.cornerRadius = 0.3 * notificationSwitchContainer.bounds.size.width
+        
         timeSegmentContainer.layer.cornerRadius = 0.035 * timeSegmentContainer.bounds.size.width
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
@@ -100,7 +109,10 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         blockContainer.layer.cornerRadius = 0.05 * blockContainer.bounds.size.width
         blockContainer.clipsToBounds = true
         
+        notificationSettings = [currentUser.userID : ["notificationID" : "", "scheduled" : false, "minsBefore" : 0]]
+        
         configureView()
+    
     }
     
     
@@ -247,28 +259,72 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
             else {
                 blockContainer.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory])
             }
+            
+            guard let notifSettings = block.notificationSettings[currentUser.userID] else { return }
+            
+            if notifSettings["scheduled"] as! Bool == true {
+                
+                notificationSettings = [currentUser.userID : ["notificationID" : notifSettings["notificationID"] as Any, "scheduled" : true, "minsBefore" : notifSettings["minsBefore"] as Any]]
+                
+                notificationID = notifSettings["notificationID"] as! String
+                
+                notificationSwitch.isOn = true
+                notificationTimeSegments.isEnabled = true
+                notificationTimeSegments.selectedSegmentIndex = notifSettings["minsBefore"] as! Int
+            }
         }
         
     }
     
-    func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
+    func getFirebaseBlocks (_ blockID: String = "0", completion: @escaping () -> ())  {
         
-        if funcHour == "0" {
-            return "12" + ":" + funcMinute + " " + "AM"
-        }
-        else if funcHour == "12" {
-            return "12" + ":" + funcMinute + " " + "PM"
-        }
-        else if Int(funcHour)! < 12 {
-            return funcHour + ":" + funcMinute + " " + "AM"
-        }
-        else if Int(funcHour)! > 12 {
-            return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
-        }
-        else {
-            return "YOU GOT IT WRONG BEYOTCH"
+        blockObjectArray.removeAll()
+        
+        db.collection("Collaborations").document(collabID).collection("CollabBlocks").getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                ProgressHUD.showError(error?.localizedDescription)
+            }
+                
+            else {
+                
+                if snapshot?.isEmpty == true {
+                    print("no collabs")
+                    completion()
+                }
+                    
+                else {
+                    
+                    for document in snapshot!.documents {
+                        
+                        let collabBlock = CollabBlock()
+                        
+                        collabBlock.blockID = document.data()["blockID"] as! String
+                        //collabBlock.notificationID = document.data()["notificationID"] as! String
+                        collabBlock.name = document.data()["name"] as! String; #warning ("tell user which block the new one interferes with")
+                        
+                        collabBlock.startHour = document.data()["startHour"] as! String
+                        collabBlock.startMinute = document.data()["startMinute"] as! String
+                        collabBlock.startPeriod = document.data()["startPeriod"] as! String
+                        
+                        collabBlock.endHour = document.data()["endHour"] as! String
+                        collabBlock.endMinute = document.data()["endMinute"] as! String
+                        collabBlock.endPeriod = document.data()["endPeriod"] as! String
+                        
+                        collabBlock.blockCategory = document.data()["blockCategory"] as! String
+                        
+                        collabBlock.notificationSettings = document.data()["notificationSettings"] as! [String : [String : Any]]
+                        
+                        self.blockObjectArray.append(collabBlock)
+                        
+                    }
+                    completion()
+                }
+            }
         }
     }
+    
+ 
     
     //MARK: - Calculate Valid Collab Blocks
     
@@ -341,62 +397,171 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         
     }
     
-    func getFirebaseBlocks (_ blockID: String = "0", completion: @escaping () -> ())  {
+    
+    @IBAction func notificationSwitch(_ sender: Any) {
         
-        blockObjectArray.removeAll()
+        if notificationSwitch.isOn == true {
+            notificationTimeSegments.isEnabled = true
+        }
+        else {
+            notificationTimeSegments.isEnabled = false
+        }
+    }
+    
+    @IBAction func notificationTimeSegments(_ sender: Any) {
         
-        db.collection("Collaborations").document(collabID).collection("CollabBlocks").getDocuments { (snapshot, error) in
+        notificationIndex = notificationTimeSegments.selectedSegmentIndex
+    }
+    
+    func scheduleNotification () {
+        
+        if notificationSwitch.isOn {
             
-            if error != nil {
-                ProgressHUD.showError(error?.localizedDescription)
-            }
-                
-            else {
-                
-                if snapshot?.isEmpty == true {
-                    print("no collabs")
-                    completion()
+            notificationSettings = [currentUser.userID : ["notificationID" : notificationID as Any, "scheduled" : true, "minsBefore" : notificationIndex as Any]]
+        
+            var dateComponents = DateComponents()
+            dateComponents.calendar = Calendar.current
+            
+            let content = UNMutableNotificationContent()
+            let trigger: UNCalendarNotificationTrigger
+            let request: UNNotificationRequest
+            
+            
+            
+            let initialDate = Array(collabDate) //Turning the currentDate from a String to an Array of Strings
+            var notificationDate: [String : String] = ["Month": "", "Day" : "", "Year": ""]
+            var dateTracker: String = "Month"
+            
+            var count: Int = 0
+            
+            formatter.dateFormat = "MMMM d, yyyy"
+            
+            let testDate = formatter.date(from: collabDate)
+            print(collabDate)
+            print("testDate:", testDate)
+            
+            formatter.dateFormat = "M"
+            notificationDate["Month"] = formatter.string(from: testDate!)
+            
+            
+            formatter.dateFormat = "d"
+            notificationDate["Day"] = formatter.string(from: testDate!)
+            
+            formatter.dateFormat = "yyyy"
+            notificationDate["Year"] = formatter.string(from: testDate!)
+            
+            //If the selectedStartMinute will become negative but the selectedStartHour will remain positive
+            if (Int(selectedStartHour)! >  0) && (Int(selectedStartMinute)! - notificationTimes[notificationIndex] < 0) {
+
+                //Assigning the dateComponents year, month, and day values from the "notificationDate" dictionary
+                dateComponents.year = Int(notificationDate["Year"]!)!
+                dateComponents.month = Int(notificationDate["Month"]!)!
+                dateComponents.day = Int(notificationDate["Day"]!)!
+
+                //Switch statement that checks how negative the "selectedStartMinute" has become
+                switch Int(selectedStartMinute)! {
+
+                case -5:
+                    dateComponents.hour = Int(selectedStartHour)! - 1
+                    dateComponents.minute = 60 - 5
+
+                case -10:
+                    dateComponents.hour = Int(selectedStartHour)! - 1
+                    dateComponents.minute = 60 - 10
+
+                case -15:
+                    dateComponents.hour = Int(selectedStartHour)! - 1
+                    dateComponents.minute = 60 - 15
+
+                default:
+                    break
                 }
-                    
-                else {
-                    
-                    for document in snapshot!.documents {
-                        
-                        let collabBlock = CollabBlock()
-                        
-                        collabBlock.blockID = document.data()["blockID"] as! String
-                        collabBlock.notificationID = document.data()["notificationID"] as! String
-                        collabBlock.name = document.data()["name"] as! String
-                        
-                        collabBlock.startHour = document.data()["startHour"] as! String
-                        collabBlock.startMinute = document.data()["startMinute"] as! String
-                        collabBlock.startPeriod = document.data()["startPeriod"] as! String
-                        
-                        collabBlock.endHour = document.data()["endHour"] as! String
-                        collabBlock.endMinute = document.data()["endMinute"] as! String
-                        collabBlock.endPeriod = document.data()["endPeriod"] as! String
-                        
-                        collabBlock.blockCategory = document.data()["blockCategory"] as! String
-                        
-                        self.blockObjectArray.append(collabBlock)
-                        
-                    }
-                    completion()
-                }
+
+                //Configuring and setting the notification
+                content.title = "Heads Up!!"
+                content.body = blockNameTextField.text! + " in \(notificationTimes[notificationIndex]) mintues"
+                content.sound = UNNotificationSound.default
+
+                trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+
+                request = UNNotificationRequest(identifier: notificationID, content: content, trigger: trigger)
+                UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
             }
+
+                //If the selectedStartMinute will not become negative
+            else if Int(selectedStartMinute)! - notificationTimes[notificationIndex] >= 0 {
+
+                //print(notificationDate["Month"]!)
+                
+                //Assigning the dateComponents year, month, and day values from the "notificationDate" dictionary
+                dateComponents.year = Int(notificationDate["Year"]!)!
+                dateComponents.month = Int(notificationDate["Month"]!)!
+                dateComponents.day = Int(notificationDate["Day"]!)!
+
+                //Assigning the dateComponents hour and minute
+                dateComponents.hour = Int(selectedStartHour)! //Assigning the dateComponents hour the "selectedStartHour"
+                dateComponents.minute = Int(selectedStartMinute)! - notificationTimes[notificationIndex] //Assigning the dateComponents minute the selectedStartMinute minus 5 - 15 minutes
+
+                //Configuring and setting the notification
+                content.title = "Heads Up!!"
+                content.body = blockNameTextField.text! + " in \(notificationTimes[notificationIndex]) mintues"
+                content.sound = UNNotificationSound.default
+
+                trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+
+                request = UNNotificationRequest(identifier: notificationID, content: content, trigger: trigger)
+                UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+            }
+
+                //If the selectedStartHour will become negative signifying the user wants the notification to come a day before
+            else if (Int(selectedStartHour)! ==  0) && (Int(selectedStartMinute)! - notificationTimes[notificationIndex] < 0) {
+                ProgressHUD.showError("Sorry, notifications coming a day prior isn't currently supported")
+            }
+        }
+        
+        else {
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationID])
+        }
+    
+    }
+    
+    func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
+        
+        if funcHour == "0" {
+            return "12" + ":" + funcMinute + " " + "AM"
+        }
+        else if funcHour == "12" {
+            return "12" + ":" + funcMinute + " " + "PM"
+        }
+        else if Int(funcHour)! < 12 {
+            return funcHour + ":" + funcMinute + " " + "AM"
+        }
+        else if Int(funcHour)! > 12 {
+            return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
+        }
+        else {
+            return "YOU GOT IT WRONG BEYOTCH"
         }
     }
     
     func add_updateCollabBlock() {
+
+        if notificationSwitch.isOn {
+            
+            notificationSettings = [currentUser.userID : ["notificationID" : notificationID as Any, "scheduled" : true, "minsBefore" : notificationIndex as Any]]
+        }
+        
+        else {
+            
+            notificationSettings = [currentUser.userID : ["notificationID" : "" as Any, "scheduled" : false, "minsBefore" : 0 as Any]]
+        }
         
         //If this is the "CreateBlockView", create a new CollabBlock
         if selectedView == "Add" {
             
             let blockID = UUID().uuidString
             
-            let newBlock: [String : Any] = ["creator" : ["userID" : currentUser.userID, "firstName" : currentUser.firstName, "lastName" : currentUser.lastName], "blockID" : blockID, "notificationID" : "", "name" : blockNameTextField.text!, "startHour" : selectedStartHour, "startMinute" : selectedStartMinute, "startPeriod" : selectedStartPeriod, "endHour" : selectedEndHour, "endMinute" : selectedEndMinute, "endPeriod" : selectedEndPeriod, "blockCategory" : selectedCategory]
-            
-            db.collection("Collaborations").document(collabID).collection("CollabBlocks").document(blockID).setData(newBlock)
+            let newBlock: [String : Any] = ["creator" : ["userID" : currentUser.userID, "firstName" : currentUser.firstName, "lastName" : currentUser.lastName], "blockID" : blockID, "name" : blockNameTextField.text!, "startHour" : selectedStartHour, "startMinute" : selectedStartMinute, "startPeriod" : selectedStartPeriod, "endHour" : selectedEndHour, "endMinute" : selectedEndMinute, "endPeriod" : selectedEndPeriod, "blockCategory" : selectedCategory, "notificationSettings" : notificationSettings]
             
             db.collection("Collaborations").document(collabID).collection("CollabBlocks").document(blockID).setData(newBlock) { (error) in
                 
@@ -404,7 +569,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                     ProgressHUD.showError(error?.localizedDescription)
                 }
                 else {
-                    ProgressHUD.showSuccess("CollabBlock created!")
+                    //ProgressHUD.showSuccess("CollabBlock created!")
                     self.navigationController?.popViewController(animated: true)
                 }
             }
@@ -413,26 +578,42 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         
         else if selectedView == "Edit" {
             
-            let updatedBlock: [String : String] = ["name" : blockNameTextField.text!, "startHour" : selectedStartHour, "startMinute" : selectedStartMinute, "startPeriod" : selectedStartPeriod, "endHour" : selectedEndHour, "endMinute" : selectedEndMinute, "endPeriod" : selectedEndPeriod, "blockCategory" : selectedCategory]
+            let updatedBlock: [String : Any] = ["name" : blockNameTextField.text!, "startHour" : selectedStartHour, "startMinute" : selectedStartMinute, "startPeriod" : selectedStartPeriod, "endHour" : selectedEndHour, "endMinute" : selectedEndMinute, "endPeriod" : selectedEndPeriod, "blockCategory" : selectedCategory, "notificationSettings" : notificationSettings]
             
             guard let block = selectedBlock else { return }
             
-            db.collection("Collaborations").document(collabID).collection("CollabBlocks").document(block.blockID).setData(updatedBlock, merge: true)
-            
-            db.collection("Collaborations").document(collabID).collection("CollabBlocks").document(block.blockID).setData(updatedBlock, merge: true) { (error) in
+            db.collection("Collaborations").document(collabID).collection("CollabBlocks").document(block.blockID).getDocument { (snapshot, error) in
                 
                 if error != nil {
-                    ProgressHUD.showError(error?.localizedDescription)
-                }
-                else {
-                    ProgressHUD.showSuccess("CollabBlock Updated!")
+                    ProgressHUD.showError("Sorry, an error occured while updating this CollabBlock")
                     self.navigationController?.popViewController(animated: true)
+                }
+                
+                else {
+                    
+                    if snapshot?.data() == nil {
+                        
+                        ProgressHUD.showError("Sorry, this CollabBlock has been deleted by your collaborator")
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                    
+                    else {
+                        
+                        self.db.collection("Collaborations").document(self.collabID).collection("CollabBlocks").document(block.blockID).setData(updatedBlock, merge: true) { (error) in
+                            
+                            if error != nil {
+                                ProgressHUD.showError(error?.localizedDescription)
+                            }
+                            else {
+                                //ProgressHUD.showSuccess("CollabBlock Updated!")
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        }
+                    }
                 }
             }
             
-            
         }
-            
     }
     
 
@@ -489,7 +670,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                         //AYEEEE IT PASSED ALL THE TESTS, GO AHEAD AND ADD THAT SHIT
                     else {
                         
-                        //scheduleNotification()
+                        self.scheduleNotification()
                         self.add_updateCollabBlock()
                         
                     }
@@ -521,7 +702,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                         //AYEEEE IT PASSED ALL THE TESTS, GO AHEAD AND ADD THAT SHIT
                     else {
                         
-                        //scheduleNotification()
+                        self.scheduleNotification()
                         self.add_updateCollabBlock()
                                 
                     }

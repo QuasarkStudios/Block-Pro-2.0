@@ -12,7 +12,7 @@ import Firebase
 //Protocol neccasary to move user to Collab Blocks view
 protocol CollabView {
     
-    func performSegue (_ collabID: String, _ collabName: String)
+    func performSegue (_ collabID: String, _ collabName: String, _ collabDate: String)
 }
 
 //Protocol required to delete a friend
@@ -96,6 +96,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         friendName.text = selectedFriend!.firstName + " " + selectedFriend!.lastName
 
+
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -141,7 +142,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             
             guard let collabData = self.sectionContentArray?[indexPath.section][indexPath.row] else { return }
             
-                self.collabBlocksDelegate?.performSegue(collabData.collabID, collabData.collabName)
+                self.collabBlocksDelegate?.performSegue(collabData.collabID, collabData.collabName, collabData.collabDate)
             
 //            guard let collabID = self.sectionContentArray?[indexPath.section][indexPath.row].collabID else { return }
 //
@@ -624,11 +625,11 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
 
 extension SelectedFriendViewController: DismissView {
     
-    func dismissSelectedFriend(_ collabID: String, _ collabName: String) {
+    func dismissSelectedFriend(_ collabID: String, _ collabName: String, _ collabDate: String) {
         
         dismiss(animated: true) {
 
-            self.collabBlocksDelegate?.performSegue(collabID, collabName)
+            self.collabBlocksDelegate?.performSegue(collabID, collabName, collabDate)
         }
     }
     

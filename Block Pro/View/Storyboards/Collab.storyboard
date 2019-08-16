@@ -713,10 +713,6 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="71l-jK-S46">
-                                        <rect key="frame" x="285" y="91" width="49" height="31"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    </switch>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Notify Me" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KjE-lV-UT9">
                                         <rect key="frame" x="182" y="90" width="76" height="32"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -750,7 +746,24 @@
                                                     <segment title="10"/>
                                                     <segment title="15"/>
                                                 </segments>
+                                                <connections>
+                                                    <action selector="notificationTimeSegments:" destination="WdP-Oj-Bd8" eventType="valueChanged" id="Zci-ja-W4N"/>
+                                                </connections>
                                             </segmentedControl>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="W5h-yG-Sis">
+                                        <rect key="frame" x="285" y="91" width="53" height="33"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="71l-jK-S46">
+                                                <rect key="frame" x="1" y="1" width="49" height="31"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <connections>
+                                                    <action selector="notificationSwitch:" destination="WdP-Oj-Bd8" eventType="valueChanged" id="beW-Ma-RoT"/>
+                                                </connections>
+                                            </switch>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </view>
@@ -772,6 +785,7 @@
                         <outlet property="categoryTextField" destination="LHA-AR-36f" id="gBE-vo-yrf"/>
                         <outlet property="endTimeTextField" destination="jGn-qK-g6i" id="qg7-nN-Asf"/>
                         <outlet property="notificationSwitch" destination="71l-jK-S46" id="4gK-Gp-YR7"/>
+                        <outlet property="notificationSwitchContainer" destination="W5h-yG-Sis" id="mM9-LY-VgC"/>
                         <outlet property="notificationTimeSegments" destination="bCd-WW-g2D" id="8w0-zv-HEk"/>
                         <outlet property="startTimeTextField" destination="MbT-qF-MiF" id="09n-4A-4C5"/>
                         <outlet property="timePicker" destination="EAH-D5-ljl" id="Wd0-hL-sJV"/>
@@ -781,7 +795,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HGa-Ix-sDf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5274" y="2022"/>
+            <point key="canvasLocation" x="5272.8000000000002" y="2021.6748768472908"/>
         </scene>
         <!--Collab Block Popover View Controller-->
         <scene sceneID="y5j-Tz-tOc">

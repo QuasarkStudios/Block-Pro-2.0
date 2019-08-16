@@ -37,7 +37,8 @@ class CollabBlockPopoverViewController: UIViewController {
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var exitButton: UIButton!
     
-    var db = Firestore.firestore()
+    let db = Firestore.firestore()
+    var listener: ListenerRegistration?
     let currentUser = UserData.singletonUser
     
     var updateCollabBlockDelegate: UpdateCollabBlock?
@@ -59,6 +60,10 @@ class CollabBlockPopoverViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         
         configureBigBlock()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        listener?.remove()
     }
     
     func viewAdjustments () {
@@ -84,7 +89,7 @@ class CollabBlockPopoverViewController: UIViewController {
     
     func configureBigBlock () {
         
-        db.collection("Collaborations").document(collabID).collection("CollabBlocks").document(blockID).addSnapshotListener { (snapshot, error) in
+        listener = db.collection("Collaborations").document(collabID).collection("CollabBlocks").document(blockID).addSnapshotListener { (snapshot, error) in
             
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
@@ -129,8 +134,6 @@ class CollabBlockPopoverViewController: UIViewController {
                     self.blockCategory.text = (data["blockCategory"] as! String)
                     
                 }
-                
-                
             }
         }
     }

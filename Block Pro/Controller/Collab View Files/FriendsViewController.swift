@@ -24,6 +24,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var collabID: String = ""
     var collabName: String = ""
+    var collabDate: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -129,17 +130,25 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         if pendingObjectArray.count == 0 {
             
-            selectedFriend = friendObjectArray[indexPath.row]
-            performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
+            //Catches a lil bug that causes the friendObjectArray to go out of bounds
+            if indexPath.row < friendObjectArray.count {
+                selectedFriend = friendObjectArray[indexPath.row]
+                performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
+            }
         }
         
         else {
             if indexPath.section == 0 {
+                
                 rescindFriendRequest(indexPath)
             }
             else {
-                selectedFriend = friendObjectArray[indexPath.row]
-                performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
+                
+                //Catches a lil bug that causes the friendObjectArray to go out of bounds
+                if indexPath.row < friendObjectArray.count {
+                    selectedFriend = friendObjectArray[indexPath.row]
+                    performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
+                }
             }
         }
         
@@ -333,6 +342,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             let collabBlockVC = segue.destination as! CollabBlockViewController
             collabBlockVC.collabID = collabID
             collabBlockVC.collabName = collabName
+            collabBlockVC.collabDate = collabDate
         }
     }
     
@@ -340,10 +350,11 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
 
 extension FriendsViewController: CollabView {
     
-    func performSegue (_ collabID: String, _ collabName: String) {
+    func performSegue (_ collabID: String, _ collabName: String, _ collabDate: String) {
         
         self.collabID = collabID
         self.collabName = collabName
+        self.collabDate = collabDate
         performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
     }
 }

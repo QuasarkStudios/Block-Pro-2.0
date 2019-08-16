@@ -266,7 +266,7 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
             else {
                 
-                selectedCollab = sectionContentArray![indexPath.section][indexPath.row]
+                selectedCollab = sectionContentArray![indexPath.section - 1][indexPath.row]
                 performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
             }
         }
@@ -404,28 +404,6 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 ProgressHUD.showError("Sorry, there was an error getting your info")
             }
         })
-        
-        
-        
-        
-//        db.collection("Users").document(uid).getDocument { (snapshot, error) in
-//
-//            if error != nil {
-//                ProgressHUD.showError(error?.localizedDescription)
-//            }
-//            else {
-//
-//                let currentUser = UserData.singletonUser
-//
-//                currentUser.userID = snapshot?.data()!["userID"] as! String
-//                currentUser.firstName = snapshot?.data()!["firstName"] as! String
-//                currentUser.lastName = snapshot?.data()!["lastName"] as! String
-//                currentUser.username = snapshot?.data()!["username"] as! String
-//
-//                completion()
-//
-//                }
-//            }
     }
     
     func getCollabs () {
@@ -655,6 +633,7 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
             
             collabBlockVC.collabID = collabData.collabID
             collabBlockVC.collabName = collabData.collabName
+            collabBlockVC.collabDate = collabData.collabDate
         }
     }
 }

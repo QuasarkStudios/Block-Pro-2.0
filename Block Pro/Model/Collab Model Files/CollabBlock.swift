@@ -11,7 +11,6 @@ import Foundation
 class CollabBlock {
     
     var blockID: String = ""
-    var notificationID: String = ""
     
     var creator: [String : String] = ["userID" : "", "firstName" : "", "lastName" : ""]
     var name: String = ""
@@ -24,4 +23,6 @@ class CollabBlock {
     var endHour: String = ""
     var endMinute: String = ""
     var endPeriod: String = ""
+    
+    var notificationSettings: [String : [String : Any]] = [:]  //["userID" : ["notificationID" : "", "scheduled" : false, "minsBefore" : 0]]  
 }
