@@ -169,7 +169,7 @@ class CollabBlockPopoverViewController: UIViewController {
     @IBAction func deleteButton(_ sender: Any) {
         
         //Setting the title and message of the "deleteAlert"
-        let deleteAlert = UIAlertController(title: "Delete Collab Block", message: "Are you sure you would like to delete this Collab Block?", preferredStyle: .alert)
+        let deleteAlert = UIAlertController(title: "Delete Collab Block", message: "Are you sure you would like to delete this Collab Block?", preferredStyle: .actionSheet)
         
         //Setting the delete action of the deleteAlert
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (deleteAction) in

@@ -17,13 +17,17 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var resultsTableView: UITableView!
     
     let db = Firestore.firestore()
-    
+    var friendRequestsListener: ListenerRegistration?
     var handle: AuthStateDidChangeListenerHandle?
     
+    let currentUser = UserData.singletonUser
     
     var resultsObjectArray: [SearchResult] = [SearchResult]() 
     var requestsObjectArray: [FriendRequest] = [FriendRequest]()
     var searchedUsername: String = ""
+    
+    var pendingFriends: [PendingFriend] = [PendingFriend]()
+    var friends: [Friend] = [Friend]()
     
     var tableViewTracker: String = "Requests" //Variable that tracks what data the tableView should display
     var searchButtonTapped: Bool = false
@@ -44,12 +48,17 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         searchBar.autocapitalizationType = .none
         searchBar.spellCheckingType = .no
         
-        resultsTableView.register(UINib(nibName: "AddFriendTableViewCell", bundle: nil), forCellReuseIdentifier: "SearchedFriend")
+        resultsTableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendCell")
         
-        findFriendRequests()
+        getFriendRequests()
         
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        friendRequestsListener?.remove()
+    }
+    
     
     //MARK: - TableView DataSource Methods
     
@@ -95,16 +104,17 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
                 cell.textLabel?.text = "No Friend Requests Found"
+                cell.textLabel?.textColor = UIColor.lightGray
                 cell.isUserInteractionEnabled = false
                 
                 return cell
             }
             else {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "SearchedFriend", for: indexPath) as! AddFriendTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
                 let firstNameArray = Array(requestsObjectArray[indexPath.row].requesterFirstName)
                 
-                cell.searchedFriendName.text = requestsObjectArray[indexPath.row].requesterFirstName + " " + requestsObjectArray[indexPath.row].requesterLastName
+                cell.friendName.text = requestsObjectArray[indexPath.row].requesterFirstName + " " + requestsObjectArray[indexPath.row].requesterLastName
                 cell.friendInitial.text = "\(firstNameArray[0])"
                 
                 return cell
@@ -119,6 +129,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 if searchButtonTapped == true {
                     cell.textLabel?.text = "No Users Found"
+                    cell.textLabel?.textColor = UIColor.lightGray
                 }
                 else {
                     cell.textLabel?.text = ""
@@ -131,14 +142,70 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
             else {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "SearchedFriend", for: indexPath) as! AddFriendTableViewCell
-                let firstNameArray = Array(resultsObjectArray[indexPath.row].firstName)
+                var friendAdded: Bool = false
+                var friendPending: Bool = false
+                    
+                for friend in friends {
+                    
+                    if friend.friendID == resultsObjectArray[indexPath.row].userID {
+                        friendAdded = true
+                        break
+                    }
+                }
                 
-                cell.searchedFriendName.text = resultsObjectArray[indexPath.row].firstName + " " + resultsObjectArray[indexPath.row].lastName
-                cell.friendInitial.text = "\(firstNameArray[0])"
+                for friend in pendingFriends {
+                    
+                    if friend.pendingID == resultsObjectArray[indexPath.row].userID {
+                        friendPending = true
+                        break
+                    }
+                }
                 
-                cell.accessoryType = .none
-                return cell
+                if friendAdded == true {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                    cell.textLabel?.text = "You already have this friend added"
+                    cell.textLabel?.textColor = UIColor.lightGray
+                    cell.isUserInteractionEnabled = false
+
+                    return cell
+                }
+                
+                else if friendPending == true {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+                    let firstNameArray = Array(resultsObjectArray[indexPath.row].firstName)
+                    
+                    cell.friendName.text = resultsObjectArray[indexPath.row].firstName + " " + resultsObjectArray[indexPath.row].lastName
+                    cell.friendInitial.text = "\(firstNameArray[0])"
+                    
+                    cell.accessoryType = .checkmark
+                    
+                    return cell
+                }
+                    
+                else if resultsObjectArray[indexPath.row].userID == currentUser.userID {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                    cell.textLabel?.text = "Sorry, you can't add yourself as a friend"
+                    cell.textLabel?.textColor = UIColor.lightGray
+                    cell.isUserInteractionEnabled = false
+                    
+                    return cell
+                }
+                
+                else {
+                   
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+                    let firstNameArray = Array(resultsObjectArray[indexPath.row].firstName)
+                    
+                    cell.friendName.text = resultsObjectArray[indexPath.row].firstName + " " + resultsObjectArray[indexPath.row].lastName
+                    cell.friendInitial.text = "\(firstNameArray[0])"
+                    
+                    cell.accessoryType = .none
+                    
+                    return cell
+                }
             }
         }
     }
@@ -162,6 +229,10 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.accessoryType = .checkmark
                 sendRequest(indexPath)
             }
+            else {
+                ProgressHUD.showSuccess("You've already sent \(resultsObjectArray[indexPath.row].firstName) a friend request!")
+            }
+            
         }
         
         tableView.deselectRow(at: indexPath, animated: false)
@@ -209,11 +280,11 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         })
     }
     
-    func findFriendRequests () {
+    func getFriendRequests () {
         
-        requestsObjectArray.removeAll()
-        
-        db.collection("Users").document(Auth.auth().currentUser!.uid).collection("FriendRequests").getDocuments { (snapshot, error) in
+        friendRequestsListener = db.collection("Users").document(currentUser.userID).collection("FriendRequests").addSnapshotListener { (snapshot, error) in
+            
+            self.requestsObjectArray.removeAll()
             
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
@@ -312,7 +383,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let friendDict: [String : String] = ["friendID" : requestsObjectArray[selectedRequest].requesterID, "firstName" : requestsObjectArray[selectedRequest].requesterFirstName, "lastName" : requestsObjectArray[selectedRequest].requesterLastName, "username" : requestsObjectArray[selectedRequest].requesterUsername]
         
-        db.collection("Users").document(requestsObjectArray[selectedRequest].requesterID).collection("PendingFriends").whereField("friendID", isEqualTo: Auth.auth().currentUser!.uid).getDocuments { (snapshot, error) in
+        db.collection("Users").document(requestsObjectArray[selectedRequest].requesterID).collection("PendingFriends").whereField("friendID", isEqualTo: currentUser.userID).getDocuments { (snapshot, error) in
             
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
@@ -321,20 +392,20 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 if snapshot?.isEmpty == true {
                     
-                    self.db.collection("Users").document(Auth.auth().currentUser!.uid).collection("FriendRequests").document(friendDict["friendID"]!).delete()
+                    self.db.collection("Users").document(self.currentUser.userID).collection("FriendRequests").document(friendDict["friendID"]!).delete()
                     
                     ProgressHUD.showError("Sorry, this friend request was rescinded")
                     
-                    self.findFriendRequests()
+                    //self.findFriendRequests()
                 }
                 else {
-                    self.db.collection("Users").document(Auth.auth().currentUser!.uid).collection("Friends").document(friendDict["friendID"]!).setData(friendDict)
+                    self.db.collection("Users").document(self.currentUser.userID).collection("Friends").document(friendDict["friendID"]!).setData(friendDict)
             
-                    self.db.collection("Users").document(Auth.auth().currentUser!.uid).collection("FriendRequests").document(friendDict["friendID"]!).delete()
+                    self.db.collection("Users").document(self.currentUser.userID).collection("FriendRequests").document(friendDict["friendID"]!).delete()
             
-                    self.db.collection("Users").document(self.requestsObjectArray[selectedRequest].requesterID).collection("PendingFriends").document(Auth.auth().currentUser!.uid).setData(["accepted" : "true"], mergeFields: ["accepted"])
+                    self.db.collection("Users").document(self.requestsObjectArray[selectedRequest].requesterID).collection("PendingFriends").document(self.currentUser.userID).setData(["accepted" : "true"], mergeFields: ["accepted"])
             
-                    self.findFriendRequests()
+                    //self.findFriendRequests()
                 }
             }
         }
@@ -342,48 +413,40 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func declineRequest (_ selectedRequest: Int) {
         
-        db.collection("Users").document(Auth.auth().currentUser!.uid).collection("FriendRequests").document(requestsObjectArray[selectedRequest].requesterID).delete()
+        db.collection("Users").document(currentUser.userID).collection("FriendRequests").document(requestsObjectArray[selectedRequest].requesterID).delete()
         
-        db.collection("Users").document(requestsObjectArray[selectedRequest].requesterID).collection("PendingFriends").document(Auth.auth().currentUser!.uid).setData(["accepted" : "false"], mergeFields: ["accepted"])
+        db.collection("Users").document(requestsObjectArray[selectedRequest].requesterID).collection("PendingFriends").document(currentUser.userID).setData(["accepted" : "false"], mergeFields: ["accepted"])
         
-        findFriendRequests()
+        //findFriendRequests()
         
     }
     
     func sendRequest (_ indexPath: IndexPath) {
         
         let pendingFriendDict: [String: String] = ["friendID" : resultsObjectArray[indexPath.row].userID, "firstName" : resultsObjectArray[indexPath.row].firstName, "lastName" : resultsObjectArray[indexPath.row].lastName, "username" : resultsObjectArray[indexPath.row].username, "accepted" : ""]
+
+        let requestDict: [String : String] = [ "userID" : currentUser.userID, "firstName" : currentUser.firstName, "lastName" : currentUser.lastName, "username" : currentUser.username]
         
-        db.collection("Users").whereField("userID", isEqualTo: Auth.auth().currentUser!.uid).getDocuments { (snapshot, error) in
-            
-            if error != nil {
-                ProgressHUD.showError(error?.localizedDescription)
-            }
-            
-            else {
-                
-                for document in snapshot!.documents {
-                                        let userFirstName = document.data()["firstName"] as! String
-                    let userLastName = document.data()["lastName"] as! String
-                    let username = document.data()["username"] as! String
-                    let userID = document.data()["userID"] as! String
-                    
-                    let requestDict: [String : String] = [ "userID" : userID, "firstName" : userFirstName, "lastName" : userLastName, "username" : username]
-                    
-                    self.db.collection("Users").document(self.resultsObjectArray[indexPath.row].userID).collection("FriendRequests").document(Auth.auth().currentUser!.uid).setData(requestDict)
-                    
-                    self.db.collection("Users").document(Auth.auth().currentUser!.uid).collection("PendingFriends").document(pendingFriendDict["friendID"]!).setData(pendingFriendDict)
-                    
-                    ProgressHUD.showSuccess("Friend Request Sent!")
-                }
-                
-            }
-        }
+        db.collection("Users").document(resultsObjectArray[indexPath.row].userID).collection("FriendRequests").document(currentUser.userID).setData(requestDict)
+        
+        db.collection("Users").document(currentUser.userID).collection("PendingFriends").document(pendingFriendDict["friendID"]!).setData(pendingFriendDict)
+        
+        let pendingFriend = PendingFriend()
+        
+        pendingFriend.pendingID = resultsObjectArray[indexPath.row].userID
+        pendingFriend.pendingFirstName = resultsObjectArray[indexPath.row].firstName
+        pendingFriend.pendingLastName = resultsObjectArray[indexPath.row].lastName
+        pendingFriend.pendingUsername = resultsObjectArray[indexPath.row].username
+        
+        pendingFriends.append(pendingFriend)
+        
+        ProgressHUD.showSuccess("Friend Request Sent!")
+        
     }
     
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         
-        findFriendRequests()
+        //findFriendRequests()
     }
 }
 

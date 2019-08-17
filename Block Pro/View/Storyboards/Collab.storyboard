@@ -546,6 +546,16 @@
                                             <rect key="frame" x="0.0" y="419" width="306" height="81"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <prototypes>
+                                                <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="mb3-zT-BmU">
+                                                    <rect key="frame" x="0.0" y="28" width="306" height="44"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                    <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="mb3-zT-BmU" id="zMc-De-D6G">
+                                                        <rect key="frame" x="0.0" y="0.0" width="306" height="43.666666666666664"/>
+                                                        <autoresizingMask key="autoresizingMask"/>
+                                                    </tableViewCellContentView>
+                                                </tableViewCell>
+                                            </prototypes>
                                         </tableView>
                                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1rg-eu-Hhf">
                                             <rect key="frame" x="103" y="101" width="100" height="35"/>
@@ -735,11 +745,11 @@
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IHl-wy-Yqv" userLabel="Time Segment Container">
-                                        <rect key="frame" x="178" y="138" width="121" height="29"/>
+                                        <rect key="frame" x="178" y="138" width="123" height="31"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="bCd-WW-g2D">
-                                                <rect key="frame" x="0.0" y="0.0" width="121" height="29"/>
+                                                <rect key="frame" x="1" y="1" width="121" height="29"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <segments>
                                                     <segment title="5 "/>
@@ -988,7 +998,7 @@
         <image name="people" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="qny-Qz-1HN"/>
+        <segue reference="cQA-cy-9SS"/>
         <segue reference="iTD-aJ-FDE"/>
     </inferredMetricsTieBreakers>
 </document>

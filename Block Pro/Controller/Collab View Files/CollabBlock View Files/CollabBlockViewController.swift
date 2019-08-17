@@ -524,11 +524,50 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    func deleteCollab () {
+        
+        #warning("possibly add a way to tell if this is a upcoming collab or a historic collab")
+        
+        db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").document(collabID).delete { (error) in
+            
+            if error != nil {
+                ProgressHUD.showError(error?.localizedDescription)
+            }
+        }
+        
+        db.collection("Users").document(currentUser.userID).collection("HistoricCollabs").document(collabID).delete { (error) in
+            
+            if error != nil {
+                ProgressHUD.showError(error?.localizedDescription)
+            }
+        }
+        
+        self.navigationController?.popViewController(animated: true)
+    }
+    
     
     @IBAction func addBlockButton(_ sender: Any) {
         
         selectedView = "Add"
         performSegue(withIdentifier: "moveToAUBlockView", sender: self)
+    }
+    
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        
+        let deleteAlert = UIAlertController(title: "Are you sure you would like to delete this Collab?" , message: "All data associated with this Collab will also be deleted.", preferredStyle: .actionSheet)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (deleteAction) in
+            
+            self.deleteCollab()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        deleteAlert.addAction(deleteAction)
+        deleteAlert.addAction(cancelAction)
+        
+        present(deleteAlert, animated: true, completion: nil)
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

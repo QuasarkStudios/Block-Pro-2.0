@@ -20,6 +20,9 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     lazy var db = Firestore.firestore()
     var handle: AuthStateDidChangeListenerHandle?
+    
+    var upcomingCollabListener: ListenerRegistration?
+    var pendingCollabListener: ListenerRegistration?
 
     let currentUser = UserData.singletonUser
     
@@ -71,6 +74,12 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 
             })
         }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        upcomingCollabListener?.remove()
+        pendingCollabListener?.remove()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -208,8 +217,10 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 else {
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                    cell.textLabel?.text = "You have no upcoming Collabs"
+                    cell.textLabel?.text = "No Upcoming Collabs"
+                    cell.textLabel?.textColor = UIColor.lightGray
                     cell.isUserInteractionEnabled = false
+                    
                     return cell
                 }
             }
@@ -231,8 +242,10 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
             else {
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                cell.textLabel?.text = "You have no Upcoming Collabs"
+                cell.textLabel!.text = "No Upcoming Collabs"
+                cell.textLabel?.textColor = UIColor.lightGray
                 cell.isUserInteractionEnabled = false
+                
                 return cell
             }
 
@@ -408,12 +421,14 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func getCollabs () {
         
-        collabObjectArray.removeAll()
+//        collabObjectArray.removeAll()
         
         formatter.dateFormat = "MMMM dd, yyyy"
         
-        db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").getDocuments { (snapshot, error) in
+        upcomingCollabListener = db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").addSnapshotListener { (snapshot, error) in
 
+            self.collabObjectArray.removeAll()
+            
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
             }
@@ -422,6 +437,8 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
                 if snapshot?.isEmpty == true {
                     print("no collabs")
+                    
+                    self.upcomingCollabTableView.reloadData()
                 }
                 else {
 
@@ -480,9 +497,11 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func getCollabRequests () {
         
-        pendingCollabObjectArray.removeAll()
+//        pendingCollabObjectArray.removeAll()
         
-        db.collection("Users").document(currentUser.userID).collection("PendingCollabs").getDocuments { (snapshot, error) in
+        pendingCollabListener = db.collection("Users").document(currentUser.userID).collection("PendingCollabs").addSnapshotListener { (snapshot, error) in
+            
+            self.pendingCollabObjectArray.removeAll()
             
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)

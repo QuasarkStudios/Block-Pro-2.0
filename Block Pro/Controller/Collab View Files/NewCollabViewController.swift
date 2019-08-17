@@ -53,6 +53,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var friendObjectArray: [Friend] = [Friend]()
     var selectedFriend: Friend?
+    var selectedCell: UITableViewCell?
     
     let formatter = DateFormatter()
     
@@ -133,6 +134,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         
             if friendObjectArray[indexPath.row].friendID == selectedFriend?.friendID {
                 cell.accessoryType = .checkmark
+                selectedCell = cell
             }
         
             return cell
@@ -144,15 +146,23 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         
             if cell.accessoryType == .none {
                 
+                selectedCell?.accessoryType = .none
+                
                 cell.accessoryType = .checkmark
                 selectedFriend = friendObjectArray[indexPath.row]
                 collabWithTextField.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
+                
+                selectedCell = cell
             }
             else {
                
+                selectedCell?.accessoryType = .none
+                
                 cell.accessoryType = .none
                 selectedFriend = nil
                 collabWithTextField.text = ""
+                
+                selectedCell = cell
         }
         
             tableView.deselectRow(at: indexPath, animated: false)

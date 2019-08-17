@@ -15,6 +15,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     @IBOutlet weak var searchBar: UISearchBar!
     
     var db = Firestore.firestore()
+    var pendingFriendsListener: ListenerRegistration?
+    var friendsListener: ListenerRegistration?
     
     var pendingObjectArray: [PendingFriend] = [PendingFriend]()
     var friendObjectArray: [Friend] = [Friend]()
@@ -34,7 +36,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         searchBar.delegate = self
         
-        friendsTableView.register(UINib(nibName: "FriendsTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendsCell")
+        friendsTableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendCell")
         friendsTableView.rowHeight = 55
         
         
@@ -49,6 +51,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewWillDisappear(_ animated: Bool) {
         pendingObjectArray.removeAll()
         friendObjectArray.removeAll()
+        
+        pendingFriendsListener?.remove()
+        friendsListener?.remove()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -102,24 +107,34 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
 
+   
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if pendingObjectArray.count == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsCell", for: indexPath) as! FriendsTableViewCell
-            cell.friendsName.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+            let firstNameArray = Array(friendObjectArray[indexPath.row].firstName)
+            
+            cell.friendName.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
+            cell.friendInitial.text = "\(firstNameArray[0])"
             return cell
         }
             
         else {
+            
             if indexPath.section == 0 {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
                 cell.textLabel?.text = pendingObjectArray[indexPath.row].pendingFirstName + " " + pendingObjectArray[indexPath.row].pendingLastName
                 return cell
             }
             else {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendsCell", for: indexPath) as! FriendsTableViewCell
-                cell.friendsName.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+                let firstNameArray = Array(friendObjectArray[indexPath.row].firstName)
+                
+                cell.friendName.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
+                cell.friendInitial.text = "\(firstNameArray[0])"
                 return cell
             }
             
@@ -190,9 +205,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func getPendingFriends (completion: @escaping () -> ()) {
         
-        pendingObjectArray.removeAll()
-        
-        db.collection("Users").document(Auth.auth().currentUser!.uid).collection("PendingFriends").getDocuments { (snapshot, error) in
+        pendingFriendsListener = db.collection("Users").document(Auth.auth().currentUser!.uid).collection("PendingFriends").addSnapshotListener { (snapshot, error) in
+            
+            self.pendingObjectArray.removeAll()
             
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
@@ -260,9 +275,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func getFriends () {
         
-        friendObjectArray.removeAll()
-        
-        db.collection("Users").document(Auth.auth().currentUser!.uid).collection("Friends").getDocuments { (snapshot, error) in
+        friendsListener = db.collection("Users").document(Auth.auth().currentUser!.uid).collection("Friends").addSnapshotListener { (snapshot, error) in
+            
+            self.friendObjectArray.removeAll()
             
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
@@ -271,6 +286,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                 
                 if snapshot?.isEmpty == true {
                     print ("you have no friends")
+                    
+                    self.friendsTableView.reloadData()
                 }
                 
                 else {
@@ -335,6 +352,14 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             selectedFriendVC.collabBlocksDelegate = self
             selectedFriendVC.friendDeletedDelegate = self
             
+        }
+            
+        else if segue.identifier == "moveToAddNewFriend" {
+            
+            let addFriendVC = segue.destination as! AddFriendViewController
+            
+            addFriendVC.pendingFriends = pendingObjectArray
+            addFriendVC.friends = friendObjectArray
         }
         
         else if segue.identifier == "moveToCollabBlockView" {

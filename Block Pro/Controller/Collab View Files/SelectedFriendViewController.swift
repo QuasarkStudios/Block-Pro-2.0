@@ -49,6 +49,8 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     var sectionDateArray: [String] = [String]()
     var sectionContentArray: [[UpcomingCollab]]?
 
+    var tableViewIndicator: String = ""
+    
     var collabBlocksDelegate: CollabView?
     var friendDeletedDelegate: FriendDeleted?
     
@@ -100,37 +102,84 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sectionDateArray.count
+        
+        if sectionDateArray.count > 0 {
+            return sectionDateArray.count
+        }
+        else {
+            return 1
+        }
+        
+        
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
-        return sectionDateArray[section]
+        if sectionDateArray.count > 0 {
+            return sectionDateArray[section]
+        }
+        else {
+            
+            if tableViewIndicator == "upcoming" {
+                return "Upcoming Collabs"
+            }
+            else if tableViewIndicator == "history" {
+                return "Historic Collabs"
+            }
+            else {
+                return nil
+            }
+        }
+        
+        
     }
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if section < sectionDateArray.count {
-            return sectionContentArray![section].count
+        if sectionDateArray.count > 0 {
+            
+            guard let sectionContent = sectionContentArray?[section] else { return 0 }
+            
+                return sectionContent.count
         }
+        
         else {
-            return 0
+            
+            return 1
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "UpcomingCollabCell", for: indexPath) as! UpcomingCollabTableCell
+        if sectionDateArray.count > 0 {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "UpcomingCollabCell", for: indexPath) as! UpcomingCollabTableCell
+            
+            reconfigureCollabCell(cell: cell)
+            
+            let collabWithText = sectionContentArray![indexPath.section][indexPath.row].collaborator!["firstName"]! + " " + sectionContentArray![indexPath.section][indexPath.row].collaborator!["lastName"]!
+            
+            cell.collabWithLabel.text = "Collab with " + collabWithText
+            cell.collabNameLabel.text = sectionContentArray![indexPath.section][indexPath.row].collabName
+            
+            return cell
+        }
         
-        reconfigureCollabCell(cell: cell)
-        
-        let collabWithText = sectionContentArray![indexPath.section][indexPath.row].collaborator!["firstName"]! + " " + sectionContentArray![indexPath.section][indexPath.row].collaborator!["lastName"]!
-        
-        cell.collabWithLabel.text = "Collab with " + collabWithText
-        cell.collabNameLabel.text = sectionContentArray![indexPath.section][indexPath.row].collabName
-        
-        return cell
+        else {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+            
+            if tableViewIndicator == "upcoming" {
+                cell.textLabel!.text = "No Upcoming Collabs"
+            }
+            else if tableViewIndicator == "history" {
+                cell.textLabel!.text = "No Historic Collabs"
+            }
+            
+            cell.isUserInteractionEnabled = false
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -144,9 +193,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             
                 self.collabBlocksDelegate?.performSegue(collabData.collabID, collabData.collabName, collabData.collabDate)
             
-//            guard let collabID = self.sectionContentArray?[indexPath.section][indexPath.row].collabID else { return }
-//
-//                self.collabBlocksDelegate?.performSegue(collabID, collabName)
         }
         
     }
@@ -225,6 +271,8 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                 
                 if snapshot?.isEmpty == true {
                     print ("damn")
+                    
+                    self.upcoming_historyTableView.reloadData()
                 }
                 else {
                     
@@ -275,7 +323,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         let selectedFriendName: String = selectedFriend!.firstName + " " + selectedFriend!.lastName
         
-        let deleteAlert = UIAlertController(title: "Delete " + selectedFriendName + "?", message: "All data with " + selectedFriendName + " will also be deleted", preferredStyle: .alert)
+        let deleteAlert = UIAlertController(title: "Delete " + selectedFriendName + "?", message: "All data with " + selectedFriendName + " will also be deleted", preferredStyle: .actionSheet)
         
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (deleteAction) in
             
@@ -445,7 +493,8 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         UIView.animate(withDuration: 0.2, animations: {
             
-            dismissIndicator.frame.origin.y = 500
+            
+            dismissIndicator.frame = CGRect(x: 103, y: 500, width: 100, height: 35)
             tableView.frame.origin.y = 500
             
         }) { (finished: Bool) in
@@ -486,7 +535,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             
             else if animateDown == false {
                 
-                
                 UIView.animate(withDuration: 2, animations: {
                     
                     self.dismissTableViewIndicator.frame = CGRect(x: 103, y: 80, width: 100, height: 35)
@@ -506,6 +554,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     @IBAction func upcomingButton(_ sender: Any) {
         
         getUpcomingCollabs()
+        tableViewIndicator = "upcoming"
         
         let date = Date()
         timer = Timer(fireAt: date, interval: 3, target: self, selector: #selector(self.animateDismissButton), userInfo: nil, repeats: true)
@@ -538,6 +587,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     @IBAction func historyButton(_ sender: Any) {
         
         getHistoricCollabs()
+        tableViewIndicator = "history"
         
         let date = Date()
         timer = Timer(fireAt: date, interval: 3, target: self, selector: #selector(self.animateDismissButton), userInfo: nil, repeats: true)

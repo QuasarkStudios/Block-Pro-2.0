@@ -8,12 +8,12 @@
 
 import UIKit
 
-class AddFriendTableViewCell: UITableViewCell {
+class FriendTableViewCell: UITableViewCell {
 
     
     @IBOutlet weak var intialContainer: UIView!
     @IBOutlet weak var friendInitial: UILabel!
-    @IBOutlet weak var searchedFriendName: UILabel!
+    @IBOutlet weak var friendName: UILabel!
     
     
     override func awakeFromNib() {
