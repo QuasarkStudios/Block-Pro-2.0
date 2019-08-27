@@ -133,7 +133,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         
         categoryTextField.text = blockCategories[row]
         selectedCategory = blockCategories[row]
-        blockContainer.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]])
+        blockContainer.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]] ?? "#ffffff")
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -257,7 +257,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                 blockContainer.backgroundColor = UIColor(hexString: "#EFEFF4")
             }
             else {
-                blockContainer.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory])
+                blockContainer.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory]!)
             }
             
             guard let notifSettings = block.notificationSettings[currentUser.userID] else { return }

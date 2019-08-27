@@ -25,6 +25,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
 
     @IBOutlet weak var newCollabView: UIView!
     @IBOutlet weak var newCollabContainer: UIView!
+    @IBOutlet weak var newCollabLabel: UILabel!
     
     @IBOutlet weak var collabNameTextField: UITextField!
     @IBOutlet weak var collabWithTextField: UITextField!
@@ -57,6 +58,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     
     let formatter = DateFormatter()
     
+    var gradientLayer: CAGradientLayer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,6 +67,14 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         friendsTableView.dataSource = self
         
         friendsTableView.backgroundColor = UIColor(hexString: "2E2E2E")
+        
+        gradientLayer = CAGradientLayer()
+        gradientLayer.frame = newCollabContainer.bounds
+        gradientLayer.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
+        
+        newCollabContainer.layer.addSublayer(gradientLayer)
+        
+        newCollabContainer.bringSubviewToFront(newCollabLabel)
         
         collabNameTextField.delegate = self
         collabWithTextField.delegate = self

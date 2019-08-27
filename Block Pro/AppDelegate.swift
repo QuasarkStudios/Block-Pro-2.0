@@ -26,12 +26,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let tabBarController = self.window?.rootViewController as! UITabBarController
         tabBarController.selectedIndex = 2
 
-        
-        do {
-            let realm = try Realm() //Creation of a new object from the Realm class
-        } catch {
-            print ("Error initializing new realm, \(error)")
-        }
+        UINavigationBar.appearance().tintColor = UIColor(hexString: "#e35d5b")
+        UITabBar.appearance().tintColor = UIColor(hexString: "#e35d5b")
+
+//        do {
+//            let realm = try Realm() //Creation of a new object from the Realm class
+//        } catch {
+//            print ("Error initializing new realm, \(error)")
+//        }
         
         UNUserNotificationCenter.current().delegate = self
         

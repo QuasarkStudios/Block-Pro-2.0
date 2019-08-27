@@ -30,6 +30,12 @@
 		0D3A9E2222EFF81F0052BCB6 /* AUCollabBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3A9E2122EFF81F0052BCB6 /* AUCollabBlockViewController.swift */; };
 		0D3A9E2522F367460052BCB6 /* CollabBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3A9E2422F367460052BCB6 /* CollabBlock.swift */; };
 		0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3A9E2622F3EE560052BCB6 /* CollabBlockPopoverViewController.swift */; };
+		0D41F5BC2311C05B00B4B11E /* FiveMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41F5BB2311C05B00B4B11E /* FiveMinCell.swift */; };
+		0D41F5BE2311E4F100B4B11E /* TenMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41F5BD2311E4F100B4B11E /* TenMinCell.swift */; };
+		0D41F5C02311EC6A00B4B11E /* FifteenMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41F5BF2311EC6A00B4B11E /* FifteenMinCell.swift */; };
+		0D41F5C2231203A200B4B11E /* TwentyMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41F5C1231203A200B4B11E /* TwentyMinCell.swift */; };
+		0D41F5C423124B3700B4B11E /* TwentyFiveMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41F5C323124B3700B4B11E /* TwentyFiveMinCell.swift */; };
+		0D41F5C6231376FB00B4B11E /* ThirtyMinAndUpCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41F5C5231376FB00B4B11E /* ThirtyMinAndUpCell.swift */; };
 		0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7522DBE435001D35B4 /* FriendRequest.swift */; };
 		0D872F7822DEE925001D35B4 /* PendingFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7722DEE925001D35B4 /* PendingFriend.swift */; };
 		0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7922E01F7C001D35B4 /* Friend.swift */; };
@@ -82,6 +88,12 @@
 		0D3A9E2122EFF81F0052BCB6 /* AUCollabBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AUCollabBlockViewController.swift; sourceTree = "<group>"; };
 		0D3A9E2422F367460052BCB6 /* CollabBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabBlock.swift; sourceTree = "<group>"; };
 		0D3A9E2622F3EE560052BCB6 /* CollabBlockPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabBlockPopoverViewController.swift; sourceTree = "<group>"; };
+		0D41F5BB2311C05B00B4B11E /* FiveMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiveMinCell.swift; sourceTree = "<group>"; };
+		0D41F5BD2311E4F100B4B11E /* TenMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TenMinCell.swift; sourceTree = "<group>"; };
+		0D41F5BF2311EC6A00B4B11E /* FifteenMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FifteenMinCell.swift; sourceTree = "<group>"; };
+		0D41F5C1231203A200B4B11E /* TwentyMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwentyMinCell.swift; sourceTree = "<group>"; };
+		0D41F5C323124B3700B4B11E /* TwentyFiveMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwentyFiveMinCell.swift; sourceTree = "<group>"; };
+		0D41F5C5231376FB00B4B11E /* ThirtyMinAndUpCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirtyMinAndUpCell.swift; sourceTree = "<group>"; };
 		0D872F7522DBE435001D35B4 /* FriendRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequest.swift; sourceTree = "<group>"; };
 		0D872F7722DEE925001D35B4 /* PendingFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingFriend.swift; sourceTree = "<group>"; };
 		0D872F7922E01F7C001D35B4 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
@@ -221,6 +233,12 @@
 		0D2CED0722907B0E00CC9180 /* Custom Cells */ = {
 			isa = PBXGroup;
 			children = (
+				0D41F5BB2311C05B00B4B11E /* FiveMinCell.swift */,
+				0D41F5BD2311E4F100B4B11E /* TenMinCell.swift */,
+				0D41F5BF2311EC6A00B4B11E /* FifteenMinCell.swift */,
+				0D41F5C1231203A200B4B11E /* TwentyMinCell.swift */,
+				0D41F5C323124B3700B4B11E /* TwentyFiveMinCell.swift */,
+				0D41F5C5231376FB00B4B11E /* ThirtyMinAndUpCell.swift */,
 				0D933012229373B000B6191D /* TimeTableViewCell */,
 				0D933013229373D200B6191D /* BlockTableViewCells */,
 				0D23076922D29F6900A12393 /* UpcomingCollabViewCell */,
@@ -501,6 +519,7 @@
 				0D872F7C22E25350001D35B4 /* UserSingleton.swift in Sources */,
 				0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */,
 				0DDDA65822DB16C500B69A4E /* FriendTableViewCell.swift in Sources */,
+				0D41F5BC2311C05B00B4B11E /* FiveMinCell.swift in Sources */,
 				0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */,
 				0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */,
 				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
@@ -511,6 +530,8 @@
 				0D872F7822DEE925001D35B4 /* PendingFriend.swift in Sources */,
 				0D23077822D580CF00A12393 /* NewCollabViewController.swift in Sources */,
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
+				0D41F5C02311EC6A00B4B11E /* FifteenMinCell.swift in Sources */,
+				0D41F5C6231376FB00B4B11E /* ThirtyMinAndUpCell.swift in Sources */,
 				0D23077A22D6CD9900A12393 /* CollabBlockViewController.swift in Sources */,
 				0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */,
 				0D3A9E2222EFF81F0052BCB6 /* AUCollabBlockViewController.swift in Sources */,
@@ -519,6 +540,7 @@
 				0DA9F84122AC7C42008BECAE /* BlockPopoverViewController.swift in Sources */,
 				0D3A9E2522F367460052BCB6 /* CollabBlock.swift in Sources */,
 				0D93300822927C7500B6191D /* Block.swift in Sources */,
+				0D41F5BE2311E4F100B4B11E /* TenMinCell.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
 				0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */,
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
@@ -526,7 +548,9 @@
 				0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */,
 				0D23077622D3DB6D00A12393 /* SelectedFriendViewController.swift in Sources */,
 				0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */,
+				0D41F5C423124B3700B4B11E /* TwentyFiveMinCell.swift in Sources */,
 				0D23076C22D29FE900A12393 /* UpcomingCollabTableCell.swift in Sources */,
+				0D41F5C2231203A200B4B11E /* TwentyMinCell.swift in Sources */,
 				0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */,
 				0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */,
 			);

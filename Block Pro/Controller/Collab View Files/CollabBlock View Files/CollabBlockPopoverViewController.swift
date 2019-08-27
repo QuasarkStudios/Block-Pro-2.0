@@ -75,14 +75,16 @@ class CollabBlockPopoverViewController: UIViewController {
         initialContainer.layer.cornerRadius = 0.5 * initialContainer.bounds.size.width
         initialContainer.clipsToBounds = true
         
+        blockName.adjustsFontSizeToFitWidth = true
+        
         alphaView.layer.cornerRadius = 0.05 * alphaView.bounds.size.width
         alphaView.clipsToBounds = true
         
-        editButton.backgroundColor = UIColor.flatWhite()
+        editButton.backgroundColor = UIColor.flatWhite
         editButton.layer.cornerRadius = 0.1 * editButton.bounds.size.width
         editButton.clipsToBounds = true
         
-        deleteButton.backgroundColor = UIColor.flatRed()
+        deleteButton.backgroundColor = UIColor.flatRed
         deleteButton.layer.cornerRadius = 0.1 * deleteButton.bounds.size.width
         deleteButton.clipsToBounds = true
     }
@@ -124,7 +126,7 @@ class CollabBlockPopoverViewController: UIViewController {
                         self.bigCollabBlock.backgroundColor = UIColor(hexString: "#EFEFF4")
                     }
                     else {
-                       self.bigCollabBlock.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String])
+                       self.bigCollabBlock.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String]!)
                     }
                     
                     self.blockName.text = (data["name"] as! String)

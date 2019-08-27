@@ -7,7 +7,8 @@ target 'Block Pro' do
   # Pods for Block Pro
 
 pod 'RealmSwift'
-pod 'ChameleonFramework'
+#pod 'ChameleonFramework'
+pod 'ChameleonFramework/Swift', :git => 'https://github.com/ViccAlexander/Chameleon.git'
 pod 'JTAppleCalendar'
 pod 'Firebase/Core'
 pod 'Firebase/Firestore'

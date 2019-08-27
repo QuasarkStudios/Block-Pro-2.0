@@ -26,6 +26,8 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
 
     let currentUser = UserData.singletonUser
     
+    //var gradientLayer: CAGradientLayer!
+    
     let formatter = DateFormatter()
     
     var pendingCollabObjectArray: [PendingCollab] = [PendingCollab]()
@@ -193,8 +195,10 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
 
-                cell.textLabel!.text = pendingCollabObjectArray[indexPath.row].collabName + " with " + collaboratorName
+                cell.textLabel?.text = pendingCollabObjectArray[indexPath.row].collabName + " with " + collaboratorName
+                cell.textLabel?.textColor = UIColor.black
                 cell.textLabel?.adjustsFontSizeToFitWidth = true
+                
                 cell.isUserInteractionEnabled = true
                 
                 return cell

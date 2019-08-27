@@ -20,7 +20,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <viewLayoutGuide key="safeArea" id="afI-6U-A3c"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Free Time" id="AQf-DG-EaY"/>
+                    <tabBarItem key="tabBarItem" title="Free Time" image="albums" id="AQf-DG-EaY"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="blu-5w-qh2" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -28,4 +28,7 @@
             <point key="canvasLocation" x="1252" y="-1501"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="albums" width="30" height="30"/>
+    </resources>
 </document>

@@ -24,13 +24,20 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </view>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5IY-oL-lyL">
-                        <rect key="frame" x="0.0" y="49" width="82" height="20"/>
+                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="z4O-V5-bda">
+                        <rect key="frame" x="5" y="44" width="72" height="31.5"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5IY-oL-lyL">
+                                <rect key="frame" x="0.0" y="5" width="72" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.49000011609999999" green="1" blue="0.44546259580000003" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    </view>
                 </subviews>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
@@ -38,6 +45,7 @@
                 <outlet property="cellContentView" destination="H2p-sc-9uM" id="G5o-H4-c9A"/>
                 <outlet property="cellSeperator" destination="Pt7-NR-86d" id="4ot-Nx-db9"/>
                 <outlet property="timeLabel" destination="5IY-oL-lyL" id="XKM-p3-zrL"/>
+                <outlet property="timeLabelContainer" destination="z4O-V5-bda" id="Oak-4v-QeG"/>
             </connections>
             <point key="canvasLocation" x="-358.39999999999998" y="-62.068965517241381"/>
         </tableViewCell>

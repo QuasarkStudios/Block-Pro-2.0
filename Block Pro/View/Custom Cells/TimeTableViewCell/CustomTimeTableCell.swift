@@ -11,6 +11,7 @@ import UIKit
 class CustomTimeTableCell: UITableViewCell {
 
     
+    @IBOutlet weak var timeLabelContainer: UIView!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var cellSeperator: UIView!
     @IBOutlet weak var cellContentView: UIView!
@@ -18,6 +19,9 @@ class CustomTimeTableCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        
+        timeLabelContainer.layer.cornerRadius = 0.135 * timeLabelContainer.bounds.size.width
+        timeLabelContainer.clipsToBounds = true
         
     }
 

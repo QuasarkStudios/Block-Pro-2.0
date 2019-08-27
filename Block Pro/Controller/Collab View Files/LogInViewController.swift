@@ -121,7 +121,7 @@ class LogInViewController: UIViewController {
         
         usernameVerification {
             
-            print(self.uniqueUsername)
+            #warning("remmember to find a better way to verify the user actually entered something in for their name; check to see if at least one letter has been enetered")
             
             if self.firstNameTextField.text == "" || self.lastNameTextField.text == "" {
                 ProgressHUD.showError("Please finish entering in your name.")
