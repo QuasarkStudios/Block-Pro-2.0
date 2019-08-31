@@ -249,6 +249,12 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        textField.resignFirstResponder()
+        return true
+    }
+    
 
     @objc func timeSelected (timePicker: UIDatePicker) {
         
@@ -366,46 +372,40 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         notificationViewHeightConstraint.constant = 43
         segmentContainerBottomConstraint.constant = -40
         
+        timeContainerTopAnchor.constant = 500
+        categoryContainerTopAnchor.constant = 500
+        
         //iPhone XS Max & iPhone XR
         if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
-            
-            timeContainerTopAnchor.constant = 500
-            categoryContainerTopAnchor.constant = 500
             
             containersPresentedTopAnchor = 125
         }
             
-            //iPhone 8 Plus
+        //iPhone 8 Plus
         else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
             
-            timeContainerTopAnchor.constant = 500
-            categoryContainerTopAnchor.constant = 500
-            
-            containersPresentedTopAnchor = 70
+            containersPresentedTopAnchor = 75
         }
             
-            //iPhone XS & 8
-        else if UIScreen.main.bounds.width == 375.0 {
+        //iPhone XS
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
             
-            timeContainerTopAnchor.constant = 500
-            categoryContainerTopAnchor.constant = 500
-            
-            containersPresentedTopAnchor = 83
+            containersPresentedTopAnchor = 80.5
         }
             
-            //iPhone SE
+        //iPhone 8
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
+            containersPresentedTopAnchor = 40
+        }
+            
+        //iPhone SE
         else if UIScreen.main.bounds.width == 320.0 {
-            
-            timeContainerTopAnchor.constant = 500
-            categoryContainerTopAnchor.constant = 500
             
             timeContainerHeightConstraint.constant = 150
             categoryContainerHeightConstraint.constant = 150
             
             containersPresentedTopAnchor = 17.5
-            
         }
-        
     }
     
     func getFirebaseBlocks (_ blockID: String = "0", completion: @escaping () -> ())  {

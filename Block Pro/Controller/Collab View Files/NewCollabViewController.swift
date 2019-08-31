@@ -209,6 +209,12 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        textField.resignFirstResponder()
+        return true
+    }
+    
     func friendPreselected () {
         
         guard let friend = selectedFriend else { return }
