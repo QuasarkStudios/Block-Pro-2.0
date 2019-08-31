@@ -12,27 +12,43 @@ import UserNotifications
 
 //Add or update collab block
 class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
-
+    
+    @IBOutlet weak var blockOutline: UIView!
+    @IBOutlet weak var blockContainer: UIView!
+    
+    @IBOutlet weak var initialOutline: UIView!
+    @IBOutlet weak var initialLabel: UILabel!
+    
     @IBOutlet weak var blockNameTextField: UITextField!
+    
+    @IBOutlet weak var alphaView: UIView!
     @IBOutlet weak var startTimeTextField: UITextField!
     @IBOutlet weak var endTimeTextField: UITextField!
     
-    @IBOutlet weak var blockContainer: UIView!
+
     @IBOutlet weak var categoryTextField: UITextField!
     
+    @IBOutlet weak var notificationView: UIView!
+    @IBOutlet weak var notificationViewHeightConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var notificationSwitchContainer: UIView!
     @IBOutlet weak var notificationSwitch: UISwitch!
     
-    @IBOutlet weak var notificationTimeSegments: UISegmentedControl!
     @IBOutlet weak var timeSegmentContainer: UIView!
-    
-    @IBOutlet weak var timePicker: UIDatePicker!
-    @IBOutlet weak var categoryPicker: UIPickerView!
+    @IBOutlet weak var notificationTimeSegments: UISegmentedControl!
+    @IBOutlet weak var segmentContainerBottomConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var timePickerContainer: UIView!
-    @IBOutlet weak var categoryPickerContainer: UIView!
+    @IBOutlet weak var timeContainerTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var timeContainerHeightConstraint: NSLayoutConstraint!
+
+    @IBOutlet weak var timePicker: UIDatePicker!
     
+    @IBOutlet weak var categoryPickerContainer: UIView!
+    @IBOutlet weak var categoryContainerTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var categoryContainerHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var categoryPicker: UIPickerView!
     
     let db = Firestore.firestore()
     let currentUser = UserData.singletonUser
@@ -70,6 +86,8 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     
     var notificationSettings: [String : [String : Any]] = [:] //["notificationID" : "", "scheduled" : false, "minsBefore" : 0]
     
+    var containersPresentedTopAnchor: CGFloat = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -85,6 +103,9 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         timePickerContainer.frame.origin.y = 750
         categoryPickerContainer.frame.origin.y = 750
         
+        alphaView.layer.cornerRadius = 0.03 * alphaView.bounds.size.width
+        alphaView.clipsToBounds = true
+        
         startTimeTextField.inputView = UIView()
         endTimeTextField.inputView = UIView()
         categoryTextField.inputView = UIView()
@@ -98,20 +119,35 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         categoryPickerContainer.layer.cornerRadius = 0.1 * categoryPickerContainer.bounds.size.width
         categoryPickerContainer.clipsToBounds = true
         
-        notificationSwitchContainer.layer.cornerRadius = 0.3 * notificationSwitchContainer.bounds.size.width
+        notificationView.clipsToBounds = true
         
-        timeSegmentContainer.layer.cornerRadius = 0.035 * timeSegmentContainer.bounds.size.width
+        notificationSwitchContainer.layer.cornerRadius = 0.053 * notificationSwitchContainer.bounds.size.width
+        notificationSwitchContainer.clipsToBounds = true
+        
+        timeSegmentContainer.layer.cornerRadius = 0.02 * timeSegmentContainer.bounds.size.width
+        notificationTimeSegments.tintColor = UIColor(hexString: "#e53935")
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
+        
+        blockOutline.backgroundColor = .lightGray
+        blockOutline.layer.cornerRadius = 0.05 * blockOutline.bounds.size.width
+        blockOutline.clipsToBounds = true
         
         blockContainer.backgroundColor = UIColor(hexString: "#EFEFF4")
         blockContainer.layer.cornerRadius = 0.05 * blockContainer.bounds.size.width
         blockContainer.clipsToBounds = true
         
+        initialOutline.layer.cornerRadius = 0.5 * initialOutline.bounds.size.width
+        initialOutline.clipsToBounds = true
+        
+        initialLabel.layer.cornerRadius = 0.5 * initialLabel.bounds.size.width
+        initialLabel.clipsToBounds = true
+        
         notificationSettings = [currentUser.userID : ["notificationID" : "", "scheduled" : false, "minsBefore" : 0]]
         
         configureView()
+        configureConstraints()
     
     }
     
@@ -133,7 +169,8 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         
         categoryTextField.text = blockCategories[row]
         selectedCategory = blockCategories[row]
-        blockContainer.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]] ?? "#ffffff")
+        blockOutline.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]] ?? "#ffffff")
+        initialOutline.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]] ?? "#ffffff")
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -141,44 +178,69 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         switch textField {
             
         case blockNameTextField:
+            
+            self.view.layoutIfNeeded()
+            timeContainerTopAnchor.constant = 500
+            categoryContainerTopAnchor.constant = 500
+            
             UIView.animate(withDuration: 0.2) {
-                self.timePickerContainer.frame.origin.y = 750
-                self.categoryPickerContainer.frame.origin.y = 750
-            }
+                
+                self.view.layoutIfNeeded()
+                }
+            
             
         case startTimeTextField:
+            
             tag = "start"
             
+            self.view.layoutIfNeeded()
+            categoryContainerTopAnchor.constant = 500
+            
             UIView.animate(withDuration: 0.15, animations: {
-                self.categoryPickerContainer.frame.origin.y = 750
-            }) { (finished: Bool) in
+                self.view.layoutIfNeeded()
                 
-                UIView.animate(withDuration: 0.15) {
-                    self.timePickerContainer.frame.origin.y = 475
-                }
-            }
+            }, completion: { (finished: Bool) in
+                
+                self.timeContainerTopAnchor.constant = self.containersPresentedTopAnchor
+                
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.view.layoutIfNeeded()
+                })
+            })
             
         case endTimeTextField:
+            
             tag = "end"
             
+            self.view.layoutIfNeeded()
+            categoryContainerTopAnchor.constant = 500
+            
             UIView.animate(withDuration: 0.15, animations: {
-                self.categoryPickerContainer.frame.origin.y = 750
-            }) { (finished: Bool) in
+                self.view.layoutIfNeeded()
+            }, completion: { (finished: Bool) in
                 
-                UIView.animate(withDuration: 0.15) {
-                    self.timePickerContainer.frame.origin.y = 475
-                }
-            }
+                self.timeContainerTopAnchor.constant = self.containersPresentedTopAnchor
+                
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.view.layoutIfNeeded()
+                })
+            })
             
         case categoryTextField:
             
+            self.view.layoutIfNeeded()
+            timeContainerTopAnchor.constant = 500
+            
             UIView.animate(withDuration: 0.15, animations: {
-                self.timePickerContainer.frame.origin.y = 750
+                
+                self.view.layoutIfNeeded()
             }) { (finished: Bool) in
                 
-                UIView.animate(withDuration: 0.15) {
-                    self.categoryPickerContainer.frame.origin.y = 475
-                }
+                self.categoryContainerTopAnchor.constant = self.containersPresentedTopAnchor
+                
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.view.layoutIfNeeded()
+                })
             }
             
         default:
@@ -230,6 +292,10 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
             
             let addButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(create_editCollabBlock))
             navigationItem.rightBarButtonItem = addButton
+            
+            initialLabel.text = "Me"
+            initialOutline.backgroundColor = UIColor(hexString: "#EFEFF4")
+            
         }
         
         else if selectedView == "Edit" {
@@ -243,6 +309,26 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
             
             guard let block = selectedBlock else { return }
             
+            if block.blockCategory == "" {
+                blockOutline.backgroundColor = UIColor(hexString: "#EFEFF4")
+            }
+            else {
+                blockOutline.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory]!)
+                initialOutline.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory]!)
+            }
+            
+            if block.creator["userID"] == currentUser.userID {
+                
+                initialLabel.text = "Me"
+            }
+            else {
+                
+                let firstNameArray = Array(block.creator["firstName"]!)
+                let lastNameArray = Array(block.creator["lastName"]!)
+                
+                initialLabel.text = "\(firstNameArray[0])" + "\(lastNameArray[0])"
+            }
+            
             blockNameTextField.text = block.name
             startTimeTextField.text = convertTo12Hour(block.startHour, block.startMinute)
             endTimeTextField.text = convertTo12Hour(block.endHour, block.endMinute)
@@ -253,13 +339,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
             categoryTextField.text = block.blockCategory
             selectedCategory = block.blockCategory
             
-            if block.blockCategory == "" {
-                blockContainer.backgroundColor = UIColor(hexString: "#EFEFF4")
-            }
-            else {
-                blockContainer.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory]!)
-            }
-            
+
             guard let notifSettings = block.notificationSettings[currentUser.userID] else { return }
             
             if notifSettings["scheduled"] as! Bool == true {
@@ -269,9 +349,61 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                 notificationID = notifSettings["notificationID"] as! String
                 
                 notificationSwitch.isOn = true
-                notificationTimeSegments.isEnabled = true
                 notificationTimeSegments.selectedSegmentIndex = notifSettings["minsBefore"] as! Int
             }
+            else {
+                notificationSwitch.isOn = false
+                
+                self.notificationViewHeightConstraint.constant = 43
+                self.segmentContainerBottomConstraint.constant = -40
+            }
+        }
+        
+    }
+    
+    func configureConstraints () {
+        
+        notificationViewHeightConstraint.constant = 43
+        segmentContainerBottomConstraint.constant = -40
+        
+        //iPhone XS Max & iPhone XR
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+            
+            timeContainerTopAnchor.constant = 500
+            categoryContainerTopAnchor.constant = 500
+            
+            containersPresentedTopAnchor = 125
+        }
+            
+            //iPhone 8 Plus
+        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
+            
+            timeContainerTopAnchor.constant = 500
+            categoryContainerTopAnchor.constant = 500
+            
+            containersPresentedTopAnchor = 70
+        }
+            
+            //iPhone XS & 8
+        else if UIScreen.main.bounds.width == 375.0 {
+            
+            timeContainerTopAnchor.constant = 500
+            categoryContainerTopAnchor.constant = 500
+            
+            containersPresentedTopAnchor = 83
+        }
+            
+            //iPhone SE
+        else if UIScreen.main.bounds.width == 320.0 {
+            
+            timeContainerTopAnchor.constant = 500
+            categoryContainerTopAnchor.constant = 500
+            
+            timeContainerHeightConstraint.constant = 150
+            categoryContainerHeightConstraint.constant = 150
+            
+            containersPresentedTopAnchor = 17.5
+            
         }
         
     }
@@ -401,10 +533,26 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     @IBAction func notificationSwitch(_ sender: Any) {
         
         if notificationSwitch.isOn == true {
-            notificationTimeSegments.isEnabled = true
+            //notificationTimeSegments.isEnabled = true
+            
+            self.notificationViewHeightConstraint.constant = 85
+            self.segmentContainerBottomConstraint.constant = 5
+            
+            UIView.animate(withDuration: 0.2) {
+                self.view.layoutIfNeeded()
+            }
+            
         }
         else {
-            notificationTimeSegments.isEnabled = false
+            //notificationTimeSegments.isEnabled = false
+            
+            self.notificationViewHeightConstraint.constant = 43
+            self.segmentContainerBottomConstraint.constant = -40
+            
+            UIView.animate(withDuration: 0.2) {
+                self.view.layoutIfNeeded()
+            }
+        
         }
     }
     
@@ -427,28 +575,21 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
             let request: UNNotificationRequest
             
             
-            
-            let initialDate = Array(collabDate) //Turning the currentDate from a String to an Array of Strings
             var notificationDate: [String : String] = ["Month": "", "Day" : "", "Year": ""]
-            var dateTracker: String = "Month"
-            
-            var count: Int = 0
             
             formatter.dateFormat = "MMMM d, yyyy"
             
-            let testDate = formatter.date(from: collabDate)
-            print(collabDate)
-            print("testDate:", testDate)
+            let scheduledDate = formatter.date(from: collabDate)
             
             formatter.dateFormat = "M"
-            notificationDate["Month"] = formatter.string(from: testDate!)
+            notificationDate["Month"] = formatter.string(from: scheduledDate!)
             
             
             formatter.dateFormat = "d"
-            notificationDate["Day"] = formatter.string(from: testDate!)
+            notificationDate["Day"] = formatter.string(from: scheduledDate!)
             
             formatter.dateFormat = "yyyy"
-            notificationDate["Year"] = formatter.string(from: testDate!)
+            notificationDate["Year"] = formatter.string(from: scheduledDate!)
             
             //If the selectedStartMinute will become negative but the selectedStartHour will remain positive
             if (Int(selectedStartHour)! >  0) && (Int(selectedStartMinute)! - notificationTimes[notificationIndex] < 0) {
@@ -490,8 +631,6 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
 
                 //If the selectedStartMinute will not become negative
             else if Int(selectedStartMinute)! - notificationTimes[notificationIndex] >= 0 {
-
-                //print(notificationDate["Month"]!)
                 
                 //Assigning the dateComponents year, month, and day values from the "notificationDate" dictionary
                 dateComponents.year = Int(notificationDate["Year"]!)!
@@ -717,12 +856,14 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         
         view.endEditing(true)
         
-        UIView.animate(withDuration: 0.2) {
-            
-            self.timePickerContainer.frame.origin.y = 750
-            self.categoryPickerContainer.frame.origin.y = 750
-        }
+        self.view.layoutIfNeeded()
+        timeContainerTopAnchor.constant = 500
+        categoryContainerTopAnchor.constant = 500
         
+        UIView.animate(withDuration: 0.2) {
+            self.view.layoutIfNeeded()
+
+        }
         categoryPicker.selectRow(0, inComponent: 0, animated: true)
     }
 }

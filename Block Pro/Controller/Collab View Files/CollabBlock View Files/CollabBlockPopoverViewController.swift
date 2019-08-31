@@ -21,10 +21,11 @@ protocol DeleteCollabBlock {
 
 class CollabBlockPopoverViewController: UIViewController {
 
-    @IBOutlet weak var bigCollabBlock: UIView!
+    @IBOutlet weak var bigOutlineView: UIView!
+    @IBOutlet weak var bigContainerView: UIView!
     
     @IBOutlet weak var blockName: UILabel!
-    @IBOutlet weak var initialContainer: UIView!
+    @IBOutlet weak var initialOutline: UIView!
     @IBOutlet weak var initialLabel: UILabel!
     
     @IBOutlet weak var alphaView: UIView!
@@ -54,7 +55,6 @@ class CollabBlockPopoverViewController: UIViewController {
         super.viewDidLoad()
         
         viewAdjustments()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -68,12 +68,79 @@ class CollabBlockPopoverViewController: UIViewController {
     
     func viewAdjustments () {
         
-        //bigCollabBlock View Adjustments
-        bigCollabBlock.layer.cornerRadius = 0.055 * bigCollabBlock.bounds.size.width
-        bigCollabBlock.clipsToBounds = true
+        var initialOutlineWH: CGFloat = 0.0
+        var initialLabelWH: CGFloat = 0.0
         
-        initialContainer.layer.cornerRadius = 0.5 * initialContainer.bounds.size.width
-        initialContainer.clipsToBounds = true
+        //bigCollabBlock View Adjustments
+        bigOutlineView.layer.cornerRadius = 0.055 * bigOutlineView.bounds.size.width
+        bigOutlineView.clipsToBounds = true
+        
+        bigContainerView.layer.cornerRadius = 0.055 * bigContainerView.bounds.size.width
+        bigContainerView.clipsToBounds = true
+        
+        initialOutline.translatesAutoresizingMaskIntoConstraints = false
+        initialLabel.translatesAutoresizingMaskIntoConstraints = false
+        blockName.translatesAutoresizingMaskIntoConstraints = false
+        blockName.translatesAutoresizingMaskIntoConstraints = false
+        
+        if UIScreen.main.bounds.width == 414.0 {
+            
+            initialOutline.topAnchor.constraint(equalTo: bigContainerView.topAnchor, constant: 10).isActive = true
+            initialOutline.leadingAnchor.constraint(equalTo: bigContainerView.leadingAnchor, constant: 10).isActive = true
+            initialOutline.widthAnchor.constraint(equalToConstant: 56).isActive = true
+            initialOutline.heightAnchor.constraint(equalToConstant: 56).isActive = true
+            
+            initialLabel.centerXAnchor.constraint(equalTo: initialOutline.centerXAnchor).isActive = true
+            initialLabel.centerYAnchor.constraint(equalTo: initialOutline.centerYAnchor).isActive = true
+            initialLabel.widthAnchor.constraint(equalToConstant: 52).isActive = true
+            initialLabel.heightAnchor.constraint(equalToConstant: 52).isActive = true
+            
+            initialOutlineWH = 56
+            initialLabelWH = 52
+        }
+        
+        else if UIScreen.main.bounds.width == 375.0 {
+            
+            initialOutline.topAnchor.constraint(equalTo: bigContainerView.topAnchor, constant: 10).isActive = true
+            initialOutline.leadingAnchor.constraint(equalTo: bigContainerView.leadingAnchor, constant: 10).isActive = true
+            initialOutline.widthAnchor.constraint(equalToConstant: 52).isActive = true
+            initialOutline.heightAnchor.constraint(equalToConstant: 52).isActive = true
+            
+            initialLabel.centerXAnchor.constraint(equalTo: initialOutline.centerXAnchor).isActive = true
+            initialLabel.centerYAnchor.constraint(equalTo: initialOutline.centerYAnchor).isActive = true
+            initialLabel.widthAnchor.constraint(equalToConstant: 48).isActive = true
+            initialLabel.heightAnchor.constraint(equalToConstant: 48).isActive = true
+            
+            initialOutlineWH = 52
+            initialLabelWH = 48
+        }
+        
+        else if UIScreen.main.bounds.width == 320.0 {
+            
+            initialOutline.topAnchor.constraint(equalTo: bigContainerView.topAnchor, constant: 10).isActive = true
+            initialOutline.leadingAnchor.constraint(equalTo: bigContainerView.leadingAnchor, constant: 10).isActive = true
+            initialOutline.widthAnchor.constraint(equalToConstant: 48).isActive = true
+            initialOutline.heightAnchor.constraint(equalToConstant: 48).isActive = true
+            
+            initialLabel.centerXAnchor.constraint(equalTo: initialOutline.centerXAnchor).isActive = true
+            initialLabel.centerYAnchor.constraint(equalTo: initialOutline.centerYAnchor).isActive = true
+            initialLabel.widthAnchor.constraint(equalToConstant: 44).isActive = true
+            initialLabel.heightAnchor.constraint(equalToConstant: 44).isActive = true
+            
+            initialOutlineWH = 48
+            initialLabelWH = 42
+        }
+        
+        initialOutline.layer.cornerRadius = 0.5 * initialOutlineWH
+        initialOutline.clipsToBounds = true
+        
+        initialLabel.layer.cornerRadius = 0.5 * initialLabelWH
+        initialLabel.clipsToBounds = true
+        
+        blockName.leadingAnchor.constraint(equalTo: initialOutline.trailingAnchor, constant: 10).isActive = true
+        blockName.trailingAnchor.constraint(equalTo: bigContainerView.trailingAnchor, constant: -10).isActive = true
+        blockName.centerYAnchor.constraint(equalTo: initialOutline.centerYAnchor).isActive = true
+        blockName.heightAnchor.constraint(equalToConstant: 31).isActive = true
         
         blockName.adjustsFontSizeToFitWidth = true
         
@@ -123,10 +190,13 @@ class CollabBlockPopoverViewController: UIViewController {
                     }
                     
                     if data["blockCategory"] as! String == "" {
-                        self.bigCollabBlock.backgroundColor = UIColor(hexString: "#EFEFF4")
+                        self.bigOutlineView.backgroundColor = UIColor(hexString: "#EFEFF4")
+                        self.initialOutline.backgroundColor = UIColor(hexString: "#EFEFF4")
                     }
                     else {
-                       self.bigCollabBlock.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String]!)
+                       self.bigOutlineView.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String]!)
+                        self.initialOutline.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String]!)
+                        
                     }
                     
                     self.blockName.text = (data["name"] as! String)

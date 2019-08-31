@@ -26,6 +26,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     @IBOutlet weak var upcoming_historyTableView: UITableView!
     
     @IBOutlet weak var friendView: UIView!
+    @IBOutlet weak var friendNameContainer: UIView!
     @IBOutlet weak var friendName: UILabel!
     
     @IBOutlet weak var newCollabButton: UIButton!
@@ -54,6 +55,8 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     var collabBlocksDelegate: CollabView?
     var friendDeletedDelegate: FriendDeleted?
     
+    var gradientLayer: CAGradientLayer!
+    
     var timer: Timer?
     
     var dismissViewOrigin: CGPoint! //Variable that holds the original position of the "dismissView"
@@ -77,15 +80,19 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         friendView.layer.cornerRadius = 0.1 * friendView.bounds.size.width
         friendView.clipsToBounds = true
         
+        newCollabButton.backgroundColor = UIColor(hexString: "#e35d5b")?.lighten(byPercentage: 0.05)
         newCollabButton.layer.cornerRadius = 0.068 * newCollabButton.bounds.size.width
         newCollabButton.clipsToBounds = true
         
+        upcomingButton.backgroundColor = UIColor(hexString: "#e35d5b")?.lighten(byPercentage: 0.05)
         upcomingButton.layer.cornerRadius = 0.068 * upcomingButton.bounds.size.width
         upcomingButton.clipsToBounds = true
         
+        historyButton.backgroundColor = UIColor(hexString: "#e35d5b")?.lighten(byPercentage: 0.05)
         historyButton.layer.cornerRadius = 0.068 * historyButton.bounds.size.width
         historyButton.clipsToBounds = true
         
+        deleteFriendButton.backgroundColor = UIColor(hexString: "#e35d5b")?.lighten(byPercentage: 0.05)
         deleteFriendButton.layer.cornerRadius = 0.068 * deleteFriendButton.bounds.size.width
         deleteFriendButton.clipsToBounds = true
         
@@ -98,7 +105,13 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         friendName.text = selectedFriend!.firstName + " " + selectedFriend!.lastName
 
-
+        gradientLayer = CAGradientLayer()
+        gradientLayer.frame = friendNameContainer.bounds
+        gradientLayer.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
+        
+        friendNameContainer.layer.addSublayer(gradientLayer)
+        friendNameContainer.bringSubviewToFront(friendName)
+        
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
