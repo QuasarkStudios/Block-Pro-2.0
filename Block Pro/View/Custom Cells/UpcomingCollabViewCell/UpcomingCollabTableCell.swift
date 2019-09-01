@@ -15,6 +15,13 @@ class UpcomingCollabTableCell: UITableViewCell {
     @IBOutlet weak var seperatorView: UIView!
     @IBOutlet weak var collabNameLabel: UILabel!
     
+    @IBOutlet weak var withLabelTopAnchor: NSLayoutConstraint!
+    
+    @IBOutlet weak var seperatorViewTopAnchor: NSLayoutConstraint!
+    
+    @IBOutlet weak var nameLabelTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var nameLabelBottomAnchor: NSLayoutConstraint!
+    
     var gradientLayer: CAGradientLayer!
     
     override func awakeFromNib() {
@@ -27,7 +34,7 @@ class UpcomingCollabTableCell: UITableViewCell {
         collabNameLabel.adjustsFontSizeToFitWidth = true
         
         gradientLayer = CAGradientLayer()
-        gradientLayer.frame = collabContainer.bounds
+        gradientLayer.frame = CGRect(x: 0, y: 0, width: 400, height: 105)  
         gradientLayer.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
         
         collabContainer.layer.addSublayer(gradientLayer)
@@ -35,8 +42,8 @@ class UpcomingCollabTableCell: UITableViewCell {
         collabContainer.bringSubviewToFront(collabWithLabel)
         collabContainer.bringSubviewToFront(seperatorView)
         collabContainer.bringSubviewToFront(collabNameLabel)
-        
     }
+    
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)

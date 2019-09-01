@@ -169,12 +169,12 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "UpcomingCollabCell", for: indexPath) as! UpcomingCollabTableCell
             
-            reconfigureCollabCell(cell: cell)
-            
             let collabWithText = sectionContentArray![indexPath.section][indexPath.row].collaborator!["firstName"]! + " " + sectionContentArray![indexPath.section][indexPath.row].collaborator!["lastName"]!
             
             cell.collabWithLabel.text = "Collab with " + collabWithText
             cell.collabNameLabel.text = sectionContentArray![indexPath.section][indexPath.row].collabName
+            
+            reconfigureCollabCell(cell: cell)
             
             return cell
         }
@@ -212,17 +212,12 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     
     func reconfigureCollabCell (cell: UpcomingCollabTableCell) {
         
-        cell.collabContainer.frame = CGRect(x: 5, y: 5, width: 296, height: 70)
+        cell.withLabelTopAnchor.constant = 5
         
-        cell.collabWithLabel.frame.origin.y = 8
-        cell.collabWithLabel.font = UIFont(name: ".SFUIText-Bold", size: 13)
-        cell.collabWithLabel.adjustsFontSizeToFitWidth = true
+        cell.seperatorViewTopAnchor.constant = 1.5
         
-        cell.seperatorView.frame.origin.y = 32
-        
-        cell.collabNameLabel.frame.origin.y = 32
-        cell.collabNameLabel.font = UIFont(name: ".SFUIText-Bold", size: 20)
-        cell.collabNameLabel.adjustsFontSizeToFitWidth = true
+        cell.nameLabelTopAnchor.constant = 7
+        cell.nameLabelBottomAnchor.constant = 7
     }
     
     func getUpcomingCollabs () {

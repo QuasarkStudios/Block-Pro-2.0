@@ -21,7 +21,7 @@ protocol UserRegistration {
 
 
 #warning("rename view controller")
-class LogInViewController: UIViewController {
+class LogInViewController: UIViewController, UITextFieldDelegate {
     
     var attachListenerDelegate: UserSignIn?
     var registerUserDelegate: UserRegistration?
@@ -30,16 +30,21 @@ class LogInViewController: UIViewController {
     
     @IBOutlet weak var logInContainer: UIView!
     
-    @IBOutlet weak var emailLabel: UILabel!
-    @IBOutlet weak var loginEmailTextField: UITextField!
+    @IBOutlet weak var loginContainerTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var loginContainerLeadingAnchor: NSLayoutConstraint!
+    @IBOutlet weak var loginContainerTrailingAnchor: NSLayoutConstraint!
     
-    @IBOutlet weak var passwordLabel: UILabel!
+    @IBOutlet weak var loginEmailTextField: UITextField!
     @IBOutlet weak var loginPasswordTextField: UITextField!
     
     @IBOutlet weak var logInButton: UIButton!
     @IBOutlet weak var newRegisterButton: UIButton!
     
     @IBOutlet weak var registerContainer: UIView!
+    
+    @IBOutlet weak var registerContainerTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var registerContainerLeadingAnchor: NSLayoutConstraint!
+    @IBOutlet weak var registerContainerTrailingAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var firstNameTextField: UITextField!
     @IBOutlet weak var lastNameTextField: UITextField!
@@ -56,7 +61,18 @@ class LogInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        logInContainer.frame.origin = CGPoint(x: 39, y: 100)
+        loginEmailTextField.delegate = self
+        loginPasswordTextField.delegate = self
+        
+        firstNameTextField.delegate = self
+        lastNameTextField.delegate = self
+        usernameTextField.delegate = self
+        
+        registerEmailTextField.delegate = self
+        registerPasswordTextField_1.delegate = self
+        registerReenterPasswordTextField_2.delegate = self
+        
+        //logInContainer.frame.origin = CGPoint(x: 39, y: 100)
         
         logInContainer.layer.cornerRadius = 0.1 * logInContainer.bounds.size.width
         logInContainer.clipsToBounds = true
@@ -64,8 +80,7 @@ class LogInViewController: UIViewController {
         logInButton.layer.cornerRadius = 0.07 * logInButton.bounds.size.width
         logInButton.clipsToBounds = true
         
-        
-        registerContainer.frame.origin.y = 750
+        //registerContainer.frame.origin.y = 750
         
         registerContainer.layer.cornerRadius = 0.1 * registerContainer.bounds.size.width
         registerContainer.clipsToBounds = true
@@ -75,6 +90,117 @@ class LogInViewController: UIViewController {
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
+        
+        configureConstraints()
+    }
+    
+    func configureConstraints () {
+        
+        //iPhone XS Max & iPhone XR
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+            
+            loginContainerTopAnchor.constant = 125
+            registerContainerTopAnchor.constant = 850
+        }
+            
+            //iPhone 8 Plus
+        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
+            
+            loginContainerTopAnchor.constant = 100
+            registerContainerTopAnchor.constant = 850
+        }
+            
+            //iPhone XS
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+            
+            loginContainerTopAnchor.constant = 125
+            registerContainerTopAnchor.constant = 850
+        }
+            
+            //iPhone 8
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
+            
+            loginContainerTopAnchor.constant = 100
+            registerContainerTopAnchor.constant = 850
+        }
+            
+            //iPhone SE
+        else if UIScreen.main.bounds.width == 320.0 {
+            
+            loginContainerTopAnchor.constant = 70
+            loginContainerLeadingAnchor.constant = 15
+            loginContainerTrailingAnchor.constant = 15
+            
+            registerContainerTopAnchor.constant = 850
+            registerContainerLeadingAnchor.constant = 15
+            registerContainerTrailingAnchor.constant = 15
+        }
+        
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        //iPhone SE
+        if UIScreen.main.bounds.width == 320.0 {
+            
+            if textField == firstNameTextField || textField == lastNameTextField {
+                
+                view.layoutIfNeeded()
+                registerContainerTopAnchor.constant = 70
+                
+                UIView.animate(withDuration: 0.1) {
+                    self.view.layoutIfNeeded()
+                }
+            }
+            else if textField == usernameTextField {
+                
+                view.layoutIfNeeded()
+                registerContainerTopAnchor.constant = 50
+                
+                UIView.animate(withDuration: 0.1) {
+                    self.view.layoutIfNeeded()
+                }
+            }
+            
+            else if textField == registerEmailTextField {
+                
+                view.layoutIfNeeded()
+                registerContainerTopAnchor.constant = 30
+                
+                UIView.animate(withDuration: 0.1) {
+                    self.view.layoutIfNeeded()
+                }
+            }
+            else if textField == registerPasswordTextField_1 || textField == registerReenterPasswordTextField_2 {
+                
+                view.layoutIfNeeded()
+                registerContainerTopAnchor.constant = -25
+                
+                UIView.animate(withDuration: 0.15) {
+                    self.view.layoutIfNeeded()
+                }
+            }
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        textField.resignFirstResponder()
+        
+        //iPhone SE
+        if UIScreen.main.bounds.width == 320.0 {
+            if registerContainerTopAnchor.constant < 850 {
+                
+                view.layoutIfNeeded()
+                registerContainerTopAnchor.constant = 70
+                
+                UIView.animate(withDuration: 0.1) {
+                    self.view.layoutIfNeeded()
+                }
+            }
+        }
+
+        return true
     }
     
     
@@ -223,42 +349,267 @@ class LogInViewController: UIViewController {
     
     @IBAction func newRegisterButton(_ sender: Any) {
         
-        UIView.animate(withDuration: 0.2, animations: {
+        //iPhone XS Max & iPhone XR
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
             
-            self.logInContainer.frame.origin.y = -500
-        }) { (finished: Bool) in
-            
-            self.navigationItem.title = "Register"
+            self.loginContainerTopAnchor.constant = -500
             
             UIView.animate(withDuration: 0.2, animations: {
                 
-                self.registerContainer.frame.origin.y = 100
-            })
+                self.view.layoutIfNeeded()
+                
+            }) { (finished: Bool) in
+                
+                self.navigationItem.title = "Register"
+                self.registerContainerTopAnchor.constant = 125
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                })
+            }
         }
+            
+            //iPhone 8 Plus
+        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
+            
+            self.loginContainerTopAnchor.constant = -500
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                self.view.layoutIfNeeded()
+                
+            }) { (finished: Bool) in
+                
+                self.navigationItem.title = "Register"
+                self.registerContainerTopAnchor.constant = 80
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                })
+            }
+        }
+            
+            //iPhone XS
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+            
+            self.loginContainerTopAnchor.constant = -500
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                self.view.layoutIfNeeded()
+                
+            }) { (finished: Bool) in
+                
+                self.navigationItem.title = "Register"
+                self.registerContainerTopAnchor.constant = 95
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                })
+            }
+        }
+            
+            //iPhone 8
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
+            
+            self.loginContainerTopAnchor.constant = -500
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                self.view.layoutIfNeeded()
+                
+            }) { (finished: Bool) in
+                
+                self.navigationItem.title = "Register"
+                self.registerContainerTopAnchor.constant = 70
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                })
+            }
+        }
+            
+            //iPhone SE
+        else if UIScreen.main.bounds.width == 320.0 {
+            
+            self.loginContainerTopAnchor.constant = -500
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                self.view.layoutIfNeeded()
+                
+            }) { (finished: Bool) in
+                
+                self.navigationItem.title = "Register"
+                self.registerContainerTopAnchor.constant = 70
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                })
+            }
+        }
+        
+//        UIView.animate(withDuration: 0.2, animations: {
+//
+//            self.logInContainer.frame.origin.y = -500
+//        }) { (finished: Bool) in
+//
+//            self.navigationItem.title = "Register"
+//
+//            UIView.animate(withDuration: 0.2, animations: {
+//
+//                self.registerContainer.frame.origin.y = 100
+//            })
+//        }
     }
     
     
     @IBAction func backToLoginButton(_ sender: Any) {
         
-        UIView.animate(withDuration: 0.2, animations: {
+        //iPhone XS Max & iPhone XR
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
             
-            self.registerContainer.frame.origin.y = 750
-            
-        }) { (finished: Bool) in
-            
-            self.navigationItem.title = "Log In"
+            self.registerContainerTopAnchor.constant = 850
             
             UIView.animate(withDuration: 0.2, animations: {
                 
-                self.logInContainer.frame.origin.y = 100
-            })
+                self.view.layoutIfNeeded()
+                
+            }) { (finished: Bool) in
+                
+                self.navigationItem.title = "Log In"
+                self.loginContainerTopAnchor.constant = 125
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                })
+            }
         }
+            
+            //iPhone 8 Plus
+        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
+            
+            self.registerContainerTopAnchor.constant = 850
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                self.view.layoutIfNeeded()
+                
+            }) { (finished: Bool) in
+                
+                self.navigationItem.title = "Log In"
+                self.loginContainerTopAnchor.constant = 100
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                })
+            }
+            
+        }
+            
+            //iPhone XS
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+            
+            self.registerContainerTopAnchor.constant = 850
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                self.view.layoutIfNeeded()
+                
+            }) { (finished: Bool) in
+                
+                self.navigationItem.title = "Log In"
+                self.loginContainerTopAnchor.constant = 125
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                })
+            }
+        }
+            
+            //iPhone 8
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
+            
+            self.registerContainerTopAnchor.constant = 850
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                self.view.layoutIfNeeded()
+                
+            }) { (finished: Bool) in
+                
+                self.navigationItem.title = "Log In"
+                self.loginContainerTopAnchor.constant = 100
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                })
+            }
+        }
+            
+            //iPhone SE
+        else if UIScreen.main.bounds.width == 320.0 {
+            
+            self.registerContainerTopAnchor.constant = 850
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                self.view.layoutIfNeeded()
+                
+            }) { (finished: Bool) in
+                
+                self.navigationItem.title = "Log In"
+                self.loginContainerTopAnchor.constant = 70
+                
+                UIView.animate(withDuration: 0.2, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                })
+            }
+        }
+        
+//        UIView.animate(withDuration: 0.2, animations: {
+//
+//            self.registerContainer.frame.origin.y = 750
+//
+//        }) { (finished: Bool) in
+//
+//            self.navigationItem.title = "Log In"
+//
+//            UIView.animate(withDuration: 0.2, animations: {
+//
+//                self.logInContainer.frame.origin.y = 100
+//            })
+//        }
     }
     
     //Function that dismisses the keyboard and the PickerViews
     @objc func dismissKeyboard () {
         
         view.endEditing(true)
+        
+        //iPhone SE
+        if UIScreen.main.bounds.width == 320.0 {
+            if registerContainerTopAnchor.constant < 850 {
+                
+                view.layoutIfNeeded()
+                registerContainerTopAnchor.constant = 70
+                
+                UIView.animate(withDuration: 0.1) {
+                    self.view.layoutIfNeeded()
+                }
+            }
+        }
+        
     }
     
 }

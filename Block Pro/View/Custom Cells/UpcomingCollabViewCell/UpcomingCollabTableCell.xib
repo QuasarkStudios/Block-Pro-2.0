@@ -19,42 +19,66 @@
                 <rect key="frame" x="0.0" y="0.0" width="375" height="104.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9fp-KT-v8d">
-                        <rect key="frame" x="13" y="5" width="349" height="94"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9fp-KT-v8d">
+                        <rect key="frame" x="13" y="5" width="349" height="94.5"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Beach Trip" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Jx-bJ-XzW">
-                                <rect key="frame" x="15" y="47" width="222" height="37"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ydS-RB-G3x">
+                                <rect key="frame" x="20" y="40" width="329" height="1"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="hNP-8G-Xbz"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Collab with Jeff Davis eazsxrdctfvygbhnl;," lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uut-gq-vAQ">
+                                <rect key="frame" x="20" y="10" width="324" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="Ynr-Ea-ija"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ydS-RB-G3x">
-                                <rect key="frame" x="11" y="38" width="339" height="1"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Collab with Jeff Davis" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uut-gq-vAQ">
-                                <rect key="frame" x="11" y="12" width="222" height="22"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Beach Trip" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Jx-bJ-XzW">
+                                <rect key="frame" x="25" y="51" width="319" height="33.5"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="27"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                         <color key="backgroundColor" red="0.94314737969999995" green="0.36221781460000002" blue="0.30647061419999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="ydS-RB-G3x" firstAttribute="leading" secondItem="9fp-KT-v8d" secondAttribute="leading" constant="20" id="3z0-2B-ZUt"/>
+                            <constraint firstItem="ydS-RB-G3x" firstAttribute="top" secondItem="Uut-gq-vAQ" secondAttribute="bottom" constant="10" id="H22-qh-w2g"/>
+                            <constraint firstAttribute="bottom" secondItem="9Jx-bJ-XzW" secondAttribute="bottom" constant="10" id="Kb1-Cn-nQc"/>
+                            <constraint firstItem="9Jx-bJ-XzW" firstAttribute="leading" secondItem="9fp-KT-v8d" secondAttribute="leading" constant="25" id="MyE-eT-5Fg"/>
+                            <constraint firstItem="9Jx-bJ-XzW" firstAttribute="top" secondItem="ydS-RB-G3x" secondAttribute="bottom" constant="10" id="Rxg-Zw-pGp"/>
+                            <constraint firstAttribute="trailing" secondItem="ydS-RB-G3x" secondAttribute="trailing" id="VTC-yv-S74"/>
+                            <constraint firstAttribute="trailing" secondItem="Uut-gq-vAQ" secondAttribute="trailing" constant="5" id="WCC-W6-bYs"/>
+                            <constraint firstItem="Uut-gq-vAQ" firstAttribute="top" secondItem="9fp-KT-v8d" secondAttribute="top" constant="10" id="bgB-am-IqS"/>
+                            <constraint firstAttribute="trailing" secondItem="9Jx-bJ-XzW" secondAttribute="trailing" constant="5" id="wDs-wR-1W7"/>
+                            <constraint firstItem="Uut-gq-vAQ" firstAttribute="leading" secondItem="9fp-KT-v8d" secondAttribute="leading" constant="20" id="zFn-TB-Ex9"/>
+                        </constraints>
                     </view>
                 </subviews>
+                <constraints>
+                    <constraint firstItem="9fp-KT-v8d" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="F9T-au-ojo"/>
+                    <constraint firstItem="9fp-KT-v8d" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="13" id="GKm-J6-Bde"/>
+                    <constraint firstAttribute="bottom" secondItem="9fp-KT-v8d" secondAttribute="bottom" constant="5" id="Lf2-2m-ELa"/>
+                    <constraint firstAttribute="trailing" secondItem="9fp-KT-v8d" secondAttribute="trailing" constant="13" id="wxp-5p-roB"/>
+                </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="collabContainer" destination="9fp-KT-v8d" id="YeG-bC-z5s"/>
+                <outlet property="collabContainer" destination="9fp-KT-v8d" id="rab-Yk-2yH"/>
                 <outlet property="collabNameLabel" destination="9Jx-bJ-XzW" id="knD-UY-iO8"/>
                 <outlet property="collabWithLabel" destination="Uut-gq-vAQ" id="uk3-ES-LlF"/>
+                <outlet property="nameLabelBottomAnchor" destination="Kb1-Cn-nQc" id="xwZ-77-fCt"/>
+                <outlet property="nameLabelTopAnchor" destination="Rxg-Zw-pGp" id="Wq4-9N-1Di"/>
                 <outlet property="seperatorView" destination="ydS-RB-G3x" id="9mb-CN-jzS"/>
+                <outlet property="seperatorViewTopAnchor" destination="H22-qh-w2g" id="6Tr-KB-cFZ"/>
+                <outlet property="withLabelTopAnchor" destination="bgB-am-IqS" id="iQk-Ol-o4N"/>
             </connections>
-            <point key="canvasLocation" x="21.739130434782609" y="157.70089285714286"/>
+            <point key="canvasLocation" x="21.014492753623191" y="157.70089285714286"/>
         </tableViewCell>
     </objects>
 </document>
