@@ -387,8 +387,6 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     
-    
-    
     func getUserData (completion: @escaping () -> ()) {
 
         handle = Auth.auth().addStateDidChangeListener({ (auth, user) in
@@ -657,6 +655,18 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
             collabBlockVC.collabID = collabData.collabID
             collabBlockVC.collabName = collabData.collabName
             collabBlockVC.collabDate = collabData.collabDate
+        }
+        
+        if UIScreen.main.bounds.width == 320.0 {
+           
+            let backItem = UIBarButtonItem()
+            backItem.title = "Back"
+            navigationItem.backBarButtonItem = backItem
+        }
+        else {
+            let backItem = UIBarButtonItem()
+            backItem.title = "Upcoming"
+            navigationItem.backBarButtonItem = backItem
         }
     }
 }

@@ -77,7 +77,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         logInContainer.layer.cornerRadius = 0.1 * logInContainer.bounds.size.width
         logInContainer.clipsToBounds = true
         
-        logInButton.layer.cornerRadius = 0.07 * logInButton.bounds.size.width
+        logInButton.layer.cornerRadius = 0.06 * logInButton.bounds.size.width
         logInButton.clipsToBounds = true
         
         //registerContainer.frame.origin.y = 750
@@ -85,7 +85,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         registerContainer.layer.cornerRadius = 0.1 * registerContainer.bounds.size.width
         registerContainer.clipsToBounds = true
         
-        registerButton.layer.cornerRadius = 0.07 * registerButton.bounds.size.width
+        registerButton.layer.cornerRadius = 0.06 * registerButton.bounds.size.width
         registerButton.clipsToBounds = true
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))

@@ -24,21 +24,32 @@ protocol DismissView {
 class NewCollabViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
 
     @IBOutlet weak var newCollabView: UIView!
-    @IBOutlet weak var newCollabContainer: UIView!
+    @IBOutlet weak var collabViewTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var collabViewLeadingAnchor: NSLayoutConstraint!
+    @IBOutlet weak var collabViewTrailingAnchor: NSLayoutConstraint!
+    
+    @IBOutlet weak var newCollabLabelContainer: UIView!
     @IBOutlet weak var newCollabLabel: UILabel!
     
     @IBOutlet weak var collabNameTextField: UITextField!
     @IBOutlet weak var collabWithTextField: UITextField!
     @IBOutlet weak var dateTextField: UITextField!
     
+    @IBOutlet weak var collabButtonContainerView: UIView!
     @IBOutlet weak var collabButton: UIButton!
-    @IBOutlet weak var exitButton: UIButton!
-    
     @IBOutlet weak var buttonAnimationView: UIView!
     
+    @IBOutlet weak var buttonAnimationLeadingAnchor: NSLayoutConstraint!
+    @IBOutlet weak var buttonAnimationTrailingAnchor: NSLayoutConstraint!
+    
+    @IBOutlet weak var exitButton: UIButton!
+    
     @IBOutlet weak var friendsTableView: UITableView!
+    @IBOutlet weak var tableViewHeightConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var datePickerContainer: UIView!
+    @IBOutlet weak var dateContainerTopAnchor: NSLayoutConstraint!
+    
     @IBOutlet weak var datePicker: UIDatePicker!
     
     var getCollabDelegate: GetNewCollab?
@@ -58,6 +69,8 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     
     let formatter = DateFormatter()
     
+    var collabViewInitialTop: CGFloat = 0.0
+    
     var gradientLayer: CAGradientLayer!
     
     override func viewDidLoad() {
@@ -69,12 +82,12 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         friendsTableView.backgroundColor = UIColor(hexString: "2E2E2E")
         
         gradientLayer = CAGradientLayer()
-        gradientLayer.frame = newCollabContainer.bounds
+        gradientLayer.frame =  CGRect(x: 0, y: 0, width: 400, height: 44)
         gradientLayer.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
         
-        newCollabContainer.layer.addSublayer(gradientLayer)
+        newCollabLabelContainer.layer.addSublayer(gradientLayer)
         
-        newCollabContainer.bringSubviewToFront(newCollabLabel)
+        newCollabLabelContainer.bringSubviewToFront(newCollabLabel)
         
         collabNameTextField.delegate = self
         collabWithTextField.delegate = self
@@ -83,11 +96,15 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         newCollabView.layer.cornerRadius = 0.095 * newCollabView.bounds.size.width
         newCollabView.clipsToBounds = true
         
-        collabButton.layer.cornerRadius = 0.065 * collabButton.bounds.size.width
-        collabButton.clipsToBounds = true
+        collabButtonContainerView.layer.cornerRadius = 0.06 * collabButton.bounds.size.width
+        collabButtonContainerView.clipsToBounds = true
+        
+//        collabButton.layer.cornerRadius = 0.065 * collabButton.bounds.size.width
+//        collabButton.clipsToBounds = true
         
         buttonAnimationView.layer.cornerRadius = 0.3 * buttonAnimationView.bounds.size.width
         buttonAnimationView.clipsToBounds = true
+        //buttonAnimationView.backgroundColor = UIColor(hexString: "#e35d5b")
         buttonAnimationView.isHidden = true
         
         datePickerContainer.layer.cornerRadius = 0.1 * datePickerContainer.bounds.size.width
@@ -110,13 +127,68 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         formatter.dateFormat = "MMMM dd, yyyy"
         dateTextField.text = formatter.string(from: datePicker.date)
         
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        newCollabView.addGestureRecognizer(tap)
+        
         friendPreselected()
+        
+        configureConstraints()
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         getFriends()
     }
+    
+    func configureConstraints () {
+        
+        dateContainerTopAnchor.constant = 900
+        tableViewHeightConstraint.constant = 0
+        
+        //iPhone XS Max & iPhone XR
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+            
+            collabViewInitialTop = collabViewTopAnchor.constant // 150
+        }
+            
+            //iPhone 8 Plus
+        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
+            
+            collabViewTopAnchor.constant = 110
+            collabViewInitialTop = 110
+            
+        }
+            
+            //iPhone XS
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+            
+            collabViewInitialTop = collabViewTopAnchor.constant // 150
+
+        }
+            
+            //iPhone 8
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
+            
+            collabViewTopAnchor.constant = 110
+            collabViewInitialTop = 110
+        }
+            
+            //iPhone SE
+        else if UIScreen.main.bounds.width == 320.0 {
+            
+            collabViewTopAnchor.constant = 90
+            collabViewInitialTop = 90
+            
+            collabViewLeadingAnchor.constant = 15
+            collabViewTrailingAnchor.constant = 15
+            
+            buttonAnimationTrailingAnchor.constant = 93
+            buttonAnimationLeadingAnchor.constant = 93
+            
+        }
+        
+    }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -181,37 +253,20 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
-        switch textField {
-            
-        case collabNameTextField:
-            UIView.animate(withDuration: 0.25) {
-                self.newCollabView.frame.origin.y = 135
-                self.friendsTableView.frame.origin.y = 850
-                self.datePickerContainer.frame.origin.y = 850
-            }
-        
-        case collabWithTextField:
-            UIView.animate(withDuration: 0.25) {
-                self.newCollabView.frame.origin.y = 100
-                self.friendsTableView.frame.origin.y = 400
-                self.datePickerContainer.frame.origin.y = 850
-            }
-            
-            
-        case dateTextField:
-            UIView.animate(withDuration: 0.25) {
-                self.newCollabView.frame.origin.y = 135
-                self.friendsTableView.frame.origin.y = 850
-                self.datePickerContainer.frame.origin.y = 500
-            }
-        default:
-            break
-        }
+        animateViews(textField)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         textField.resignFirstResponder()
+        
+        view.layoutIfNeeded()
+        collabViewTopAnchor.constant = collabViewInitialTop
+        
+        UIView.animate(withDuration: 0.25) {
+            self.view.layoutIfNeeded()
+        }
+        
         return true
     }
     
@@ -280,17 +335,18 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         
         buttonAnimationView.isHidden = false
         
-        UIView.animate(withDuration: 0.4, animations: {
+        buttonAnimationLeadingAnchor.constant = -10
+        buttonAnimationTrailingAnchor.constant = -10
+        
+        UIView.animate(withDuration: 0.5, animations: {
             
-            self.buttonAnimationView.frame = CGRect(x: self.collabButton.frame.origin.x, y: self.collabButton.frame.origin.y, width: self.collabButton.frame.width, height: self.collabButton.frame.height)
-            
-            self.buttonAnimationView.layer.cornerRadius = 0.065 * self.buttonAnimationView.bounds.size.width
-            self.buttonAnimationView.clipsToBounds = true
+            self.collabButton.backgroundColor = .white
+            self.view.layoutIfNeeded()
             
         }) { (finished: Bool) in
 
             self.dismiss(animated: true, completion: {
-                
+
                 self.dismissViewDelegate?.dismissSelectedFriend(self.collabID, self.collabName, self.collabDate)
             })
         }
@@ -316,13 +372,291 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         else {
             createCollab()
             animateButton()
-            getCollabDelegate?.getNewCollab()
+            //getCollabDelegate?.getNewCollab()
+        }
+        
+    }
+    
+    //Function that dismisses the keyboard and the PickerViews
+    @objc func dismissKeyboard () {
+        
+        view.endEditing(true)
+        
+        view.layoutIfNeeded()
+        collabViewTopAnchor.constant = collabViewInitialTop
+        tableViewHeightConstraint.constant = 0
+        dateContainerTopAnchor.constant = 900
+        
+        UIView.animate(withDuration: 0.25) {
+            self.view.layoutIfNeeded()
         }
         
     }
     
     @IBAction func exitButton(_ sender: Any) {
+        
+        view.endEditing(true)
         dismiss(animated: true, completion: nil)
     }
     
+}
+
+extension NewCollabViewController {
+    
+    func animateViews (_ textField: UITextField) {
+        
+        //iPhone XS Max & iPhone XR
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+            
+            switch textField {
+                
+            case collabNameTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 150
+                dateContainerTopAnchor.constant = 900
+                tableViewHeightConstraint.constant = 0
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+            case collabWithTextField:
+                
+                self.view.layoutIfNeeded()
+                dateContainerTopAnchor.constant = 900
+                
+                UIView.animate(withDuration: 0.15, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                    
+                }) { (finished: Bool) in
+                    
+                    self.view.layoutIfNeeded()
+                    self.collabViewTopAnchor.constant = 80
+                    self.tableViewHeightConstraint.constant = 500
+                    
+                    UIView.animate(withDuration: 0.15, animations: {
+                        self.view.layoutIfNeeded()
+                    })
+                }
+                
+            case dateTextField:
+                
+                self.view.layoutIfNeeded()
+                tableViewHeightConstraint.constant = 0
+                
+                
+                UIView.animate(withDuration: 0.15, animations: {
+                    
+                    self.view.layoutIfNeeded()
+                    
+                }) { (finished: Bool) in
+                    
+                    self.view.layoutIfNeeded()
+                    self.collabViewTopAnchor.constant = 150
+                    self.dateContainerTopAnchor.constant = 550
+                    
+                    UIView.animate(withDuration: 0.15) {
+                        
+                        self.view.layoutIfNeeded()
+                    }
+                }
+                
+            default:
+                break
+            }
+        }
+            
+            //iPhone 8 Plus
+        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
+            
+            switch textField {
+                
+            case collabNameTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 90
+                dateContainerTopAnchor.constant = 900
+                tableViewHeightConstraint.constant = 0
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+            case collabWithTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 60
+                dateContainerTopAnchor.constant = 900
+                tableViewHeightConstraint.constant = 375
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+            case dateTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 90
+                tableViewHeightConstraint.constant = 0
+                dateContainerTopAnchor.constant = 450
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+            default:
+                break
+            }
+            
+        }
+            
+            //iPhone XS
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+            
+            switch textField {
+                
+            case collabNameTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 130
+                dateContainerTopAnchor.constant = 900
+                tableViewHeightConstraint.constant = 0
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+            case collabWithTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 75
+                dateContainerTopAnchor.constant = 900
+                tableViewHeightConstraint.constant = 400
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+            case dateTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 130//collabViewInitialTop
+                tableViewHeightConstraint.constant = 0
+                dateContainerTopAnchor.constant = 480
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+            default:
+                break
+            }
+            
+        }
+            
+            //iPhone 8
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
+            
+            switch textField {
+                
+            case collabNameTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 80
+                dateContainerTopAnchor.constant = 900
+                tableViewHeightConstraint.constant = 0
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+            case collabWithTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 60
+                dateContainerTopAnchor.constant = 900
+                tableViewHeightConstraint.constant = 300
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+                
+            case dateTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 80
+                tableViewHeightConstraint.constant = 0
+                dateContainerTopAnchor.constant = 400
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+            default:
+                break
+            }
+            
+        }
+            
+            //iPhone SE
+        else if UIScreen.main.bounds.width == 320.0 {
+            
+            switch textField {
+                
+            case collabNameTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 40
+                dateContainerTopAnchor.constant = 900
+                tableViewHeightConstraint.constant = 0
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+            case collabWithTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 40
+                dateContainerTopAnchor.constant = 900
+                tableViewHeightConstraint.constant = 250
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+                
+            case dateTextField:
+                
+                self.view.layoutIfNeeded()
+                collabViewTopAnchor.constant = 40
+                tableViewHeightConstraint.constant = 0
+                dateContainerTopAnchor.constant = 325
+                
+                UIView.animate(withDuration: 0.25) {
+                    
+                    self.view.layoutIfNeeded()
+                }
+                
+            default:
+                break
+            }
+            
+        }
+    }
 }

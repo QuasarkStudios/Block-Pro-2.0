@@ -36,7 +36,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         searchBar.delegate = self
         
-        friendsTableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendCell")
+        //friendsTableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendCell")
         friendsTableView.rowHeight = 55
         
         
@@ -113,11 +113,17 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         if pendingObjectArray.count == 0 {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+            //let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendCell
+            
             let firstNameArray = Array(friendObjectArray[indexPath.row].firstName)
             
             cell.friendName.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
             cell.friendInitial.text = "\(firstNameArray[0])"
+            
+            cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.size.width
+            cell.initialContainer.clipsToBounds = true
+            
             return cell
         }
             
@@ -130,11 +136,16 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             else {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+                //let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendCell
                 let firstNameArray = Array(friendObjectArray[indexPath.row].firstName)
                 
                 cell.friendName.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
                 cell.friendInitial.text = "\(firstNameArray[0])"
+                
+                cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.size.width
+                cell.initialContainer.clipsToBounds = true
+                
                 return cell
             }
             

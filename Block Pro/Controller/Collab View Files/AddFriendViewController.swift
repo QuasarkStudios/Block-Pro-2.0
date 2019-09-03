@@ -48,7 +48,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         searchBar.autocapitalizationType = .none
         searchBar.spellCheckingType = .no
         
-        resultsTableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendCell")
+        //resultsTableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendCell")
         
         getFriendRequests()
         
@@ -111,7 +111,8 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             else {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+                //let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendCell
                 let firstNameArray = Array(requestsObjectArray[indexPath.row].requesterFirstName)
                 
                 cell.friendName.text = requestsObjectArray[indexPath.row].requesterFirstName + " " + requestsObjectArray[indexPath.row].requesterLastName
@@ -173,11 +174,15 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 else if friendPending == true {
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+                    //let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendCell
                     let firstNameArray = Array(resultsObjectArray[indexPath.row].firstName)
                     
                     cell.friendName.text = resultsObjectArray[indexPath.row].firstName + " " + resultsObjectArray[indexPath.row].lastName
                     cell.friendInitial.text = "\(firstNameArray[0])"
+                    
+                    cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.size.width
+                    cell.initialContainer.clipsToBounds = true
                     
                     cell.accessoryType = .checkmark
                     
@@ -196,11 +201,15 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 else {
                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+                    //let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendCell
                     let firstNameArray = Array(resultsObjectArray[indexPath.row].firstName)
                     
                     cell.friendName.text = resultsObjectArray[indexPath.row].firstName + " " + resultsObjectArray[indexPath.row].lastName
                     cell.friendInitial.text = "\(firstNameArray[0])"
+                    
+                    cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.size.width
+                    cell.initialContainer.clipsToBounds = true
                     
                     cell.accessoryType = .none
                     
