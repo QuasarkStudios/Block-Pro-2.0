@@ -302,7 +302,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
                         
                         self.friendObjectArray.append(friend)
                     }
-                    self.friendObjectArray = self.friendObjectArray.sorted(by: {$0.lastName < $1.lastName})
+                    self.friendObjectArray = self.friendObjectArray.sorted(by: {$0.lastName.lowercased() < $1.lastName.lowercased()})
                     self.friendsTableView.reloadData()
                 }
             }

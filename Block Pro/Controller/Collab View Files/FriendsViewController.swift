@@ -24,6 +24,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     var allFriends: [Friend] = [Friend]()
     var selectedFriend: Friend?
     
+    var selectedCell: FriendCell?
+    
     var collabID: String = ""
     var collabName: String = ""
     var collabDate: String = ""
@@ -121,7 +123,11 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.friendName.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
             cell.friendInitial.text = "\(firstNameArray[0])"
             
-            cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.size.width
+            cell.initialContainerWidthConstraint.constant = 45
+            cell.initialContainerHeightConstraint.constant = 45
+            cell.initialContainerLeadingAnchor.constant = 15
+            
+            cell.initialContainer.layer.cornerRadius = 0.5 * 45
             cell.initialContainer.clipsToBounds = true
             
             return cell
@@ -143,7 +149,11 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                 cell.friendName.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
                 cell.friendInitial.text = "\(firstNameArray[0])"
                 
-                cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.size.width
+                cell.initialContainerWidthConstraint.constant = 45
+                cell.initialContainerHeightConstraint.constant = 45
+                cell.initialContainerLeadingAnchor.constant = 15
+                
+                cell.initialContainer.layer.cornerRadius = 0.5 * 45
                 cell.initialContainer.clipsToBounds = true
                 
                 return cell
@@ -158,8 +168,28 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             //Catches a lil bug that causes the friendObjectArray to go out of bounds
             if indexPath.row < friendObjectArray.count {
-                selectedFriend = friendObjectArray[indexPath.row]
-                performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
+                
+                let cell = tableView.cellForRow(at: indexPath) as! FriendCell
+                
+                selectedCell = cell
+                
+                cell.initialContainerWidthConstraint.constant = 0
+                cell.initialContainerHeightConstraint.constant = 0
+                cell.initialContainerLeadingAnchor.constant = 37
+                
+                UIView.animate(withDuration: 0.3, animations: {
+                    
+                    cell.initialContainer.layoutIfNeeded()
+                    cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.width
+                    
+                }) { (finished: Bool) in
+                    
+                    self.selectedFriend = self.friendObjectArray[indexPath.row]
+                    self.performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
+                }
+                
+//                selectedFriend = friendObjectArray[indexPath.row]
+//                performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
             }
         }
         
@@ -172,8 +202,28 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                 
                 //Catches a lil bug that causes the friendObjectArray to go out of bounds
                 if indexPath.row < friendObjectArray.count {
-                    selectedFriend = friendObjectArray[indexPath.row]
-                    performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
+                    
+                    let cell = tableView.cellForRow(at: indexPath) as! FriendCell
+                    
+                    selectedCell = cell
+                    
+                    cell.initialContainerWidthConstraint.constant = 0
+                    cell.initialContainerHeightConstraint.constant = 0
+                    cell.initialContainerLeadingAnchor.constant = 37
+                    
+                    UIView.animate(withDuration: 0.3, animations: {
+                        
+                        cell.initialContainer.layoutIfNeeded()
+                        cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.width
+                        
+                    }) { (finished: Bool) in
+                        
+                        self.selectedFriend = self.friendObjectArray[indexPath.row]
+                        self.performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
+                    }
+                    
+//                    selectedFriend = friendObjectArray[indexPath.row]
+//                    performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
                 }
             }
         }
@@ -314,7 +364,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                         
                         self.friendObjectArray.append(friend)
                     }
-                    self.friendObjectArray = self.friendObjectArray.sorted(by: {$0.lastName < $1.lastName})
+                    self.friendObjectArray = self.friendObjectArray.sorted(by: {$0.lastName.lowercased() < $1.lastName.lowercased()})
                     self.allFriends = self.friendObjectArray
                     self.friendsTableView.reloadData()
                 }
@@ -361,7 +411,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             selectedFriendVC.selectedFriend = selectedFriend
             
             selectedFriendVC.collabBlocksDelegate = self
-            selectedFriendVC.friendDeletedDelegate = self
+            selectedFriendVC.reconfigureCellDelegate = self
             
         }
             
@@ -395,14 +445,19 @@ extension FriendsViewController: CollabView {
     }
 }
 
-extension FriendsViewController: FriendDeleted {
-    
-    func reloadFriends() {
+extension FriendsViewController: ReconfigureCell {
+
+    func reconfigureCell() {
         
-        friendObjectArray.removeAll()
-        getFriends()
-        friendsTableView.reloadData()
+        guard let cell = selectedCell else { return }
         
-        ProgressHUD.showSuccess(selectedFriend!.firstName + " " + selectedFriend!.lastName + " has been deleted")
+        cell.initialContainerWidthConstraint.constant = 45
+        cell.initialContainerHeightConstraint.constant = 45
+        cell.initialContainerLeadingAnchor.constant = 15
+        
+        UIView.animate(withDuration: 0.3) {
+            cell.initialContainer.layoutIfNeeded()
+            cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.width
+        }
     }
 }

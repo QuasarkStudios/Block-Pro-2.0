@@ -118,6 +118,9 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.friendName.text = requestsObjectArray[indexPath.row].requesterFirstName + " " + requestsObjectArray[indexPath.row].requesterLastName
                 cell.friendInitial.text = "\(firstNameArray[0])"
                 
+                cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.size.width
+                cell.initialContainer.clipsToBounds = true
+                
                 return cell
             }
         }
