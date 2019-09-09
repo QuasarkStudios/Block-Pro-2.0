@@ -13,7 +13,7 @@
         <!--Collab-->
         <scene sceneID="MIL-Mz-A2c">
             <objects>
-                <viewController title="Collab" modalTransitionStyle="crossDissolve" modalPresentationStyle="currentContext" id="U8N-fD-mCl" customClass="CollabViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Collab" modalTransitionStyle="crossDissolve" modalPresentationStyle="currentContext" id="U8N-fD-mCl" customClass="UpcomingCollabViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FTq-QV-FQa">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -104,7 +104,6 @@
                                                         <constraint firstAttribute="height" constant="21" id="WbM-Ac-Y67"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -276,7 +275,7 @@
         <!--Log In-->
         <scene sceneID="Bd2-Y8-LjY">
             <objects>
-                <viewController id="LrT-ev-N3D" customClass="LogInViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="LrT-ev-N3D" customClass="LogIn_RegisterViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Tnw-zX-iLW">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -817,9 +816,9 @@
                                             <state key="normal" image="icons8-expand-arrow-50"/>
                                         </button>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CoG-7s-AFe">
-                                            <rect key="frame" x="0.0" y="75" width="305" height="50"/>
+                                            <rect key="frame" x="0.0" y="5" width="305" height="100"/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="50" id="vCv-Wi-izt"/>
+                                                <constraint firstAttribute="height" constant="100" id="vCv-Wi-izt"/>
                                             </constraints>
                                         </view>
                                     </subviews>
@@ -827,7 +826,6 @@
                                     <constraints>
                                         <constraint firstItem="dDg-Oh-UUl" firstAttribute="top" secondItem="B9w-rh-VKd" secondAttribute="bottom" constant="35" id="BWq-Fw-34l"/>
                                         <constraint firstItem="dDg-Oh-UUl" firstAttribute="leading" secondItem="Hcs-x9-OLJ" secondAttribute="leading" constant="23" id="EnQ-PU-fGl"/>
-                                        <constraint firstItem="CoG-7s-AFe" firstAttribute="top" secondItem="wRF-50-VSO" secondAttribute="bottom" constant="2" id="G4g-2M-Fpz"/>
                                         <constraint firstAttribute="trailing" secondItem="CoG-7s-AFe" secondAttribute="trailing" id="GcH-1s-X0m"/>
                                         <constraint firstAttribute="trailing" secondItem="3xs-bS-Rli" secondAttribute="trailing" constant="23" id="LPI-dD-SJs"/>
                                         <constraint firstItem="3xs-bS-Rli" firstAttribute="leading" secondItem="Hcs-x9-OLJ" secondAttribute="leading" constant="23" id="Mh8-dh-5Zs"/>
@@ -845,6 +843,7 @@
                                         <constraint firstItem="B9w-rh-VKd" firstAttribute="leading" secondItem="Hcs-x9-OLJ" secondAttribute="leading" constant="23" id="s53-OM-fh7"/>
                                         <constraint firstItem="wRF-50-VSO" firstAttribute="top" secondItem="Hcs-x9-OLJ" secondAttribute="top" id="tKB-9J-zYi"/>
                                         <constraint firstItem="3eU-aG-9bB" firstAttribute="top" secondItem="3xs-bS-Rli" secondAttribute="bottom" constant="35" id="xEJ-58-M3e"/>
+                                        <constraint firstItem="CoG-7s-AFe" firstAttribute="top" secondItem="Hcs-x9-OLJ" secondAttribute="top" constant="5" id="xmU-3N-RCO"/>
                                         <constraint firstAttribute="trailing" secondItem="dDg-Oh-UUl" secondAttribute="trailing" constant="23" id="yth-Uh-rKT"/>
                                     </constraints>
                                 </view>
@@ -884,7 +883,6 @@
                         <outlet property="deleteFriendTrailingAnchor" destination="yth-Uh-rKT" id="5Od-3l-VPh"/>
                         <outlet property="dismissGestureView" destination="CoG-7s-AFe" id="q85-XT-jWt"/>
                         <outlet property="dismissIndicator" destination="1rg-eu-Hhf" id="jaQ-ma-D5g"/>
-                        <outlet property="dismissViewTopAnchor" destination="G4g-2M-Fpz" id="lFc-gj-2ze"/>
                         <outlet property="exitButton" destination="PQG-KV-ahZ" id="PJh-z1-btb"/>
                         <outlet property="friendName" destination="qvh-b7-YfN" id="D79-Zw-ioQ"/>
                         <outlet property="friendNameContainer" destination="wRF-50-VSO" id="i04-dt-zan"/>
@@ -1567,7 +1565,7 @@
                                         <rect key="frame" x="70" y="49" width="235" height="31"/>
                                         <subviews>
                                             <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="bCd-WW-g2D">
-                                                <rect key="frame" x="1.6666666666666665" y="1" width="121" height="29"/>
+                                                <rect key="frame" x="1" y="1" width="121" height="29"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <segments>
                                                     <segment title="5 "/>
@@ -1993,7 +1991,7 @@
         <image name="people" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="cQA-cy-9SS"/>
+        <segue reference="qny-Qz-1HN"/>
         <segue reference="iTD-aJ-FDE"/>
     </inferredMetricsTieBreakers>
 </document>

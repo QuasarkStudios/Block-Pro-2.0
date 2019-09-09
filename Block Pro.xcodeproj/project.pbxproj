@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */; };
-		0D23076322D299DC00A12393 /* CollabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23076222D299DC00A12393 /* CollabViewController.swift */; };
+		0D23076322D299DC00A12393 /* UpcomingCollabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23076222D299DC00A12393 /* UpcomingCollabViewController.swift */; };
 		0D23076C22D29FE900A12393 /* UpcomingCollabTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23076A22D29FE900A12393 /* UpcomingCollabTableCell.swift */; };
 		0D23076D22D29FE900A12393 /* UpcomingCollabTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D23076B22D29FE900A12393 /* UpcomingCollabTableCell.xib */; };
 		0D23076F22D3B31D00A12393 /* FriendsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23076E22D3B31D00A12393 /* FriendsViewController.swift */; };
@@ -52,7 +52,7 @@
 		0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */; };
 		0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA522BB1E7900E180D2 /* DateCell.swift */; };
 		0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */; };
-		0DDDA64F22D7D61B00B69A4E /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA64E22D7D61B00B69A4E /* LogInViewController.swift */; };
+		0DDDA64F22D7D61B00B69A4E /* LogIn_RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA64E22D7D61B00B69A4E /* LogIn_RegisterViewController.swift */; };
 		0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA65022DA59BE00B69A4E /* AddFriendViewController.swift */; };
 		0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */; };
 		0DFE5C1C231DF7C10025B4EB /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */; };
@@ -61,7 +61,7 @@
 
 /* Begin PBXFileReference section */
 		0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Add_Update_BlockViewController.swift; sourceTree = "<group>"; };
-		0D23076222D299DC00A12393 /* CollabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabViewController.swift; sourceTree = "<group>"; };
+		0D23076222D299DC00A12393 /* UpcomingCollabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingCollabViewController.swift; sourceTree = "<group>"; };
 		0D23076A22D29FE900A12393 /* UpcomingCollabTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingCollabTableCell.swift; sourceTree = "<group>"; };
 		0D23076B22D29FE900A12393 /* UpcomingCollabTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpcomingCollabTableCell.xib; sourceTree = "<group>"; };
 		0D23076E22D3B31D00A12393 /* FriendsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewController.swift; sourceTree = "<group>"; };
@@ -109,7 +109,7 @@
 		0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
 		0DBF3EA522BB1E7900E180D2 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHeader.swift; sourceTree = "<group>"; };
-		0DDDA64E22D7D61B00B69A4E /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		0DDDA64E22D7D61B00B69A4E /* LogIn_RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogIn_RegisterViewController.swift; sourceTree = "<group>"; };
 		0DDDA65022DA59BE00B69A4E /* AddFriendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendViewController.swift; sourceTree = "<group>"; };
 		0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSearchResults.swift; sourceTree = "<group>"; };
 		0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
@@ -152,8 +152,8 @@
 		0D23076422D299E700A12393 /* Collab View Files */ = {
 			isa = PBXGroup;
 			children = (
-				0DDDA64E22D7D61B00B69A4E /* LogInViewController.swift */,
-				0D23076222D299DC00A12393 /* CollabViewController.swift */,
+				0DDDA64E22D7D61B00B69A4E /* LogIn_RegisterViewController.swift */,
+				0D23076222D299DC00A12393 /* UpcomingCollabViewController.swift */,
 				0D23077722D580CF00A12393 /* NewCollabViewController.swift */,
 				0D23076E22D3B31D00A12393 /* FriendsViewController.swift */,
 				0D23077522D3DB6D00A12393 /* SelectedFriendViewController.swift */,
@@ -496,7 +496,7 @@
 				0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */,
 				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
 				0D23076F22D3B31D00A12393 /* FriendsViewController.swift in Sources */,
-				0D23076322D299DC00A12393 /* CollabViewController.swift in Sources */,
+				0D23076322D299DC00A12393 /* UpcomingCollabViewController.swift in Sources */,
 				0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */,
 				0D872F7822DEE925001D35B4 /* PendingFriend.swift in Sources */,
 				0D23077822D580CF00A12393 /* NewCollabViewController.swift in Sources */,
@@ -507,7 +507,7 @@
 				0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */,
 				0D3A9E2222EFF81F0052BCB6 /* AUCollabBlockViewController.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
-				0DDDA64F22D7D61B00B69A4E /* LogInViewController.swift in Sources */,
+				0DDDA64F22D7D61B00B69A4E /* LogIn_RegisterViewController.swift in Sources */,
 				0DA9F84122AC7C42008BECAE /* BlockPopoverViewController.swift in Sources */,
 				0D3A9E2522F367460052BCB6 /* CollabBlock.swift in Sources */,
 				0D93300822927C7500B6191D /* Block.swift in Sources */,

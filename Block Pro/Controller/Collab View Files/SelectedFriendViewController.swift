@@ -190,14 +190,17 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     
     override func viewDidAppear(_ animated: Bool) {
 
-        //print(friendView.frame.height)
-
+//        UIView.animate(withDuration: 0.5) {
+//            self.initialLabel.transform = CGAffineTransform(scaleX: 1.1, y: 1.1) //Scale label area
+//        }
+        
         initialLabelBottonAnchor.constant = -76
         initialLabelWidthConstraint.constant = 72
         initialLabelHeightConstraint.constant = 72
 
         UIView.animate(withDuration: 0.2) {
             self.view.layoutIfNeeded()
+            self.initialLabel.font = UIFont(name: ".SFUIDisplay", size: 30)
         }
     }
     
@@ -227,7 +230,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             
         }
             
-            //iPhone 8 Plus
+        //iPhone 8 Plus
         else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
             
             friendViewTopAnchor.constant = 100
@@ -249,7 +252,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             
         }
             
-            //iPhone XS
+        //iPhone XS
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
             
             upcomingButtonTopAnchor.constant = 45
@@ -267,7 +270,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             
         }
             
-            //iPhone 8
+        //iPhone 8
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
             
             friendViewTopAnchor.constant = 100
@@ -289,7 +292,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             
         }
             
-            //iPhone SE
+        //iPhone SE
         else if UIScreen.main.bounds.width == 320.0 {
  
             friendViewTopAnchor.constant = 75

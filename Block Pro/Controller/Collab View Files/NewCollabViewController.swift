@@ -151,7 +151,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
             collabViewInitialTop = collabViewTopAnchor.constant // 150
         }
             
-            //iPhone 8 Plus
+        //iPhone 8 Plus
         else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
             
             collabViewTopAnchor.constant = 110
@@ -159,21 +159,21 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
             
         }
             
-            //iPhone XS
+        //iPhone XS
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
             
             collabViewInitialTop = collabViewTopAnchor.constant // 150
 
         }
             
-            //iPhone 8
+        //iPhone 8
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
             
             collabViewTopAnchor.constant = 110
             collabViewInitialTop = 110
         }
             
-            //iPhone SE
+        //iPhone SE
         else if UIScreen.main.bounds.width == 320.0 {
             
             collabViewTopAnchor.constant = 90
@@ -469,7 +469,7 @@ extension NewCollabViewController {
             }
         }
             
-            //iPhone 8 Plus
+        //iPhone 8 Plus
         else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
             
             switch textField {
@@ -516,7 +516,7 @@ extension NewCollabViewController {
             
         }
             
-            //iPhone XS
+        //iPhone XS
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
             
             switch textField {
@@ -563,7 +563,7 @@ extension NewCollabViewController {
             
         }
             
-            //iPhone 8
+        //iPhone 8
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
             
             switch textField {
@@ -611,7 +611,7 @@ extension NewCollabViewController {
             
         }
             
-            //iPhone SE
+        //iPhone SE
         else if UIScreen.main.bounds.width == 320.0 {
             
             switch textField {

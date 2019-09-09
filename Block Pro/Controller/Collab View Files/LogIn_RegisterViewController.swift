@@ -9,24 +9,8 @@
 import UIKit
 import Firebase
 
-protocol UserSignIn {
-    
-    func attachListener ()
-}
 
-protocol UserRegistration {
-    
-    func newUser(_ firstName: String, _ lastName: String, _ username: String)
-}
-
-
-#warning("rename view controller")
-class LogInViewController: UIViewController, UITextFieldDelegate {
-    
-    var attachListenerDelegate: UserSignIn?
-    var registerUserDelegate: UserRegistration?
-    
-    lazy var db = Firestore.firestore()
+class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var logInContainer: UIView!
     
@@ -56,11 +40,25 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var registerButton: UIButton!
     
+    lazy var db = Firestore.firestore()
+    
+    var firstNameVerified: Bool?
+    var lastNameVerified: Bool?
+    var usernameVerified: Bool?
+    var password1Verified: Bool?
+    var password2Verified: Bool?
+    
     var uniqueUsername: Bool?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        configureView()
+        configureConstraints()
+    }
+    
+    func configureView () {
+        
         loginEmailTextField.delegate = self
         loginPasswordTextField.delegate = self
         
@@ -72,7 +70,6 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         registerPasswordTextField_1.delegate = self
         registerReenterPasswordTextField_2.delegate = self
         
-        //logInContainer.frame.origin = CGPoint(x: 39, y: 100)
         
         logInContainer.layer.cornerRadius = 0.1 * logInContainer.bounds.size.width
         logInContainer.clipsToBounds = true
@@ -80,7 +77,6 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         logInButton.layer.cornerRadius = 0.06 * logInButton.bounds.size.width
         logInButton.clipsToBounds = true
         
-        //registerContainer.frame.origin.y = 750
         
         registerContainer.layer.cornerRadius = 0.1 * registerContainer.bounds.size.width
         registerContainer.clipsToBounds = true
@@ -90,8 +86,6 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
-        
-        configureConstraints()
     }
     
     func configureConstraints () {
@@ -103,28 +97,28 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             registerContainerTopAnchor.constant = 850
         }
             
-            //iPhone 8 Plus
+        //iPhone 8 Plus
         else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
             
             loginContainerTopAnchor.constant = 100
             registerContainerTopAnchor.constant = 850
         }
             
-            //iPhone XS
+        //iPhone XS
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
             
             loginContainerTopAnchor.constant = 125
             registerContainerTopAnchor.constant = 850
         }
             
-            //iPhone 8
+        //iPhone 8
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
             
             loginContainerTopAnchor.constant = 100
             registerContainerTopAnchor.constant = 850
         }
             
-            //iPhone SE
+        //iPhone SE
         else if UIScreen.main.bounds.width == 320.0 {
             
             loginContainerTopAnchor.constant = 70
@@ -229,8 +223,6 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                 }
                 else {
 
-                    
-//                    self.attachListenerDelegate?.attachListener()
 
                     
                     self.performSegue(withIdentifier: "moveToUpcomingCollabs", sender: self)
@@ -245,27 +237,21 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         
         registerButton.isEnabled = false
         
-        usernameVerification {
+        verification {
             
-            #warning("remmember to find a better way to verify the user actually entered something in for their name; check to see if at least one letter has been enetered")
-            
-            if self.firstNameTextField.text == "" || self.lastNameTextField.text == "" {
+            if self.firstNameVerified ?? false == false || self.lastNameVerified ?? false == false {
                 ProgressHUD.showError("Please finish entering in your name.")
                 self.registerButton.isEnabled = true
             }
-            else if self.usernameTextField.text == "" {
-                ProgressHUD.showError("Please enter in your username.")
+            else if self.usernameVerified ?? false == false {
+                ProgressHUD.showError("Please finish entering in your username.")
                 self.registerButton.isEnabled = true
             }
             else if self.uniqueUsername ?? false == false {
                 ProgressHUD.showError("Sorry, that username already exists. Please enter in a new one.")
                 self.registerButton.isEnabled = true
             }
-            else if self.registerEmailTextField.text == "" {
-                ProgressHUD.showError("Please enter in a email address.")
-                self.registerButton.isEnabled = true
-            }
-            else if (self.registerPasswordTextField_1.text == "" || self.registerReenterPasswordTextField_2.text == "") {
+            else if self.password1Verified ?? false == false || self.password2Verified ?? false == false {
                 ProgressHUD.showError("Please finish entering in your password.")
                 self.registerButton.isEnabled = true
             }
@@ -274,43 +260,157 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                 self.registerButton.isEnabled = true
             }
             else {
-                
+
                 Auth.auth().createUser(withEmail: self.registerEmailTextField.text!, password: self.registerPasswordTextField_1.text!) { authResult, error in
-                    
+
                     if error != nil {
-                        
+
                         ProgressHUD.showError(error?.localizedDescription)
                         self.registerButton.isEnabled = true
                     }
                     else {
-                        
+
                         guard let userID = authResult?.user.uid else { return }
-                        
+
                         self.createNewUser(userID, completion: {
-                            
+
                             ProgressHUD.showSuccess("Account Created!")
-                            
+
                             self.performSegue(withIdentifier: "moveToUpcomingCollabs", sender: self)
                         })
-                        
+
                     }
                 }
             }
         }
-        
     }
     
-    func usernameVerification (completion: @escaping () -> ()) {
+    
+    func verification (completion: @escaping () -> ()) {
         
-        db.collection("Users").whereField("username", isEqualTo: usernameTextField.text).getDocuments { (snapshot, error) in
-            //print("check")
+        let letters = CharacterSet.letters
+        let numbers = CharacterSet.decimalDigits
+        
+        if firstNameTextField.text?.isEmpty == true {
+            firstNameVerified = false
+        }
+        else {
+            
+            for char in firstNameTextField.text!.unicodeScalars {
+                
+                if letters.contains(char) {
+                    firstNameVerified = true
+                    break
+                }
+                else if numbers.contains(char) {
+                    firstNameVerified = true
+                    break
+                }
+                else {
+                    firstNameVerified = false
+                }
+            }
+        }
+        
+        ////////////////////////////////////////////////////////////////////
+        if lastNameTextField.text?.isEmpty == true {
+            lastNameVerified = false
+        }
+        else {
+            
+            for char in lastNameTextField.text!.unicodeScalars {
+                if letters.contains(char) {
+                    lastNameVerified = true
+                    break
+                }
+                else if numbers.contains(char) {
+                    lastNameVerified = true
+                    break
+                }
+                else {
+                    lastNameVerified = false
+                }
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////
+        if usernameTextField.text?.isEmpty == true {
+            usernameVerified = false
+        }
+        else {
+            
+            for char in usernameTextField.text!.unicodeScalars {
+                if letters.contains(char) {
+                    usernameVerified = true
+                    break
+                }
+                else if numbers.contains(char) {
+                    usernameVerified = true
+                    break
+                }
+                else {
+                    usernameVerified = false
+                }
+            }
+        }
+
+        ////////////////////////////////////////////////////////////////////
+        if registerPasswordTextField_1.text?.isEmpty == true {
+            password1Verified = false
+        }
+        else {
+            for char in registerPasswordTextField_1.text!.unicodeScalars {
+                if letters.contains(char) {
+                    password1Verified = true
+                    break
+                }
+                else if numbers.contains(char) {
+                    password1Verified = true
+                    break
+                }
+                password1Verified = false
+            }
+        }
+        
+        ////////////////////////////////////////////////////////////////////
+        if registerReenterPasswordTextField_2.text?.isEmpty == true {
+            password2Verified = false
+        }
+        else {
+            
+            for char in registerReenterPasswordTextField_2.text!.unicodeScalars {
+                if letters.contains(char) {
+                    password2Verified = true
+                    break
+                }
+                else if numbers.contains(char) {
+                    password2Verified = true
+                    break
+                }
+                else {
+                    password2Verified = false
+                }
+            }
+        }
+
+
+        print(firstNameVerified)
+        print(lastNameVerified)
+        print(usernameVerified)
+        print(password1Verified)
+        print(password2Verified)
+        
+        //registerButton.isEnabled = true
+        
+        db.collection("Users").whereField("username", isEqualTo: usernameTextField.text!.lowercased()).getDocuments { (snapshot, error) in
+            
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
                 self.registerButton.isEnabled = true
             }
-            
+
             else {
-                
+
                 if snapshot?.isEmpty == true {
                     self.uniqueUsername = true
                     completion()
@@ -319,29 +419,15 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                     self.uniqueUsername = false
                     completion()
                 }
-                print(self.uniqueUsername)
+                print("unique username", self.uniqueUsername, "\(self.usernameTextField.text!.lowercased()) \n")
             }
         }
-//
-//        if let verification = uniqueUsername {
-//            print("check")
-//            if verification == true {
-//                return true
-//            }
-//            else {
-//                return false
-//            }
-//        }
-//        else {
-//            return false
-//        }
-        
     }
     
     
     func createNewUser (_ userID: String, completion: @escaping () -> ()) {
         
-        self.db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : self.firstNameTextField.text!, "lastName" : self.lastNameTextField.text!, "username" : self.usernameTextField.text!])
+        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : firstNameTextField.text!, "lastName" : lastNameTextField.text!, "username" : usernameTextField.text!.lowercased()])
         
         completion()
     }
@@ -370,7 +456,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             }
         }
             
-            //iPhone 8 Plus
+        //iPhone 8 Plus
         else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
             
             self.loginContainerTopAnchor.constant = -500
@@ -391,7 +477,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             }
         }
             
-            //iPhone XS
+        //iPhone XS
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
             
             self.loginContainerTopAnchor.constant = -500
@@ -412,7 +498,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             }
         }
             
-            //iPhone 8
+        //iPhone 8
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
             
             self.loginContainerTopAnchor.constant = -500
@@ -433,7 +519,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             }
         }
             
-            //iPhone SE
+        //iPhone SE
         else if UIScreen.main.bounds.width == 320.0 {
             
             self.loginContainerTopAnchor.constant = -500
@@ -453,19 +539,6 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                 })
             }
         }
-        
-//        UIView.animate(withDuration: 0.2, animations: {
-//
-//            self.logInContainer.frame.origin.y = -500
-//        }) { (finished: Bool) in
-//
-//            self.navigationItem.title = "Register"
-//
-//            UIView.animate(withDuration: 0.2, animations: {
-//
-//                self.registerContainer.frame.origin.y = 100
-//            })
-//        }
     }
     
     
@@ -492,7 +565,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             }
         }
             
-            //iPhone 8 Plus
+        //iPhone 8 Plus
         else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
             
             self.registerContainerTopAnchor.constant = 850
@@ -514,7 +587,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             
         }
             
-            //iPhone XS
+        //iPhone XS
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
             
             self.registerContainerTopAnchor.constant = 850
@@ -535,7 +608,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             }
         }
             
-            //iPhone 8
+        //iPhone 8
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
             
             self.registerContainerTopAnchor.constant = 850
@@ -556,7 +629,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
             }
         }
             
-            //iPhone SE
+        //iPhone SE
         else if UIScreen.main.bounds.width == 320.0 {
             
             self.registerContainerTopAnchor.constant = 850
@@ -576,21 +649,8 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                 })
             }
         }
-        
-//        UIView.animate(withDuration: 0.2, animations: {
-//
-//            self.registerContainer.frame.origin.y = 750
-//
-//        }) { (finished: Bool) in
-//
-//            self.navigationItem.title = "Log In"
-//
-//            UIView.animate(withDuration: 0.2, animations: {
-//
-//                self.logInContainer.frame.origin.y = 100
-//            })
-//        }
     }
+    
     
     //Function that dismisses the keyboard and the PickerViews
     @objc func dismissKeyboard () {
@@ -609,7 +669,5 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
                 }
             }
         }
-        
     }
-    
 }

@@ -10,8 +10,7 @@ import UIKit
 import Firebase
 
 
-#warning("change the name of this class and file associated with it")
-class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var friendsButton: UIBarButtonItem!
@@ -476,7 +475,6 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
             }
         }
     
-        #warning("quick bug fix to prevent crash when user has no upcoming collabs; may require more testing")
         if collabObjectArray.count > 0 {
             
             sectionContentArray = Array(repeating: Array(repeating: collabObjectArray[0], count: 0), count: sectionDateArray.count)
@@ -633,13 +631,6 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-//        if segue.identifier == "moveToLogIn" {
-//
-//            let login_registerVC = segue.destination as! LogInViewController
-//            login_registerVC.attachListenerDelegate = self
-//            login_registerVC.registerUserDelegate = self
-//        }
-        
         if segue.identifier == "moveToCreateCollab" {
             
             let newCollabVC = segue.destination as! NewCollabViewController
@@ -671,57 +662,7 @@ class CollabViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 }
 
-extension CollabViewController: UserRegistration {
-    
-    func newUser(_ firstName: String, _ lastName: String, _ username: String) {
-        
-        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
-            
-            if let user = user {
-                let uid = user.uid
-                let email = user.email
-                
-                //self.getUserData(uid, completion: {})
-                
-                self.db.collection("Users").document(uid).setData(["userID" : uid, "firstName" : firstName, "lastName" : lastName, "username" : username])
-                
-                print (uid, email)
-            }
-            else {
-                print("damn")
-            }
-        }
-        
-    }
-}
-
-extension CollabViewController: UserSignIn {
-    
-    func attachListener() {
-        
-        handle = Auth.auth().addStateDidChangeListener { (auth, user) in
-            
-            if let user = user {
-                let uid = user.uid
-                let email = user.email
-                
-//                self.getUserData(uid, completion: {
-//                    self.addHistoricCollabs(completion: {
-//                        self.getCollabs()
-//                        self.getCollabRequests()
-//
-//                    })
-//                })
-                print (uid, email)
-            }
-            else {
-                print("damn")
-            }
-        }
-    }
-}
-
-extension CollabViewController: GetNewCollab {
+extension UpcomingCollabViewController: GetNewCollab {
     
     func getNewCollab () {
         getCollabs()

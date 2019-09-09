@@ -24,7 +24,6 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var resultsObjectArray: [SearchResult] = [SearchResult]() 
     var requestsObjectArray: [FriendRequest] = [FriendRequest]()
-    var searchedUsername: String = ""
     
     var pendingFriends: [PendingFriend] = [PendingFriend]()
     var friends: [Friend] = [Friend]()
@@ -253,11 +252,12 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
     
     //MARK: - SearchBar Delegate Methods
     
+    #warning("make the search case insensitive")
+    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         searchButtonTapped = true
-        searchedUsername = searchBar.text!
-        queryUsers(searchBar.text!)
+        queryUsers(searchBar.text!.lowercased())
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -351,14 +351,15 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                     
                     for document in snapshot!.documents {
                         
+                        let friendID = document.data()["userID"] as! String
                         let friendFirstName = document.data()["firstName"] as! String
                         let friendLastName = document.data()["lastName"] as! String
-                        let friendID = document.data()["userID"] as! String
+                        let friendUsername = document.data()["username"] as! String
                         
                         friendSearchResults.userID = friendID
                         friendSearchResults.firstName = friendFirstName
                         friendSearchResults.lastName = friendLastName
-                        friendSearchResults.username = self.searchedUsername
+                        friendSearchResults.username = friendUsername
                         
                         self.resultsObjectArray.append(friendSearchResults)
                     }
