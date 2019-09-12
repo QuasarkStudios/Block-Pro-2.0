@@ -16,6 +16,7 @@
 		0D23077822D580CF00A12393 /* NewCollabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23077722D580CF00A12393 /* NewCollabViewController.swift */; };
 		0D23077A22D6CD9900A12393 /* CollabBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23077922D6CD9900A12393 /* CollabBlockViewController.swift */; };
 		0D23077C22D7028700A12393 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D23077B22D7028600A12393 /* GoogleService-Info.plist */; };
+		0D2707FC2326DF9000592EC8 /* PomodoroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2707FB2326DF9000592EC8 /* PomodoroViewController.swift */; };
 		0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECEF228FB55600CC9180 /* AppDelegate.swift */; };
 		0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */; };
 		0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CECF3228FB55600CC9180 /* Main.storyboard */; };
@@ -41,6 +42,8 @@
 		0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7E22E2ABF0001D35B4 /* UpcomingCollab.swift */; };
 		0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F8022E65F8D001D35B4 /* PendingCollab.swift */; };
 		0D93300822927C7500B6191D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300722927C7500B6191D /* Block.swift */; };
+		0D95C17A232886C400421BE0 /* Start Timer.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D95C179232886C400421BE0 /* Start Timer.wav */; };
+		0D95C17C2328923000421BE0 /* Timer Running.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D95C17B2328923000421BE0 /* Timer Running.wav */; };
 		0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83422A84833008BECAE /* FreeTime.storyboard */; };
 		0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83622A84862008BECAE /* Pomodoro.storyboard */; };
 		0DA9F83922A84879008BECAE /* TimeBlock.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83822A84879008BECAE /* TimeBlock.storyboard */; };
@@ -69,6 +72,7 @@
 		0D23077722D580CF00A12393 /* NewCollabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCollabViewController.swift; sourceTree = "<group>"; };
 		0D23077922D6CD9900A12393 /* CollabBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabBlockViewController.swift; sourceTree = "<group>"; };
 		0D23077B22D7028600A12393 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		0D2707FB2326DF9000592EC8 /* PomodoroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroViewController.swift; sourceTree = "<group>"; };
 		0D2CECEC228FB55600CC9180 /* Block Pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Block Pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D2CECEF228FB55600CC9180 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockViewController.swift; sourceTree = "<group>"; };
@@ -96,6 +100,8 @@
 		0D872F7E22E2ABF0001D35B4 /* UpcomingCollab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingCollab.swift; sourceTree = "<group>"; };
 		0D872F8022E65F8D001D35B4 /* PendingCollab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingCollab.swift; sourceTree = "<group>"; };
 		0D93300722927C7500B6191D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
+		0D95C179232886C400421BE0 /* Start Timer.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Start Timer.wav"; sourceTree = "<group>"; };
+		0D95C17B2328923000421BE0 /* Timer Running.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Timer Running.wav"; sourceTree = "<group>"; };
 		0DA9F83422A84833008BECAE /* FreeTime.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FreeTime.storyboard; sourceTree = "<group>"; };
 		0DA9F83622A84862008BECAE /* Pomodoro.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Pomodoro.storyboard; sourceTree = "<group>"; };
 		0DA9F83822A84879008BECAE /* TimeBlock.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TimeBlock.storyboard; sourceTree = "<group>"; };
@@ -145,6 +151,7 @@
 				0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */,
 				0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */,
 				0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */,
+				0D23076022D284F500A12393 /* JTAppleCalendar Files */,
 			);
 			path = "TimeBlock View Files ";
 			sourceTree = "<group>";
@@ -170,6 +177,14 @@
 				0D23076B22D29FE900A12393 /* UpcomingCollabTableCell.xib */,
 			);
 			path = UpcomingCollabViewCell;
+			sourceTree = "<group>";
+		};
+		0D2707FD2326DFB900592EC8 /* Pomodoro View Files */ = {
+			isa = PBXGroup;
+			children = (
+				0D2707FB2326DF9000592EC8 /* PomodoroViewController.swift */,
+			);
+			path = "Pomodoro View Files";
 			sourceTree = "<group>";
 		};
 		0D2CECE3228FB55600CC9180 = {
@@ -199,6 +214,8 @@
 				0D2CED02228FC75B00CC9180 /* View */,
 				0D2CED01228FC73A00CC9180 /* Controller */,
 				0D2CECF6228FB55800CC9180 /* Assets.xcassets */,
+				0D95C179232886C400421BE0 /* Start Timer.wav */,
+				0D95C17B2328923000421BE0 /* Timer Running.wav */,
 				0D2CECFB228FB55800CC9180 /* Info.plist */,
 				0D23077B22D7028600A12393 /* GoogleService-Info.plist */,
 			);
@@ -208,9 +225,9 @@
 		0D2CED01228FC73A00CC9180 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				0D23076422D299E700A12393 /* Collab View Files */,
+				0D2707FD2326DFB900592EC8 /* Pomodoro View Files */,
 				0D23076122D2851C00A12393 /* TimeBlock View Files  */,
-				0D23076022D284F500A12393 /* JTAppleCalendar Files */,
+				0D23076422D299E700A12393 /* Collab View Files */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -402,9 +419,11 @@
 				0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */,
 				0D2CECF7228FB55800CC9180 /* Assets.xcassets in Resources */,
 				0D2CED172291EDE200CC9180 /* CustomBlockTableCell.xib in Resources */,
+				0D95C17C2328923000421BE0 /* Timer Running.wav in Resources */,
 				0DA9F83B22A8488E008BECAE /* Collab.storyboard in Resources */,
 				0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */,
 				0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */,
+				0D95C17A232886C400421BE0 /* Start Timer.wav in Resources */,
 				0D2CED0B2290829300CC9180 /* CustomTimeTableCell.xib in Resources */,
 				0D23076D22D29FE900A12393 /* UpcomingCollabTableCell.xib in Resources */,
 				0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */,
@@ -515,6 +534,7 @@
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
 				0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */,
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
+				0D2707FC2326DF9000592EC8 /* PomodoroViewController.swift in Sources */,
 				0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */,
 				0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */,
 				0D23077622D3DB6D00A12393 /* SelectedFriendViewController.swift in Sources */,

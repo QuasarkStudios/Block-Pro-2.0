@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9A6EAA7D9F90E1400A4312123FFDBEA5"
-               BuildableName = "Realm.framework"
-               BlueprintName = "Realm"
+               BlueprintIdentifier = "284A6BDBF03C1B3A9B94B96732AEB82B"
+               BuildableName = "FirebaseAuth.framework"
+               BlueprintName = "FirebaseAuth"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9A6EAA7D9F90E1400A4312123FFDBEA5"
-            BuildableName = "Realm.framework"
-            BlueprintName = "Realm"
+            BlueprintIdentifier = "284A6BDBF03C1B3A9B94B96732AEB82B"
+            BuildableName = "FirebaseAuth.framework"
+            BlueprintName = "FirebaseAuth"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

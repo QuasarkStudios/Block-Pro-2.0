@@ -803,7 +803,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         tableViewIndicator = "upcoming"
         
         let date = Date()
-        timer = Timer(fireAt: date, interval: 3, target: self, selector: #selector(self.animateDismissButton), userInfo: nil, repeats: true)
+        timer = Timer(fireAt: date, interval: 3, target: self, selector: #selector(animateDismissButton), userInfo: nil, repeats: true)
         animateButtonTracker = true
         
         pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:))) //Initialization of the pan gesture

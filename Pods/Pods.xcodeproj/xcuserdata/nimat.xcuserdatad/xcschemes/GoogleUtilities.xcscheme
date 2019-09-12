@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9A6EAA7D9F90E1400A4312123FFDBEA5"
-               BuildableName = "Realm.framework"
-               BlueprintName = "Realm"
+               BlueprintIdentifier = "37835BDC1130E7B4495BC2F713549083"
+               BuildableName = "GoogleUtilities.framework"
+               BlueprintName = "GoogleUtilities"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9A6EAA7D9F90E1400A4312123FFDBEA5"
-            BuildableName = "Realm.framework"
-            BlueprintName = "Realm"
+            BlueprintIdentifier = "37835BDC1130E7B4495BC2F713549083"
+            BuildableName = "GoogleUtilities.framework"
+            BlueprintName = "GoogleUtilities"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

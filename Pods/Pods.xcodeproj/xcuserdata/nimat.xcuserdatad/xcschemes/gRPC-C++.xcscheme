@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9A6EAA7D9F90E1400A4312123FFDBEA5"
-               BuildableName = "Realm.framework"
-               BlueprintName = "Realm"
+               BlueprintIdentifier = "5085B3B4FB07B0F6EC2F9AABDE2E177C"
+               BuildableName = "grpcpp.framework"
+               BlueprintName = "gRPC-C++"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "9A6EAA7D9F90E1400A4312123FFDBEA5"
-            BuildableName = "Realm.framework"
-            BlueprintName = "Realm"
+            BlueprintIdentifier = "5085B3B4FB07B0F6EC2F9AABDE2E177C"
+            BuildableName = "grpcpp.framework"
+            BlueprintName = "gRPC-C++"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
