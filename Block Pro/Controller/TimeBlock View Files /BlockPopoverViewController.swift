@@ -116,7 +116,7 @@ class BlockPopoverViewController: UIViewController {
         
         guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
         
-        bigTimeBlock.backgroundColor = UIColor(hexString: blockCategoryColors[bigBlockData.blockCategory]!)
+        bigTimeBlock.backgroundColor = UIColor(hexString: blockCategoryColors[bigBlockData.blockCategory] ?? "#EFEFF4")
         
         blockName.text = bigBlockData.name
         blockStartTime.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)

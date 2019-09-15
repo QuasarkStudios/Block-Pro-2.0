@@ -452,7 +452,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     //If the user did select a category for this TimeBlock
                     else {
                         cell.cellContainerView.backgroundColor = UIColor(hexString: "#EFEFF4")
-                        cell.nameLabel.textColor = ContrastColorOf(UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category]!)!, returnFlat: false)
+                        cell.nameLabel.textColor = ContrastColorOf(UIColor(hexString: "#EFEFF4")!, returnFlat: false)
+//                        cell.nameLabel.textColor = ContrastColorOf(UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category]!)!, returnFlat: false)
                     }
                     
                     configureBlockLayout(cell) //Function that configures each cells layout
