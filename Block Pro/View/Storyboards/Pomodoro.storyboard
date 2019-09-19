@@ -22,6 +22,7 @@
                                 <rect key="frame" x="49" y="583" width="110" height="55"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="17"/>
                                 <state key="normal" title="Start">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
@@ -33,17 +34,11 @@
                                 <rect key="frame" x="62" y="174" width="250" height="250"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start Session" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uiU-Ov-WSw">
-                                <rect key="frame" x="102" y="125" width="170" height="42"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="28"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lia-3g-XVQ">
                                 <rect key="frame" x="229" y="583" width="110" height="55"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="17"/>
                                 <state key="normal" title="Stop">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
@@ -51,24 +46,198 @@
                                     <action selector="stopAnimation:" destination="SQN-AH-eZQ" eventType="touchUpInside" id="6Vc-Ip-r8u"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start Pomodoro" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uiU-Ov-WSw">
+                                <rect key="frame" x="82" y="124" width="210" height="42"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <accessibility key="accessibilityConfiguration">
+                                    <accessibilityTraits key="traits" staticText="YES" updatesFrequently="YES"/>
+                                </accessibility>
+                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="28"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2S1-JQ-Ms9">
+                                <rect key="frame" x="284" y="649" width="70" height="70"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HoG-JG-r3S">
+                                        <rect key="frame" x="7.6666666666666856" y="17.666666666666629" width="55" height="27.666666666666671"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="55" id="MCz-qt-iKz"/>
+                                            <constraint firstAttribute="height" constant="27.5" id="Ona-fa-OPG"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="70" id="UHz-Xg-M1q"/>
+                                    <constraint firstItem="HoG-JG-r3S" firstAttribute="centerX" secondItem="2S1-JQ-Ms9" secondAttribute="centerX" id="W8g-Pg-i7Z"/>
+                                    <constraint firstItem="HoG-JG-r3S" firstAttribute="centerY" secondItem="2S1-JQ-Ms9" secondAttribute="centerY" constant="-3.5" id="anb-vL-bF6"/>
+                                    <constraint firstAttribute="height" constant="70" id="siH-el-TtF"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.89019607840000003" green="0.36470588240000001" blue="0.35686274509999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="tPf-RH-wjv" firstAttribute="bottom" secondItem="2S1-JQ-Ms9" secondAttribute="bottom" constant="10" id="GE8-zv-dOG"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="2S1-JQ-Ms9" secondAttribute="trailing" constant="5" id="QNQ-Kk-ZUE"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="tPf-RH-wjv"/>
                     </view>
                     <navigationItem key="navigationItem" title="Pomodoro" id="xr3-Ph-tjP">
-                        <barButtonItem key="rightBarButtonItem" title="Edit" id="Rkv-3w-Zmr"/>
+                        <barButtonItem key="rightBarButtonItem" title="Edit" id="Rkv-3w-Zmr">
+                            <connections>
+                                <action selector="editButton:" destination="SQN-AH-eZQ" id="ow5-qS-Av6"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="animationView" destination="onc-gJ-tJg" id="0q0-Zw-Jb1"/>
                         <outlet property="countDownLabel" destination="uiU-Ov-WSw" id="i0g-Zh-ERD"/>
                         <outlet property="play_pauseButton" destination="RNp-xa-6TS" id="Gcb-4p-UbL"/>
+                        <outlet property="pomodoroCountAnimationView" destination="2S1-JQ-Ms9" id="8YW-Iq-Ikq"/>
+                        <outlet property="pomodoroCountLabel" destination="HoG-JG-r3S" id="Wo7-3C-gNF"/>
+                        <outlet property="pomodoroProgressAnimationView" destination="onc-gJ-tJg" id="JqQ-Hp-qRP"/>
                         <outlet property="stopButton" destination="lia-3g-XVQ" id="bbg-60-xUF"/>
+                        <segue destination="Hhe-MH-Gtd" kind="show" identifier="moveToEditView" id="Pdr-XA-Azq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="K6d-Ht-vDt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2192.8000000000002" y="-728.57142857142856"/>
+        </scene>
+        <!--Edit Pomodoro-->
+        <scene sceneID="dpo-Sq-BQv">
+            <objects>
+                <viewController modalTransitionStyle="crossDissolve" id="Hhe-MH-Gtd" customClass="EditPomodoroViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Kx6-iy-j1Y">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Pomodoro Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="liW-Ze-Ade">
+                                <rect key="frame" x="44" y="119" width="287" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Pomodoro Count:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bUB-5f-Mqo">
+                                <rect key="frame" x="112" y="322" width="151" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Pomodoro Length:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1DZ-sf-LGv">
+                                <rect key="frame" x="107" y="182" width="161" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bb2-vO-UMZ">
+                                <rect key="frame" x="0.0" y="236" width="375" height="60"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="f8p-Qw-KEa"/>
+                                </constraints>
+                            </view>
+                            <view alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ksj-h2-8I8">
+                                <rect key="frame" x="0.0" y="376" width="375" height="60"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="lz1-f9-b7j"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u32-o7-Y8E">
+                                <rect key="frame" x="16" y="250" width="52" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
+                                <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
+                                <state key="normal" title="-"/>
+                                <connections>
+                                    <action selector="decrementPomodoroLength:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="Wod-4K-YUq"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="25:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Gj-fh-C6l">
+                                <rect key="frame" x="106" y="250" width="162" height="26"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="28"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VXF-vO-FQV">
+                                <rect key="frame" x="306" y="250" width="53" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
+                                <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
+                                <state key="normal" title="+"/>
+                                <connections>
+                                    <action selector="incrementPomodoroLength:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="KiN-vs-d7R"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GG2-VB-0N1">
+                                <rect key="frame" x="33" y="385" width="52" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
+                                <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
+                                <state key="normal" title="-"/>
+                                <connections>
+                                    <action selector="decrementPomodoroCount:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="fQ3-gs-3IQ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1eh-86-5AN">
+                                <rect key="frame" x="322" y="385" width="52" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
+                                <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
+                                <state key="normal" title="+"/>
+                                <connections>
+                                    <action selector="incrementPomodoroCount:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="Vpg-IP-Z4B"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="4" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FXf-dL-5rw">
+                                <rect key="frame" x="125" y="385" width="124" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="28"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.89019607840000003" green="0.36470588240000001" blue="0.35686274509999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="Ksj-h2-8I8" firstAttribute="leading" secondItem="cbW-hq-IpB" secondAttribute="leading" id="13e-yX-Ede"/>
+                            <constraint firstItem="bb2-vO-UMZ" firstAttribute="top" secondItem="Kx6-iy-j1Y" secondAttribute="top" constant="236" id="5AQ-sO-fTu"/>
+                            <constraint firstItem="bb2-vO-UMZ" firstAttribute="trailing" secondItem="cbW-hq-IpB" secondAttribute="trailing" id="emo-Wz-HWn"/>
+                            <constraint firstItem="bb2-vO-UMZ" firstAttribute="leading" secondItem="cbW-hq-IpB" secondAttribute="leading" id="mML-Jh-e22"/>
+                            <constraint firstItem="Ksj-h2-8I8" firstAttribute="trailing" secondItem="cbW-hq-IpB" secondAttribute="trailing" id="maX-k8-g0x"/>
+                            <constraint firstItem="Ksj-h2-8I8" firstAttribute="top" secondItem="Kx6-iy-j1Y" secondAttribute="top" constant="376" id="veH-dm-Y1I"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="cbW-hq-IpB"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Edit Pomodoro" id="fgJ-yb-rH6">
+                        <barButtonItem key="rightBarButtonItem" title="Done" id="EKT-bA-4d8">
+                            <connections>
+                                <action selector="doneButton:" destination="Hhe-MH-Gtd" id="qg9-xh-MRm"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="decrementPomodoroCount" destination="GG2-VB-0N1" id="bxG-zv-RjW"/>
+                        <outlet property="decrementPomodoroLength" destination="u32-o7-Y8E" id="SfU-SK-fCX"/>
+                        <outlet property="incrementPomodoroCount" destination="1eh-86-5AN" id="M2o-3n-Dku"/>
+                        <outlet property="incrementPomodoroLength" destination="VXF-vO-FQV" id="efl-y3-up6"/>
+                        <outlet property="pomodoroCountContainer" destination="Ksj-h2-8I8" id="Urd-rx-zRx"/>
+                        <outlet property="pomodoroCountLabel" destination="FXf-dL-5rw" id="M39-GH-W3B"/>
+                        <outlet property="pomodoroLengthContainer" destination="bb2-vO-UMZ" id="jZ2-ab-K1I"/>
+                        <outlet property="pomodoroLengthLabel" destination="2Gj-fh-C6l" id="jck-cF-5CM"/>
+                        <outlet property="pomodoroNameTextField" destination="liW-Ze-Ade" id="0Vm-ty-crV"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1dk-6V-bFr" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3293.5999999999999" y="-729.31034482758628"/>
         </scene>
         <!--Pomodoro-->
         <scene sceneID="YAb-mE-hff">

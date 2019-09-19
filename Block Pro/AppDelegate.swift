@@ -20,7 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        print (Realm.Configuration.defaultConfiguration.fileURL!) //Used to locate where our Realm database is
+        print ("realm location:", Realm.Configuration.defaultConfiguration.fileURL!) //Used to locate where our Realm database is
+        print("user defaults location:", NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
         
         //Sets the intial view of the tabBar to be the TimeBlock view
         let tabBarController = self.window?.rootViewController as! UITabBarController

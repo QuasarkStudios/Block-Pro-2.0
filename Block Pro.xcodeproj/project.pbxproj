@@ -11,6 +11,7 @@
 		0D13ABFD232A15DF0025EDC3 /* Break Timer Running.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D13ABFC232A15DF0025EDC3 /* Break Timer Running.wav */; };
 		0D13ABFF232A15E60025EDC3 /* End Break.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D13ABFE232A15E60025EDC3 /* End Break.wav */; };
 		0D13AC02232DDBD40025EDC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D13AC01232DDBD40025EDC3 /* Assets.xcassets */; };
+		0D13AC04232DF0560025EDC3 /* EditPomodoroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D13AC03232DF0560025EDC3 /* EditPomodoroViewController.swift */; };
 		0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */; };
 		0D23076322D299DC00A12393 /* UpcomingCollabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23076222D299DC00A12393 /* UpcomingCollabViewController.swift */; };
 		0D23076C22D29FE900A12393 /* UpcomingCollabTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23076A22D29FE900A12393 /* UpcomingCollabTableCell.swift */; };
@@ -70,6 +71,7 @@
 		0D13ABFC232A15DF0025EDC3 /* Break Timer Running.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Break Timer Running.wav"; sourceTree = "<group>"; };
 		0D13ABFE232A15E60025EDC3 /* End Break.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "End Break.wav"; sourceTree = "<group>"; };
 		0D13AC01232DDBD40025EDC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		0D13AC03232DF0560025EDC3 /* EditPomodoroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPomodoroViewController.swift; sourceTree = "<group>"; };
 		0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Add_Update_BlockViewController.swift; sourceTree = "<group>"; };
 		0D23076222D299DC00A12393 /* UpcomingCollabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingCollabViewController.swift; sourceTree = "<group>"; };
 		0D23076A22D29FE900A12393 /* UpcomingCollabTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingCollabTableCell.swift; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				0D2707FB2326DF9000592EC8 /* PomodoroViewController.swift */,
+				0D13AC03232DF0560025EDC3 /* EditPomodoroViewController.swift */,
 			);
 			path = "Pomodoro View Files";
 			sourceTree = "<group>";
@@ -567,6 +570,7 @@
 				0D41F5C2231203A200B4B11E /* TwentyMinCell.swift in Sources */,
 				0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */,
 				0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */,
+				0D13AC04232DF0560025EDC3 /* EditPomodoroViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
