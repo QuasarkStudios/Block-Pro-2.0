@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="E6s-Xj-VKL">
-    <device id="retina5_9" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="E6s-Xj-VKL">
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -46,12 +44,14 @@
                                     <action selector="stopAnimation:" destination="SQN-AH-eZQ" eventType="touchUpInside" id="6Vc-Ip-r8u"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Start Pomodoro" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uiU-Ov-WSw">
-                                <rect key="frame" x="82" y="124" width="210" height="42"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start Pomodoro" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uiU-Ov-WSw">
+                                <rect key="frame" x="10" y="123" width="355" height="42"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" updatesFrequently="YES"/>
                                 </accessibility>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="42" id="pyT-hT-bHS"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="28"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -82,6 +82,9 @@
                         <constraints>
                             <constraint firstItem="tPf-RH-wjv" firstAttribute="bottom" secondItem="2S1-JQ-Ms9" secondAttribute="bottom" constant="10" id="GE8-zv-dOG"/>
                             <constraint firstAttribute="trailingMargin" secondItem="2S1-JQ-Ms9" secondAttribute="trailing" constant="5" id="QNQ-Kk-ZUE"/>
+                            <constraint firstItem="uiU-Ov-WSw" firstAttribute="top" secondItem="tPf-RH-wjv" secondAttribute="top" constant="35" id="SIN-lr-Mod"/>
+                            <constraint firstItem="tPf-RH-wjv" firstAttribute="trailing" secondItem="uiU-Ov-WSw" secondAttribute="trailing" constant="10" id="h7i-10-nQu"/>
+                            <constraint firstItem="uiU-Ov-WSw" firstAttribute="leading" secondItem="tPf-RH-wjv" secondAttribute="leading" constant="10" id="ysV-e4-DlK"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="tPf-RH-wjv"/>
                     </view>
@@ -118,7 +121,6 @@
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Pomodoro Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="liW-Ze-Ade">
                                 <rect key="frame" x="44" y="119" width="287" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
@@ -243,8 +245,9 @@
         <scene sceneID="YAb-mE-hff">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="E6s-Xj-VKL" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Pomodoro" id="Jg1-l1-5P4"/>
+                    <tabBarItem key="tabBarItem" title="Pomodoro" image="icons8-ios-filled-30" id="MSQ-ph-gI6"/>
                     <toolbarItems/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="nNo-NF-QeB">
                         <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -259,4 +262,7 @@
             <point key="canvasLocation" x="1250.4000000000001" y="-728.57142857142856"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="icons8-ios-filled-30" width="30" height="30"/>
+    </resources>
 </document>

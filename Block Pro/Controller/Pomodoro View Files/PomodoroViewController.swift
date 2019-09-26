@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import UserNotifications
 import iProgressHUD
 
 class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
@@ -20,7 +21,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     
     @IBOutlet weak var pomodoroCountAnimationView: UIView!
     @IBOutlet weak var pomodoroCountLabel: UILabel!
-    
     
     let defaults = UserDefaults.standard
     
@@ -35,11 +35,11 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     var pomodoroTimer: Timer?
     var sessionTracker: String = "none"
     
-    var pomodoroCount: Int = 4
-    var pomodoroMinutes: Int = 25
-    var pomodoroSeconds: Int = 10
+    var totalPomodoroCount: Int = 0
+    var pomodoroMinutes: Int = 0
+    var pomodoroSeconds: Int = 0
     
-    var currentPomodoro: Int = 0
+    var currentPomodoroCount: Int = 0
     
     var pomodoroCountStops: [CGFloat] = []
     
@@ -56,7 +56,9 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     var breakTask1: DispatchWorkItem?
     var breakTask2: DispatchWorkItem?
     
-    var pomodoroCountTracker: Int = 0
+    var pomodoroCountAnimationTracker: Int = 0
+    
+    var resumeFromBackground: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,45 +67,293 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         configurePomodoroProgressAnimation()
         configureiProgress()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(doStuff), name: UIApplication.willResignActiveNotification, object: nil)
+        //configurePomodoro()
         
+        //appDidBecomeActive()
         
+        NotificationCenter.default.addObserver(self, selector: #selector(configurePomodoro), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(appResignedActive), name: UIApplication.willResignActiveNotification, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
-        configurePomodoro()
+        configurePomodoro() // move later; clean this array when you move to be a protocol: pomodoroCountStops.removeAll(); reset pomodorostoptracker to 0
         configurePomodoroCountAnimation()
         
-        if pomodoroTimer != nil {
-            
-            let date = Date()
-            soundEffectTimer = Timer(fireAt: date, interval: 0, target: self, selector: #selector(playSoundEffect), userInfo: nil, repeats: false)
-            RunLoop.main.add(soundEffectTimer!, forMode: .common)
-        }
+        
+        print("view appeared")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         
+        appResignedActive()
+        
+//        soundEffectTimer?.invalidate()
+//
+//        guard audioPlayer != nil else { return }
+//            audioPlayer.stop()
+    }
+    
+    //MARK: - App Resigned Active Function
+    
+    @objc func appResignedActive () {
+        
+        print("app resigned active")
+
+        if pomodoroTimer?.isValid == true {
+            
+            //savePomodoroData()
+            scheduleNotification()
+            
+            timerStartedCount = 0
+        }
+            
+        else {
+            
+            print("checkersssshjdfmkf")
+            
+            if timerStartedCount > 0 {
+                
+                if sessionTracker == "5MinBreak" || sessionTracker == "30MinBreak" {
+                    
+                    //savePomodoroData()
+                    scheduleNotification()
+                    
+                    timerStartedCount = 0
+                }
+            }
+            
+            else {
+                
+                if sessionTracker == "5MinBreak" && pomodoroMinutes == 0 && pomodoroSeconds == 0 {
+                    
+                    sessionTracker = "session"
+                    soundEffectTracker = "Start Timer"
+                    
+                    timerStartedCount = 3
+                }
+                
+                
+            }
+            
+            //savePomodoroData()
+        }
+        
+        savePomodoroData()
+        
+//        timerStartedCount = 0
+        
+        sessionTask?.cancel()
+        breakTask1?.cancel()
+        breakTask2?.cancel()
+        
         soundEffectTimer?.invalidate()
+        pomodoroTimer?.invalidate()
+        progressShapeLayer.removeAllAnimations()
+        pomodoroProgressAnimationView.dismissProgress()
         
         guard audioPlayer != nil else { return }
             audioPlayer.stop()
     }
     
-    @objc func doStuff () {
+    //MARK: - App Did Become Active Function - to be replaced and deleted
+    
+    @objc func appDidBecomeActive () {
         
-        print("stuff")
-        soundEffectTimer?.invalidate()
+        print("app becoming active")
         
-        guard audioPlayer != nil else { return }
-            audioPlayer.stop()
+        if defaults.value(forKey: "pomodoroActive") as? Bool ?? false == true {
+            
+            print("check 1")
+            
+            let now = Date()
+            let pomodoroEndTime = defaults.value(forKey: "currentPomodoroEndTime") as? Date ?? now
+            
+            
+            if pomodoroEndTime > now {
+                
+                print("check 2")
+                
+                let calendar = Calendar.current
+                UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [defaults.value(forKey: "pomodoroNotificationID") as? String ?? ""])
+                
+                pomodoroMinutes = calendar.dateComponents([.minute], from: now, to: pomodoroEndTime).minute!
+                pomodoroSeconds = calendar.dateComponents([.second], from: now, to: pomodoroEndTime).second! % 60
+
+                //defaults.value(forKey: "pomodoroMinutes") as! Int * 60 - ((pomodoroMinutes * 60) + pomodoroSeconds)
+                
+                print(1.0 / (defaults.value(forKey: "pomodoroMinutes") as? Double ?? 25.0 * 60.0))
+                
+                let allProgressAnimationValues: Double = (defaults.value(forKey: "pomodoroMinutes") as? Double ?? 25.0 * 60.0)
+
+                let progressAnimationPart: Double = (1.0 / allProgressAnimationValues)
+
+                let pastProgressAnimationValues: Double = allProgressAnimationValues - (Double(pomodoroMinutes * 60) + Double(pomodoroSeconds))
+
+                print(progressAnimationPart * pastProgressAnimationValues)
+
+                progressBasicAnimation.duration = CFTimeInterval((pomodoroMinutes * 60) + pomodoroSeconds)
+                progressBasicAnimation.fillMode = CAMediaTimingFillMode.forwards
+                progressBasicAnimation.isRemovedOnCompletion = false
+
+                progressBasicAnimation.fromValue = progressAnimationPart * pastProgressAnimationValues
+                progressBasicAnimation.toValue = 1
+
+                progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+                
+                resumeSession()
+            }
+            
+            else {
+                
+                print("check 3")
+                
+                resumeFromBackground = true
+                
+                progressBasicAnimation.duration = 0
+                progressBasicAnimation.fillMode = CAMediaTimingFillMode.forwards
+                progressBasicAnimation.isRemovedOnCompletion = false
+                
+                play_pauseButton.frame = CGRect(x: play_pauseButton.frame.origin.x, y: 583, width: 110, height: 55)
+                stopButton.frame = CGRect(x: stopButton.frame.origin.x, y: 583, width: 110, height: 55)
+                
+                play_pauseButton.isEnabled = true
+                play_pauseButton.setTitle("Start", for: .normal)
+                
+                if currentPomodoroCount + 1 == totalPomodoroCount && sessionTracker == "session" {
+                    
+                    sessionTracker = "30MinBreak"
+                    soundEffectTracker = "Start Break"
+                    
+                    countDownLabel.text = "Start your 30 minute break"
+                    
+                    progressBasicAnimation.fromValue = 1
+                    progressBasicAnimation.toValue = 1
+                    
+                    animatePomodoroCount()
+                    
+                    progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+                }
+                
+                else if sessionTracker == "session" {
+                    
+                    countDownLabel.text = "Start your 5 minute break"
+                    
+                    sessionTracker = "5MinBreak"
+                    soundEffectTracker = "Start Break"
+                    
+                    progressBasicAnimation.fromValue = 1
+                    progressBasicAnimation.toValue = 1
+                    
+                    progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+                }
+                    
+                else if sessionTracker == "5MinBreak" {
+                    
+                    animatePomodoroCount()
+                    
+                    countDownLabel.text = "Start your next Pomodoro session"
+                    
+                    sessionTracker = "session"
+                    soundEffectTracker = "Start Timer"
+                    
+                    progressBasicAnimation.fromValue = 0
+                    progressBasicAnimation.toValue = 0
+                    
+                    progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+                }
+                
+                else if sessionTracker == "30MinBreak" {
+                    
+                    defaults.set(0, forKey: "currentPomodoro")
+                    configurePomodoro()
+                    
+                    countDownLabel.text = "Start A New Pomodoro"
+                    
+                    progressShapeLayer.removeAllAnimations()
+                    
+                    countShapeLayer.removeAllAnimations()
+                    pomodoroCountLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25)
+                    pomodoroCountLabel.text = "0"
+                    
+                    sessionTracker = "none"
+                    
+                    timerStartedCount = 3
+                    
+                    animateButton("shrink")
+                    
+                    play_pauseButton.setTitle("Start", for: .normal)
+                    
+                    endBreak {
+                        self.soundEffectTracker = ""
+                    }
+                }
+                
+            }
+        }
+        
+        else {
+            
+            play_pauseButton.frame = CGRect(x: play_pauseButton.frame.origin.x, y: 583, width: 110, height: 55)
+            stopButton.frame = CGRect(x: stopButton.frame.origin.x, y: 583, width: 110, height: 55)
+            
+            play_pauseButton.isEnabled = true
+            play_pauseButton.setTitle("Start", for: .normal)
+            
+            if sessionTracker == "session" {
+                
+                print("heloooo")
+                
+                resumeFromBackground = true
+                
+                pomodoroMinutes = 0//defaults.value(forKey: "pomodoroMinutes") as? Int ?? 25
+                pomodoroSeconds = 10
+                
+                countDownLabel.text = "Start your next Pomodoro session"
+                
+                progressBasicAnimation.duration = 0
+                progressBasicAnimation.fillMode = CAMediaTimingFillMode.forwards
+                progressBasicAnimation.isRemovedOnCompletion = false
+                
+                progressBasicAnimation.fromValue = 0
+                progressBasicAnimation.toValue = 0
+                
+                progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+                
+            }
+            
+            else if sessionTracker == "5MinBreak" || sessionTracker == "30MinBreak" {
+                
+                resumeFromBackground = true
+                
+                if sessionTracker == "5MinBreak" {
+                    countDownLabel.text = "Start your 5 minute break"
+                }
+                else {
+                    countDownLabel.text = "Start your 30 minute break"
+                }
+                
+                progressBasicAnimation.duration = 0
+                progressBasicAnimation.fillMode = CAMediaTimingFillMode.forwards
+                progressBasicAnimation.isRemovedOnCompletion = false
+                
+                progressBasicAnimation.fromValue = 1
+                progressBasicAnimation.toValue = 1
+                
+                progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+            }
+            
+        }
+    
     }
     
+    //MARK: - Configure View Function
     
     func configureView () {
         
-        view.backgroundColor = UIColor.flatMint.lighten(byPercentage: 0.25)
+        view.backgroundColor = UIColor.flatMint().lighten(byPercentage: 0.25)
+        
+        countDownLabel.adjustsFontSizeToFitWidth = true
         
         pomodoroProgressAnimationView.frame.origin.y += 40
         
@@ -113,9 +363,11 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         stopButton.layer.cornerRadius = 0.1 * stopButton.bounds.size.width
         stopButton.clipsToBounds = true
-        stopButton.backgroundColor = .flatRed
+        stopButton.backgroundColor = .flatRed()
         
     }
+    
+    //MARK: Configure Pomdooro Progress Animation Function
     
     func configurePomodoroProgressAnimation () {
         
@@ -145,6 +397,8 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         view.layer.addSublayer(progressShapeLayer)
     }
     
+    //MARK: - Configure iProgress Function
+    
     func configureiProgress () {
         
         let iProgress: iProgressHUD = iProgressHUD()
@@ -158,33 +412,267 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         iProgress.attachProgress(toView: pomodoroProgressAnimationView)
     }
     
-    func configurePomodoro () {
+    //MARK: - Configure Pomodoro Function
+    
+   @objc func configurePomodoro () {
         
-        if defaults.object(forKey: "pomodoroCustomized") as? Bool ?? false == true {
+        navigationItem.title = defaults.value(forKey: "pomodoroName") as? String ?? "Pomodoro"
+        
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [defaults.value(forKey: "pomodoroNotificationID") as? String ?? ""])
+        
+        totalPomodoroCount = defaults.value(forKey: "pomodoroCount") as? Int ?? 4
+        currentPomodoroCount = defaults.value(forKey: "currentPomodoro") as? Int ?? 0
+//        pomodoroMinutes = defaults.value(forKey: "pomodoroMinutes") as? Int ?? 25
+        //pomodoroSeconds = 10
+        
+    
+        if let pomodoroActive = defaults.value(forKey: "pomodoroActive") as? Bool {
             
-            print("cool")
+            if pomodoroActive == true {
+                
+                let now = Date()
+                let pomodoroEndTime = defaults.value(forKey: "currentPomodoroEndTime") as? Date ?? now
+                
+                if pomodoroEndTime > now {
+                    
+                    sessionTracker = defaults.value(forKey: "currentPomodoroSession") as? String ?? "none"
+                    soundEffectTracker = defaults.value(forKey: "currentPomodoroSoundEffect") as? String ?? ""
+                    timerStartedCount = 0
+                    
+                    let calendar = Calendar.current
+                    UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [defaults.value(forKey: "pomodoroNotificationID") as? String ?? ""])
+                    
+                    pomodoroMinutes = calendar.dateComponents([.minute], from: now, to: pomodoroEndTime).minute!
+                    pomodoroSeconds = calendar.dateComponents([.second], from: now, to: pomodoroEndTime).second! % 60
+                    
+                    pomodoroProgressAnimationView.updateIndicator(style: .ballScaleMultiple)
+                    
+                    self.play_pauseButton.frame = CGRect(x: self.play_pauseButton.frame.origin.x, y: 583, width: 130, height: 65)
+                    self.stopButton.frame = CGRect(x: self.stopButton.frame.origin.x, y: 590, width: 100, height: 50)
+                    
+                    resumeSession()
+                    
+                    configurePomodoroCountAnimation()
+                    
+                    if currentPomodoroCount > 0 {
+                        pomodoroCountAnimationTracker = currentPomodoroCount
+                        animatePomodoroCount()
+                    }
+                    
+                    //resumeSession()
+                    
+                }
+                
+                else {
+                    
+//                    totalPomodoroCount = defaults.value(forKey: "pomodoroCount") as? Int ?? 4
+//                    currentPomodoroCount = defaults.value(forKey: "currentPomodoro") as? Int ?? 0
+                    
+                    sessionTracker = defaults.value(forKey: "currentPomodoroSession") as? String ?? "none"
+                    
+                    resumeFromBackground = true
+                    
+                    timerStartedCount = 3
+                    
+                    progressBasicAnimation.duration = 0
+                    progressBasicAnimation.fillMode = CAMediaTimingFillMode.forwards
+                    progressBasicAnimation.isRemovedOnCompletion = false
+                    
+                    play_pauseButton.frame = CGRect(x: play_pauseButton.frame.origin.x, y: 583, width: 110, height: 55)
+                    stopButton.frame = CGRect(x: stopButton.frame.origin.x, y: 583, width: 110, height: 55)
+                    
+                    play_pauseButton.isEnabled = true
+                    play_pauseButton.setTitle("Start", for: .normal)
+                   
+                    if currentPomodoroCount + 1 == totalPomodoroCount && sessionTracker == "session" {
+                        
+                        sessionTracker = "30MinBreak"
+                        soundEffectTracker = "Start Break"
+                        
+                        countDownLabel.text = "Start your 30 minute break"
+                        
+                        progressBasicAnimation.fromValue = 1
+                        progressBasicAnimation.toValue = 1
+                        
+                        progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+                        
+                        configurePomodoroCountAnimation()
+                        
+                        if currentPomodoroCount > 0 {
+                            pomodoroCountAnimationTracker = currentPomodoroCount
+                        }
+                        
+                        animatePomodoroCount()
+                    }
+                    
+                    else if sessionTracker == "session" {
+                        
+                        countDownLabel.text = "Start your 5 minute break"
+                        
+                        sessionTracker = "5MinBreak"
+                        soundEffectTracker = "Start Break"
+                        
+                        progressBasicAnimation.fromValue = 1
+                        progressBasicAnimation.toValue = 1
+                        
+                        progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+                    }
+                    
+                    else if sessionTracker == "5MinBreak" {
+                        
+                        print("frzsxdrcfbhjnklm;',''klmjnbhgvcfdx")
+                        
+                        pomodoroMinutes = 0//defaults.value(forKey: "currentPomodoroMinutes") as? Int ?? 25
+                        pomodoroSeconds = 10
+                        
+                        countDownLabel.text = "Start your next Pomodoro session"
+                        
+                        sessionTracker = "session"
+                        soundEffectTracker = "Start Timer"
+                        
+                        progressBasicAnimation.fromValue = 0
+                        progressBasicAnimation.toValue = 0
+                        
+                        progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+                        
+                        configurePomodoroCountAnimation()
+                        
+                        if currentPomodoroCount > 0 {
+                            pomodoroCountAnimationTracker = currentPomodoroCount
+                            print("pomodoroCountAnimationTracker1", pomodoroCountAnimationTracker)
+                        }
+                        
+                        animatePomodoroCount()
+                        print("pomodoroCountAnimationTracker1", pomodoroCountAnimationTracker)
+                    }
+                    
+                    else if sessionTracker == "30MinBreak" {
+                        
+                        pomodoroMinutes = defaults.value(forKey: "currentPomodoroMinutes") as? Int ?? 25
+                        
+                        defaults.set(0, forKey: "currentPomodoro")
+                        //configurePomodoro()
+                        
+                        countDownLabel.text = "Start A New Pomodoro"
+                        
+                        progressShapeLayer.removeAllAnimations()
+                        
+                        countShapeLayer.removeAllAnimations()
+                        pomodoroCountLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25)
+                        pomodoroCountLabel.text = "0"
+                        
+                        sessionTracker = "none"
+                        
+                        timerStartedCount = 3
+                        
+                        animateButton("shrink")
+                        
+                        play_pauseButton.setTitle("Start", for: .normal)
+                        
+                        endBreak {
+                            self.soundEffectTracker = ""
+                        }
+                    }
+                    
+                    
+                }
             
-            navigationItem.title = defaults.object(forKey: "pomodoroName") as? String ?? "Pomodoro"
+                
+            }
             
-            pomodoroCount = defaults.object(forKey: "pomodoroCount") as? Int ?? 4
-            pomodoroMinutes = defaults.object(forKey: "pomodoroMinutes") as? Int ?? 25
-            
-            currentPomodoro = defaults.object(forKey: "currentPomdoro") as? Int ?? 0
+            else if pomodoroActive == false {
+                
+                print("pomodoro is not active")
+                
+                timerStartedCount = 3
+                
+                sessionTracker = defaults.value(forKey: "currentPomodoroSession") as? String ?? "none"
+                //soundEffectTracker = defaults.value(forKey: "currentPomodoroSoundEffect") as? String ?? ""
+                
+                play_pauseButton.frame = CGRect(x: play_pauseButton.frame.origin.x, y: 583, width: 110, height: 55)
+                stopButton.frame = CGRect(x: stopButton.frame.origin.x, y: 583, width: 110, height: 55)
+                
+                play_pauseButton.isEnabled = true
+                play_pauseButton.setTitle("Start", for: .normal)
+                
+                if sessionTracker == "session" {
+                    
+                    print("not active, session")
+                    
+                    resumeFromBackground = true
+                    
+                    pomodoroMinutes = 0//defaults.value(forKey: "pomodoroMinutes") as? Int ?? 25
+                    pomodoroSeconds = 10
+                    
+                    countDownLabel.text = "Start your next Pomodoro session"
+                    
+                    progressBasicAnimation.duration = 0
+                    progressBasicAnimation.fillMode = CAMediaTimingFillMode.forwards
+                    progressBasicAnimation.isRemovedOnCompletion = false
+
+                    progressBasicAnimation.fromValue = 0
+                    progressBasicAnimation.toValue = 0
+
+                    progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+                    
+                    configurePomodoroCountAnimation()
+                    
+                    //currentPomodoroCount -= 1
+                    pomodoroCountAnimationTracker = currentPomodoroCount
+                    
+                    if currentPomodoroCount > 0 {
+                        animatePomodoroCount()
+                    }
+                    
+                }
+                    
+                else if sessionTracker == "5MinBreak" || sessionTracker == "30MinBreak" {
+                    
+                    print("not active, break")
+                    
+                    resumeFromBackground = true
+                    
+                    if sessionTracker == "5MinBreak" {
+                        countDownLabel.text = "Start your 5 minute break"
+                    }
+                    else {
+                        countDownLabel.text = "Start your 30 minute break"
+                    }
+                    
+                    progressBasicAnimation.duration = 0
+                    progressBasicAnimation.fillMode = CAMediaTimingFillMode.forwards
+                    progressBasicAnimation.isRemovedOnCompletion = false
+                    
+                    progressBasicAnimation.fromValue = 1
+                    progressBasicAnimation.toValue = 1
+                    
+                    progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+                    
+                    configurePomodoroCountAnimation()
+                    
+                    if currentPomodoroCount > 0 {
+                        pomodoroCountAnimationTracker = currentPomodoroCount
+                    }
+                    
+                    animatePomodoroCount()
+                    
+                }
+                
+            }
         }
+        
         else {
             
-            navigationItem.title = "Pomodoro"
-            
-            pomodoroCount = 4
-            pomodoroMinutes = 25
-            currentPomodoro = defaults.object(forKey: "currentPomdoro") as? Int ?? 0
-            
+            pomodoroMinutes = 0//defaults.object(forKey: "currentPomodoroMinutes") as? Int ?? 25
+            pomodoroSeconds = 10
         }
         
-        print("count", pomodoroCount)
+        print("count", totalPomodoroCount)
         print("minutes", pomodoroMinutes)
         
     }
+    
+    //MARK: - Configure Pomodoro Count Animation
     
     func configurePomodoroCountAnimation () {
         
@@ -208,8 +696,8 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
 
         view.layer.addSublayer(countShapeLayer)
         
-        if currentPomodoro == 0 {
-            pomodoroCountLabel.textColor = UIColor.flatMint.lighten(byPercentage: 0.25)
+        if currentPomodoroCount == 0 {
+            pomodoroCountLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25)
         }
         else {
             pomodoroCountLabel.textColor = .white
@@ -217,13 +705,17 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         pomodoroCountStops.removeAll()
         
-        while count <= pomodoroCount {
+        print(totalPomodoroCount)
+        
+        while count <= totalPomodoroCount {
             
-            pomodoroCountStops.append(CGFloat((1.0 / Double(pomodoroCount)) * Double(count)))
+            pomodoroCountStops.append(CGFloat((1.0 / Double(totalPomodoroCount)) * Double(count)))
             count += 1
         }
         
     }
+    
+    //MARK: - Start Session Function
     
     func startSession () {
 
@@ -256,6 +748,8 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         play_pauseTracker = "pause"
     }
     
+    //MARK: - Pause Session Function
+    
     func pauseSession () {
         
         let pausedTime = progressShapeLayer.convertTime(CACurrentMediaTime(), from: nil)
@@ -273,6 +767,8 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         play_pauseTracker = "play"
     }
     
+    //MARK: - Resume Session Function
+    
     func resumeSession () {
         
         let pausedTime = progressShapeLayer.timeOffset
@@ -280,8 +776,27 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         progressShapeLayer.timeOffset = 0.0
         progressShapeLayer.beginTime = 0.0
         
+        let allProgressAnimationValues: Double = (defaults.value(forKey: "pomodoroMinutes") as? Double ?? 25.0 * 60.0)
+        
+        let progressAnimationPart: Double = (1.0 / allProgressAnimationValues)
+        
+        let pastProgressAnimationValues: Double = allProgressAnimationValues - (Double(pomodoroMinutes * 60) + Double(pomodoroSeconds))
+        
+        progressBasicAnimation.duration = CFTimeInterval((pomodoroMinutes * 60) + pomodoroSeconds)
+        progressBasicAnimation.fillMode = CAMediaTimingFillMode.forwards
+        progressBasicAnimation.isRemovedOnCompletion = false
+        
+        progressBasicAnimation.fromValue = progressAnimationPart * pastProgressAnimationValues
+        progressBasicAnimation.toValue = 1
+        
+        progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
+        
+        
+        
+        
+        
         //might be used to adjust the shapeLayer's position after a pause
-        //print(shapeLayer.presentation()?.value(forKey: "strokeEnd"))
+        //print("progressShapLayerPosition", progressShapeLayer.presentation()?.value(forKey: "strokeEnd"))
         
         pomodoroProgressAnimationView.showProgress()
 
@@ -301,6 +816,28 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         play_pauseTracker = "pause"
     }
     
+    //MARK: - Resume Session From Background
+    
+    func resumeSessionFromBackground () {
+        
+        if sessionTracker == "session" {
+            print("yessirirr")
+            pomodoroProgressAnimationView.updateIndicator(style: .ballScaleMultiple)
+            startSession()
+        }
+        
+        else if sessionTracker == "5MinBreak" || sessionTracker == "30MinBreak" {
+            
+            pomodoroProgressAnimationView.updateIndicator(style: .ballScale)
+            startBreak()
+        }
+        
+        play_pauseButton.setTitle("Resume", for: .normal)
+    }
+    
+    //MARK: - Stop Session Function
+    
+    #warning("reset defaults setting when a session is stopped")
     func stopSession () {
         
         countDownLabel.text = "Start Pomodoro"
@@ -309,14 +846,23 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         soundEffectTimer?.invalidate()
         
         sessionTracker = "none"
+        //soundEffectTracker = ""
         
-        pomodoroMinutes = 25
+        resumeFromBackground = false
+        
+        currentPomodoroCount = 0
+        defaults.set(0, forKey: "currentPomodoro")
+        
+        pomodoroMinutes = defaults.value(forKey: "pomodoroMinutes") as? Int ?? 25
         pomodoroSeconds = 0
         timerStartedCount = 3
         
         progressShapeLayer.removeAllAnimations()
-        
         pomodoroProgressAnimationView.dismissProgress()
+        
+        countShapeLayer.removeAllAnimations()
+        pomodoroCountLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25)
+        //pomodoroCountLabel.text = "0"
         
         play_pauseButton.setTitle("Start", for: .normal)
         
@@ -328,24 +874,27 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
             audioPlayer.stop()
     }
     
+    //MARK: - Start Break Function
+    
     @objc func startBreak () {
 
+        play_pauseButton.isEnabled = false
+        
         soundEffectTracker = "Start Break"
         playSoundEffect()
 
         timerStartedCount = 3
 
-        
         if sessionTracker == "5MinBreak" {
-            pomodoroMinutes = 5
-            pomodoroSeconds = 10
+            pomodoroMinutes = 0//5
+            pomodoroSeconds = 10//10
             
             progressBasicAnimation.fromValue = 1
             progressBasicAnimation.toValue = 0
             progressBasicAnimation.duration = 300
         }
         else if sessionTracker == "30MinBreak" {
-            pomodoroMinutes = 30
+            pomodoroMinutes = 0//30
             pomodoroSeconds = 10
             
             progressBasicAnimation.fromValue = 1
@@ -371,6 +920,8 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 8.75, execute: breakTask2!)
     }
     
+    //MARK: - End Break Function
+    
     func endBreak (completion: @escaping () -> ()) {
         
         pomodoroTimer?.invalidate()
@@ -393,13 +944,15 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         //completion()
     }
     
+    //MARK: - Count Down Function
+    
     @objc func countDown () {
         
         //If a session or a break has ended
         if pomodoroMinutes == 0 && pomodoroSeconds == 0 {
             
             //If this was the last Pomodoro before a 30 min break
-            if currentPomodoro + 1 == pomodoroCount && sessionTracker == "session" {
+            if currentPomodoroCount + 1 == totalPomodoroCount && sessionTracker == "session" {
                 
                 animatePomodoroCount()
                 
@@ -417,9 +970,11 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
             }
                 
             //If the final 30 min break just ended
-            else if currentPomodoro == pomodoroCount && sessionTracker == "30MinBreak" {
+            else if currentPomodoroCount == totalPomodoroCount && sessionTracker == "30MinBreak" {
                 
                 defaults.set(0, forKey: "currentPomodoro")
+                defaults.set(nil, forKey: "pomodoroActive")
+                
                 configurePomodoro()
                 
                 countDownLabel.text = "Start A New Pomodoro"
@@ -431,18 +986,22 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
                 pomodoroProgressAnimationView.dismissProgress()
                 
                 countShapeLayer.removeAllAnimations()
-                pomodoroCountLabel.textColor = UIColor.flatMint.lighten(byPercentage: 0.25)
+                pomodoroCountLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25)
                 pomodoroCountLabel.text = "0"
                 
                 sessionTracker = "none"
                 
                 timerStartedCount = 3
+                
+                pomodoroCountAnimationTracker = 0
 
                 animateButton("shrink")
 
                 play_pauseButton.setTitle("Start", for: .normal)
 
-                endBreak {}
+                endBreak {
+                    self.soundEffectTracker = ""
+                }
             }
             
             //If just a regular Pomodoro or break just ended
@@ -534,135 +1093,143 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
             //If the countDownLabel hasn't already counted down from 3
             else {
                 
+                play_pauseButton.isEnabled = false
                 countDownLabel.text = "\(timerStartedCount)"
                 timerStartedCount -= 1
             }
         }
     }
     
-    
+    //MARK: - Play Sound Effect Function
     
     @objc func playSoundEffect () {
         
-        print(soundEffectTracker)
-        
-        if soundEffectTracker == "Start Timer" {
-        
-            soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
+        if defaults.value(forKey: "playPomodoroSoundEffects") as? Bool ?? true == true {
             
-            do {
-                audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
-            }
+            print(soundEffectTracker)
             
-            catch {
-                print(error)
-            }
-            
-            audioPlayer.play()
-            
-            let calendar = Calendar.current
-            let startDate = Date()
-            let date = calendar.date(byAdding: .second, value: Int(audioPlayer!.duration), to: startDate)
-            
-            soundEffectTimer = Timer(fireAt: date ?? startDate, interval: 0, target: self, selector: #selector(playSoundEffect), userInfo: nil, repeats: false)
-            RunLoop.main.add(soundEffectTimer!, forMode: .common)
-            
-            soundEffectTracker = "Timer Running"
-        }
-        
-        else if soundEffectTracker == "Timer Running" {
-            
-            soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
-            
-            do {
-                audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
+            if soundEffectTracker == "Start Timer" {
+                
+                soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
+                
+                do {
+                    audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
+                }
+                    
+                catch {
+                    print(error)
+                }
+                
+                audioPlayer.play()
+                
+                let calendar = Calendar.current
+                let startDate = Date()
+                let date = calendar.date(byAdding: .second, value: Int(audioPlayer!.duration), to: startDate)
+                
+                soundEffectTimer = Timer(fireAt: date ?? startDate, interval: 0, target: self, selector: #selector(playSoundEffect), userInfo: nil, repeats: false)
+                RunLoop.main.add(soundEffectTimer!, forMode: .common)
+                
+                soundEffectTracker = "Timer Running"
             }
                 
-            catch {
-                print(error)
-            }
-            
-            audioPlayer.play()
-            
-            let calendar = Calendar.current
-            let startDate = Date()
-            let date = calendar.date(byAdding: .second, value: Int(audioPlayer!.duration), to: startDate)
-            
-            soundEffectTimer = Timer(fireAt: date ?? startDate, interval: audioPlayer.duration, target: self, selector: #selector(playSoundEffect), userInfo: nil, repeats: false)
-            RunLoop.main.add(soundEffectTimer!, forMode: .common)
-        }
-        
-        else if soundEffectTracker == "Start Break" {
-            
-            soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
-            
-            do {
-                audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
+            else if soundEffectTracker == "Timer Running" {
+                
+                soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
+                
+                do {
+                    audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
+                }
+                    
+                catch {
+                    print(error)
+                }
+                
+                audioPlayer.play()
+                
+                let calendar = Calendar.current
+                let startDate = Date()
+                let date = calendar.date(byAdding: .second, value: Int(audioPlayer!.duration), to: startDate)
+                
+                soundEffectTimer = Timer(fireAt: date ?? startDate, interval: audioPlayer.duration, target: self, selector: #selector(playSoundEffect), userInfo: nil, repeats: false)
+                RunLoop.main.add(soundEffectTimer!, forMode: .common)
             }
                 
-            catch {
-                print(error)
-            }
-            
-            audioPlayer.play()
-            
-            let calendar = Calendar.current
-            let startDate = Date()
-            let date = calendar.date(byAdding: .second, value: Int(audioPlayer!.duration) + 1, to: startDate)
-            
-            soundEffectTimer = Timer(fireAt: date ?? startDate, interval: 0, target: self, selector: #selector(playSoundEffect), userInfo: nil, repeats: false)
-            RunLoop.main.add(soundEffectTimer!, forMode: .common)
-            
-            soundEffectTracker = "Break Timer Running"
-        }
-        
-        else if soundEffectTracker == "Break Timer Running" {
-            
-            soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
-            
-            do {
-                audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
+            else if soundEffectTracker == "Start Break" {
+                
+                soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
+                
+                do {
+                    audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
+                }
+                    
+                catch {
+                    print(error)
+                }
+                
+                audioPlayer.play()
+                
+                let calendar = Calendar.current
+                let startDate = Date()
+                let date = calendar.date(byAdding: .second, value: Int(audioPlayer!.duration) + 1, to: startDate)
+                
+                soundEffectTimer = Timer(fireAt: date ?? startDate, interval: 0, target: self, selector: #selector(playSoundEffect), userInfo: nil, repeats: false)
+                RunLoop.main.add(soundEffectTimer!, forMode: .common)
+                
+                soundEffectTracker = "Break Timer Running"
             }
                 
-            catch {
-                print(error)
-            }
-            
-            audioPlayer.play()
-            
-            let calendar = Calendar.current
-            let startDate = Date()
-            let date = calendar.date(byAdding: .second, value: Int(audioPlayer!.duration), to: startDate)
-            
-            soundEffectTimer = Timer(fireAt: date ?? startDate, interval: audioPlayer.duration, target: self, selector: #selector(playSoundEffect), userInfo: nil, repeats: false)
-            RunLoop.main.add(soundEffectTimer!, forMode: .common)
-        }
-        
-        else if soundEffectTracker == "End Break" {
-            
-            soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
-            
-            do {
-                audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
+            else if soundEffectTracker == "Break Timer Running" {
+                
+                soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
+                
+                do {
+                    audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
+                }
+                    
+                catch {
+                    print(error)
+                }
+                
+                audioPlayer.play()
+                
+                let calendar = Calendar.current
+                let startDate = Date()
+                let date = calendar.date(byAdding: .second, value: Int(audioPlayer!.duration), to: startDate)
+                
+                soundEffectTimer = Timer(fireAt: date ?? startDate, interval: audioPlayer.duration, target: self, selector: #selector(playSoundEffect), userInfo: nil, repeats: false)
+                RunLoop.main.add(soundEffectTimer!, forMode: .common)
             }
                 
-            catch {
-                print(error)
+            else if soundEffectTracker == "End Break" {
+                
+                soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
+                
+                do {
+                    audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
+                }
+                    
+                catch {
+                    print(error)
+                }
+                
+                audioPlayer.play()
             }
-            
-            audioPlayer.play()
         }
+        
+
     }
+    
+    //MARK: - Animate Pomodoro Count
     
     func animatePomodoroCount () {
         
-        currentPomodoro += 1
+        currentPomodoroCount += 1
         
         UIView.animate(withDuration: 2, animations: {
-            self.pomodoroCountLabel.textColor = UIColor.flatMint.lighten(byPercentage: 0.25)
+            self.pomodoroCountLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25)
         }) { (finished: Bool) in
             
-            self.pomodoroCountLabel.text = "\(self.currentPomodoro)"
+            self.pomodoroCountLabel.text = "\(self.currentPomodoroCount)"
             
             UIView.animate(withDuration: 2, animations: {
                 self.pomodoroCountLabel.textColor = .white
@@ -678,25 +1245,113 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         if countBasicAnimation.fromValue == nil && countBasicAnimation.toValue == nil {
             
             countBasicAnimation.fromValue = 0
-            countBasicAnimation.toValue = pomodoroCountStops[pomodoroCountTracker]
+            countBasicAnimation.toValue = pomodoroCountStops[pomodoroCountAnimationTracker]
         }
             
         else if countBasicAnimation.fromValue as? CGFloat == 0 {
             
-            countBasicAnimation.fromValue = pomodoroCountStops[pomodoroCountTracker]
-            pomodoroCountTracker += 1
-            countBasicAnimation.toValue = pomodoroCountStops[pomodoroCountTracker]
+            countBasicAnimation.fromValue = pomodoroCountStops[pomodoroCountAnimationTracker]
+            pomodoroCountAnimationTracker += 1
+            countBasicAnimation.toValue = pomodoroCountStops[pomodoroCountAnimationTracker]
         }
         
         else {
            
-            countBasicAnimation.fromValue = pomodoroCountStops[pomodoroCountTracker]
-            pomodoroCountTracker += 1
-            countBasicAnimation.toValue = pomodoroCountStops[pomodoroCountTracker]
+            countBasicAnimation.fromValue = pomodoroCountStops[pomodoroCountAnimationTracker]
+            pomodoroCountAnimationTracker += 1
+            countBasicAnimation.toValue = pomodoroCountStops[pomodoroCountAnimationTracker]
         }
         
         countShapeLayer.add(countBasicAnimation, forKey: "countKey")
     }
+    
+    //MARK: - Save Pomodoro Data Function
+    
+    func savePomodoroData () {
+        
+        let date = Date()
+        let calendar = Calendar.current
+        var pomodoroEndTime: Date?
+        
+        pomodoroEndTime = calendar.date(byAdding: .minute, value: pomodoroMinutes, to: date)
+        pomodoroEndTime = calendar.date(byAdding: .second, value: pomodoroSeconds + timerStartedCount, to: pomodoroEndTime!)
+        
+        if pomodoroTimer?.isValid == true {
+            defaults.set(true, forKey: "pomodoroActive")
+        }
+        else {
+            
+            if sessionTracker == "5MinBreak" || sessionTracker == "30MinBreak" {
+                defaults.set(true, forKey: "pomodoroActive")
+            }
+            else {
+                defaults.set(false, forKey: "pomodoroActive")
+            }
+        }
+        
+        defaults.set(totalPomodoroCount, forKey: "totalPomodoroCount")
+        
+        defaults.set(currentPomodoroCount, forKey: "currentPomodoro")
+        //defaults.set(pomodoroMinutes, forKey: "currentPomodoroMinutes")
+        //defaults.set(pomodoroSeconds, forKey: "currentPomodoroSeconds")
+        defaults.set(pomodoroEndTime, forKey: "currentPomodoroEndTime")
+        
+        defaults.set(sessionTracker, forKey: "currentPomodoroSession")
+        defaults.set(soundEffectTracker, forKey: "currentPomodoroSoundEffect")
+        
+        
+        //defaults.setValue(navigationItem.title, forKey: "pomodoroName")
+        
+
+    }
+    
+    //MARK: - Schedule Notification Function
+    
+    func scheduleNotification () {
+        
+        let date = Date()
+        let calendar = Calendar.current
+        var notificationTime: Date?
+        
+        let content = UNMutableNotificationContent()
+        let trigger: UNCalendarNotificationTrigger
+        let request: UNNotificationRequest
+        
+        let notificationID = UUID().uuidString
+        
+        notificationTime = calendar.date(byAdding: .minute, value: pomodoroMinutes, to: date)
+        notificationTime = calendar.date(byAdding: .second, value: pomodoroSeconds + timerStartedCount, to: notificationTime!)
+        
+        if sessionTracker == "session" {
+            
+            content.title = "Time For A Break"
+            content.body = "Check in on Block Pro to start your break. You've earned it!!"
+        }
+        else if sessionTracker == "5MinBreak" {
+            
+            content.title = "Your 5 Minute Break's Up"
+            content.body = "Check in on Block Pro to start your next Pomodoro Session. Let's make it better than the last!!"
+            
+        }
+        else if sessionTracker == "30MinBreak" {
+            
+            content.title = "Your 30 Minute Break's Up"
+            content.title = "Great job completing a full Pomodoro. Check in on Block Pro to start another one!!"
+            
+        }
+        
+        content.sound = UNNotificationSound.default
+        
+        trigger = UNCalendarNotificationTrigger(dateMatching: calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: notificationTime!), repeats: false)
+        
+        request = UNNotificationRequest(identifier: notificationID, content: content, trigger: trigger)
+        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        
+        defaults.setValue(notificationID, forKey: "pomodoroNotificationID")
+        
+    }
+    
+    //MARK: - Animate Button Function
     
     func animateButton (_ animation: String) {
         
@@ -749,21 +1404,32 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
 
         animateButton("grow")
 
-        if sessionTracker == "none" {
-
-            play_pauseButton.isEnabled = false
-            startSession()
+        if resumeFromBackground == true {
+            
+            resumeSessionFromBackground()
+            resumeFromBackground = false
         }
-
-        else if play_pauseTracker == "pause" {
-
-            pauseSession()
+        
+        else {
+            
+            if sessionTracker == "none" {
+                
+                //play_pauseButton.isEnabled = false
+                startSession()
+            }
+                
+            else if play_pauseTracker == "pause" {
+                
+                pauseSession()
+            }
+                
+            else if play_pauseTracker == "play" {
+                
+                resumeSession()
+            }
         }
+        
 
-        else if play_pauseTracker == "play" {
-
-            resumeSession()
-        }
     }
     
     

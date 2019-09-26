@@ -32,7 +32,7 @@ class EditPomodoroViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = UIColor.flatMint.lighten(byPercentage: 0.25)
+        view.backgroundColor = UIColor.flatMint().lighten(byPercentage: 0.25)
         
         pomodoroLengthLabel.center = pomodoroLengthContainer.center
         decrementPomodoroLength.frame.origin = CGPoint(x: 15, y: pomodoroLengthContainer.center.y - 10)
@@ -58,29 +58,55 @@ class EditPomodoroViewController: UIViewController {
             }
         }
         
-        if pomodoroNameEntered == true || pomodoroMinutes != 25 || pomodoroCount != 4 {
-            
-            defaults.set(true, forKey: "pomodoroCustomized")
-            
-            if pomodoroNameEntered == true {
-                defaults.set(pomodoroNameTextField.text, forKey: "pomodoroName")
-            }
-            else {
-                defaults.set("Pomodoro", forKey: "pomodoroName")
-            }
-            
-            defaults.set(pomodoroMinutes, forKey: "pomodoroMinutes")
-            defaults.set(pomodoroCount, forKey: "pomodoroCount")
-            
-            navigationController?.popViewController(animated: true)
+        if pomodoroNameEntered == true {
+            defaults.set(pomodoroNameTextField.text, forKey: "pomodoroName")
         }
-            
         else {
-            
-            defaults.set(false, forKey: "pomodoroCustomized")
-            
-            navigationController?.popViewController(animated: true)
+            defaults.set(nil, forKey: "pomodoroName")
         }
+        
+        if pomodoroMinutes != 25 {
+            defaults.set(pomodoroMinutes, forKey: "pomodoroMinutes")
+        }
+        else {
+            defaults.set(nil, forKey: "pomodoroMinutes")
+        }
+        
+        if pomodoroCount != 4 {
+            defaults.set(pomodoroCount, forKey: "totalPomodoroCount")
+        }
+        else {
+            defaults.set(nil, forKey: "totalPomodoroCount")
+        }
+        
+        defaults.set(nil, forKey: "currentPomodoro")
+        
+        navigationController?.popViewController(animated: true)
+        
+//        if pomodoroNameEntered == true || pomodoroMinutes != 25 || pomodoroCount != 4 {
+//
+//            defaults.set(true, forKey: "pomodoroCustomized")
+//
+//            if pomodoroNameEntered == true {
+//                defaults.set(pomodoroNameTextField.text, forKey: "pomodoroName")
+//            }
+//            else {
+//                defaults.set("Pomodoro", forKey: "pomodoroName")
+//            }
+//
+//            defaults.set(pomodoroMinutes, forKey: "pomodoroMinutes")
+//            defaults.set(pomodoroCount, forKey: "pomodoroCount")
+//            defaults.set(nil, forKey: "currentPomodoro")
+//
+//            navigationController?.popViewController(animated: true)
+//        }
+//
+//        else {
+//
+//            defaults.set(false, forKey: "pomodoroCustomized")
+//
+//            navigationController?.popViewController(animated: true)
+//        }
         
     }
     

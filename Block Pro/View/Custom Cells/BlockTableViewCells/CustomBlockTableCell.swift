@@ -34,7 +34,7 @@ class CustomBlockTableCell: UITableViewCell {
         super.awakeFromNib()
         // Initialization code
         
-        cellContainerView.backgroundColor = UIColor.flatMint
+        cellContainerView.backgroundColor = UIColor.flatMint()
         cellContainerView.layer.cornerRadius = 0.05 * cellContainerView.bounds.size.width
         cellContainerView.clipsToBounds = true
         
@@ -49,15 +49,15 @@ class CustomBlockTableCell: UITableViewCell {
         //alphaView.layer.cornerRadius = 0.05 * alphaView.bounds.size.width
         alphaView.clipsToBounds = true
         
-        note1TextView.backgroundColor = UIColor.flatWhite
+        note1TextView.backgroundColor = UIColor.flatWhite()
         note1TextView.layer.cornerRadius = 0.05 * note1TextView.bounds.size.width
         note1TextView.clipsToBounds = true
         
-        note2TextView.backgroundColor = UIColor.flatWhite
+        note2TextView.backgroundColor = UIColor.flatWhite()
         note2TextView.layer.cornerRadius = 0.05 * note2TextView.bounds.size.width
         note2TextView.clipsToBounds = true
         
-        note3TextView.backgroundColor = UIColor.flatWhite
+        note3TextView.backgroundColor = UIColor.flatWhite()
         note3TextView.layer.cornerRadius = 0.05 * note3TextView.bounds.size.width
         note3TextView.clipsToBounds = true
         

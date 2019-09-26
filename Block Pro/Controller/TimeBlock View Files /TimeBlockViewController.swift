@@ -119,15 +119,15 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         monthlyContainer.layer.cornerRadius = 0.07 * monthlyContainer.bounds.size.width
         monthlyContainer.clipsToBounds = true
-        monthlyContainer.backgroundColor = UIColor.flatWhiteDark
+        monthlyContainer.backgroundColor = UIColor.flatWhiteDark()
         
         dailyContainer.layer.cornerRadius = 0.07 * dailyContainer.bounds.size.width
         dailyContainer.clipsToBounds = true
-        dailyContainer.backgroundColor = UIColor.flatPowderBlue.darken(byPercentage: 0.2)
+        dailyContainer.backgroundColor = UIColor.flatPowderBlue().darken(byPercentage: 0.2)
         
         weeklyContainer.layer.cornerRadius = 0.07 * weeklyContainer.bounds.size.width
         weeklyContainer.clipsToBounds = true
-        weeklyContainer.backgroundColor = UIColor.flatWhiteDark
+        weeklyContainer.backgroundColor = UIColor.flatWhiteDark()
         
         allBlockDates = realm.objects(TimeBlocksDate.self)
         
@@ -744,9 +744,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         //Changes the color of the buttons based to indicate a selection
-        dailyContainer.backgroundColor = UIColor.flatWhiteDark
-        weeklyContainer.backgroundColor = UIColor.flatWhiteDark
-        monthlyContainer.backgroundColor = UIColor.flatPowderBlue.darken(byPercentage: 0.2)
+        dailyContainer.backgroundColor = UIColor.flatWhiteDark()
+        weeklyContainer.backgroundColor = UIColor.flatWhiteDark()
+        monthlyContainer.backgroundColor = UIColor.flatPowderBlue().darken(byPercentage: 0.2)
         
         numberOfRows = 6 //Changes the number of rows for the calendar to 6
         calendarView.reloadData(withanchor: currentDate) //Reloads the calendar with the new date
@@ -804,9 +804,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         //Changes the color of the buttons based to indicate a selection
-        dailyContainer.backgroundColor = UIColor.flatWhiteDark
-        weeklyContainer.backgroundColor = UIColor.flatPowderBlue.darken(byPercentage: 0.2)
-        monthlyContainer.backgroundColor = UIColor.flatWhiteDark
+        dailyContainer.backgroundColor = UIColor.flatWhiteDark()
+        weeklyContainer.backgroundColor = UIColor.flatPowderBlue().darken(byPercentage: 0.2)
+        monthlyContainer.backgroundColor = UIColor.flatWhiteDark()
         
         numberOfRows = 1 //Changes the number of rows for the calendar to just 1
         calendarView.reloadData(withanchor: currentDate) //Reloads the calendar with the new date
@@ -862,9 +862,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         
         //Changes the color of the buttons based to indicate a selection
-        dailyContainer.backgroundColor = UIColor.flatPowderBlue.darken(byPercentage: 0.2)
-        weeklyContainer.backgroundColor = UIColor.flatWhiteDark
-        monthlyContainer.backgroundColor = UIColor.flatWhiteDark
+        dailyContainer.backgroundColor = UIColor.flatPowderBlue().darken(byPercentage: 0.2)
+        weeklyContainer.backgroundColor = UIColor.flatWhiteDark()
+        monthlyContainer.backgroundColor = UIColor.flatWhiteDark()
         
         //First, animate the calendar elements off the screen
         UIView.animate(withDuration: 0.2, animations: {
@@ -979,7 +979,7 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         
         guard let cell = view as? DateCell else { return }
             cell.dateLabel.text = cellState.text
-            cell.backgroundColor = UIColor.flatWhite
+        cell.backgroundColor = UIColor.flatWhite()
         
         handleCellTextColor(cell: cell, cellState: cellState)
         handleCellSelected(cell: cell, cellState: cellState)
@@ -1107,7 +1107,7 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
 
         let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "DateHeader", for: indexPath) as! DateHeader
         header.monthLabel.text = formatter.string(from: range.start)
-        header.backgroundColor = UIColor.flatWhiteDark
+        header.backgroundColor = UIColor.flatWhiteDark()
         return header
     }
 

@@ -102,11 +102,11 @@ class BlockPopoverViewController: UIViewController {
         exitButton.layer.cornerRadius = 0.5 * exitButton.bounds.size.width
         exitButton.clipsToBounds = true
         
-        editButton.backgroundColor = UIColor.flatWhite
+        editButton.backgroundColor = UIColor.flatWhite()
         editButton.layer.cornerRadius = 0.1 * editButton.bounds.size.width
         editButton.clipsToBounds = true
         
-        deleteButton.backgroundColor = UIColor.flatRed
+        deleteButton.backgroundColor = UIColor.flatRed()
         deleteButton.layer.cornerRadius = 0.1 * deleteButton.bounds.size.width
         deleteButton.clipsToBounds = true
     }

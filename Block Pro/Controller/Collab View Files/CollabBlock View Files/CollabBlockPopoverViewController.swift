@@ -147,11 +147,11 @@ class CollabBlockPopoverViewController: UIViewController {
         alphaView.layer.cornerRadius = 0.05 * alphaView.bounds.size.width
         alphaView.clipsToBounds = true
         
-        editButton.backgroundColor = UIColor.flatWhite
+        editButton.backgroundColor = UIColor.flatWhite()
         editButton.layer.cornerRadius = 0.1 * editButton.bounds.size.width
         editButton.clipsToBounds = true
         
-        deleteButton.backgroundColor = UIColor.flatRed
+        deleteButton.backgroundColor = UIColor.flatRed()
         deleteButton.layer.cornerRadius = 0.1 * deleteButton.bounds.size.width
         deleteButton.clipsToBounds = true
     }
