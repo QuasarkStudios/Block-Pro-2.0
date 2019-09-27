@@ -41,7 +41,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <action selector="stopAnimation:" destination="SQN-AH-eZQ" eventType="touchUpInside" id="6Vc-Ip-r8u"/>
+                                    <action selector="stopButton:" destination="SQN-AH-eZQ" eventType="touchUpInside" id="JRT-3t-sVa"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start Pomodoro" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uiU-Ov-WSw">
@@ -89,6 +89,11 @@
                         <viewLayoutGuide key="safeArea" id="tPf-RH-wjv"/>
                     </view>
                     <navigationItem key="navigationItem" title="Pomodoro" id="xr3-Ph-tjP">
+                        <barButtonItem key="leftBarButtonItem" title="New" id="gZS-b7-kh4">
+                            <connections>
+                                <action selector="newPomodoroButton:" destination="SQN-AH-eZQ" id="RTu-3g-WJf"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Edit" id="Rkv-3w-Zmr">
                             <connections>
                                 <action selector="editButton:" destination="SQN-AH-eZQ" id="ow5-qS-Av6"/>
@@ -245,7 +250,7 @@
         <scene sceneID="YAb-mE-hff">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="E6s-Xj-VKL" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Pomodoro" image="icons8-ios-filled-30" id="MSQ-ph-gI6"/>
+                    <tabBarItem key="tabBarItem" title="Pomodoro" image="icons8-ios-30" id="MSQ-ph-gI6"/>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="nNo-NF-QeB">
@@ -263,6 +268,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="icons8-ios-filled-30" width="30" height="30"/>
+        <image name="icons8-ios-30" width="30" height="30"/>
     </resources>
 </document>

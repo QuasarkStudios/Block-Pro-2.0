@@ -79,34 +79,10 @@ class EditPomodoroViewController: UIViewController {
             defaults.set(nil, forKey: "totalPomodoroCount")
         }
         
+        defaults.set(nil, forKey: "pomodoroActive")
         defaults.set(nil, forKey: "currentPomodoro")
         
         navigationController?.popViewController(animated: true)
-        
-//        if pomodoroNameEntered == true || pomodoroMinutes != 25 || pomodoroCount != 4 {
-//
-//            defaults.set(true, forKey: "pomodoroCustomized")
-//
-//            if pomodoroNameEntered == true {
-//                defaults.set(pomodoroNameTextField.text, forKey: "pomodoroName")
-//            }
-//            else {
-//                defaults.set("Pomodoro", forKey: "pomodoroName")
-//            }
-//
-//            defaults.set(pomodoroMinutes, forKey: "pomodoroMinutes")
-//            defaults.set(pomodoroCount, forKey: "pomodoroCount")
-//            defaults.set(nil, forKey: "currentPomodoro")
-//
-//            navigationController?.popViewController(animated: true)
-//        }
-//
-//        else {
-//
-//            defaults.set(false, forKey: "pomodoroCustomized")
-//
-//            navigationController?.popViewController(animated: true)
-//        }
         
     }
     
