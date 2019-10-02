@@ -16,10 +16,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RNp-xa-6TS">
-                                <rect key="frame" x="49" y="583" width="110" height="55"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RNp-xa-6TS">
+                                <rect key="frame" x="43" y="549" width="110" height="55"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="110" id="sTa-Cj-Rhk"/>
+                                    <constraint firstAttribute="height" constant="55" id="wRv-H0-GUT"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="17"/>
                                 <state key="normal" title="Start">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -28,14 +31,19 @@
                                     <action selector="play_pauseButton:" destination="SQN-AH-eZQ" eventType="touchUpInside" id="Hxv-Hc-5JD"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="onc-gJ-tJg">
-                                <rect key="frame" x="62" y="174" width="250" height="250"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="onc-gJ-tJg">
+                                <rect key="frame" x="63" y="200" width="249" height="250"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="250" id="tbL-3K-XKx"/>
+                                </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lia-3g-XVQ">
-                                <rect key="frame" x="229" y="583" width="110" height="55"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lia-3g-XVQ">
+                                <rect key="frame" x="222" y="549" width="110" height="55"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="55" id="PpA-nE-avw"/>
+                                    <constraint firstAttribute="width" constant="110" id="X20-mp-4lp"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="17"/>
                                 <state key="normal" title="Stop">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -56,33 +64,73 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2S1-JQ-Ms9">
-                                <rect key="frame" x="284" y="649" width="70" height="70"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sxy-Ry-keW">
+                                <rect key="frame" x="0.0" y="659" width="375" height="60"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HoG-JG-r3S">
-                                        <rect key="frame" x="7.6666666666666856" y="17.666666666666629" width="55" height="27.666666666666671"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2S1-JQ-Ms9">
+                                        <rect key="frame" x="315" y="5" width="50" height="50"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HoG-JG-r3S">
+                                                <rect key="frame" x="0.0" y="0.0" width="50" height="44"/>
+                                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="55" id="MCz-qt-iKz"/>
-                                            <constraint firstAttribute="height" constant="27.5" id="Ona-fa-OPG"/>
+                                            <constraint firstItem="HoG-JG-r3S" firstAttribute="top" secondItem="2S1-JQ-Ms9" secondAttribute="top" id="6kg-dm-iCN"/>
+                                            <constraint firstAttribute="width" constant="50" id="78E-RU-iJq"/>
+                                            <constraint firstItem="HoG-JG-r3S" firstAttribute="leading" secondItem="2S1-JQ-Ms9" secondAttribute="leading" id="90S-3S-zTu"/>
+                                            <constraint firstAttribute="trailing" secondItem="HoG-JG-r3S" secondAttribute="trailing" id="ctF-2V-9Wo"/>
+                                            <constraint firstAttribute="bottom" secondItem="HoG-JG-r3S" secondAttribute="bottom" constant="6" id="dM5-hv-BhH"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iQH-zn-HyT">
+                                        <rect key="frame" x="12.666666666666657" y="7.6666666666666288" width="290" height="45"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bmv-ca-KcT">
+                                                <rect key="frame" x="0.0" y="0.0" width="290" height="40"/>
+                                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="25"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="bmv-ca-KcT" secondAttribute="bottom" constant="5" id="BC0-Kq-OC6"/>
+                                            <constraint firstItem="bmv-ca-KcT" firstAttribute="top" secondItem="iQH-zn-HyT" secondAttribute="top" id="U8F-ZO-PQS"/>
+                                            <constraint firstItem="bmv-ca-KcT" firstAttribute="leading" secondItem="iQH-zn-HyT" secondAttribute="leading" id="a9N-Hk-aVl"/>
+                                            <constraint firstAttribute="trailing" secondItem="bmv-ca-KcT" secondAttribute="trailing" id="uic-5f-H88"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="70" id="UHz-Xg-M1q"/>
-                                    <constraint firstItem="HoG-JG-r3S" firstAttribute="centerX" secondItem="2S1-JQ-Ms9" secondAttribute="centerX" id="W8g-Pg-i7Z"/>
-                                    <constraint firstItem="HoG-JG-r3S" firstAttribute="centerY" secondItem="2S1-JQ-Ms9" secondAttribute="centerY" constant="-3.5" id="anb-vL-bF6"/>
-                                    <constraint firstAttribute="height" constant="70" id="siH-el-TtF"/>
+                                    <constraint firstAttribute="trailing" secondItem="2S1-JQ-Ms9" secondAttribute="trailing" constant="10" id="7jd-HM-kb3"/>
+                                    <constraint firstItem="2S1-JQ-Ms9" firstAttribute="leading" secondItem="iQH-zn-HyT" secondAttribute="trailing" constant="12.5" id="MYv-E3-jCH"/>
+                                    <constraint firstItem="iQH-zn-HyT" firstAttribute="leading" secondItem="Sxy-Ry-keW" secondAttribute="leading" constant="12.5" id="VN2-gS-ux9"/>
+                                    <constraint firstItem="iQH-zn-HyT" firstAttribute="top" secondItem="Sxy-Ry-keW" secondAttribute="top" constant="7.5" id="bHW-Fw-qgK"/>
+                                    <constraint firstAttribute="bottom" secondItem="iQH-zn-HyT" secondAttribute="bottom" constant="7.5" id="bz0-Lb-HCh"/>
+                                    <constraint firstAttribute="height" constant="60" id="c0n-sO-AZa"/>
+                                    <constraint firstItem="2S1-JQ-Ms9" firstAttribute="top" secondItem="Sxy-Ry-keW" secondAttribute="top" constant="5" id="dpn-Qu-vXf"/>
+                                    <constraint firstAttribute="bottom" secondItem="2S1-JQ-Ms9" secondAttribute="bottom" constant="5" id="hvs-g2-VUD"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.89019607840000003" green="0.36470588240000001" blue="0.35686274509999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="tPf-RH-wjv" firstAttribute="bottom" secondItem="2S1-JQ-Ms9" secondAttribute="bottom" constant="10" id="GE8-zv-dOG"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="2S1-JQ-Ms9" secondAttribute="trailing" constant="5" id="QNQ-Kk-ZUE"/>
+                            <constraint firstItem="Sxy-Ry-keW" firstAttribute="top" secondItem="lia-3g-XVQ" secondAttribute="bottom" constant="55" id="BKR-uj-CZf"/>
+                            <constraint firstItem="tPf-RH-wjv" firstAttribute="trailing" secondItem="onc-gJ-tJg" secondAttribute="trailing" constant="63" id="DqN-jO-bHb"/>
+                            <constraint firstAttribute="trailing" secondItem="Sxy-Ry-keW" secondAttribute="trailing" id="IvE-dS-8YG"/>
+                            <constraint firstItem="Sxy-Ry-keW" firstAttribute="top" secondItem="RNp-xa-6TS" secondAttribute="bottom" constant="55" id="MtM-Us-DQ4"/>
                             <constraint firstItem="uiU-Ov-WSw" firstAttribute="top" secondItem="tPf-RH-wjv" secondAttribute="top" constant="35" id="SIN-lr-Mod"/>
+                            <constraint firstItem="tPf-RH-wjv" firstAttribute="trailing" secondItem="lia-3g-XVQ" secondAttribute="trailing" constant="43" id="Srr-o9-3Q3"/>
+                            <constraint firstItem="Sxy-Ry-keW" firstAttribute="leading" secondItem="tPf-RH-wjv" secondAttribute="leading" id="Txw-Tp-KCK"/>
+                            <constraint firstItem="RNp-xa-6TS" firstAttribute="leading" secondItem="tPf-RH-wjv" secondAttribute="leading" constant="43" id="bdT-xb-bhw"/>
+                            <constraint firstItem="tPf-RH-wjv" firstAttribute="bottom" secondItem="Sxy-Ry-keW" secondAttribute="bottom" constant="10" id="bgL-4c-nZs"/>
+                            <constraint firstItem="onc-gJ-tJg" firstAttribute="top" secondItem="uiU-Ov-WSw" secondAttribute="bottom" constant="35" id="dyu-2b-PvP"/>
+                            <constraint firstItem="onc-gJ-tJg" firstAttribute="leading" secondItem="tPf-RH-wjv" secondAttribute="leading" constant="63" id="fL8-Kv-zDc"/>
                             <constraint firstItem="tPf-RH-wjv" firstAttribute="trailing" secondItem="uiU-Ov-WSw" secondAttribute="trailing" constant="10" id="h7i-10-nQu"/>
                             <constraint firstItem="uiU-Ov-WSw" firstAttribute="leading" secondItem="tPf-RH-wjv" secondAttribute="leading" constant="10" id="ysV-e4-DlK"/>
                         </constraints>
@@ -103,11 +151,25 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="countDownLabel" destination="uiU-Ov-WSw" id="i0g-Zh-ERD"/>
+                        <outlet property="countDownLabelTopAnchor" destination="SIN-lr-Mod" id="LCX-uh-Uvf"/>
                         <outlet property="play_pauseButton" destination="RNp-xa-6TS" id="Gcb-4p-UbL"/>
+                        <outlet property="play_pauseButtonBottomAnchor" destination="MtM-Us-DQ4" id="9rV-8Y-swL"/>
+                        <outlet property="play_pauseButtonHeightConstraint" destination="wRv-H0-GUT" id="6h8-Z6-lVI"/>
+                        <outlet property="play_pauseButtonLeadingAnchor" destination="bdT-xb-bhw" id="qtA-by-ZMO"/>
+                        <outlet property="play_pauseButtonWidthConstraint" destination="sTa-Cj-Rhk" id="LxC-ey-4Y4"/>
                         <outlet property="pomodoroCountAnimationView" destination="2S1-JQ-Ms9" id="8YW-Iq-Ikq"/>
                         <outlet property="pomodoroCountLabel" destination="HoG-JG-r3S" id="Wo7-3C-gNF"/>
                         <outlet property="pomodoroProgressAnimationView" destination="onc-gJ-tJg" id="JqQ-Hp-qRP"/>
+                        <outlet property="progressAnimationViewHeightConstraint" destination="tbL-3K-XKx" id="fc2-ki-e8a"/>
+                        <outlet property="progressAnimationViewTopAnchor" destination="dyu-2b-PvP" id="PPT-EB-kxa"/>
+                        <outlet property="sessionInfoContainer" destination="Sxy-Ry-keW" id="4vc-DK-MPV"/>
+                        <outlet property="sessionLabel" destination="bmv-ca-KcT" id="Rob-up-hqv"/>
+                        <outlet property="sessionLabelContainer" destination="iQH-zn-HyT" id="gvH-Fw-UDB"/>
                         <outlet property="stopButton" destination="lia-3g-XVQ" id="bbg-60-xUF"/>
+                        <outlet property="stopButtonBottomAnchor" destination="BKR-uj-CZf" id="jAJ-Q5-ILf"/>
+                        <outlet property="stopButtonHeightConstraint" destination="PpA-nE-avw" id="6AF-lo-h65"/>
+                        <outlet property="stopButtonTrailingAnchor" destination="Srr-o9-3Q3" id="ll2-Z9-UAK"/>
+                        <outlet property="stopButtonWidthConstraint" destination="X20-mp-4lp" id="QBF-Ba-lTb"/>
                         <segue destination="Hhe-MH-Gtd" kind="show" identifier="moveToEditView" id="Pdr-XA-Azq"/>
                     </connections>
                 </viewController>
@@ -123,103 +185,150 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Pomodoro Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="liW-Ze-Ade">
-                                <rect key="frame" x="44" y="119" width="287" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Pomodoro Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="liW-Ze-Ade">
+                                <rect key="frame" x="45" y="118" width="285" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Qvm-CF-oga"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
+                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
                             </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Pomodoro Count:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bUB-5f-Mqo">
-                                <rect key="frame" x="112" y="322" width="151" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pomodoro Count:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bUB-5f-Mqo">
+                                <rect key="frame" x="112" y="311" width="151" height="28.333333333333314"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="151" id="7bm-ob-Krb"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="20"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Pomodoro Length:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1DZ-sf-LGv">
-                                <rect key="frame" x="107" y="182" width="161" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pomodoro Length:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1DZ-sf-LGv">
+                                <rect key="frame" x="107" y="173" width="161" height="28"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="161" id="IAB-4P-Hys"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="20"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bb2-vO-UMZ">
-                                <rect key="frame" x="0.0" y="236" width="375" height="60"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bb2-vO-UMZ">
+                                <rect key="frame" x="0.0" y="226" width="375" height="60"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="25:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Gj-fh-C6l">
+                                        <rect key="frame" x="145" y="17.666666666666657" width="85" height="25"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="85" id="a4b-hV-uxP"/>
+                                            <constraint firstAttribute="height" constant="25" id="wYb-FR-ecE"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="28"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VXF-vO-FQV">
+                                        <rect key="frame" x="310" y="17.666666666666657" width="50" height="25"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="25" id="EeA-GQ-wom"/>
+                                            <constraint firstAttribute="width" constant="50" id="JMl-9D-BMd"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
+                                        <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
+                                        <state key="normal" title="+"/>
+                                        <connections>
+                                            <action selector="incrementPomodoroLength:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="KiN-vs-d7R"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u32-o7-Y8E">
+                                        <rect key="frame" x="15" y="17.666666666666657" width="50" height="25"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="25" id="92A-fH-B8h"/>
+                                            <constraint firstAttribute="width" constant="50" id="plh-R8-4th"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
+                                        <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
+                                        <state key="normal" title="-"/>
+                                        <connections>
+                                            <action selector="decrementPomodoroLength:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="Wod-4K-YUq"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstItem="u32-o7-Y8E" firstAttribute="centerY" secondItem="bb2-vO-UMZ" secondAttribute="centerY" id="0mm-mh-sih"/>
+                                    <constraint firstItem="VXF-vO-FQV" firstAttribute="centerY" secondItem="bb2-vO-UMZ" secondAttribute="centerY" id="Cjc-bb-PJK"/>
+                                    <constraint firstItem="u32-o7-Y8E" firstAttribute="leading" secondItem="bb2-vO-UMZ" secondAttribute="leading" constant="15" id="EwF-kc-m9G"/>
+                                    <constraint firstItem="2Gj-fh-C6l" firstAttribute="centerY" secondItem="bb2-vO-UMZ" secondAttribute="centerY" id="YlL-dT-eIE"/>
                                     <constraint firstAttribute="height" constant="60" id="f8p-Qw-KEa"/>
+                                    <constraint firstItem="2Gj-fh-C6l" firstAttribute="centerX" secondItem="bb2-vO-UMZ" secondAttribute="centerX" id="gen-x6-kA8"/>
+                                    <constraint firstAttribute="trailing" secondItem="VXF-vO-FQV" secondAttribute="trailing" constant="15" id="q4y-Md-z21"/>
                                 </constraints>
                             </view>
-                            <view alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ksj-h2-8I8">
-                                <rect key="frame" x="0.0" y="376" width="375" height="60"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ksj-h2-8I8">
+                                <rect key="frame" x="0.0" y="364.33333333333331" width="375" height="60"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FXf-dL-5rw">
+                                        <rect key="frame" x="167.66666666666666" y="11.666666666666686" width="40" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="5TW-BT-OwY"/>
+                                            <constraint firstAttribute="width" constant="40" id="qry-H5-eEq"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="28"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1eh-86-5AN">
+                                        <rect key="frame" x="310" y="17.666666666666686" width="50" height="25"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="2LY-wR-sQB"/>
+                                            <constraint firstAttribute="height" constant="25" id="ujK-qs-v2R"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
+                                        <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
+                                        <state key="normal" title="+"/>
+                                        <connections>
+                                            <action selector="incrementPomodoroCount:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="Vpg-IP-Z4B"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GG2-VB-0N1">
+                                        <rect key="frame" x="15" y="17.666666666666686" width="50" height="25"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="50" id="fLs-5L-E8J"/>
+                                            <constraint firstAttribute="height" constant="25" id="l2g-Tw-EGW"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
+                                        <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
+                                        <state key="normal" title="-"/>
+                                        <connections>
+                                            <action selector="decrementPomodoroCount:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="fQ3-gs-3IQ"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
+                                    <constraint firstItem="GG2-VB-0N1" firstAttribute="centerY" secondItem="Ksj-h2-8I8" secondAttribute="centerY" id="R0r-cx-d8o"/>
+                                    <constraint firstItem="GG2-VB-0N1" firstAttribute="leading" secondItem="Ksj-h2-8I8" secondAttribute="leading" constant="15" id="Tl4-Tc-plz"/>
+                                    <constraint firstAttribute="trailing" secondItem="1eh-86-5AN" secondAttribute="trailing" constant="15" id="XvO-5F-xLZ"/>
+                                    <constraint firstItem="FXf-dL-5rw" firstAttribute="centerY" secondItem="Ksj-h2-8I8" secondAttribute="centerY" constant="-3.5" id="emS-qj-Qlx"/>
                                     <constraint firstAttribute="height" constant="60" id="lz1-f9-b7j"/>
+                                    <constraint firstItem="1eh-86-5AN" firstAttribute="centerY" secondItem="Ksj-h2-8I8" secondAttribute="centerY" id="o6G-vb-dhP"/>
+                                    <constraint firstItem="FXf-dL-5rw" firstAttribute="centerX" secondItem="Ksj-h2-8I8" secondAttribute="centerX" id="wIx-TK-VrC"/>
                                 </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u32-o7-Y8E">
-                                <rect key="frame" x="16" y="250" width="52" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
-                                <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
-                                <state key="normal" title="-"/>
-                                <connections>
-                                    <action selector="decrementPomodoroLength:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="Wod-4K-YUq"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="25:00" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Gj-fh-C6l">
-                                <rect key="frame" x="106" y="250" width="162" height="26"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="28"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VXF-vO-FQV">
-                                <rect key="frame" x="306" y="250" width="53" height="27"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
-                                <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
-                                <state key="normal" title="+"/>
-                                <connections>
-                                    <action selector="incrementPomodoroLength:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="KiN-vs-d7R"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GG2-VB-0N1">
-                                <rect key="frame" x="33" y="385" width="52" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
-                                <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
-                                <state key="normal" title="-"/>
-                                <connections>
-                                    <action selector="decrementPomodoroCount:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="fQ3-gs-3IQ"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1eh-86-5AN">
-                                <rect key="frame" x="322" y="385" width="52" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="30"/>
-                                <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="0.0" maxY="10"/>
-                                <state key="normal" title="+"/>
-                                <connections>
-                                    <action selector="incrementPomodoroCount:" destination="Hhe-MH-Gtd" eventType="touchUpInside" id="Vpg-IP-Z4B"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="4" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FXf-dL-5rw">
-                                <rect key="frame" x="125" y="385" width="124" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="ChalkboardSE-Regular" family="Chalkboard SE" pointSize="28"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.89019607840000003" green="0.36470588240000001" blue="0.35686274509999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Ksj-h2-8I8" firstAttribute="leading" secondItem="cbW-hq-IpB" secondAttribute="leading" id="13e-yX-Ede"/>
-                            <constraint firstItem="bb2-vO-UMZ" firstAttribute="top" secondItem="Kx6-iy-j1Y" secondAttribute="top" constant="236" id="5AQ-sO-fTu"/>
+                            <constraint firstItem="liW-Ze-Ade" firstAttribute="top" secondItem="cbW-hq-IpB" secondAttribute="top" constant="30" id="E0Z-zW-J2K"/>
+                            <constraint firstItem="bb2-vO-UMZ" firstAttribute="top" secondItem="1DZ-sf-LGv" secondAttribute="bottom" constant="25" id="NyX-Kz-tEP"/>
+                            <constraint firstItem="1DZ-sf-LGv" firstAttribute="centerX" secondItem="Kx6-iy-j1Y" secondAttribute="centerX" id="PZQ-WE-KcV"/>
+                            <constraint firstItem="Ksj-h2-8I8" firstAttribute="top" secondItem="bUB-5f-Mqo" secondAttribute="bottom" constant="25" id="Ybc-1m-rRi"/>
+                            <constraint firstItem="bUB-5f-Mqo" firstAttribute="centerX" secondItem="Kx6-iy-j1Y" secondAttribute="centerX" id="e8G-Tf-95n"/>
                             <constraint firstItem="bb2-vO-UMZ" firstAttribute="trailing" secondItem="cbW-hq-IpB" secondAttribute="trailing" id="emo-Wz-HWn"/>
                             <constraint firstItem="bb2-vO-UMZ" firstAttribute="leading" secondItem="cbW-hq-IpB" secondAttribute="leading" id="mML-Jh-e22"/>
                             <constraint firstItem="Ksj-h2-8I8" firstAttribute="trailing" secondItem="cbW-hq-IpB" secondAttribute="trailing" id="maX-k8-g0x"/>
-                            <constraint firstItem="Ksj-h2-8I8" firstAttribute="top" secondItem="Kx6-iy-j1Y" secondAttribute="top" constant="376" id="veH-dm-Y1I"/>
+                            <constraint firstItem="1DZ-sf-LGv" firstAttribute="top" secondItem="liW-Ze-Ade" secondAttribute="bottom" constant="25" id="qf0-uL-WjZ"/>
+                            <constraint firstItem="bUB-5f-Mqo" firstAttribute="top" secondItem="bb2-vO-UMZ" secondAttribute="bottom" constant="25" id="uvI-e4-tW7"/>
+                            <constraint firstItem="cbW-hq-IpB" firstAttribute="trailing" secondItem="liW-Ze-Ade" secondAttribute="trailing" constant="45" id="vhc-zg-civ"/>
+                            <constraint firstItem="liW-Ze-Ade" firstAttribute="leading" secondItem="cbW-hq-IpB" secondAttribute="leading" constant="45" id="ztY-TC-ygy"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="cbW-hq-IpB"/>
                     </view>
@@ -231,14 +340,22 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="countContainerHeightConstraint" destination="lz1-f9-b7j" id="c5I-0k-cs8"/>
+                        <outlet property="countContainerTopAnchor" destination="Ybc-1m-rRi" id="46m-G9-KUH"/>
+                        <outlet property="countLabelTopAnchor" destination="uvI-e4-tW7" id="VTC-xo-scb"/>
                         <outlet property="decrementPomodoroCount" destination="GG2-VB-0N1" id="bxG-zv-RjW"/>
                         <outlet property="decrementPomodoroLength" destination="u32-o7-Y8E" id="SfU-SK-fCX"/>
                         <outlet property="incrementPomodoroCount" destination="1eh-86-5AN" id="M2o-3n-Dku"/>
                         <outlet property="incrementPomodoroLength" destination="VXF-vO-FQV" id="efl-y3-up6"/>
+                        <outlet property="lengthContainerHeightConstraint" destination="f8p-Qw-KEa" id="KGy-Ce-KCb"/>
+                        <outlet property="lengthContainerTopAnchor" destination="NyX-Kz-tEP" id="we6-48-nrq"/>
+                        <outlet property="lengthLabelTopAnchor" destination="qf0-uL-WjZ" id="aD7-qc-0Vh"/>
+                        <outlet property="nameTextFieldTopAnchor" destination="E0Z-zW-J2K" id="r6W-HH-Bwh"/>
                         <outlet property="pomodoroCountContainer" destination="Ksj-h2-8I8" id="Urd-rx-zRx"/>
                         <outlet property="pomodoroCountLabel" destination="FXf-dL-5rw" id="M39-GH-W3B"/>
                         <outlet property="pomodoroLengthContainer" destination="bb2-vO-UMZ" id="jZ2-ab-K1I"/>
                         <outlet property="pomodoroLengthLabel" destination="2Gj-fh-C6l" id="jck-cF-5CM"/>
+                        <outlet property="pomodoroLengthLabelCenterY" destination="YlL-dT-eIE" id="6zf-0g-0it"/>
                         <outlet property="pomodoroNameTextField" destination="liW-Ze-Ade" id="0Vm-ty-crV"/>
                     </connections>
                 </viewController>
