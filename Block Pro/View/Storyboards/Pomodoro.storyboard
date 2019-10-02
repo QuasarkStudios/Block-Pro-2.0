@@ -52,7 +52,7 @@
                                     <action selector="stopButton:" destination="SQN-AH-eZQ" eventType="touchUpInside" id="JRT-3t-sVa"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start Pomodoro" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uiU-Ov-WSw">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start A Pomodoro" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uiU-Ov-WSw">
                                 <rect key="frame" x="10" y="123" width="355" height="42"/>
                                 <accessibility key="accessibilityConfiguration">
                                     <accessibilityTraits key="traits" staticText="YES" updatesFrequently="YES"/>
@@ -137,9 +137,9 @@
                         <viewLayoutGuide key="safeArea" id="tPf-RH-wjv"/>
                     </view>
                     <navigationItem key="navigationItem" title="Pomodoro" id="xr3-Ph-tjP">
-                        <barButtonItem key="leftBarButtonItem" title="New" id="gZS-b7-kh4">
+                        <barButtonItem key="leftBarButtonItem" title="Reset" id="gZS-b7-kh4">
                             <connections>
-                                <action selector="newPomodoroButton:" destination="SQN-AH-eZQ" id="RTu-3g-WJf"/>
+                                <action selector="resetPomodoroButton:" destination="SQN-AH-eZQ" id="Ulg-P5-Wr0"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" title="Edit" id="Rkv-3w-Zmr">

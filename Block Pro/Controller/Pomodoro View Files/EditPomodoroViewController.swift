@@ -13,12 +13,10 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var pomodoroNameTextField: UITextField!
     @IBOutlet weak var nameTextFieldTopAnchor: NSLayoutConstraint!
     
-    @IBOutlet weak var pomodoroLengthLabel: UILabel!
-    @IBOutlet weak var pomodoroLengthLabelCenterY: NSLayoutConstraint!
-    
-    
     @IBOutlet weak var lengthLabelTopAnchor: NSLayoutConstraint!
     
+    @IBOutlet weak var pomodoroLengthLabel: UILabel!
+    @IBOutlet weak var pomodoroLengthLabelCenterY: NSLayoutConstraint!
     
     @IBOutlet weak var pomodoroLengthContainer: UIView!
     @IBOutlet weak var lengthContainerTopAnchor: NSLayoutConstraint!
@@ -30,11 +28,9 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var pomodoroCountLabel: UILabel!
     @IBOutlet weak var countLabelTopAnchor: NSLayoutConstraint!
     
-    
     @IBOutlet weak var pomodoroCountContainer: UIView!
     @IBOutlet weak var countContainerTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var countContainerHeightConstraint: NSLayoutConstraint!
-    
     
     @IBOutlet weak var decrementPomodoroCount: UIButton!
     @IBOutlet weak var incrementPomodoroCount: UIButton!
@@ -49,19 +45,18 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        pomodoroNameTextField.delegate = self
-        
-
-        
-        view.backgroundColor = UIColor.flatMint().lighten(byPercentage: 0.25)
-        
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        
-        view.addGestureRecognizer(tap)
-        
         configureConstraints()
         
+        pomodoroNameTextField.delegate = self
+    
+        //Setting background colors
+        view.backgroundColor = UIColor.flatMint().lighten(byPercentage: 0.25)
+        pomodoroLengthContainer.backgroundColor = UIColor.white.withAlphaComponent(0.65)
+        pomodoroCountContainer.backgroundColor = UIColor.white.withAlphaComponent(0.65)
         
+        //Adding a tap gesture recognizer to the view to dismiss the keyboard
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        view.addGestureRecognizer(tap)
     }
     
     func configureConstraints () {
@@ -88,7 +83,6 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
             pomodoroLengthLabel.font = UIFont(name: "ChalkboardSE-Regular", size: 25)
             pomodoroLengthLabelCenterY.constant -= 1.5
             
-            
             countLabelTopAnchor.constant -= 5
             
             countContainerTopAnchor.constant -= 5
@@ -108,6 +102,7 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
         let pomodoroNameArray = Array(pomodoroNameTextField.text ?? "")
         var pomodoroNameEntered: Bool = false
         
+        //For loop that checks to see if "pomodoroNameTextField" isn't empty
         for char in pomodoroNameArray {
             
             if char != " " {
@@ -115,6 +110,8 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
                 break
             }
         }
+        
+        //Series of if statements that checks to see if the name, minutes, or count of the Pomodoro needs to be saved/changed
         
         if pomodoroNameEntered == true {
             defaults.set(pomodoroNameTextField.text, forKey: "pomodoroName")
@@ -202,6 +199,4 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
     @objc func dismissKeyboard () {
         view.endEditing(true)
     }
-    
-
 }
