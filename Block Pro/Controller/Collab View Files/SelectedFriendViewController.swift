@@ -15,7 +15,7 @@ protocol CollabView {
     func performSegue (_ collabID: String, _ collabName: String, _ collabDate: String)
 }
 
-//
+//Protocol neccasary to animate the initialLabel of the selected friend
 protocol ReconfigureCell {
 
     func reconfigureCell ()
@@ -23,8 +23,6 @@ protocol ReconfigureCell {
 
 class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    
-    
     @IBOutlet weak var friendView: UIView!
     @IBOutlet weak var friendViewTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var friendViewBottomAnchor: NSLayoutConstraint!
@@ -35,7 +33,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     
     @IBOutlet weak var initialLabel: UILabel!
     
-    @IBOutlet weak var initialLabelBottonAnchor: NSLayoutConstraint!
+    @IBOutlet weak var initialLabelBottomAnchor: NSLayoutConstraint!
     @IBOutlet weak var initialLabelWidthConstraint: NSLayoutConstraint! // change name
     @IBOutlet weak var initialLabelHeightConstraint: NSLayoutConstraint! // change name
     
@@ -63,16 +61,11 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     @IBOutlet weak var deleteFriendTrailingAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var dismissGestureView: UIView!
-    @IBOutlet weak var dismissViewTopAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var dismissIndicator: UIButton!
-//    @IBOutlet weak var dismissIndicatorTopAnchor: NSLayoutConstraint!
-//    @IBOutlet weak var dismissIndicatorHeightConstraint: NSLayoutConstraint!
-//    @IBOutlet weak var dismissIndicatorWidthConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var upcoming_historyTableView: UITableView!
     @IBOutlet weak var tableViewHeightConstraint: NSLayoutConstraint!
-    
     
     @IBOutlet weak var exitButton: UIButton!
     
@@ -84,48 +77,93 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     
     var selectedFriend: Friend?
     
-    var collabObjectArray: [UpcomingCollab] = [UpcomingCollab]()
-    var sectionDateArray: [String] = [String]()
-    var sectionContentArray: [[UpcomingCollab]]?
+    var collabObjectArray: [UpcomingCollab] = [UpcomingCollab]() //Array that holds all the upcoming collabs retrieved from the database
+    var sectionDateArray: [String] = [String]() //Array that holds all the dates for the upcoming collabs; used as section titles for the tableView
+    var sectionContentArray: [[UpcomingCollab]]? //Array that holds which collabs should go into certain sections for the tableView
 
-    var tableViewPresentedHeight: CGFloat!
-    var tableViewIndicator: String = ""
+    var tableViewPresentedHeight: CGFloat! //Variable that holds the height constant for the tableView when it is presented
+    var tableViewIndicator: String = "" //Variable used to track which tableView is being present and what data should be populated into the tableView
     
-    var collabBlocksDelegate: CollabView?
-    var reconfigureCellDelegate: ReconfigureCell?
+    var collabBlocksDelegate: CollabView? //Delegate used to move to the CollabViewController
+    var reconfigureCellDelegate: ReconfigureCell? //Delegate used to reconfigure the initialLabel of the selected friend
     
     var gradientLayer: CAGradientLayer!
-    var gradientLayer2: CAGradientLayer!
     
     var timer: Timer?
     
     var dismissViewOrigin: CGPoint! //Variable that holds the original position of the "dismissView"
     
-    var dismissIndicatorHidden: CGRect!
-    var dismissIndicatorExpanded: CGRect!
-    var dismissIndicatorShrunk: CGRect!
-    
+    var dismissIndicatorHidden: CGRect! //Variable used to hold the location and dimensions of the indicator when it is hidden
+    var dismissIndicatorExpanded: CGRect! //Variable used to hold the location and dimensions of the indicator when it is expanded during animation
+    var dismissIndicatorShrunk: CGRect! //Variable used to hold the location and dimensions of the indicator when it is shrunk during animation
+
     var tableViewOrigin: CGPoint! //Variable that holds the original position of the "tableView"
     
-    var pan: UIPanGestureRecognizer? //Initialization of the pan gesture
-    var animateButtonTracker: Bool = true
-    var animateDown: Bool = true
+    var pan: UIPanGestureRecognizer?
+    var animateButtonTracker: Bool = true //Variable that tracks if the dismissIndicator should be animating or not
+    var animateDown: Bool = true //Variable that tracks if the dismissIndicator should be animating up or down
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        upcoming_historyTableView.delegate = self
-        upcoming_historyTableView.dataSource = self
-        upcoming_historyTableView.register(UINib(nibName: "UpcomingCollabTableCell", bundle: nil), forCellReuseIdentifier: "UpcomingCollabCell")
+        configureView()
+        configureConstraints()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
         
-        //upcoming_historyTableView.frame = CGRect(x: 0, y: 550, width: 306, height: 370)
+        //If statement used to ensure the selectedFriend variable isn't nil, and bounce back to the previous view if it is
+        if selectedFriend == nil {
+            
+            dismiss(animated: true) {
+                ProgressHUD.showError("Sorry, sorry went wrong retrieving your friends data")
+            }
+            reconfigureCellDelegate?.reconfigureCell()
+        }
         
-        upcoming_historyTableView.rowHeight = 80
+        else {
+            
+            initialLabelBottomAnchor.constant = -76
+            initialLabelWidthConstraint.constant = 72
+            initialLabelHeightConstraint.constant = 72
+
+            UIView.animate(withDuration: 0.2) {
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    
+    //MARK: - Configure View Function
+    
+    func configureView () {
         
+        //Configuring friendView, friendNameContainer, intialContainer and initialLabel
         friendView.layer.cornerRadius = 0.1 * friendView.bounds.size.width
         friendView.clipsToBounds = true
         
-        //newCollabButton.backgroundColor = UIColor(hexString: "#e35d5b")?.lighten(byPercentage: 0.05)
+        friendView.sendSubviewToBack(dismissIndicator)
+        friendView.sendSubviewToBack(upcoming_historyTableView)
+        
+        gradientLayer = CAGradientLayer()
+        gradientLayer.frame = CGRect(x: 0, y: 0, width: 344, height: 73)
+        gradientLayer.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
+        gradientLayer.locations = [0.0, 0.7]
+        
+        friendNameContainer.layer.addSublayer(gradientLayer)
+        friendNameContainer.bringSubviewToFront(friendName)
+    
+        initialContainer.backgroundColor = UIColor(hexString: "#e35d5b")
+        initialContainer.layer.cornerRadius = 0.5 * initialContainer.bounds.width
+        
+        initialLabel.layer.cornerRadius = 0.5 * initialLabel.bounds.width
+        initialLabel.clipsToBounds = true
+        
+        initialLabelBottomAnchor.constant = -38
+        initialLabelWidthConstraint.constant = 0
+        initialLabelHeightConstraint.constant = 0
+        
+        //Configuring buttons
         newCollabButton.backgroundColor = UIColor(hexString: "#e53935")?.lighten(byPercentage: 0.05)
         newCollabButton.layer.cornerRadius = 0.06 * newCollabButton.bounds.size.width
         newCollabButton.clipsToBounds = true
@@ -142,72 +180,26 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         deleteFriendButton.layer.cornerRadius = 0.06 * deleteFriendButton.bounds.size.width
         deleteFriendButton.clipsToBounds = true
         
-        //dismissGestureView.frame.origin.y = 525
+        //Configuring tableView
+        upcoming_historyTableView.delegate = self
+        upcoming_historyTableView.dataSource = self
+        upcoming_historyTableView.rowHeight = 80
         
-        exitButton.layer.cornerRadius = 0.5 * exitButton.bounds.size.width
-        exitButton.clipsToBounds = true
+        upcoming_historyTableView.register(UINib(nibName: "UpcomingCollabTableCell", bundle: nil), forCellReuseIdentifier: "UpcomingCollabCell")
         
-        //self.view.bringSubviewToFront(dismissIndicator)
-        //dismissIndicator.isEnabled = false
-        
-//        addPanGesture(view: dismissGestureView) //Function that adds the pan gesture to the "dismissGestureView"
-        
-        #warning("make sure you put this in a guard let or if let statment")
-        let firstNameArray = Array(selectedFriend!.firstName)
-        initialLabel.text = "\(firstNameArray[0])"
-        friendName.text = selectedFriend!.firstName + " " + selectedFriend!.lastName
-        
-        //self.view.insertSubview(initialContainer, at: 0)
-        
-        gradientLayer = CAGradientLayer()
-        gradientLayer.frame = CGRect(x: 0, y: 0, width: 344, height: 73)//friendNameContainer.bounds
-        gradientLayer.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
-        gradientLayer.locations = [0.0, 0.7]
-        
-        friendNameContainer.layer.addSublayer(gradientLayer)
-        friendNameContainer.bringSubviewToFront(friendName)
-        
-        gradientLayer2 = CAGradientLayer()
-        
-        gradientLayer2.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
-        gradientLayer2.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
-        
-        
-        //initialContainer.layer.addSublayer(gradientLayer2)
-        initialContainer.backgroundColor = UIColor(hexString: "#e35d5b")
-        
-        initialContainer.layer.cornerRadius = 0.5 * initialContainer.bounds.width
-        
-        initialLabel.layer.cornerRadius = 0.5 * initialLabel.bounds.width
-        initialLabel.clipsToBounds = true
-        
-        initialLabelBottonAnchor.constant = -38
-        initialLabelWidthConstraint.constant = 0
-        initialLabelHeightConstraint.constant = 0
-        
-        configureConstraints()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-
-//        UIView.animate(withDuration: 0.5) {
-//            self.initialLabel.transform = CGAffineTransform(scaleX: 1.1, y: 1.1) //Scale label area
-//        }
-        
-        initialLabelBottonAnchor.constant = -76
-        initialLabelWidthConstraint.constant = 72
-        initialLabelHeightConstraint.constant = 72
-
-        UIView.animate(withDuration: 0.2) {
-            self.view.layoutIfNeeded()
-            self.initialLabel.font = UIFont(name: ".SFUIDisplay", size: 30)
+        //Ensures the data from the selected friend has been passed to this view
+        if selectedFriend != nil {
+            
+            let firstNameArray = Array(selectedFriend!.firstName)
+            initialLabel.text = "\(firstNameArray[0].uppercased())"
+            friendName.text = selectedFriend!.firstName + " " + selectedFriend!.lastName
         }
     }
     
+    
+    //MARK: - Configure Constraints Function
+    
     func configureConstraints () {
-        
-        friendView.sendSubviewToBack(dismissIndicator)
-        friendView.sendSubviewToBack(upcoming_historyTableView)
         
         //iPhone XS Max & iPhone XR
         if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
@@ -267,7 +259,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             dismissIndicatorHidden = CGRect(x: 152.67, y: 75, width: 0, height: 0)
             dismissIndicatorExpanded = CGRect(x: 100, y: 75, width: 105, height: 35)
             dismissIndicatorShrunk = CGRect(x: 132, y: 95, width: 40, height: 30)
-            
         }
             
         //iPhone 8
@@ -289,7 +280,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             dismissIndicatorHidden = CGRect(x: 152.67, y: 75, width: 0, height: 0)
             dismissIndicatorExpanded = CGRect(x: 100, y: 75, width: 105, height: 35)
             dismissIndicatorShrunk = CGRect(x: 132, y: 95, width: 40, height: 30)
-            
         }
             
         //iPhone SE
@@ -318,6 +308,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    
+    //MARK: TableView Datasource Methods
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         
         if sectionDateArray.count > 0 {
@@ -326,8 +319,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         else {
             return 1
         }
-        
-        
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -347,8 +338,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                 return nil
             }
         }
-        
-        
     }
     
     
@@ -399,6 +388,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    
+    //MARK: TableView Delegate Method
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         animateButtonTracker = false
@@ -416,6 +408,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
     }
     
+    
+    //MARK: - Reconfigure Collab Cell Function
+    
     func reconfigureCollabCell (cell: UpcomingCollabTableCell) {
         
         cell.withLabelTopAnchor.constant = 5
@@ -426,12 +421,16 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         cell.nameLabelBottomAnchor.constant = 7
     }
     
+    
+    //MARK: - Get Upcoming Collabs Function
+    
     func getUpcomingCollabs () {
         
-        collabObjectArray.removeAll()
+        collabObjectArray.removeAll() //Cleans the "collabObjectArray" to prepare it to be loaded with new data
         
         formatter.dateFormat = "MMMM dd, yyyy"
         
+        //Database query to retrieve all the Upcoming Collabs with the selected friend
         db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
             
             if error != nil {
@@ -439,8 +438,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             }
             
             else {
+                
+                //If no Upcoming Collabs are found
                 if snapshot!.isEmpty {
-                    print ("no collabs")
                     
                     self.sectionDateArray.removeAll()
                     self.sectionContentArray?.removeAll()
@@ -470,12 +470,16 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    
+    //MARK: - Get Historic Collabs Function
+    
     func getHistoricCollabs () {
         
-        collabObjectArray.removeAll()
+        collabObjectArray.removeAll() //Cleans the "collabObjectArray" to prepare it to be loaded with new data
         
         formatter.dateFormat = "MMMM dd, yyyy"
         
+        //Database query to retrieve all the Historic Collabs with the selected friend
         db.collection("Users").document(currentUser.userID).collection("CollabHistory").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
             
             if error != nil {
@@ -483,9 +487,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             }
             else {
                 
+                //If no Historic Collabs are found
                 if snapshot?.isEmpty == true {
-                    print ("damn")
-                    
+        
                     self.upcoming_historyTableView.reloadData()
                 }
                 else {
@@ -510,28 +514,36 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    
+    //MARK: - Sort Collabs Function
+    
     func sortCollabs () {
         
-        sectionDateArray.removeAll()
-        sectionContentArray?.removeAll()
+        sectionDateArray.removeAll() //Cleans the "sectionDateArray"
+        sectionContentArray?.removeAll() //Cleans the "sectionContentArray"
         
         for collab in collabObjectArray {
             
+            //If a certain collab date has not yet been added to the "sectionDateArray"
             if sectionDateArray.contains(collab.collabDate) == false {
                 sectionDateArray.append(collab.collabDate)
             }
         }
         
+        //Creating a two dimensional array that contains the collab objects retrieved from Firebase; each new index of the first array is associated with a date from the "sectionDateArray"
         sectionContentArray = Array(repeating: Array(repeating: collabObjectArray[0], count: 0), count: sectionDateArray.count)
         
         for collab in collabObjectArray {
             
+            //Appending the collab to the first index of the "sectionContentArray" that is associated with the date of that collab
             if let index = sectionDateArray.firstIndex(of: collab.collabDate) {
                 sectionContentArray![index].append(collab)
             }
         }
-        
     }
+    
+    
+    //MARK: - Present Delete Alert Function
     
     func presentDeleteAlert () {
         
@@ -552,10 +564,14 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         present(deleteAlert, animated: true, completion: nil)
     }
     
+    
+    //MARK: - Delete Friend Function
     func deleteFriend (_ selectedFriendName: String) {
         
+        //Deleting the selected friend from the current users friend list
         self.db.collection("Users").document(currentUser.userID).collection("Friends").document(selectedFriend!.friendID).delete()
 
+        //Deleting all pending collabs with this selected friend
         self.db.collection("Users").document(currentUser.userID).collection("PendingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
             
             if error != nil {
@@ -579,6 +595,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             }
         }
 
+        //Deleting all upcoming collabs with the selected friend
         self.db.collection("Users").document(self.currentUser.userID).collection("UpcomingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
             
             if error != nil {
@@ -602,6 +619,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             }
         }
 
+        //Deleting all historic collabs with this selected friend from collab history
         self.db.collection("Users").document(self.currentUser.userID).collection("CollabHistory").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
             
             if error != nil {
@@ -623,8 +641,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                 }
             }
         }
-
-        //friendDeletedDelegate?.reloadFriends()
         
         dismiss(animated: true) {
             ProgressHUD.showSuccess(self.selectedFriend!.firstName + " " + self.selectedFriend!.lastName + " has been deleted")
@@ -632,9 +648,10 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
     }
     
+    
+    //MARK: - Pan Gesture Functions
+    
     func addPanGesture (view: UIView) {
-        
-//        let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:))) //Initialization of the pan gesture
         
         view.addGestureRecognizer(pan!) //Adds the pan gesture to the view that was passed in
     }
@@ -653,14 +670,13 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         //Case that handles when the gesture has ended
         case .ended:
             
-            //If the dimissIndicator has reached a certain point when the gesture ends, dismiss it along with the "dismissView", and the tableView
-//            if dismissIndicator.frame.origin.y >= 250 {
+            //If the dimissIndicator has reached a certain point when the gesture ends, dismiss the tableView
             if dismissIndicator.frame.origin.y >= friendView.frame.height / 2 {
             
                 self.dismissView(dismissView: dismissView, dismissIndicator: dismissIndicator, tableView: upcoming_historyTableView)
             }
             
-                //Otherwise, return them to their origin point
+            //Otherwise, return it to it's origin point
             else {
                 returnViewToOrigin(dismissView: dismissView, dismissIndicator: dismissIndicator, tableView: upcoming_historyTableView)
             }
@@ -704,8 +720,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             
         }) { (finished: Bool) in
             
-            print("origin", self.dismissIndicator.frame.origin)
-            
             RunLoop.main.add(self.timer!, forMode: .common)
         }
     }
@@ -719,11 +733,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             
             self.view.layoutIfNeeded()
             
-            dismissIndicator.frame.origin.y = 550//CGRect(x: 103, y: 500, width: 100, height: 35)
+            dismissIndicator.frame.origin.y = 550
             
         }) { (finished: Bool) in
-            
-            
             
             self.newCollabLeadingAnchor.constant = 23
             self.newCollabTrailingAnchor.constant = 23
@@ -755,19 +767,21 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         removePanGesture(view: dismissView)
     }
     
+    //Function that removes the pan gesture
     func removePanGesture (view: UIView) {
-        
-//        let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:))) //Initialization of the pan gesture
         
         view.removeGestureRecognizer(pan!)
     }
     
     
+    //MARK: Button Functions
+    
     @objc func animateDismissButton (timer: Timer) {
 
-        print("check")
+        //If the dismissIndicator is supposed to be animating
         if animateButtonTracker == true {
             
+            //If true, animate the dismissIndicator to it's shrunken frame
             if animateDown == true {
                 
                 UIView.animate(withDuration: 2, animations: {
@@ -780,6 +794,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                 }
             }
             
+            //If false, animate the dismissIndicator to it's expanded frame
             else if animateDown == false {
                 
                 UIView.animate(withDuration: 2, animations: {
@@ -792,8 +807,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                 }
             }
         }
-        
-        print(animateDown)
     }
 
     
@@ -807,10 +820,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         animateButtonTracker = true
         
         pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:))) //Initialization of the pan gesture
-        addPanGesture(view: dismissGestureView) //Function that adds the pan gesture to the "dismissGestureView"
+        addPanGesture(view: dismissGestureView)
         
-        //dismissTableViewButton.isEnabled = true
-        
+        //Setting the new constraints of the buttons
         newCollabLeadingAnchor.constant = 423
         newCollabTrailingAnchor.constant = -377
 
@@ -826,22 +838,17 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         UIView.animate(withDuration: 0.2, animations: {
             
-            self.friendView.layoutIfNeeded()
-            
+            self.friendView.layoutIfNeeded() //Animating the buttons off the view
             
         }) { (finished: Bool) in
             
-            self.tableViewHeightConstraint.constant = self.tableViewPresentedHeight
+            self.tableViewHeightConstraint.constant = self.tableViewPresentedHeight //Setting the new tableViewHeightConstraint
             self.dismissIndicator.isHidden = false
             
             UIView.animate(withDuration: 0.2, animations: {
             
-                self.friendView.layoutIfNeeded()
-                self.dismissIndicator.frame = self.dismissIndicatorExpanded
-                
-//                self.dismissGestureView.frame.origin.y = 75
-//                self.dismissIndicator.frame.origin.y = 80
-//                self.upcoming_historyTableView.frame = CGRect(x: 0, y: 130, width: 306, height: 370)
+                self.friendView.layoutIfNeeded() //Animating the tableView onto the screen
+                self.dismissIndicator.frame = self.dismissIndicatorExpanded //Animating the dismissIndicator onto the screen
                 
             }, completion: { (finished: Bool) in
                 
@@ -863,10 +870,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         animateButtonTracker = true
         
         pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:))) //Initialization of the pan gesture
-        addPanGesture(view: dismissGestureView) //Function that adds the pan gesture to the "dismissGestureView"
+        addPanGesture(view: dismissGestureView)
         
-        //dismissTableViewButton.isEnabled = true
-        
+        //Setting the new constraints of the buttons
         newCollabLeadingAnchor.constant = 423
         newCollabTrailingAnchor.constant = -377
         
@@ -879,25 +885,19 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         deleteFriendLeadingAnchor.constant = -377
         deleteFriendTrailingAnchor.constant = 423
         
-        
         UIView.animate(withDuration: 0.2, animations: {
             
-            self.friendView.layoutIfNeeded()
-            
+            self.friendView.layoutIfNeeded() //Animating the buttons off the view
             
         }) { (finished: Bool) in
             
-            self.tableViewHeightConstraint.constant = self.tableViewPresentedHeight
+            self.tableViewHeightConstraint.constant = self.tableViewPresentedHeight //Setting the new tableViewHeightConstraint
             self.dismissIndicator.isHidden = false
             
             UIView.animate(withDuration: 0.2, animations: {
                 
-                self.friendView.layoutIfNeeded()
-                self.dismissIndicator.frame = self.dismissIndicatorExpanded
-                
-                //                self.dismissGestureView.frame.origin.y = 75
-                //                self.dismissIndicator.frame.origin.y = 80
-                //                self.upcoming_historyTableView.frame = CGRect(x: 0, y: 130, width: 306, height: 370)
+                self.friendView.layoutIfNeeded() //Animating the tableView onto the screen
+                self.dismissIndicator.frame = self.dismissIndicatorExpanded //Animating the dismissIndicator onto the screen
                 
             }, completion: { (finished: Bool) in
                 
@@ -956,6 +956,3 @@ extension SelectedFriendViewController: DismissView {
     }
     
 }
-
-
-

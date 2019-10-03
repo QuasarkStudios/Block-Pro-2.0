@@ -111,7 +111,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
             
             configurePomodoroProgressAnimation()
             configureiProgress()
-            
             configurePomodoro()
             
             viewIntiallyLoaded = true
@@ -176,7 +175,9 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         soundEffectTimer?.invalidate()
         pomodoroTimer?.invalidate()
+        
         progressShapeLayer.removeAllAnimations()
+        countShapeLayer.removeAllAnimations()
         pomodoroProgressAnimationView.dismissProgress()
         
         audioPlayer?.stop()
@@ -273,7 +274,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         navigationItem.title = defaults.value(forKey: "pomodoroName") as? String ?? "Pomodoro"
         
-        totalPomodoroCount = defaults.value(forKey: "pomodoroCount") as? Int ?? 4
+        totalPomodoroCount = defaults.value(forKey: "totalPomodoroCount") as? Int ?? 4
         currentPomodoroCount = defaults.value(forKey: "currentPomodoro") as? Int ?? 0
         configurePomodoroCountAnimation() //Must call after loading "totalPomodoroCount" and "currentPomodoroCount" from User Defaults
         
@@ -1221,17 +1222,16 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
             content.title = "Time For A Break"
             content.body = "Check in on Block Pro to start your break. You've earned it!!"
         }
+            
         else if sessionTracker == "5MinBreak" {
             
             content.title = "Your 5 Minute Break's Up"
             content.body = "Check in on Block Pro to start your next Pomodoro Session. Let's make it better than the last!!"
-            
         }
         else if sessionTracker == "30MinBreak" {
             
             content.title = "Your 30 Minute Break's Up"
             content.title = "Great job completing a full Pomodoro. Check in on Block Pro to start another one!!"
-            
         }
         
         content.sound = UNNotificationSound.default

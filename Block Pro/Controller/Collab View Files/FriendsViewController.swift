@@ -121,7 +121,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             let firstNameArray = Array(friendObjectArray[indexPath.row].firstName)
             
             cell.friendName.text = friendObjectArray[indexPath.row].firstName + " " + friendObjectArray[indexPath.row].lastName
-            cell.friendInitial.text = "\(firstNameArray[0])"
+            cell.friendInitial.text = "\(firstNameArray[0].uppercased())"
             
             cell.initialContainerWidthConstraint.constant = 45
             cell.initialContainerHeightConstraint.constant = 45
@@ -129,6 +129,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             cell.initialContainer.layer.cornerRadius = 0.5 * 45
             cell.initialContainer.clipsToBounds = true
+            
+            print(cell.friendInitial.font)
             
             return cell
         }

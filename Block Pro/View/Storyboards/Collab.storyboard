@@ -881,7 +881,7 @@
                         <outlet property="historyButtonTrailingAnchor" destination="YDd-tO-Bre" id="B1S-fu-Hkx"/>
                         <outlet property="initialContainer" destination="HFs-qS-mh6" id="ClP-27-L5v"/>
                         <outlet property="initialLabel" destination="mqI-ju-6Bm" id="YSE-6W-fdA"/>
-                        <outlet property="initialLabelBottonAnchor" destination="MPk-I4-BYo" id="CSc-nq-EKX"/>
+                        <outlet property="initialLabelBottomAnchor" destination="MPk-I4-BYo" id="bXN-gP-O3O"/>
                         <outlet property="initialLabelHeightConstraint" destination="sdx-8A-pDP" id="shx-Ob-aeX"/>
                         <outlet property="initialLabelWidthConstraint" destination="fgK-O2-ZM6" id="Har-6A-pBD"/>
                         <outlet property="newCollabButton" destination="3xs-bS-Rli" id="6mx-dZ-X9g"/>
@@ -1968,7 +1968,7 @@
         <image name="people" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="qny-Qz-1HN"/>
+        <segue reference="cQA-cy-9SS"/>
         <segue reference="iTD-aJ-FDE"/>
     </inferredMetricsTieBreakers>
 </document>

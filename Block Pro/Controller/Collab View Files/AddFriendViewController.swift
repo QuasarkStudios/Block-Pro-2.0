@@ -115,7 +115,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 let firstNameArray = Array(requestsObjectArray[indexPath.row].requesterFirstName)
                 
                 cell.friendName.text = requestsObjectArray[indexPath.row].requesterFirstName + " " + requestsObjectArray[indexPath.row].requesterLastName
-                cell.friendInitial.text = "\(firstNameArray[0])"
+                cell.friendInitial.text = "\(firstNameArray[0].uppercased())"
                 
                 cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.size.width
                 cell.initialContainer.clipsToBounds = true
@@ -181,7 +181,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                     let firstNameArray = Array(resultsObjectArray[indexPath.row].firstName)
                     
                     cell.friendName.text = resultsObjectArray[indexPath.row].firstName + " " + resultsObjectArray[indexPath.row].lastName
-                    cell.friendInitial.text = "\(firstNameArray[0])"
+                    cell.friendInitial.text = "\(firstNameArray[0].uppercased())"
                     
                     cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.size.width
                     cell.initialContainer.clipsToBounds = true
@@ -208,7 +208,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                     let firstNameArray = Array(resultsObjectArray[indexPath.row].firstName)
                     
                     cell.friendName.text = resultsObjectArray[indexPath.row].firstName + " " + resultsObjectArray[indexPath.row].lastName
-                    cell.friendInitial.text = "\(firstNameArray[0])"
+                    cell.friendInitial.text = "\(firstNameArray[0].uppercased())"
                     
                     cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.size.width
                     cell.initialContainer.clipsToBounds = true

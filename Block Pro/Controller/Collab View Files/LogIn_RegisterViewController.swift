@@ -42,13 +42,14 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
     
     lazy var db = Firestore.firestore()
     
+    //Variables used to verify if acceptable input has been provided by the user for those fields during registration
     var firstNameVerified: Bool?
     var lastNameVerified: Bool?
     var usernameVerified: Bool?
     var password1Verified: Bool?
     var password2Verified: Bool?
     
-    var uniqueUsername: Bool?
+    var uniqueUsername: Bool? //Varibale used to verify if the unique a new user wants to use is unique
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,13 +71,11 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         registerPasswordTextField_1.delegate = self
         registerReenterPasswordTextField_2.delegate = self
         
-        
         logInContainer.layer.cornerRadius = 0.1 * logInContainer.bounds.size.width
         logInContainer.clipsToBounds = true
         
         logInButton.layer.cornerRadius = 0.06 * logInButton.bounds.size.width
         logInButton.clipsToBounds = true
-        
         
         registerContainer.layer.cornerRadius = 0.1 * registerContainer.bounds.size.width
         registerContainer.clipsToBounds = true
@@ -129,7 +128,6 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
             registerContainerLeadingAnchor.constant = 15
             registerContainerTrailingAnchor.constant = 15
         }
-        
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -137,6 +135,7 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         //iPhone SE
         if UIScreen.main.bounds.width == 320.0 {
             
+            //If statements used to animate the registration view when a user taps on the different text fields
             if textField == firstNameTextField || textField == lastNameTextField {
                 
                 view.layoutIfNeeded()
@@ -183,6 +182,8 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         
         //iPhone SE
         if UIScreen.main.bounds.width == 320.0 {
+            
+            //If statement used to animate the registration view back to it's original position
             if registerContainerTopAnchor.constant < 850 {
                 
                 view.layoutIfNeeded()
@@ -202,6 +203,7 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         
         logInButton.isEnabled = false
         
+        //If statements that checks if required input for log in has been provided
         if loginEmailTextField.text == "" {
             ProgressHUD.showError("Please enter in your email")
             logInButton.isEnabled = true
@@ -221,9 +223,7 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
                     ProgressHUD.showError(error?.localizedDescription)
                     self.logInButton.isEnabled = true
                 }
-                else {
-
-
+                else { //Successful log in
                     
                     self.performSegue(withIdentifier: "moveToUpcomingCollabs", sender: self)
                 }
@@ -237,8 +237,10 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         
         registerButton.isEnabled = false
         
+        //Call to the verification function
         verification {
             
+            //If statements that check the verification variables ensuring they are all true
             if self.firstNameVerified ?? false == false || self.lastNameVerified ?? false == false {
                 ProgressHUD.showError("Please finish entering in your name.")
                 self.registerButton.isEnabled = true
@@ -270,7 +272,12 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
                     }
                     else {
 
-                        guard let userID = authResult?.user.uid else { return }
+                        guard let userID = authResult?.user.uid else {
+                            
+                            ProgressHUD.showError("Sorry, something went wrong while making your account. Please try again!")
+                            self.registerButton.isEnabled = true
+                            return
+                        }
 
                         self.createNewUser(userID, completion: {
 
@@ -290,6 +297,8 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         
         let letters = CharacterSet.letters
         let numbers = CharacterSet.decimalDigits
+        
+        //Series of if statements that check to see if at least one letter or number has been entered into each of the text fields during registration
         
         if firstNameTextField.text?.isEmpty == true {
             firstNameVerified = false
@@ -392,16 +401,8 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
                 }
             }
         }
-
-
-        print(firstNameVerified)
-        print(lastNameVerified)
-        print(usernameVerified)
-        print(password1Verified)
-        print(password2Verified)
         
-        //registerButton.isEnabled = true
-        
+        //Database query to see if the username the new user entered can be found
         db.collection("Users").whereField("username", isEqualTo: usernameTextField.text!.lowercased()).getDocuments { (snapshot, error) in
             
             if error != nil {
@@ -411,15 +412,17 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
 
             else {
 
+                //The username is truly unique
                 if snapshot?.isEmpty == true {
                     self.uniqueUsername = true
                     completion()
                 }
+                    
+                //The username isn't unique
                 else {
                     self.uniqueUsername = false
                     completion()
                 }
-                print("unique username", self.uniqueUsername, "\(self.usernameTextField.text!.lowercased()) \n")
             }
         }
     }
@@ -427,6 +430,7 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
     
     func createNewUser (_ userID: String, completion: @escaping () -> ()) {
         
+        //Saving all the new users data into the database
         db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : firstNameTextField.text!, "lastName" : lastNameTextField.text!, "username" : usernameTextField.text!.lowercased()])
         
         completion()
@@ -434,6 +438,8 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
     
     
     @IBAction func newRegisterButton(_ sender: Any) {
+        
+        //Series of if statements used to animate the registration view to its correct position depending on the iPhone
         
         //iPhone XS Max & iPhone XR
         if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
@@ -543,6 +549,8 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
     
     
     @IBAction func backToLoginButton(_ sender: Any) {
+        
+        //Series of if statements used to animate the log in view to its correct position depending on the iPhone
         
         //iPhone XS Max & iPhone XR
         if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
@@ -659,6 +667,8 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         
         //iPhone SE
         if UIScreen.main.bounds.width == 320.0 {
+            
+            //If statement used to animate the registration view back to it's original position
             if registerContainerTopAnchor.constant < 850 {
                 
                 view.layoutIfNeeded()
