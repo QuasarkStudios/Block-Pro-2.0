@@ -407,6 +407,9 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
                         currentUser.firstName = snapshot?.data()!["firstName"] as! String
                         currentUser.lastName = snapshot?.data()!["lastName"] as! String
                         currentUser.username = snapshot?.data()!["username"] as! String
+                        currentUser.createdOn = snapshot?.data()!["accountCreated"] as! String
+                        
+                        print(currentUser.createdOn)
                         
                         completion()
                         
@@ -415,7 +418,8 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
             }
             
             else {
-                ProgressHUD.showError("Sorry, there was an error getting your info")
+                
+                self.navigationController?.popToRootViewController(animated: true)
             }
         })
     }

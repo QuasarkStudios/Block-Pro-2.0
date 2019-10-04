@@ -198,6 +198,17 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
+    func cleanTextFields () {
+        
+        loginEmailTextField.text = ""
+        loginPasswordTextField.text = ""
+        firstNameTextField.text = ""
+        lastNameTextField.text = ""
+        usernameTextField.text = ""
+        registerEmailTextField.text = ""
+        registerPasswordTextField_1.text = ""
+        registerReenterPasswordTextField_2.text = ""
+    }
     
     @IBAction func loginButton(_ sender: Any) {
         
@@ -224,6 +235,9 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
                     self.logInButton.isEnabled = true
                 }
                 else { //Successful log in
+                    
+                    self.logInButton.isEnabled = true
+                    self.cleanTextFields()
                     
                     self.performSegue(withIdentifier: "moveToUpcomingCollabs", sender: self)
                 }
@@ -283,6 +297,9 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
 
                             ProgressHUD.showSuccess("Account Created!")
 
+                            self.registerButton.isEnabled = true
+                            self.cleanTextFields()
+                            
                             self.performSegue(withIdentifier: "moveToUpcomingCollabs", sender: self)
                         })
 
@@ -430,8 +447,12 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
     
     func createNewUser (_ userID: String, completion: @escaping () -> ()) {
         
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM d, yyyy"
+        
         //Saving all the new users data into the database
-        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : firstNameTextField.text!, "lastName" : lastNameTextField.text!, "username" : usernameTextField.text!.lowercased()])
+        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : firstNameTextField.text!, "lastName" : lastNameTextField.text!, "username" : usernameTextField.text!.lowercased(), "accountCreated" : formatter.string(from: date)])
         
         completion()
     }

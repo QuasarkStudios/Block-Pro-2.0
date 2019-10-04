@@ -1060,45 +1060,48 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     
     @objc func playSoundEffect () {
         
-        //If the user has enabled sound effect or hasn't yet disabled them
-        if defaults.value(forKey: "playPomodoroSoundEffects") as? Bool ?? true == true {
-        
-            //If the sound effect tracker is not empty
-            if soundEffectTracker != "" {
+        //If the sound effect tracker is not empty
+        if soundEffectTracker != "" {
+            
+            //Initializing the soundURL to the audio file with the name matching the "soundEffectTracker"
+            soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
+            
+            do {
+                audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
+            }
                 
-                //Initializing the soundURL to the audio file with the name matching the "soundEffectTracker"
-                soundURL = Bundle.main.url(forResource: soundEffectTracker, withExtension: "wav")
-                
-                do {
-                    audioPlayer = try AVAudioPlayer(contentsOf: soundURL!)
-                }
-                    
-                catch {
-                    print(error.localizedDescription)
-                }
-                
+            catch {
+                print(error.localizedDescription)
+            }
+            
+            //If the user has enabled sound effect or hasn't yet disabled them
+            if defaults.value(forKey: "playPomodoroSoundEffects") as? Bool ?? true == true {
+            
                 audioPlayer?.play()
+            }
+            
+            
+            //If statement used on every sound effect except "End Break"
+            if soundEffectTracker != "End Break" {
                 
-                //If statement used on every sound effect except "End Break"
-                if soundEffectTracker != "End Break" {
-                    
-                    let calendar = Calendar.current
-                    let startDate = Date()
-                    let date = calendar.date(byAdding: .second, value: Int(audioPlayer!.duration), to: startDate)
-                    
-                    //Adding the soundEffectTimer to the RunLoop enabling the sound effect to be played continuously
-                    soundEffectTimer = Timer(fireAt: date ?? startDate, interval: 0, target: self, selector: #selector(playSoundEffect), userInfo: nil, repeats: false)
-                    RunLoop.main.add(soundEffectTimer!, forMode: .common)
-                    
-                    if soundEffectTracker == "Start Timer" {
-                        soundEffectTracker = "Timer Running"
-                    }
-                    else if soundEffectTracker == "Start Break" {
-                        soundEffectTracker = "Break Timer Running"
-                    }
+                let calendar = Calendar.current
+                let startDate = Date()
+                let date = calendar.date(byAdding: .second, value: Int(audioPlayer!.duration), to: startDate)
+                
+                //Adding the soundEffectTimer to the RunLoop enabling the sound effect to be played continuously
+                soundEffectTimer = Timer(fireAt: date ?? startDate, interval: 0, target: self, selector: #selector(playSoundEffect), userInfo: nil, repeats: false)
+                RunLoop.main.add(soundEffectTimer!, forMode: .common)
+                
+                if soundEffectTracker == "Start Timer" {
+                    soundEffectTracker = "Timer Running"
+                }
+                else if soundEffectTracker == "Start Break" {
+                    soundEffectTracker = "Break Timer Running"
                 }
             }
         }
+        
+
     }
     
     
