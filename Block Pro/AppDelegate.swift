@@ -37,8 +37,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 //        }
         
         UNUserNotificationCenter.current().delegate = self
+        let notifOptions: UNAuthorizationOptions = [.badge, .sound]
         
-        UNUserNotificationCenter.current().requestAuthorization(options: .badge) { (granted, error) in
+        UNUserNotificationCenter.current().requestAuthorization(options: notifOptions) { (granted, error) in
             
             if granted == true {
                 print ("aye dope")

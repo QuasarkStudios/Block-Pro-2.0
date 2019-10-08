@@ -357,6 +357,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                 notificationSwitch.isOn = true
                 notificationTimeSegments.selectedSegmentIndex = notifSettings["minsBefore"] as! Int
             }
+                
             else {
                 notificationSwitch.isOn = false
                 
@@ -369,8 +370,11 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     
     func configureConstraints () {
         
-        notificationViewHeightConstraint.constant = 43
-        segmentContainerBottomConstraint.constant = -40
+        if selectedView == "Add" {
+            
+            notificationViewHeightConstraint.constant = 43
+            segmentContainerBottomConstraint.constant = -40
+        }
         
         timeContainerTopAnchor.constant = 500
         categoryContainerTopAnchor.constant = 500
@@ -620,7 +624,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
 
                 //Configuring and setting the notification
                 content.title = "Heads Up!!"
-                content.body = blockNameTextField.text! + " in \(notificationTimes[notificationIndex]) mintues"
+                content.body = blockNameTextField.text! + " in \(notificationTimes[notificationIndex]) minutes"
                 content.sound = UNNotificationSound.default
 
                 trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
@@ -643,7 +647,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
 
                 //Configuring and setting the notification
                 content.title = "Heads Up!!"
-                content.body = blockNameTextField.text! + " in \(notificationTimes[notificationIndex]) mintues"
+                content.body = blockNameTextField.text! + " in \(notificationTimes[notificationIndex]) minutes"
                 content.sound = UNNotificationSound.default
 
                 trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)

@@ -7,7 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0D11282D234716E80080774C /* SettingsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D11282C234716E80080774C /* SettingsCell.swift */; };
+		0D1128322349A51B0080774C /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1128302349A51B0080774C /* SettingsTableViewCell.swift */; };
+		0D1128332349A51B0080774C /* SettingsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D1128312349A51B0080774C /* SettingsTableViewCell.xib */; };
+		0D112836234C2BF00080774C /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D112835234C2BF00080774C /* InfoViewController.swift */; };
 		0D13ABFB232A15D80025EDC3 /* Start Break.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D13ABFA232A15D80025EDC3 /* Start Break.wav */; };
 		0D13ABFD232A15DF0025EDC3 /* Break Timer Running.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D13ABFC232A15DF0025EDC3 /* Break Timer Running.wav */; };
 		0D13ABFF232A15E60025EDC3 /* End Break.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D13ABFE232A15E60025EDC3 /* End Break.wav */; };
@@ -70,7 +72,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0D11282C234716E80080774C /* SettingsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCell.swift; sourceTree = "<group>"; };
+		0D1128302349A51B0080774C /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
+		0D1128312349A51B0080774C /* SettingsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsTableViewCell.xib; sourceTree = "<group>"; };
+		0D112835234C2BF00080774C /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		0D13ABFA232A15D80025EDC3 /* Start Break.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Start Break.wav"; sourceTree = "<group>"; };
 		0D13ABFC232A15DF0025EDC3 /* Break Timer Running.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Break Timer Running.wav"; sourceTree = "<group>"; };
 		0D13ABFE232A15E60025EDC3 /* End Break.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "End Break.wav"; sourceTree = "<group>"; };
@@ -150,6 +154,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0D1128342349A53B0080774C /* SettingsCell */ = {
+			isa = PBXGroup;
+			children = (
+				0D1128302349A51B0080774C /* SettingsTableViewCell.swift */,
+				0D1128312349A51B0080774C /* SettingsTableViewCell.xib */,
+			);
+			path = SettingsCell;
+			sourceTree = "<group>";
+		};
 		0D13AC00232A15F30025EDC3 /* Pomodoro Audio Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,7 +292,7 @@
 				0D41F5C5231376FB00B4B11E /* ThirtyMinAndUpCell.swift */,
 				0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */,
 				0DDF79C62346CE0500BAAD51 /* ProfileCell.swift */,
-				0D11282C234716E80080774C /* SettingsCell.swift */,
+				0D1128342349A53B0080774C /* SettingsCell */,
 				0D933012229373B000B6191D /* TimeTableViewCell */,
 				0D933013229373D200B6191D /* BlockTableViewCells */,
 				0D23076922D29F6900A12393 /* UpcomingCollabViewCell */,
@@ -369,6 +382,7 @@
 			isa = PBXGroup;
 			children = (
 				0DDF79C42346AB9B00BAAD51 /* UserViewController.swift */,
+				0D112835234C2BF00080774C /* InfoViewController.swift */,
 			);
 			path = "User Controller Files";
 			sourceTree = "<group>";
@@ -456,6 +470,7 @@
 				0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */,
 				0D2CED172291EDE200CC9180 /* CustomBlockTableCell.xib in Resources */,
 				0D95C17C2328923000421BE0 /* Timer Running.wav in Resources */,
+				0D1128332349A51B0080774C /* SettingsTableViewCell.xib in Resources */,
 				0DA9F83B22A8488E008BECAE /* Collab.storyboard in Resources */,
 				0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */,
 				0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */,
@@ -557,10 +572,10 @@
 				0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */,
 				0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */,
 				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
-				0D11282D234716E80080774C /* SettingsCell.swift in Sources */,
 				0D23076F22D3B31D00A12393 /* FriendsViewController.swift in Sources */,
 				0D23076322D299DC00A12393 /* UpcomingCollabViewController.swift in Sources */,
 				0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */,
+				0D112836234C2BF00080774C /* InfoViewController.swift in Sources */,
 				0D872F7822DEE925001D35B4 /* PendingFriend.swift in Sources */,
 				0D23077822D580CF00A12393 /* NewCollabViewController.swift in Sources */,
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
@@ -582,6 +597,7 @@
 				0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */,
 				0DDF79C72346CE0500BAAD51 /* ProfileCell.swift in Sources */,
 				0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */,
+				0D1128322349A51B0080774C /* SettingsTableViewCell.swift in Sources */,
 				0D23077622D3DB6D00A12393 /* SelectedFriendViewController.swift in Sources */,
 				0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */,
 				0D41F5C423124B3700B4B11E /* TwentyFiveMinCell.swift in Sources */,

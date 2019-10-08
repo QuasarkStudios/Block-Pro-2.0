@@ -20,7 +20,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     let currentUser = UserData.singletonUser
     
 //    
-//    let defaults = UserDefaults.standard
+    let defaults = UserDefaults.standard
     
     let sectionHeaderArray = [nil, "Free Time", "Pomodoro", "Time Block", "Collab"]
     
@@ -30,40 +30,41 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         settingsTableView.delegate = self
         settingsTableView.dataSource = self
         
+//        Auth.auth().addStateDidChangeListener { (auth, user) in
+//
+//            if user != nil {
+//
+//                self.signedInUser = user
+//                self.settingsTableView.reloadData()
+//
+//                print(user?.email)
+//            }
+//
+//        }
+        
+    
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+
         Auth.auth().addStateDidChangeListener { (auth, user) in
 
             if user != nil {
-                
+
                 self.signedInUser = user
                 self.settingsTableView.reloadData()
-                
+
                 print(user?.email)
             }
 
         }
         
+        print("view has awoken")
     }
-    
-//    override func viewDidAppear(_ animated: Bool) {
-//
-//        Auth.auth().addStateDidChangeListener { (auth, user) in
-//
-//            if user != nil {
-//                self.signedInUser = user
-//                self.logOutButton.setTitleColor(.red, for: .normal)
-//                print(user?.email)
-//            }
-//            else {
-//                self.logOutButton.setTitleColor(.gray, for: .normal)
-//
-//            }
-//
-//        }
-//    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         
-        if signedInUser != nil {
+        if signedInUser != nil && currentUser.userID != "" {
             
             return 5
         }
@@ -74,7 +75,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
-        if signedInUser != nil {
+        if signedInUser != nil  && currentUser.userID != "" {
             
             return sectionHeaderArray[section]
         }
@@ -87,7 +88,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if signedInUser != nil {
+        if signedInUser != nil  && currentUser.userID != "" {
             
             if section == 0 || section == 3 {
                 return 1
@@ -98,7 +99,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         else {
             
-            if section < 2 || section == 3 {
+            if section < 2 {
                 return 2
             }
             else {
@@ -110,7 +111,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if signedInUser != nil {
+        if signedInUser != nil  && currentUser.userID != "" {
             
             if indexPath.section == 0 {
                 
@@ -121,7 +122,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 cell.initialLabel.text = "\(firstNameArray[0].uppercased())"
                 
                 cell.nameLabel.adjustsFontSizeToFitWidth = true
-                cell.nameLabel.text = "Name: \n" + currentUser.firstName + " " + currentUser.lastName
+                cell.nameLabel.text = currentUser.firstName + " " + currentUser.lastName
                 
                 cell.usernameLabel.adjustsFontSizeToFitWidth = true
                 cell.usernameLabel.text = "Username: \n" + currentUser.username
@@ -142,11 +143,14 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 if indexPath.row == 0 {
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath) as! SettingsCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath) as! SettingsTableViewCell
                     
                     cell.settingLabel.adjustsFontSizeToFitWidth = true
                     cell.settingLabel.text = "Automatically Delete Completed Tasks"
                     cell.selectionStyle = .none
+                    
+                    cell.setting = "autoDeleteTasks"
+                    cell.settingSwitch.isOn = defaults.value(forKey: "autoDeleteTasks") as? Bool ?? true
                     
                     return cell
                 }
@@ -163,11 +167,14 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 if indexPath.row == 0 {
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath) as! SettingsCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath) as! SettingsTableViewCell
                     
                     cell.settingLabel.adjustsFontSizeToFitWidth = true
                     cell.settingLabel.text = "Enable Timer Sound Effects"
                     cell.selectionStyle = .none
+                    
+                    cell.setting = "playPomodoroSoundEffects"
+                    cell.settingSwitch.isOn = defaults.value(forKey: "playPomodoroSoundEffects") as? Bool ?? true
                     
                     return cell
                 }
@@ -212,11 +219,14 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 if indexPath.row == 0 {
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath) as! SettingsCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath) as! SettingsTableViewCell
                     
                     cell.settingLabel.adjustsFontSizeToFitWidth = true
                     cell.settingLabel.text = "Automatically Delete Completed Tasks"
                     cell.selectionStyle = .none
+                    
+                    cell.setting = "autoDeleteTasks"
+                    cell.settingSwitch.isOn = defaults.value(forKey: "autoDeleteTasks") as? Bool ?? true
                     
                     return cell
                 }
@@ -233,11 +243,14 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 if indexPath.row == 0 {
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath) as! SettingsCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath) as! SettingsTableViewCell
                     
                     cell.settingLabel.adjustsFontSizeToFitWidth = true
                     cell.settingLabel.text = "Enable Timer Sound Effects"
                     cell.selectionStyle = .none
+                    
+                    cell.setting = "playPomodoroSoundEffects"
+                    cell.settingSwitch.isOn = defaults.value(forKey: "playPomodoroSoundEffects") as? Bool ?? true
                     
                     return cell
                 }
@@ -281,7 +294,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        if signedInUser != nil {
+        if signedInUser != nil  && currentUser.userID != "" {
             
             if indexPath.section == 0 {
                 return 200
@@ -294,6 +307,43 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             return 50
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if signedInUser != nil && currentUser.userID != "" {
+            
+            if indexPath.section == 4 && indexPath.row == 1 {
+                
+                ProgressHUD.show()
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    
+                        do {
+                    
+                            try Auth.auth().signOut()
+                            self.signedInUser = nil
+                            tableView.reloadData()
+                            
+                            ProgressHUD.dismiss()
+                            print("user signed out")
+                    
+                        } catch let signOutError as NSError {
+                    
+                            ProgressHUD.showError(signOutError.localizedDescription)
+                            
+                            print("Error signing out", signOutError.localizedDescription)
+                        }
+                }
+                
+            }
+        }
+        
+        else {
+            performSegue(withIdentifier: "moveToInfo", sender: self)
+        }
+        
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     

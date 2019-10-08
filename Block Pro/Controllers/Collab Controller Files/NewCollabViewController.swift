@@ -80,6 +80,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         friendsTableView.dataSource = self
         
         friendsTableView.backgroundColor = UIColor(hexString: "2E2E2E")
+        friendsTableView.separatorColor = .white
         
         gradientLayer = CAGradientLayer()
         gradientLayer.frame =  CGRect(x: 0, y: 0, width: 400, height: 44)
@@ -111,6 +112,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         datePickerContainer.clipsToBounds = true
         
         friendsTableView.layer.cornerRadius = 0.065 * friendsTableView.bounds.size.width
+        friendsTableView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] //Top left corner and top right corner respectively
         friendsTableView.clipsToBounds = true
         
         datePicker.setValue(UIColor.white, forKey: "textColor")
@@ -167,7 +169,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         }
             
         //iPhone 8
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 {
             
             collabViewTopAnchor.constant = 110
             collabViewInitialTop = 110
@@ -196,6 +198,22 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Friends"
+    }
+    
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//
+//        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: 30))
+//        headerView.backgroundColor = UIColor(hexString: "2E2E2E")
+//        return headerView
+//
+//    }
+    
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        
+        view.tintColor = UIColor(hexString: "2E2E2E")?.darken(byPercentage: 0.025)
+        let header = view as! UITableViewHeaderFooterView
+        header.textLabel?.textColor = UIColor.white
+        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
