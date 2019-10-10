@@ -118,6 +118,8 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         datePicker.setValue(UIColor.white, forKey: "textColor")
         datePicker?.addTarget(self, action: #selector(dateSelected(datePicker:)), for: .valueChanged)
         
+        datePicker.setValue(false, forKey: "highlightsToday") //Stops the current date text from being black
+        
         collabWithTextField.inputView = UIView()
         dateTextField.inputView = UIView()
         
@@ -326,6 +328,8 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
             }
         }
     }
+    
+    #warning("due to the fact that users can now delete thier accounts, write a way to check to see if the user a person wants to collab with still has an active account")
     
     func createCollab () {
         

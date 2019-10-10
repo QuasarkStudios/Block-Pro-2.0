@@ -76,7 +76,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Friends Count" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q83-N2-mdH">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Friends Count" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Q83-N2-mdH">
                                                     <rect key="frame" x="170" y="75" width="195" height="50"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="50" id="fPL-hA-icM"/>
@@ -104,22 +104,15 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="accountCreatedLabel" destination="jpR-RY-Poe" id="tmj-AX-KRh"/>
+                                            <outlet property="friendCountLabel" destination="Q83-N2-mdH" id="uBW-sB-RW1"/>
                                             <outlet property="initialContainer" destination="4Lc-W5-K7M" id="yax-bb-zb2"/>
                                             <outlet property="initialLabel" destination="eAU-9q-emR" id="uhk-9O-eaw"/>
                                             <outlet property="nameLabel" destination="QGk-u3-yb7" id="7by-Yf-M6j"/>
                                             <outlet property="usernameLabel" destination="dE8-nH-2e7" id="1bA-mi-GBW"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="detailDisclosureButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="InfoCell" id="HZn-n1-4rC">
-                                        <rect key="frame" x="0.0" y="228" width="375" height="43.666667938232422"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="HZn-n1-4rC" id="Ven-oS-Hg3">
-                                            <rect key="frame" x="0.0" y="0.0" width="316.66666666666669" height="43.666667938232422"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="SettingsCell" rowHeight="50" id="XK8-5e-FHa" customClass="SettingsTableViewCell" customModule="Block_Pro" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="271.66666793823242" width="375" height="50"/>
+                                        <rect key="frame" x="0.0" y="228" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="XK8-5e-FHa" id="G8p-bK-1Gq">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
@@ -155,11 +148,11 @@
                                             <outlet property="settingSwitch" destination="wMK-fW-puo" id="klY-cw-dOQ"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="15T-Bx-unb">
-                                        <rect key="frame" x="0.0" y="321.66666793823242" width="375" height="43.666667938232422"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="50" id="nqn-n0-Hky">
+                                        <rect key="frame" x="0.0" y="278" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="15T-Bx-unb" id="m9r-x7-PU5">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="nqn-n0-Hky" id="RAj-mP-YYs">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -184,7 +177,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gb5-dW-BWu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2192.8000000000002" y="1599.7536945812808"/>
+            <point key="canvasLocation" x="2378" y="1600"/>
         </scene>
         <!--Info View Controller-->
         <scene sceneID="rD6-fo-j6e">
@@ -195,7 +188,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy Policy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nvj-Kc-O0N">
-                                <rect key="frame" x="15" y="5" width="345" height="50"/>
+                                <rect key="frame" x="15" y="5" width="169.33333333333334" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="z3t-TN-04V"/>
                                 </constraints>
@@ -206,34 +199,54 @@
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="k6A-v9-IP1">
                                 <rect key="frame" x="0.0" y="60" width="375" height="698"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda. Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda. Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda. Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda</mutableString>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="698" id="yb2-tm-XLN"/>
+                                </constraints>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda. Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda. Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda. Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda</string>
                                 <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lnW-O8-byB">
+                                <rect key="frame" x="330" y="15" width="30" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="1cB-BV-MCL"/>
+                                    <constraint firstAttribute="width" constant="30" id="LGi-Al-FKM"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue-Medium" family="Helvetica Neue" pointSize="17"/>
+                                <state key="normal" title="X">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="exitButton:" destination="O8P-kg-X8Z" eventType="touchUpInside" id="1TO-Io-I7Z"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="k6A-v9-IP1" secondAttribute="bottom" id="04m-qB-SUK"/>
-                            <constraint firstItem="k6A-v9-IP1" firstAttribute="top" secondItem="nvj-Kc-O0N" secondAttribute="bottom" constant="5" id="4jb-xv-Bza"/>
+                            <constraint firstItem="IbU-x6-sFi" firstAttribute="trailing" secondItem="lnW-O8-byB" secondAttribute="trailing" constant="15" id="3BQ-RM-Zfz"/>
                             <constraint firstItem="k6A-v9-IP1" firstAttribute="trailing" secondItem="IbU-x6-sFi" secondAttribute="trailing" id="4uS-eN-dh4"/>
                             <constraint firstItem="k6A-v9-IP1" firstAttribute="leading" secondItem="IbU-x6-sFi" secondAttribute="leading" id="9Sc-f3-sYZ"/>
                             <constraint firstItem="nvj-Kc-O0N" firstAttribute="top" secondItem="IbU-x6-sFi" secondAttribute="top" constant="5" id="Crq-ug-UVE"/>
                             <constraint firstItem="nvj-Kc-O0N" firstAttribute="leading" secondItem="IbU-x6-sFi" secondAttribute="leading" constant="15" id="LEd-8b-CNs"/>
-                            <constraint firstAttribute="trailing" secondItem="nvj-Kc-O0N" secondAttribute="trailing" constant="15" id="fWG-lc-072"/>
+                            <constraint firstItem="lnW-O8-byB" firstAttribute="top" secondItem="IbU-x6-sFi" secondAttribute="top" constant="15" id="lnP-aP-u9L"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="IbU-x6-sFi"/>
                     </view>
                     <navigationItem key="navigationItem" id="N7z-hY-b3t"/>
                     <connections>
+                        <outlet property="exitButton" destination="lnW-O8-byB" id="ONJ-MF-E1g"/>
                         <outlet property="infoLabel" destination="nvj-Kc-O0N" id="ZJE-tf-crJ"/>
+                        <outlet property="infoLabelTopAnchor" destination="Crq-ug-UVE" id="vfC-rc-wTP"/>
                         <outlet property="infoTextView" destination="k6A-v9-IP1" id="LUb-lT-hZf"/>
-                        <outlet property="textViewTopAnchor" destination="4jb-xv-Bza" id="EyP-Rd-wyH"/>
+                        <outlet property="textViewHeightConstraint" destination="yb2-tm-XLN" id="Zu3-6d-ZQJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gzY-An-jh3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3303.1999999999998" y="1606.4039408866995"/>
+            <point key="canvasLocation" x="3514" y="1600"/>
         </scene>
         <!--User Settings-->
         <scene sceneID="OLA-KU-bBB">

@@ -14,5 +14,6 @@ class ProfileCell: UITableViewCell {
     @IBOutlet weak var initialLabel: UILabel!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var usernameLabel: UILabel!
+    @IBOutlet weak var friendCountLabel: UILabel!
     @IBOutlet weak var accountCreatedLabel: UILabel!
 }
