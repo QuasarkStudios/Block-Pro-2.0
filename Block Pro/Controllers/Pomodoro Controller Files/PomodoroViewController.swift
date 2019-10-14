@@ -1234,7 +1234,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         else if sessionTracker == "30MinBreak" {
             
             content.title = "Your 30 Minute Break's Up"
-            content.title = "Great job completing a full Pomodoro. Check in on Block Pro to start another one!!"
+            content.body = "Great job completing a full Pomodoro. Check in on Block Pro to start another one!!"
         }
         
         content.sound = UNNotificationSound.default

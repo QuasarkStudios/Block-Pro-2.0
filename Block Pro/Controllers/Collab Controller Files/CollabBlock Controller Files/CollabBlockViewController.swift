@@ -88,7 +88,8 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         gradientLayer.frame = verticalTableSeperator.bounds
         gradientLayer.colors = [UIColor(hexString: "#b92b27")?.cgColor as Any, UIColor(hexString: "#1565C0")?.cgColor as Any]
         
-
+         verticalTableSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -206,23 +207,26 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
             let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell", for: indexPath) as! CustomTimeTableCell
             
             cell.frame = CGRect(x: 0, y: 0, width: 65, height: 120)
-            cell.timeLabelContainer.frame = CGRect(x: 5, y: 49, width: 55, height: 20)
+            //cell.timeLabelContainer.frame = CGRect(x: 5, y: 49, width: 55, height: 20)
             
-            cell.timeLabel.frame = CGRect(x: 0, y: 0, width: 55, height: 20)
-            cell.timeLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5) //Setting the font and font size of the cell
+            //cell.timeLabel.frame = CGRect(x: 0, y: 0, width: 55, height: 20)
+            //cell.timeLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5) //Setting the font and font size of the cell
             cell.timeLabel.text = cellTimes[indexPath.row] //Setting the time the cell should display
+            
+            cell.timeLabel.textColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.7)
+            cell.cellSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
             
             cell.cellSeperator.frame = CGRect(x: 6, y: 119, width: 52, height: 0.5)
             
-            cell.timeLabelContainer.backgroundColor = UIColor.white
+            //cell.timeLabelContainer.backgroundColor = UIColor.white
             
             //Every cell that does not have the text "11:00 PM" should have a black "cellSeperator"
             if cell.timeLabel.text == "11:00 PM" {
-                cell.cellSeperator.backgroundColor = UIColor.white
+                //cell.cellSeperator.backgroundColor = UIColor.white
             }
                 
             else {
-                cell.cellSeperator.backgroundColor = UIColor.black
+                //cell.cellSeperator.backgroundColor = UIColor.black
             }
             return cell
         }
@@ -298,6 +302,9 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     }
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
+                    
+//                    cell.containerView.backgroundColor = UIColor.white.withAlphaComponent(0.4)//UIColor(flatVersionOf: .yellow) //.flatYellow().withAlphaComponent(0.5)7-=*
+//                    cell.alphaView.backgroundColor = UIColor.white.withAlphaComponent(0.6)
                     
                     return configureBlock(cell, 40.0, blockColor) as! UITableViewCell
 
@@ -999,6 +1006,8 @@ extension CollabBlockViewController {
             
             funcCell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
             
+            print(funcCell.initialLabel.font)
+            
             return funcCell
             
         case 50.0:
@@ -1045,7 +1054,8 @@ extension CollabBlockViewController {
             funcCell.initialLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
             funcCell.initialLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
             
-            funcCell.initialLabel.font = UIFont(name: ".SFUIText", size: 15)
+            funcCell.initialLabel.font = UIFont(name: "HelveticaNeue", size: 13)
+
             funcCell.initialLabel.backgroundColor = UIColor.lightGray.lighten(byPercentage: 0.1)
             funcCell.initialLabel.layer.cornerRadius = 0.5 * 30
             funcCell.initialLabel.clipsToBounds = true
@@ -1164,7 +1174,8 @@ extension CollabBlockViewController {
             funcCell.initialLabel.widthAnchor.constraint(equalToConstant: 36).isActive = true
             funcCell.initialLabel.heightAnchor.constraint(equalToConstant: 36).isActive = true
             
-            funcCell.initialLabel.font = UIFont(name: ".SFUIText", size: 15)
+            funcCell.initialLabel.font = UIFont(name: "HelveticaNeue", size: 17)
+    
             funcCell.initialLabel.backgroundColor = UIColor.lightGray.lighten(byPercentage: 0.1)
             funcCell.initialLabel.layer.cornerRadius = 0.5 * 36
             funcCell.initialLabel.clipsToBounds = true

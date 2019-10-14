@@ -18,28 +18,48 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     let realm = try! Realm() //Initializing a new "Realm"
     
     var allBlockDates: Results<TimeBlocksDate>? //Results container used to hold all "TimeBlocksDate" objects from the Realm database
-    var currentBlocksDate: Results<TimeBlocksDate>? //Results container that holds only one "TimeBlocksDate" object that matches the current date or selected user date
+    var currentBlocksDate: Results<TimeBlocksDate>? //Results container that holds only one "TimeBlocksDate" object that matches the current date or user selected date
     var currentDateObject: TimeBlocksDate? //Variable that will contain a "TimeBlocksDate" object that matches the current date or the selected user date
     
     var currentDate: Date = Date() //Variable that hold either the current date or the user selected date
     
     var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
+    @IBOutlet weak var timeTableView: UITableView!
+    @IBOutlet weak var timeTableViewTopAnchor: NSLayoutConstraint!
+    
+    @IBOutlet weak var verticalTableViewSeperator: UIView!
+    @IBOutlet weak var tableSeperatorTopAnchor: NSLayoutConstraint!
+    
+    @IBOutlet weak var blockTableView: UITableView!
+    @IBOutlet weak var blockTableViewTopAnchor: NSLayoutConstraint!
+    
+    
+    
+    @IBOutlet weak var timeBlockBarItem: UITabBarItem!
+    
+    
     @IBOutlet weak var dateLabel: UILabel!
     
+    
+    @IBOutlet weak var calendarContainer: UIView!
+    @IBOutlet weak var calendarContainerTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var calendarContainerHeightConstraint: NSLayoutConstraint!
+    
     @IBOutlet weak var calendarView: JTAppleCalendarView!
+    
+    @IBOutlet weak var calendarViewBottomAnchor: NSLayoutConstraint!
+    
+    @IBOutlet weak var monthButton: UIButton!
+    @IBOutlet weak var dayButton: UIButton!
+    @IBOutlet weak var weekButton: UIButton!
+    
     
     @IBOutlet weak var monthlyContainer: UIView!
     @IBOutlet weak var dailyContainer: UIView!
     @IBOutlet weak var weeklyContainer: UIView!
     
-    @IBOutlet weak var sundayLabel: UILabel!
-    @IBOutlet weak var mondayLabel: UILabel!
-    @IBOutlet weak var tuesdayLabel: UILabel!
-    @IBOutlet weak var wednesdayLabel: UILabel!
-    @IBOutlet weak var thursdayLabel: UILabel!
-    @IBOutlet weak var fridayLabel: UILabel!
-    @IBOutlet weak var saturdayLabel: UILabel!
+
     
     let formatter = DateFormatter() //Global initialization of DateFormatter object
     
@@ -62,11 +82,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var numberOfRows: Int = 6 //Variable that stores how many rows the calendarView should display
     
-    @IBOutlet weak var timeTableView: UITableView!
-    @IBOutlet weak var blockTableView: UITableView!
-    @IBOutlet weak var verticalTableViewSeperator: UIImageView!
 
-    @IBOutlet weak var timeBlockBarItem: UITabBarItem!
     var timeBlockViewTracker: Bool = false //Variable that tracks whether or not the TimeBlock view is present
     
     
@@ -98,41 +114,42 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         verticalTableViewSeperator.frame = CGRect(x: 82, y: 136, width: 2, height: 592)
         blockTableView.frame = CGRect(x: 84, y: 136, width: 291, height: 592)
 
+        verticalTableViewSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
+        
         tabBarController?.delegate = self
+        
+        calendarContainerTopAnchor.constant = 0
+        calendarContainerHeightConstraint.constant = 0
+        calendarContainer.backgroundColor = UIColor(hexString: "E35D5B")
+        calendarContainer.layer.cornerRadius = 0.05 * calendarContainer.bounds.size.width
+        calendarContainer.clipsToBounds = true
+        
+        calendarViewBottomAnchor.constant = 0
+        calendarView.layer.cornerRadius = 0.05 * calendarView.bounds.size.width
+        calendarView.clipsToBounds = true
         
         calendarView.calendarDataSource = self
         calendarView.calendarDelegate = self
         
-        calendarView.frame.origin.x = 375
         
         calendarView.scrollDirection = .horizontal
         calendarView.scrollingMode = .stopAtEachCalendarFrame
         calendarView.showsHorizontalScrollIndicator = false
         
-        sundayLabel.frame.origin.x = 393
-        mondayLabel.frame.origin.x = 446
-        tuesdayLabel.frame.origin.x = 495
-        wednesdayLabel.frame.origin.x = 551
-        thursdayLabel.frame.origin.x = 602
-        fridayLabel.frame.origin.x = 664
-        saturdayLabel.frame.origin.x = 716
+    
         
-        monthlyContainer.layer.cornerRadius = 0.07 * monthlyContainer.bounds.size.width
-        monthlyContainer.clipsToBounds = true
-        monthlyContainer.backgroundColor = UIColor.flatWhiteDark()
+        monthButton.setTitleColor(.lightGray, for: .normal)
+        //dayButton.setTitleColor(.lightGray, for: .normal)
+        weekButton.setTitleColor(.lightGray, for: .normal)
         
-        dailyContainer.layer.cornerRadius = 0.07 * dailyContainer.bounds.size.width
-        dailyContainer.clipsToBounds = true
-        dailyContainer.backgroundColor = UIColor.flatPowderBlue().darken(byPercentage: 0.2)
-        
-        weeklyContainer.layer.cornerRadius = 0.07 * weeklyContainer.bounds.size.width
-        weeklyContainer.clipsToBounds = true
-        weeklyContainer.backgroundColor = UIColor.flatWhiteDark()
+
         
         allBlockDates = realm.objects(TimeBlocksDate.self)
         
         formatter.dateFormat = "EEEE, MMMM d"
-        dateLabel.text = formatter.string(from: currentDate)
+        //dateLabel.text = formatter.string(from: currentDate)
+        
+        navigationItem.title = formatter.string(from: currentDate)
         
     }
     
@@ -409,8 +426,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         if tableView == timeTableView {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell", for: indexPath) as! CustomTimeTableCell
-            cell.timeLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.5) //Setting the font and font size of the cell
+            //cell.timeLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.5) //Setting the font and font size of the cell
             cell.timeLabel.text = cellTimes[indexPath.row] //Setting the time the cell should display
+            cell.timeLabel.textColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.7)
             
             //Every cell that does not have the text "11:00 PM" should have a black "cellSeperator"
             if cell.timeLabel.text == "11:00 PM" {
@@ -418,7 +436,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             }
                 
             else {
-                cell.cellSeperator.backgroundColor = UIColor.black
+                //cell.cellSeperator.backgroundColor = UIColor.black
+                cell.timeLabel.textColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.8)
+                cell.cellSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
             }
             return cell
         }
@@ -470,6 +490,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     return cell
                 }
             }
+             
                 
             //There was an error somewhere in this process and now we're here 
             else {
@@ -497,7 +518,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
         }
         else {
-            return "YOU GOT IT WRONG BEYOTCH"
+            return "Error"
         }
     }
     
@@ -716,10 +737,17 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     //Button that moves to the previous day in the calendar
     @IBAction func previousDay(_ sender: Any) {
         
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        
         currentDate = currentDate.addingTimeInterval(-86400) //Subtracts one day worth of seconds from the currentDate
         formatter.dateFormat = "EEEE, MMMM d"
-        dateLabel.text = formatter.string(from: currentDate)
+        //dateLabel.text = formatter.string(from: currentDate)
     
+        navigationItem.title = formatter.string(from: currentDate)
+        
+        calendarView.scrollToDate(currentDate)
+        
         calendarView.selectDates([currentDate]) //Selects the new date in the calendar
         findTimeBlocks(currentDate) //Restarts the process of retreiving the data from Realm with the new date
         blockTableView.reloadData()
@@ -729,9 +757,16 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     //Button that moves to the next day in the calendar
     @IBAction func nextDay(_ sender: Any) {
         
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        
         currentDate = currentDate.addingTimeInterval(86400) //Adds one day worth of seconds from the currentDate
         formatter.dateFormat = "EEEE, MMMM d"
-        dateLabel.text = formatter.string(from: currentDate)
+        //dateLabel.text = formatter.string(from: currentDate)
+        
+        navigationItem.title = formatter.string(from: currentDate)
+        
+        calendarView.scrollToDate(currentDate)
         
         calendarView.selectDates([currentDate]) //Selects the new date in the calendar
         findTimeBlocks(currentDate) //Restarts the process of retreiving the data from Realm with the new date
@@ -742,155 +777,219 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     //Button that animates the Month calendar onto the view
     @IBAction func monthlyButton(_ sender: Any) {
         
-        
-        //Changes the color of the buttons based to indicate a selection
-        dailyContainer.backgroundColor = UIColor.flatWhiteDark()
-        weeklyContainer.backgroundColor = UIColor.flatWhiteDark()
-        monthlyContainer.backgroundColor = UIColor.flatPowderBlue().darken(byPercentage: 0.2)
-        
-        numberOfRows = 6 //Changes the number of rows for the calendar to 6
-        calendarView.reloadData(withanchor: currentDate) //Reloads the calendar with the new date
-        
-        //If the calendar isn't already on the screen
-        if calendarView.frame.origin.x == 375.0 {
+        if monthButton.titleColor(for: .normal) == UIColor(hexString: "E35D5B") {
             
-            //First animate the tableView elements and the calendar to their appropriate size, with the calendar still not being presented
-            UIView.animate(withDuration: 0.2, animations: {
-                
-                self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 260)
-                
-                self.timeTableView.frame = CGRect(x: 0, y: 400, width: 82, height: 330)
-                self.blockTableView.frame = CGRect(x: 84, y: 400, width: 291, height: 330)
-                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 400, width: 2, height: 330)
-                
-            }) { (finished: Bool) in
-                
-                //Then animate the calendar elements onto the screen
-                UIView.animate(withDuration: 0.2, animations: {
-                    self.calendarView.frame.origin.x = 0
-                    
-                    self.sundayLabel.frame.origin.x = 18
-                    self.mondayLabel.frame.origin.x = 71
-                    self.tuesdayLabel.frame.origin.x = 120
-                    self.wednesdayLabel.frame.origin.x = 176.33
-                    self.thursdayLabel.frame.origin.x = 227.33
-                    self.fridayLabel.frame.origin.x = 288.67
-                    self.saturdayLabel.frame.origin.x = 341
-                    
-                    self.calendarView.selectDates([self.currentDate])
-                    self.calendarView.reloadData(withanchor: self.currentDate)
-                })
-            }
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.warning)
         }
         
-        //If the calendar is already on the screen
         else {
             
-            //Animate the tableView elements and the calendar to their appropriate size
-            UIView.animate(withDuration: 0.2) {
-                
-                self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 260)
-                
-                self.timeTableView.frame = CGRect(x: 0, y: 400, width: 82, height: 330)
-                self.blockTableView.frame = CGRect(x: 84, y: 400, width: 291, height: 330)
-                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 400, width: 2, height: 330)
-            }
-        }
-    }
-    
-    
-    //Button that animates the Week calendar onto the view
-    @IBAction func weeklyButton(_ sender: Any) {
-        
-        
-        //Changes the color of the buttons based to indicate a selection
-        dailyContainer.backgroundColor = UIColor.flatWhiteDark()
-        weeklyContainer.backgroundColor = UIColor.flatPowderBlue().darken(byPercentage: 0.2)
-        monthlyContainer.backgroundColor = UIColor.flatWhiteDark()
-        
-        numberOfRows = 1 //Changes the number of rows for the calendar to just 1
-        calendarView.reloadData(withanchor: currentDate) //Reloads the calendar with the new date
-        
-        //If the calendar isn't already on the screen
-        if calendarView.frame.origin.x == 375.0 {
+            self.calendarView.selectDates([self.currentDate])
             
-            //First animate the tableView elements and the calendar to their appropriate size, with the calendar still not being presented
+            monthButton.setTitleColor(UIColor(hexString: "E35D5B"), for: .normal)
+            dayButton.setTitleColor(.lightGray, for: .normal)
+            weekButton.setTitleColor(.lightGray, for: .normal)
+            
+//            numberOfRows = 6 //Changes the number of rows for the calendar to 6
+//            calendarView.reloadData(withanchor: currentDate) //Reloads the calendar with the new date
+            
+            
+            calendarContainerTopAnchor.constant = 5
+            calendarContainerHeightConstraint.constant = 255
+            
+            calendarViewBottomAnchor.constant = 2
+            
+            numberOfRows = 6 //Changes the number of rows for the calendar to just 1
+            calendarView.reloadData(withanchor: currentDate) //Reloads the calendar with the new date
+//
+                
             UIView.animate(withDuration: 0.2, animations: {
-                
-                self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 90)
-                
-                self.timeTableView.frame = CGRect(x: 0, y: 225, width: 82, height: 524)
-                self.blockTableView.frame = CGRect(x: 84, y: 225, width: 291, height: 524)
-                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 225, width: 2, height: 524)
+
+                self.view.layoutIfNeeded()
+
                 
             }) { (finished: Bool) in
-                
-                //Then animate the calendar elements onto the screen
+
                 UIView.animate(withDuration: 0.2, animations: {
-                    self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 90)
                     
-                    self.sundayLabel.frame.origin.x = 18
-                    self.mondayLabel.frame.origin.x = 71
-                    self.tuesdayLabel.frame.origin.x = 120
-                    self.wednesdayLabel.frame.origin.x = 176.33
-                    self.thursdayLabel.frame.origin.x = 227.33
-                    self.fridayLabel.frame.origin.x = 288.67
-                    self.saturdayLabel.frame.origin.x = 341
-                    
+                    //self.numberOfRows = 6 //Changes the number of rows for the calendar to 6
                     self.calendarView.selectDates([self.currentDate])
-                    self.calendarView.reloadData(withanchor: self.currentDate)
+                    self.calendarView.reloadData(withanchor: self.currentDate) //Reloads the calendar with the new date
+                    
                 })
+                
+                
+                
+                
             }
+            
+            print(calendarView.selectedDates)
+            
+//            //If the calendar isn't already on the screen
+//            if calendarView.frame.origin.x == 375.0 {
+//
+//                //First animate the tableView elements and the calendar to their appropriate size, with the calendar still not being presented
+//                UIView.animate(withDuration: 0.2, animations: {
+//
+//                    self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 260)
+//
+//                    self.timeTableView.frame = CGRect(x: 0, y: 400, width: 82, height: 330)
+//                    self.blockTableView.frame = CGRect(x: 84, y: 400, width: 291, height: 330)
+//                    self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 400, width: 2, height: 330)
+//
+//                }) { (finished: Bool) in
+//
+//                    //Then animate the calendar elements onto the screen
+//                    UIView.animate(withDuration: 0.2, animations: {
+//                        self.calendarView.frame.origin.x = 0
+//
+//
+//                        self.calendarView.selectDates([self.currentDate])
+//                        self.calendarView.reloadData(withanchor: self.currentDate)
+//                    })
+//                }
+//            }
+//
+//            //If the calendar is already on the screen
+//            else {
+//
+//                //Animate the tableView elements and the calendar to their appropriate size
+//                UIView.animate(withDuration: 0.2) {
+//
+//                    self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 260)
+//
+//                    self.timeTableView.frame = CGRect(x: 0, y: 400, width: 82, height: 330)
+//                    self.blockTableView.frame = CGRect(x: 84, y: 400, width: 291, height: 330)
+//                    self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 400, width: 2, height: 330)
+//                }
+//            }
         }
         
-        //If the calendar is already on the screen
-        else {
-            
-            //Animate the tableView elements and the calendar to their appropriate size
-            UIView.animate(withDuration: 0.2) {
-                
-                self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 90)
-                
-                self.timeTableView.frame = CGRect(x: 0, y: 225, width: 82, height: 524)
-                self.blockTableView.frame = CGRect(x: 84, y: 225, width: 291, height: 524)
-                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 225, width: 2, height: 524)
-            }
-        }
+
     }
     
     @IBAction func dailyButton(_ sender: Any) {
         
         
-        //Changes the color of the buttons based to indicate a selection
-        dailyContainer.backgroundColor = UIColor.flatPowderBlue().darken(byPercentage: 0.2)
-        weeklyContainer.backgroundColor = UIColor.flatWhiteDark()
-        monthlyContainer.backgroundColor = UIColor.flatWhiteDark()
         
-        //First, animate the calendar elements off the screen
-        UIView.animate(withDuration: 0.2, animations: {
+        if dayButton.titleColor(for: .normal) == UIColor(hexString: "E35D5B") {
             
-            self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: self.calendarView.frame.height)
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.warning)
+        }
+        
+        else {
             
-            self.sundayLabel.frame.origin.x = 393
-            self.mondayLabel.frame.origin.x = 446
-            self.tuesdayLabel.frame.origin.x = 495
-            self.wednesdayLabel.frame.origin.x = 551
-            self.thursdayLabel.frame.origin.x = 602
-            self.fridayLabel.frame.origin.x = 664
-            self.saturdayLabel.frame.origin.x = 716
+            monthButton.setTitleColor(.lightGray, for: .normal)
+            dayButton.setTitleColor(UIColor(hexString: "E35D5B"), for: .normal)
+            weekButton.setTitleColor(.lightGray, for: .normal)
             
-        }) { (finished: Bool) in
+            calendarContainerTopAnchor.constant = 0
+            calendarContainerHeightConstraint.constant = 0
             
-            //Then animate the tableView elements to their appriopriate size
+            calendarViewBottomAnchor.constant = 0
+            
+//            UIView.animate(withDuration: 0.2) {
+//                self.view.layoutIfNeeded()
+//            }
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                self.view.layoutIfNeeded()
+            }) { (finished: Bool) in
+                
+                //self.calendarView.deselect(dates: [self.currentDate])
+            }
+            
+            
+            
+
+        }
+        
+
+    }
+
+    //Button that animates the Week calendar onto the view
+    @IBAction func weeklyButton(_ sender: Any) {
+
+        
+        if weekButton.titleColor(for: .normal) == UIColor(hexString: "E35D5B") {
+            
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.warning)
+        }
+        
+        else {
+            
+
+            monthButton.setTitleColor(.lightGray, for: .normal)
+            dayButton.setTitleColor(.lightGray, for: .normal)
+            weekButton.setTitleColor(UIColor(hexString: "E35D5B"), for: .normal)
+            
+            numberOfRows = 1 //Changes the number of rows for the calendar to just 1
+            calendarView.reloadData(withanchor: currentDate) //Reloads the calendar with the new date
+            
+            calendarContainerTopAnchor.constant = 5
+            calendarContainerHeightConstraint.constant = 90
+            
+            calendarViewBottomAnchor.constant = 2
+            
             UIView.animate(withDuration: 0.2, animations: {
                 
-                self.timeTableView.frame = CGRect(x: 0, y: 136, width: 82, height: 592)
-                self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 136, width: 2, height: 592)
-                self.blockTableView.frame = CGRect(x: 84, y: 136, width: 291, height: 592)
-            })
+                self.view.layoutIfNeeded()
+                
+            }) { (finished: Bool) in
+                
+                self.calendarView.selectDates([self.currentDate])
+                self.calendarView.reloadData(withanchor: self.currentDate)
+                
+            }
+            
+            
+            
+            
+//            //If the calendar isn't already on the screen
+//            if calendarView.frame.origin.x == 375.0 {
+//
+//                //First animate the tableView elements and the calendar to their appropriate size, with the calendar still not being presented
+//                UIView.animate(withDuration: 0.2, animations: {
+//
+//                    self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 90)
+//
+//                    self.timeTableView.frame = CGRect(x: 0, y: 225, width: 82, height: 524)
+//                    self.blockTableView.frame = CGRect(x: 84, y: 225, width: 291, height: 524)
+//                    self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 225, width: 2, height: 524)
+//
+//                }) { (finished: Bool) in
+//
+//                    //Then animate the calendar elements onto the screen
+//                    UIView.animate(withDuration: 0.2, animations: {
+//                        self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 90)
+//
+//                        self.calendarView.selectDates([self.currentDate])
+//                        self.calendarView.reloadData(withanchor: self.currentDate)
+//                    })
+//                }
+//            }
+//
+//            //If the calendar is already on the screen
+//            else {
+//
+//                //Animate the tableView elements and the calendar to their appropriate size
+//                UIView.animate(withDuration: 0.2) {
+//
+//                    self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 90)
+//
+//                    self.timeTableView.frame = CGRect(x: 0, y: 225, width: 82, height: 524)
+//                    self.blockTableView.frame = CGRect(x: 84, y: 225, width: 291, height: 524)
+//                    self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 225, width: 2, height: 524)
+//                }
+//            }
         }
+        
     }
     
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
         if segue.identifier == "presentBlockPopover" {
@@ -979,7 +1078,7 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         
         guard let cell = view as? DateCell else { return }
             cell.dateLabel.text = cellState.text
-        cell.backgroundColor = UIColor.flatWhite()
+        //cell.backgroundColor = UIColor.flatWhite()
         
         handleCellTextColor(cell: cell, cellState: cellState)
         handleCellSelected(cell: cell, cellState: cellState)
@@ -1003,6 +1102,7 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
     
     //Function that handles when a certain cell is selected
     func handleCellSelected (cell: DateCell, cellState: CellState) {
+
         
         if cellState.isSelected == true {
             
@@ -1012,17 +1112,19 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
             //Responsible for cell selection animation
             UIView.animate(withDuration: 0.05, animations: {
 
-                cell.selectedView.frame = CGRect(x: 12, y: 4, width: 27, height: 27)
+                //cell.selectedView.frame = CGRect(x: 12, y: 4, width: 27, height: 27)
                 cell.selectedView.layer.cornerRadius = 0.5 * cell.selectedView.bounds.size.width
                 
             }) { (finished: Bool) in
                 
-                cell.bringSubviewToFront(cell.dateContainer) //Bring the date text of cell to the front
+                //cell.bringSubviewToFront(cell.dateContainer) //Bring the date text of cell to the front
             }
             
             currentDate = cellState.date //Sets the currentDate of the view to the date of the selected cell
             formatter.dateFormat = "EEEE, MMMM d"
-            dateLabel.text = formatter.string(from: currentDate) //Changes the dateLabel of the view to the new currentDate
+            //dateLabel.text = formatter.string(from: currentDate) //Changes the dateLabel of the view to the new currentDate
+            
+            navigationItem.title = formatter.string(from: currentDate)
             
             findTimeBlocks(currentDate)
             blockTableView.reloadData()
@@ -1031,16 +1133,23 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
 
         else {
             
+            
+            
+            if cellState.date != currentDate {
+                
+            }
+            
                 //Responsible for cell deselection animation
                 UIView.animate(withDuration: 0.05, animations: {
-                    
-                    cell.selectedView.frame = CGRect(x: 0, y: -8, width: 50, height: 50)
-                    
+
+                    //cell.selectedView.frame = CGRect(x: 0, y: -8, width: 50, height: 50)
+
                 }) { (finished: Bool) in
                     cell.selectedView.isHidden = true
                     cell.selectedView.layer.cornerRadius = 0.0
+                    
                 }
-
+            
         }
     }
     
@@ -1107,7 +1216,20 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
 
         let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "DateHeader", for: indexPath) as! DateHeader
         header.monthLabel.text = formatter.string(from: range.start)
-        header.backgroundColor = UIColor.flatWhiteDark()
+        
+        var gradientLayer: CAGradientLayer!
+        
+        gradientLayer = CAGradientLayer()
+        gradientLayer.frame = CGRect(x: 0, y: 0, width: 450, height: 50)
+        gradientLayer.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
+        
+        header.layer.addSublayer(gradientLayer)
+        
+        //header.backgroundColor = UIColor(hexString: "E35D5B")
+        
+        header.bringSubviewToFront(header.monthLabel)
+        header.bringSubviewToFront(header.dayStackView)
+        
         return header
     }
 
