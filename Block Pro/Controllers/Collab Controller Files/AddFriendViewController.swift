@@ -46,6 +46,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         searchBar.autocorrectionType = .no
         searchBar.autocapitalizationType = .none
         searchBar.spellCheckingType = .no
+        searchBar.barTintColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.05)
         
         //resultsTableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendCell")
         

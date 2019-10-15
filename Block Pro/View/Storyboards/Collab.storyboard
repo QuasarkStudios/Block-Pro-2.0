@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="gnd-d0-FTQ">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -18,6 +17,8 @@
                         <subviews>
                             <searchBar contentMode="redraw" placeholder="Search" translatesAutoresizingMaskIntoConstraints="NO" id="Nma-Kk-d1q">
                                 <rect key="frame" x="0.0" y="88" width="375" height="56"/>
+                                <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="barTintColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="DwX-ve-LW7">
@@ -102,6 +103,7 @@
                                                         <constraint firstAttribute="height" constant="21" id="WbM-Ac-Y67"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -114,6 +116,7 @@
                                         </view>
                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Collab With" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hj1-Ze-2qb">
                                             <rect key="frame" x="25" y="118" width="265" height="30"/>
+                                            <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="30" id="oFr-C4-6P4"/>
                                             </constraints>
@@ -122,6 +125,7 @@
                                         </textField>
                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Date" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="j3e-2c-Q9p">
                                             <rect key="frame" x="25" y="163" width="265" height="30"/>
+                                            <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="30" id="M4q-V9-X59"/>
                                             </constraints>
@@ -130,6 +134,7 @@
                                         </textField>
                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Collab Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Hl6-Dn-VYd">
                                             <rect key="frame" x="25" y="69" width="265" height="34"/>
+                                            <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                             <textInputTraits key="textInputTraits" keyboardAppearance="alert" returnKeyType="done"/>
                                         </textField>
@@ -283,11 +288,13 @@
                                             <subviews>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter here" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="qwh-Mg-VBq">
                                                     <rect key="frame" x="35" y="125" width="227" height="34"/>
+                                                    <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done"/>
                                                 </textField>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter here" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="WtW-Is-BN6">
                                                     <rect key="frame" x="8" y="255" width="127" height="34"/>
+                                                    <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="127" id="nkC-sR-at7"/>
                                                     </constraints>
@@ -295,7 +302,7 @@
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done" secureTextEntry="YES"/>
                                                 </textField>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="E-mail:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jfs-lX-xde">
-                                                    <rect key="frame" x="121.66666666666666" y="159" width="54" height="21"/>
+                                                    <rect key="frame" x="121.66666666666666" y="162" width="54" height="21"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="54" id="7vo-xh-9nY"/>
                                                         <constraint firstAttribute="height" constant="21" id="oFw-Cv-2Zp"/>
@@ -316,7 +323,9 @@
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uYK-NE-OSa">
                                                     <rect key="frame" x="35" y="335" width="227" height="24"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                                    <state key="normal" title="Already have an account? Click here to log in!"/>
+                                                    <state key="normal" title="Already have an account? Click here to log in!">
+                                                        <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
                                                     <connections>
                                                         <action selector="backToLoginButton:" destination="LrT-ev-N3D" eventType="touchUpInside" id="Qxd-Mo-mKA"/>
                                                     </connections>
@@ -327,7 +336,9 @@
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="30" id="kpa-bt-N1v"/>
                                                     </constraints>
-                                                    <state key="normal" title="Register"/>
+                                                    <state key="normal" title="Register">
+                                                        <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    </state>
                                                     <connections>
                                                         <action selector="registerButton:" destination="LrT-ev-N3D" eventType="touchUpInside" id="z5q-qX-CN7"/>
                                                     </connections>
@@ -358,6 +369,7 @@
                                                 </label>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter here" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hCz-k7-zrb">
                                                     <rect key="frame" x="21" y="51" width="114" height="34"/>
+                                                    <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="114" id="dgW-HL-936"/>
                                                     </constraints>
@@ -366,6 +378,7 @@
                                                 </textField>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter here" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Dy6-Jr-sxz">
                                                     <rect key="frame" x="165" y="51" width="112" height="34"/>
+                                                    <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="112" id="Iuw-n7-LbU"/>
                                                     </constraints>
@@ -374,6 +387,7 @@
                                                 </textField>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter here" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bjF-so-RZ8">
                                                     <rect key="frame" x="35" y="188" width="227" height="34"/>
+                                                    <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress" returnKeyType="done"/>
                                                 </textField>
@@ -389,6 +403,7 @@
                                                 </label>
                                                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter here" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Imn-Df-XzE">
                                                     <rect key="frame" x="162" y="255" width="127" height="34"/>
+                                                    <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="127" id="gxV-JT-hz9"/>
                                                     </constraints>
@@ -413,7 +428,7 @@
                                                 <constraint firstAttribute="bottom" secondItem="uYK-NE-OSa" secondAttribute="bottom" constant="16" id="GBH-1h-kPv"/>
                                                 <constraint firstItem="WtW-Is-BN6" firstAttribute="top" secondItem="p1z-2l-iO9" secondAttribute="bottom" constant="8" id="HJE-HN-wQp"/>
                                                 <constraint firstAttribute="trailing" secondItem="bjF-so-RZ8" secondAttribute="trailing" constant="35" id="IyQ-Re-bHz"/>
-                                                <constraint firstItem="bjF-so-RZ8" firstAttribute="top" secondItem="jfs-lX-xde" secondAttribute="bottom" constant="8" id="OVp-NR-oRL"/>
+                                                <constraint firstItem="bjF-so-RZ8" firstAttribute="top" secondItem="jfs-lX-xde" secondAttribute="bottom" constant="5" id="OVp-NR-oRL"/>
                                                 <constraint firstAttribute="trailing" secondItem="03N-LQ-xol" secondAttribute="trailing" constant="32" id="Shm-S5-TO2"/>
                                                 <constraint firstItem="KsN-hG-imR" firstAttribute="centerX" secondItem="Gpx-Pd-QVk" secondAttribute="centerX" id="aNY-RZ-9rh"/>
                                                 <constraint firstItem="Dy6-Jr-sxz" firstAttribute="top" secondItem="03N-LQ-xol" secondAttribute="bottom" constant="8" id="aOa-Q3-H3h"/>
@@ -448,11 +463,13 @@
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter here" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="L6S-0W-KRK">
                                         <rect key="frame" x="35" y="51" width="227" height="34"/>
+                                        <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress" returnKeyType="done"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter here" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AiC-hU-o9B">
                                         <rect key="frame" x="35" y="125" width="227" height="34"/>
+                                        <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" returnKeyType="done" secureTextEntry="YES"/>
                                     </textField>
@@ -482,7 +499,9 @@
                                             <constraint firstAttribute="height" constant="24" id="8Ch-d8-vqX"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
-                                        <state key="normal" title="Don't have an account? Click here to register!"/>
+                                        <state key="normal" title="Don't have an account? Click here to register!">
+                                            <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
                                         <connections>
                                             <action selector="newRegisterButton:" destination="LrT-ev-N3D" eventType="touchUpInside" id="swY-eY-3sv"/>
                                         </connections>
@@ -493,7 +512,9 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="7VL-XG-rNo"/>
                                         </constraints>
-                                        <state key="normal" title="Log In"/>
+                                        <state key="normal" title="Log In">
+                                            <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </state>
                                         <connections>
                                             <action selector="loginButton:" destination="LrT-ev-N3D" eventType="touchUpInside" id="TmE-uF-YBI"/>
                                         </connections>
@@ -571,14 +592,13 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <searchBar contentMode="redraw" placeholder="Search " translatesAutoresizingMaskIntoConstraints="NO" id="q1b-pE-kCD">
-                                <rect key="frame" x="0.0" y="88" width="375" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="5fS-mh-PdK"/>
-                                </constraints>
+                                <rect key="frame" x="0.0" y="88" width="375" height="56"/>
+                                <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="barTintColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nd9-Jl-g0V">
-                                <rect key="frame" x="0.0" y="132" width="375" height="597"/>
+                                <rect key="frame" x="0.0" y="144" width="375" height="585"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="FriendCell" rowHeight="55" id="YAW-Ee-zjc" customClass="FriendCell" customModule="Block_Pro" customModuleProvider="target">
@@ -1413,6 +1433,7 @@
                                         <subviews>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Block Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="p43-4C-pmC" userLabel="Block Name Text Field">
                                                 <rect key="frame" x="70" y="15" width="266" height="34"/>
+                                                <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                             </textField>
@@ -1441,6 +1462,7 @@
                                             </view>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Category" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="LHA-AR-36f">
                                                 <rect key="frame" x="115.66666666666669" y="108" width="120" height="30"/>
+                                                <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="120" id="cZj-9V-6dz"/>
                                                     <constraint firstAttribute="height" constant="30" id="yNl-ud-rGl"/>
@@ -1453,6 +1475,7 @@
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Start Block" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MbT-qF-MiF">
                                                         <rect key="frame" x="5" y="5" width="95" height="30"/>
+                                                        <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="95" id="GZd-rQ-a3Z"/>
                                                         </constraints>
@@ -1467,6 +1490,7 @@
                                                     </label>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="End Block" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jGn-qK-g6i">
                                                         <rect key="frame" x="185" y="5" width="95" height="30"/>
+                                                        <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="95" id="CJZ-wH-FbY"/>
                                                         </constraints>
@@ -1848,6 +1872,8 @@
                         <subviews>
                             <searchBar contentMode="redraw" placeholder="Search by username" translatesAutoresizingMaskIntoConstraints="NO" id="DaA-Yi-WnX">
                                 <rect key="frame" x="0.0" y="88" width="375" height="56"/>
+                                <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="barTintColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no"/>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="bi5-pO-HRh">

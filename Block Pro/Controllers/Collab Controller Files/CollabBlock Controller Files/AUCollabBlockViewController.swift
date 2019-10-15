@@ -683,7 +683,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
             return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
         }
         else {
-            return "YOU GOT IT WRONG BEYOTCH"
+            return "Error"
         }
     }
     
@@ -762,8 +762,20 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
 
     @objc func create_editCollabBlock () {
         
+        let blockNameArray = Array(blockNameTextField.text ?? "")
+        var blockNameEntered: Bool = false
+        
+        //For loop that checks to see if "blockNameTextField" isn't empty
+        for char in blockNameArray {
+            
+            if char != " " {
+                blockNameEntered = true
+                break
+            }
+        }
+        
         //If the user hasn't entered a name for a TimeBlock
-        if blockNameTextField.text! == "" {
+        if blockNameEntered != true {
             ProgressHUD.showError("Please enter a name for this CollabBlock")
         }
             //If the user hasn't finished entering the start time for a TimeBlock

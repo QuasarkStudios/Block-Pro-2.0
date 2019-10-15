@@ -46,6 +46,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         upcomingCollabTableView.dataSource = self
         
         searchBar.delegate = self
+        searchBar.barTintColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.05)
         
         upcomingCollabTableView.register(UINib(nibName: "UpcomingCollabTableCell", bundle: nil), forCellReuseIdentifier: "UpcomingCollabCell")
         

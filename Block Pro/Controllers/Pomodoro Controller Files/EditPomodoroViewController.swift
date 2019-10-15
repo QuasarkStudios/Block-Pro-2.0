@@ -54,6 +54,13 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
         pomodoroLengthContainer.backgroundColor = UIColor.white.withAlphaComponent(0.65)
         pomodoroCountContainer.backgroundColor = UIColor.white.withAlphaComponent(0.65)
         
+        //Setting button colors
+        decrementPomodoroLength.tintColor = UIColor.flatRed()
+        incrementPomodoroLength.tintColor = UIColor.flatRed()
+        
+        decrementPomodoroCount.tintColor = UIColor.flatRed()
+        incrementPomodoroCount.tintColor = UIColor.flatRed()
+        
         //Adding a tap gesture recognizer to the view to dismiss the keyboard
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)

@@ -37,6 +37,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         friendsTableView.dataSource = self
         
         searchBar.delegate = self
+        searchBar.barTintColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.05)
         
         //friendsTableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendCell")
         friendsTableView.rowHeight = 55

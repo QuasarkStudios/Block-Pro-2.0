@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="m1B-Bh-YOA">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -51,11 +50,12 @@
                                 <rect key="frame" x="0.0" y="88.666666666666671" width="375" height="40.000000000000014"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YIf-t5-V3G">
-                                        <rect key="frame" x="15" y="1" width="50" height="38"/>
+                                        <rect key="frame" x="14.999999999999996" y="1" width="52.666666666666657" height="38"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="50" id="dy1-EP-D2i"/>
+                                            <constraint firstAttribute="width" constant="52.5" id="dy1-EP-D2i"/>
                                         </constraints>
-                                        <state key="normal" title="Month">
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <state key="normal" title="Months">
                                             <color key="titleColor" red="0.89019607840000003" green="0.36470588240000001" blue="0.35686274509999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
@@ -63,11 +63,12 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ljm-ws-cb5">
-                                        <rect key="frame" x="310" y="1" width="50" height="38"/>
+                                        <rect key="frame" x="307.66666666666669" y="1" width="52.333333333333314" height="38"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="50" id="s4g-Dc-dZY"/>
+                                            <constraint firstAttribute="width" constant="52.5" id="s4g-Dc-dZY"/>
                                         </constraints>
-                                        <state key="normal" title="Week">
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <state key="normal" title="Weeks">
                                             <color key="titleColor" red="0.89019607840000003" green="0.36470588240000001" blue="0.35686274509999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
@@ -75,12 +76,12 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i0H-Vf-5NM">
-                                        <rect key="frame" x="162.66666666666666" y="1" width="50" height="38"/>
+                                        <rect key="frame" x="161.33333333333334" y="1" width="52.333333333333343" height="38"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="50" id="CfT-Hi-k8D"/>
+                                            <constraint firstAttribute="width" constant="52.5" id="CfT-Hi-k8D"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <state key="normal" title="Day">
+                                        <state key="normal" title="Days">
                                             <color key="titleColor" red="0.89019607840000003" green="0.36470588240000001" blue="0.35686274509999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
@@ -137,7 +138,7 @@
                                                         </view>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="poT-y0-AL8">
                                                             <rect key="frame" x="10" y="2" width="30" height="30"/>
-                                                            <color key="backgroundColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                            <color key="backgroundColor" systemColor="systemRedColor" red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="30" id="BpO-Af-cau"/>
                                                                 <constraint firstAttribute="width" constant="30" id="Um6-03-mGa"/>
@@ -225,7 +226,7 @@
                                                     </subviews>
                                                 </stackView>
                                             </subviews>
-                                            <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058823529413" green="0.77647058823529413" blue="0.78431372549019607" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstItem="nBg-1D-KME" firstAttribute="leading" secondItem="xYh-PJ-fNo" secondAttribute="leading" id="1mP-ue-WYb"/>
                                                 <constraint firstItem="nBg-1D-KME" firstAttribute="leading" secondItem="xYh-PJ-fNo" secondAttribute="leading" id="B1k-2q-4h2"/>
@@ -244,7 +245,7 @@
                                         </collectionReusableView>
                                     </collectionView>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="KUm-KZ-R2F" firstAttribute="leading" secondItem="jRh-5S-ZpK" secondAttribute="leading" constant="2" id="4er-bF-xk8"/>
                                     <constraint firstAttribute="height" constant="255" id="E1U-nY-ipX"/>
@@ -510,6 +511,7 @@
                                     <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Block Name" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="PlE-At-oYL" userLabel="Block Name Text Field">
                                         <rect key="frame" x="16" y="5" width="343" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                     </textField>
@@ -594,12 +596,14 @@
                                     <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Start Block" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="eXn-8H-1Oe">
                                         <rect key="frame" x="15" y="5" width="97" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="End Block" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="o8q-60-GHL">
                                         <rect key="frame" x="261" y="5" width="97" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
@@ -609,6 +613,7 @@
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Category" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="1BX-z3-K5k">
                                 <rect key="frame" x="30" y="203" width="97" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="tintColor" red="0.8901960784313725" green="0.36470588235294116" blue="0.35686274509803922" alpha="1" colorSpace="calibratedRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>

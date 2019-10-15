@@ -383,9 +383,19 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
 
     @IBAction func collabButton(_ sender: Any) {
         
-        //animateButton()
+        let collabNameArray = Array(collabNameTextField.text ?? "")
+        var collabNameEntered: Bool = false
         
-        if collabNameTextField.text == "" {
+        //For loop that checks to see if "blockNameTextField" isn't empty
+        for char in collabNameArray {
+            
+            if char != " " {
+                collabNameEntered = true
+                break
+            }
+        }
+        
+        if collabNameEntered != true {
             ProgressHUD.showError("Please enter a name for your Collab")
         }
         else if selectedFriend == nil {

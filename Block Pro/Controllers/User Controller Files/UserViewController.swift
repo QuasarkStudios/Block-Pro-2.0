@@ -627,7 +627,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func deleteUser () {
         
-        let deleteAlert = UIAlertController(title: "Delete Account", message: "Are you sure you would like to delete your Block Pro account? The data associated with your account will also be deleted.", preferredStyle: .alert)
+        let deleteAlert = UIAlertController(title: "Delete Account", message: "Are you sure you would like to delete your Collaboration account? The data associated with your account will also be deleted.", preferredStyle: .alert)
         
         
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (delete) in
