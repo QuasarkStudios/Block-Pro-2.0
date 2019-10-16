@@ -8,7 +8,7 @@
 
 import Foundation
 
-class ThirtyMinAndUpCell: UITableViewCell {
+class CollabThirtyMinAndUpCell: UITableViewCell {
     
     @IBOutlet weak var outlineView: UIView!
     @IBOutlet weak var superContainerView: UIView!
@@ -20,5 +20,4 @@ class ThirtyMinAndUpCell: UITableViewCell {
     @IBOutlet weak var startLabel: UILabel!
     @IBOutlet weak var toLabel: UILabel!
     @IBOutlet weak var endLabel: UILabel!
-    
 }

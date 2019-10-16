@@ -111,7 +111,7 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         }
             
         //iPhone 8
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 {
             
             loginContainerTopAnchor.constant = 100
             registerContainerTopAnchor.constant = 850

@@ -206,43 +206,31 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell", for: indexPath) as! CustomTimeTableCell
             
-            cell.frame = CGRect(x: 0, y: 0, width: 65, height: 120)
-            //cell.timeLabelContainer.frame = CGRect(x: 5, y: 49, width: 55, height: 20)
+            cell.timeLabel.text = cellTimes[indexPath.row]
+            cell.timeLabel.textColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.8)
             
-            //cell.timeLabel.frame = CGRect(x: 0, y: 0, width: 55, height: 20)
-            //cell.timeLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5) //Setting the font and font size of the cell
-            cell.timeLabel.text = cellTimes[indexPath.row] //Setting the time the cell should display
-            
-            cell.timeLabel.textColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.7)
-            cell.cellSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
-            
-            cell.cellSeperator.frame = CGRect(x: 6, y: 119, width: 52, height: 0.5)
-            
-            //cell.timeLabelContainer.backgroundColor = UIColor.white
-            
-            //Every cell that does not have the text "11:00 PM" should have a black "cellSeperator"
             if cell.timeLabel.text == "11:00 PM" {
-                //cell.cellSeperator.backgroundColor = UIColor.white
+                cell.cellSeperator.backgroundColor = UIColor.white
             }
                 
             else {
-                //cell.cellSeperator.backgroundColor = UIColor.black
+                cell.cellSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
             }
             return cell
         }
         
         else {
             
-            var blockColor: UIColor!
-            
             if blockArray[indexPath.row].name != "Buffer Block" {
 
-                //If the user didn't select a category for this TimeBlock
+                var blockColor: UIColor!
+                
+                //If the user did select a category for this TimeBlock
                 if blockArray[indexPath.row].category != "" {
                     
                     blockColor = UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category]!)
                 }
-                    //If the user did select a category for this TimeBlock
+                    //If the user didn't select a category for this TimeBlock
                 else {
                     blockColor = UIColor(hexString: "#EFEFF4")
                 }
@@ -251,7 +239,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     
                 case 10.0:
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "fiveMinCell", for: indexPath) as! FiveMinCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "fiveMinCell", for: indexPath) as! CollabFiveMinCell
                     cell.nameLabel.text = blockArray[indexPath.row].name
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
@@ -259,7 +247,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     return configureBlock(cell, 10.0, blockColor) as! UITableViewCell
                 case 20.0:
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "tenMinCell", for: indexPath) as! TenMinCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "tenMinCell", for: indexPath) as! CollabTenMinCell
                     cell.nameLabel.text = blockArray[indexPath.row].name
                     cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
                     cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
@@ -270,7 +258,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     
                 case 30.0:
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "fifteenMinCell", for: indexPath) as! FifteenMinCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "fifteenMinCell", for: indexPath) as! CollabFifteenMinCell
                     
                     cell.nameLabel.text = blockArray[indexPath.row].name
                     cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
@@ -282,7 +270,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     
             case 40.0:
                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "twentyMinCell", for: indexPath) as! TwentyMinCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "twentyMinCell", for: indexPath) as! CollabTwentyMinCell
                     
                     cell.nameLabel.text = blockArray[indexPath.row].name
                     cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
@@ -310,7 +298,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
 
                 case 50.0:
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "twentyfiveMinCell", for: indexPath) as! TwentyFiveMinCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "twentyfiveMinCell", for: indexPath) as! CollabTwentyFiveMinCell
                     
                     cell.nameLabel.text = blockArray[indexPath.row].name
                     cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
@@ -335,7 +323,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     
                 default:
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "thirtyMinAndUpCell", for: indexPath) as! ThirtyMinAndUpCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "thirtyMinAndUpCell", for: indexPath) as! CollabThirtyMinAndUpCell
                     
                     cell.nameLabel.text = blockArray[indexPath.row].name
                     cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
@@ -739,7 +727,7 @@ extension CollabBlockViewController {
             
         case 10.0:
             
-            let funcCell = cell as! FiveMinCell
+            let funcCell = cell as! CollabFiveMinCell
             
             funcCell.containerView.translatesAutoresizingMaskIntoConstraints = false
             
@@ -767,7 +755,7 @@ extension CollabBlockViewController {
             
         case 20.0:
             
-            let funcCell = cell as! TenMinCell
+            let funcCell = cell as! CollabTenMinCell
             
             funcCell.containerView.translatesAutoresizingMaskIntoConstraints = false
             
@@ -789,6 +777,7 @@ extension CollabBlockViewController {
             
             funcCell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
             funcCell.nameLabel.textColor = ContrastColorOf(blockColor, returnFlat: false)
+            funcCell.nameLabel.adjustsFontSizeToFitWidth = true
             
             funcCell.alphaView.translatesAutoresizingMaskIntoConstraints = false
             
@@ -798,7 +787,7 @@ extension CollabBlockViewController {
             funcCell.alphaView.trailingAnchor.constraint(equalTo: funcCell.containerView.trailingAnchor, constant: -10).isActive = true
             
             funcCell.alphaView.alpha = 0.4
-            funcCell.alphaView.layer.cornerRadius = 0.025 * funcCell.alphaView.bounds.size.width
+            funcCell.alphaView.layer.cornerRadius = 0.0325 * funcCell.alphaView.bounds.size.width
             funcCell.alphaView.clipsToBounds = true
             
             funcCell.startLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -836,7 +825,7 @@ extension CollabBlockViewController {
             
         case 30.0:
             
-            let funcCell = cell as! FifteenMinCell
+            let funcCell = cell as! CollabFifteenMinCell
             
             funcCell.outlineView.translatesAutoresizingMaskIntoConstraints = false
             
@@ -876,7 +865,7 @@ extension CollabBlockViewController {
             funcCell.alphaView.widthAnchor.constraint(equalToConstant: 140).isActive = true
             funcCell.alphaView.trailingAnchor.constraint(equalTo: funcCell.containerView.trailingAnchor, constant: -10).isActive = true
             
-            funcCell.alphaView.layer.cornerRadius = 0.025 * funcCell.alphaView.bounds.size.width
+            funcCell.alphaView.layer.cornerRadius = 0.035 * funcCell.alphaView.bounds.size.width
             funcCell.alphaView.clipsToBounds = true
             
             funcCell.startLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -912,7 +901,7 @@ extension CollabBlockViewController {
             
         case 40.0:
             
-            let funcCell = cell as! TwentyMinCell
+            let funcCell = cell as! CollabTwentyMinCell
             
             funcCell.outlineView.translatesAutoresizingMaskIntoConstraints = false
             
@@ -975,7 +964,7 @@ extension CollabBlockViewController {
             funcCell.alphaView.widthAnchor.constraint(equalToConstant: 140).isActive = true
             funcCell.alphaView.trailingAnchor.constraint(equalTo: funcCell.containerView.trailingAnchor, constant: -10).isActive = true
             
-            funcCell.alphaView.layer.cornerRadius = 0.06 * funcCell.alphaView.bounds.size.width
+            funcCell.alphaView.layer.cornerRadius = 0.08 * funcCell.alphaView.bounds.size.width
             funcCell.alphaView.clipsToBounds = true
             
             funcCell.startLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -1006,13 +995,11 @@ extension CollabBlockViewController {
             
             funcCell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
             
-            print(funcCell.initialLabel.font)
-            
             return funcCell
             
         case 50.0:
             
-            let funcCell = cell as! TwentyFiveMinCell
+            let funcCell = cell as! CollabTwentyFiveMinCell
             
             funcCell.outlineView.translatesAutoresizingMaskIntoConstraints = false
             
@@ -1087,14 +1074,14 @@ extension CollabBlockViewController {
                 funcCell.alphaView.heightAnchor.constraint(equalToConstant: 15).isActive = true
             }
             
-            funcCell.alphaView.layer.cornerRadius = 0.04 * funcCell.alphaView.bounds.size.width
+            funcCell.alphaView.layer.cornerRadius = 0.0475 * funcCell.alphaView.bounds.size.width
             funcCell.alphaView.clipsToBounds = true
             
             funcCell.startLabel.translatesAutoresizingMaskIntoConstraints = false
             
             funcCell.startLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
             funcCell.startLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
-            funcCell.startLabel.leadingAnchor.constraint(equalTo: funcCell.alphaView.leadingAnchor, constant: 5).isActive = true
+            funcCell.startLabel.leadingAnchor.constraint(equalTo: funcCell.alphaView.leadingAnchor, constant: 10).isActive = true
             funcCell.startLabel.trailingAnchor.constraint(equalTo: funcCell.toLabel.leadingAnchor, constant: -5).isActive = true
             
             funcCell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
@@ -1114,7 +1101,7 @@ extension CollabBlockViewController {
             funcCell.endLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
             funcCell.endLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
             funcCell.endLabel.leadingAnchor.constraint(equalTo: funcCell.toLabel.trailingAnchor, constant: 5).isActive = true
-            funcCell.endLabel.trailingAnchor.constraint(equalTo: funcCell.alphaView.trailingAnchor, constant: -5).isActive = true
+            funcCell.endLabel.trailingAnchor.constraint(equalTo: funcCell.alphaView.trailingAnchor, constant: -10).isActive = true
             
             funcCell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
             
@@ -1122,7 +1109,7 @@ extension CollabBlockViewController {
             
         default:
             
-            let funcCell = cell as! ThirtyMinAndUpCell
+            let funcCell = cell as! CollabThirtyMinAndUpCell
             
             funcCell.outlineView.translatesAutoresizingMaskIntoConstraints = false
             
@@ -1187,8 +1174,8 @@ extension CollabBlockViewController {
             funcCell.nameLabel.leadingAnchor.constraint(equalTo: funcCell.subContainerView.leadingAnchor, constant: 50).isActive = true
             funcCell.nameLabel.trailingAnchor.constraint(equalTo: funcCell.subContainerView.trailingAnchor, constant: -5).isActive = true
             
-            funcCell.nameLabel.adjustsFontSizeToFitWidth = true
             funcCell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 18.0)
+            funcCell.nameLabel.adjustsFontSizeToFitWidth = true
             
             funcCell.alphaView.translatesAutoresizingMaskIntoConstraints = false
             
@@ -1244,14 +1231,14 @@ extension CollabBlockViewController {
         }
     }
     
-    //Function responsible for animating a TimeBlock
+    //Function responsible for animating a CollabBlock
     func animateBlock (_ cell: UITableViewCell, _ cellHeight: CGFloat, _ indexPath: IndexPath) {
         
         switch cellHeight {
             
         case 10.0:
             
-            let funcCell = cell as! FiveMinCell
+            let funcCell = cell as! CollabFiveMinCell
             
             //If a certain TimeBlock has not yet been animated
             if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
@@ -1274,7 +1261,7 @@ extension CollabBlockViewController {
             
         case 20.0:
             
-            let funcCell = cell as! TenMinCell
+            let funcCell = cell as! CollabTenMinCell
             
             //If a certain TimeBlock has not yet been animated
             if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
@@ -1297,7 +1284,7 @@ extension CollabBlockViewController {
             
         case 30.0:
             
-            let funcCell = cell as! FifteenMinCell
+            let funcCell = cell as! CollabFifteenMinCell
             
             //If a certain TimeBlock has not yet been animated
             if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
@@ -1320,7 +1307,7 @@ extension CollabBlockViewController {
             
         case 40.0:
             
-            let funcCell = cell as! TwentyMinCell
+            let funcCell = cell as! CollabTwentyMinCell
             
             //If a certain TimeBlock has not yet been animated
             if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
@@ -1343,7 +1330,7 @@ extension CollabBlockViewController {
             
         case 50.0:
             
-            let funcCell = cell as! TwentyFiveMinCell
+            let funcCell = cell as! CollabTwentyFiveMinCell
             
             //If a certain TimeBlock has not yet been animated
             if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
@@ -1366,7 +1353,7 @@ extension CollabBlockViewController {
             
         default:
             
-            let funcCell = cell as! ThirtyMinAndUpCell
+            let funcCell = cell as! CollabThirtyMinAndUpCell
             
             //If a certain TimeBlock has not yet been animated
             if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {

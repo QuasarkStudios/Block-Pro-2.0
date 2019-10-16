@@ -69,11 +69,13 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     //Dictionary that contains the color for each block based on its category
     let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
     
+    var rowHeights: [CGFloat] = []
+    
     var cellAnimated = [String]() //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
     //Creation of to pre-define the block tuple's structure and allow for it to be used as a return of a function
-    typealias blockTuple = ( blockID: String, notificationID: String, blockName: String, blockStartHour: String, blockStartMinute: String, blockStartPeriod: String, blockEndHour: String, blockEndMinute: String, blockEndPeriod: String, note1: String, note2: String, note3: String, category: String)
-    var functionTuple: blockTuple = (blockID: "", notificationID : "", blockName: "", blockStartHour: "", blockStartMinute: "", blockStartPeriod: "", blockEndHour: "", blockEndMinute: "", blockEndPeriod: "", note1: "", note2: "", note3: "", category: "")
+    typealias blockTuple = ( blockID: String, notificationID: String, name: String, startHour: String, startMinute: String, startPeriod: String, endHour: String, endMinute: String, endPeriod: String, note1: String, note2: String, note3: String, category: String)
+    var functionTuple: blockTuple = (blockID: "", notificationID : "", name: "", startHour: "", startMinute: "", startPeriod: "", endHour: "", endMinute: "", endPeriod: "", note1: "", note2: "", note3: "", category: "")
 
     var blockArray = [blockTuple]() //Array that holds all the data for each TimeBlock
     
@@ -108,7 +110,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         timeTableView.register(UINib(nibName: "CustomTimeTableCell", bundle: nil), forCellReuseIdentifier: "timeCell")
         blockTableView.register(UINib(nibName: "CustomBlockTableCell", bundle: nil), forCellReuseIdentifier: "blockCell")
-        blockTableView.register(UINib(nibName: "CustomAddBlockTableCell", bundle: nil), forCellReuseIdentifier: "addBlockCell")
+        //blockTableView.register(UINib(nibName: "CustomAddBlockTableCell", bundle: nil), forCellReuseIdentifier: "addBlockCell")
         
         timeTableView.frame = CGRect(x: 0, y: 136, width: 82, height: 592)
         verticalTableViewSeperator.frame = CGRect(x: 82, y: 136, width: 2, height: 592)
@@ -157,6 +159,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
         findTimeBlocks(currentDate)
         allBlockDates = realm.objects(TimeBlocksDate.self)
+        calculateBlockHeights()
         blockTableView.reloadData()
         
     }
@@ -261,20 +264,16 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        var returnHeight: CGFloat = 120.0
 
         if tableView == blockTableView && indexPath.row < blockArray.count {
 
-                returnHeight = configureBlockHeight(indexPath: indexPath)
-                return returnHeight
-            }
-        
+            return rowHeights[indexPath.row]
+        }
+
         //The tableView is the timeTableView
         else {
-            return returnHeight
+            return 120.0
         }
-        
     }
     
     
@@ -324,14 +323,14 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             if firstIteration == true {
                 
                 //Creating the first Buffer Block starting at 12:00 AM until the first TimeBlock
-                bufferBlockTuple.blockName = "Buffer Block"
-                bufferBlockTuple.blockStartHour = "0"; bufferBlockTuple.blockStartMinute = "0"; bufferBlockTuple.blockStartPeriod = "AM"
-                bufferBlockTuple.blockEndHour = blocks.value.startHour; bufferBlockTuple.blockEndMinute = blocks.value.startMinute; bufferBlockTuple.blockEndPeriod = blocks.value.startPeriod
+                bufferBlockTuple.name = "Buffer Block"
+                bufferBlockTuple.startHour = "0"; bufferBlockTuple.startMinute = "0"; bufferBlockTuple.startPeriod = "AM"
+                bufferBlockTuple.endHour = blocks.value.startHour; bufferBlockTuple.endMinute = blocks.value.startMinute; bufferBlockTuple.endPeriod = blocks.value.startPeriod
 
                 //Creating the first TimeBlock from the values returned from the sortBlocks function
-                timeBlockTuple.blockName = blocks.value.name
-                timeBlockTuple.blockStartHour = blocks.value.startHour; timeBlockTuple.blockStartMinute = blocks.value.startMinute; timeBlockTuple.blockStartPeriod = blocks.value.startPeriod
-                timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
+                timeBlockTuple.name = blocks.value.name
+                timeBlockTuple.startHour = blocks.value.startHour; timeBlockTuple.startMinute = blocks.value.startMinute; timeBlockTuple.startPeriod = blocks.value.startPeriod
+                timeBlockTuple.endHour = blocks.value.endHour; timeBlockTuple.endMinute = blocks.value.endMinute; timeBlockTuple.endPeriod = blocks.value.endPeriod
                 timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                 
                 timeBlockTuple.category = blocks.value.blockCategory
@@ -345,9 +344,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 //If statement that creates a buffer block after the first TimeBlock
                 if (count + 1) < sortedBlocks.count {
                     
-                    bufferBlockTuple.blockStartHour = blocks.value.endHour; bufferBlockTuple.blockStartMinute = blocks.value.endMinute; bufferBlockTuple.blockStartPeriod = blocks.value.endPeriod
+                    bufferBlockTuple.startHour = blocks.value.endHour; bufferBlockTuple.startMinute = blocks.value.endMinute; bufferBlockTuple.startPeriod = blocks.value.endPeriod
                     
-                    bufferBlockTuple.blockEndHour = sortedBlocks[count + 1].value.startHour; bufferBlockTuple.blockEndMinute = sortedBlocks[count + 1].value.startMinute; bufferBlockTuple.blockEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                    bufferBlockTuple.endHour = sortedBlocks[count + 1].value.startHour; bufferBlockTuple.endMinute = sortedBlocks[count + 1].value.startMinute; bufferBlockTuple.endPeriod = sortedBlocks[count + 1].value.startPeriod
             
                     returnBlockArray.append(bufferBlockTuple) //Appending the second BufferBlock after the first TimeBlock
                 }
@@ -361,9 +360,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 if (count + 1) < sortedBlocks.count {
                     
                     //Creating the next TimeBlock from the values returned from the sortBlocks func
-                    timeBlockTuple.blockName = blocks.value.name
-                    timeBlockTuple.blockStartHour = blocks.value.startHour; timeBlockTuple.blockStartMinute = blocks.value.startMinute; timeBlockTuple.blockStartPeriod = blocks.value.startPeriod
-                    timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
+                    timeBlockTuple.name = blocks.value.name
+                    timeBlockTuple.startHour = blocks.value.startHour; timeBlockTuple.startMinute = blocks.value.startMinute; timeBlockTuple.startPeriod = blocks.value.startPeriod
+                    timeBlockTuple.endHour = blocks.value.endHour; timeBlockTuple.endMinute = blocks.value.endMinute; timeBlockTuple.endPeriod = blocks.value.endPeriod
                     timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
                     timeBlockTuple.category = blocks.value.blockCategory
@@ -371,9 +370,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     timeBlockTuple.notificationID = blocks.value.notificationID //Assigning the notificationID of this timeBlock
                     
                     //Creating the next Buffer Block after the last TimeBlock
-                    bufferBlockTuple.blockStartHour = blocks.value.endHour; bufferBlockTuple.blockStartMinute = blocks.value.endMinute; bufferBlockTuple.blockStartPeriod = blocks.value.endPeriod
+                    bufferBlockTuple.startHour = blocks.value.endHour; bufferBlockTuple.startMinute = blocks.value.endMinute; bufferBlockTuple.startPeriod = blocks.value.endPeriod
                     
-                    bufferBlockTuple.blockEndHour = sortedBlocks[count + 1].value.startHour; bufferBlockTuple.blockEndMinute = sortedBlocks[count + 1].value.startMinute; bufferBlockTuple.blockEndPeriod = sortedBlocks[count + 1].value.startPeriod
+                    bufferBlockTuple.endHour = sortedBlocks[count + 1].value.startHour; bufferBlockTuple.endMinute = sortedBlocks[count + 1].value.startMinute; bufferBlockTuple.endPeriod = sortedBlocks[count + 1].value.startPeriod
                     
                     returnBlockArray.append(timeBlockTuple) //Appending the next TimeBlock
                     returnBlockArray.append(bufferBlockTuple) //Appending the next bufferBlock
@@ -384,9 +383,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 else {
                     
                     //Creating the next TimeBlock from the values returned from the sortBlocks func
-                    timeBlockTuple.blockName = blocks.value.name
-                    timeBlockTuple.blockStartHour = blocks.value.startHour; timeBlockTuple.blockStartMinute = blocks.value.startMinute; timeBlockTuple.blockStartPeriod = blocks.value.startPeriod
-                    timeBlockTuple.blockEndHour = blocks.value.endHour; timeBlockTuple.blockEndMinute = blocks.value.endMinute; timeBlockTuple.blockEndPeriod = blocks.value.endPeriod
+                    timeBlockTuple.name = blocks.value.name
+                    timeBlockTuple.startHour = blocks.value.startHour; timeBlockTuple.startMinute = blocks.value.startMinute; timeBlockTuple.startPeriod = blocks.value.startPeriod
+                    timeBlockTuple.endHour = blocks.value.endHour; timeBlockTuple.endMinute = blocks.value.endMinute; timeBlockTuple.endPeriod = blocks.value.endPeriod
                     timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
                     timeBlockTuple.category = blocks.value.blockCategory
@@ -410,7 +409,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
 //            }
         
              //If the startTime and endTime of a block are the same, remove it from the array to be returned
-             if (returnBlockArray[arrayCleanCount - 1].blockStartHour == returnBlockArray[arrayCleanCount - 1].blockEndHour) && (returnBlockArray[arrayCleanCount - 1].blockStartMinute == returnBlockArray[arrayCleanCount - 1].blockEndMinute) && (returnBlockArray[arrayCleanCount - 1].blockStartPeriod == returnBlockArray[arrayCleanCount - 1].blockEndPeriod) {
+             if (returnBlockArray[arrayCleanCount - 1].startHour == returnBlockArray[arrayCleanCount - 1].endHour) && (returnBlockArray[arrayCleanCount - 1].startMinute == returnBlockArray[arrayCleanCount - 1].endMinute) && (returnBlockArray[arrayCleanCount - 1].startPeriod == returnBlockArray[arrayCleanCount - 1].endPeriod) {
                 
                 _ = returnBlockArray.remove(at: arrayCleanCount - 1) //Removing a particular block
             }
@@ -419,86 +418,238 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         return returnBlockArray
     }
     
-    
-    //Function responsible for configuring a tableView cell
     func configureCell (_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell {
         
         if tableView == timeTableView {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "timeCell", for: indexPath) as! CustomTimeTableCell
-            //cell.timeLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.5) //Setting the font and font size of the cell
-            cell.timeLabel.text = cellTimes[indexPath.row] //Setting the time the cell should display
-            cell.timeLabel.textColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.7)
+
+            cell.timeLabel.text = cellTimes[indexPath.row]
+            cell.timeLabel.textColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.8)
             
-            //Every cell that does not have the text "11:00 PM" should have a black "cellSeperator"
             if cell.timeLabel.text == "11:00 PM" {
                 cell.cellSeperator.backgroundColor = UIColor.white
             }
                 
             else {
-                //cell.cellSeperator.backgroundColor = UIColor.black
-                cell.timeLabel.textColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.8)
+    
                 cell.cellSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
             }
             return cell
         }
-           
-        //If the tableView is the blockTableView
+        
         else {
             
-            //If statement mainly to ensure the code for this statement is running safely
-            if indexPath.row < blockArray.count {
+            if blockArray[indexPath.row].name != "Buffer Block" {
                 
-                //If this block is a TimeBlock
-                if blockArray[indexPath.row].blockName != "Buffer Block" {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! CustomBlockTableCell
-                    
-                    cell.nameLabel.text = blockArray[indexPath.row].blockName
-                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].blockStartHour, blockArray[indexPath.row].blockStartMinute)
-                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].blockEndHour, blockArray[indexPath.row].blockEndMinute)
-                    
-                    cell.note1TextView.text = blockArray[indexPath.row].note1; cell.note1Bullet.isHidden = true; cell.note1TextView.isHidden = true
-                    cell.note2TextView.text = blockArray[indexPath.row].note2; cell.note2Bullet.isHidden = true; cell.note2TextView.isHidden = true
-                    cell.note3TextView.text = blockArray[indexPath.row].note3; cell.note3Bullet.isHidden = true; cell.note3TextView.isHidden = true
-                    
-                    cell.cellContainerView.frame = CGRect(x: 0, y: 1, width: 280, height: (cell.frame.height - 1.0)) //POSSIBLY TAKE 1 POINT OFF Y AND 1 OFF HEIGHT TO MAKE CELL LOOK MORE SYMETRICAL
-                    
-                    //If the user didn't select a category for this TimeBlock
-                    if blockArray[indexPath.row].category != "" {
-                        cell.cellContainerView.backgroundColor = UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category]!)
-                        cell.nameLabel.textColor = ContrastColorOf(UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category]!)!, returnFlat: false)
-                    }
-                    //If the user did select a category for this TimeBlock
-                    else {
-                        cell.cellContainerView.backgroundColor = UIColor(hexString: "#EFEFF4")
-                        cell.nameLabel.textColor = ContrastColorOf(UIColor(hexString: "#EFEFF4")!, returnFlat: false)
-//                        cell.nameLabel.textColor = ContrastColorOf(UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category]!)!, returnFlat: false)
-                    }
-                    
-                    configureBlockLayout(cell) //Function that configures each cells layout
-                    animateBlock(cell, indexPath) //Function that animates a cell
-                    
-                    return cell
+                var blockColor: UIColor!
+                
+                if blockArray[indexPath.row].category != "" {
+                    blockColor = UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category]!)
+                }
+                else {
+                    blockColor = UIColor(hexString: "#EFEFF4")
                 }
                 
-                //Creation of a buffer block
-                else {
+                switch rowHeights[indexPath.row] {
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                    cell.isUserInteractionEnabled = false
+                case 10.0:
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "fiveMinCell", for: indexPath) as! TimeFiveMinCell
+                    
+                    cell.containerView.backgroundColor = blockColor
+                    cell.containerView.layer.cornerRadius = 0.013 * cell.containerView.bounds.size.width
+                    cell.containerView.clipsToBounds = true
+                    
+                    cell.nameLabel.text = blockArray[indexPath.row].name
+                    cell.nameLabel.font = UIFont(name: "HelveticaNeue", size: 10.5)
+                    cell.nameLabel.textColor = ContrastColorOf(blockColor, returnFlat: false)
+                    
+                    animateBlock(cell, rowHeights[indexPath.row], indexPath)
+                    
                     return cell
+                    
+                case 20.0:
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "tenMinCell", for: indexPath) as! TimeTenMinCell
+                    
+                    cell.containerView.backgroundColor = blockColor
+                    cell.containerView.layer.cornerRadius = 0.03 * cell.containerView.bounds.size.width
+                    cell.containerView.clipsToBounds = true
+                    
+                    cell.nameLabel.text = blockArray[indexPath.row].name
+                    cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
+                    cell.nameLabel.textColor = ContrastColorOf(blockColor, returnFlat: false)
+                    cell.nameLabel.adjustsFontSizeToFitWidth = true
+                    
+                    cell.alphaView.backgroundColor = UIColor.white.withAlphaComponent(0.4)
+                    cell.alphaView.layer.cornerRadius = 0.045 * cell.alphaView.bounds.size.width
+                    cell.alphaView.clipsToBounds = true
+                    
+                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
+                    
+                    cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
+                    cell.startLabel.textColor = UIColor.black
+                    
+                    cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
+                    cell.toLabel.textColor = UIColor.black
+                    
+                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
+                    
+                    cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
+                    cell.endLabel.textColor = UIColor.black
+                    
+                    animateBlock(cell, rowHeights[indexPath.row], indexPath)
+                    
+                    return cell
+                    
+                case 30.0:
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "fifteenMinCell", for: indexPath) as! TimeFifteenMinCell
+                    
+                    cell.outlineView.backgroundColor = blockColor
+                    cell.outlineView.layer.cornerRadius = 0.035 * cell.outlineView.bounds.size.width
+                    cell.outlineView.clipsToBounds = true
+                    
+                    cell.containerView.layer.cornerRadius = 0.035 * cell.containerView.bounds.size.width
+                    cell.containerView.clipsToBounds = true
+                    
+                    cell.nameLabel.text = blockArray[indexPath.row].name
+                    cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.0)
+                    cell.nameLabel.adjustsFontSizeToFitWidth = true
+                    
+                    cell.alphaView.layer.cornerRadius = 0.05 * cell.alphaView.bounds.size.width
+                    cell.alphaView.clipsToBounds = true
+                    
+                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
+                    cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
+                    
+                    cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
+                    
+                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
+                    cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
+                    
+                    animateBlock(cell, rowHeights[indexPath.row], indexPath)
+                    
+                    return cell
+                    
+                case 40.0:
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "twentyMinCell", for: indexPath) as! TimeTwentyMinCell
+                    
+                    cell.outlineView.backgroundColor = blockColor
+                    cell.outlineView.layer.cornerRadius = 0.035 * cell.outlineView.bounds.size.width
+                    cell.outlineView.clipsToBounds = true
+                    
+                    cell.containerView.layer.cornerRadius = 0.035 * cell.containerView.bounds.size.width
+                    cell.containerView.clipsToBounds = true
+                    
+                    cell.nameLabel.text = blockArray[indexPath.row].name
+                    cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
+                    cell.nameLabel.adjustsFontSizeToFitWidth = true
+                    
+                    cell.alphaView.layer.cornerRadius = 0.085 * cell.alphaView.bounds.size.width
+                    cell.alphaView.clipsToBounds = true
+                    
+                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
+                    cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
+                    
+                    cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 22)
+                    
+                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
+                    cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
+                    
+                    animateBlock(cell, rowHeights[indexPath.row], indexPath)
+                    
+                    return cell
+                    
+                case 50.0:
+                  
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "twentyfiveMinCell", for: indexPath) as! TimeTwentyFiveMinCell
+                    
+                    cell.outlineView.backgroundColor = blockColor
+                    cell.outlineView.layer.cornerRadius = 0.035 * cell.outlineView.bounds.size.width
+                    cell.outlineView.clipsToBounds = true
+
+                    cell.containerView.layer.cornerRadius = 0.035 * cell.containerView.bounds.size.width
+                    cell.containerView.clipsToBounds = true
+
+                    cell.nameLabel.text = blockArray[indexPath.row].name
+                    cell.nameLabel.adjustsFontSizeToFitWidth = true
+                    cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
+                    
+                    if UIScreen.main.bounds.width == 320.0 {
+                        
+                        cell.alphaViewLeadingAnchor.constant = 30
+                        cell.alphaViewTrailingAnchor.constant = 30
+                        
+                    }
+                    
+                    cell.alphaView.layer.cornerRadius = 0.035 * cell.alphaView.bounds.size.width
+                    cell.alphaView.clipsToBounds = true
+                    
+                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
+                    cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
+                    
+                    cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 24)
+                    
+                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
+                    cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
+                    
+                    animateBlock(cell, rowHeights[indexPath.row], indexPath)
+                    
+                    return cell
+                    
+                default:
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "thirtyMinAndUpCell", for: indexPath) as! TimeThirtyMinAndUpCell
+                    
+                    cell.outlineView.backgroundColor = blockColor
+                    cell.outlineView.layer.cornerRadius = 0.035 * cell.outlineView.bounds.size.width
+                    cell.outlineView.clipsToBounds = true
+                    
+                    cell.superContainerView.layer.cornerRadius = 0.035 * cell.superContainerView.bounds.size.width
+                    cell.superContainerView.clipsToBounds = true
+                    
+                    cell.subContainerView.backgroundColor = .none
+                    
+                    cell.nameLabel.text = blockArray[indexPath.row].name
+                    cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 16.0)
+                    cell.nameLabel.adjustsFontSizeToFitWidth = true
+                    
+                    if UIScreen.main.bounds.width == 320.0 {
+                        
+                        cell.alphaViewLeadingAnchor.constant = 30
+                        cell.alphaViewTrailingAnchor.constant = 30
+                    }
+                    
+                    cell.alphaView.layer.cornerRadius = 0.035 * cell.alphaView.bounds.size.width
+                    cell.alphaView.clipsToBounds = true
+                    
+                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
+                    cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
+                    
+                    cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 24)
+                    
+                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
+                    cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
+                    
+                    animateBlock(cell, rowHeights[indexPath.row], indexPath)
+                    
+                    return cell
+                    
                 }
             }
-             
-                
-            //There was an error somewhere in this process and now we're here 
+            
             else {
+                
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                cell.textLabel!.text = "Error Creating Time Block(s)"
+                cell.isUserInteractionEnabled = false
                 return cell
             }
+            
         }
+        
         
     }
     
@@ -521,205 +672,194 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             return "Error"
         }
     }
-    
-    
-    //Function that configures the layout of a Cell/TimeBlock based on it's size
-    func configureBlockLayout (_ cell: CustomBlockTableCell) {
+
+    func calculateBlockHeights () {
         
-        let cellHeight: CGFloat = cell.frame.height
-        
-        switch cellHeight {
-            
-        case 10.0: //5 minute TimeBlock
-            cell.cellContainerView.layer.cornerRadius = 0.015 * cell.cellContainerView.bounds.size.width
-
-            cell.alphaView.frame.origin = CGPoint(x: 200.0, y: 200.0) //Done to remove alphaView from 5 minute block without lingering effects of reusing cells
-            
-            cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 9.0)
-            cell.nameLabel.frame.origin = CGPoint(x: 18.0, y: -7.0)
-            
-            cell.startLabel.frame.origin = CGPoint(x: 200.0, y: 200.0)
-            cell.toLabel.frame.origin = CGPoint(x: 200.0, y: 200.0)     //Done to remove labels from 5 minute block without lingering effects of reusing cells
-            cell.endLabel.frame.origin = CGPoint(x: 200.0, y: 200.0)
-            
-        case 20.0: //10 minute TimeBlock
-            cell.cellContainerView.layer.cornerRadius = 0.03 * cell.cellContainerView.bounds.size.width
-            
-            cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
-            cell.nameLabel.frame.origin.y = -2.0
-            
-            cell.alphaView.frame = CGRect(x: 116.0, y: 2.5, width: 160.0, height: 13.5)
-            cell.alphaView.layer.cornerRadius = 0.04 * cell.alphaView.bounds.size.width
-            
-            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
-            cell.startLabel.frame.origin = CGPoint(x: 128.0, y: 0.0)
-            
-            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
-            cell.toLabel.frame.origin = CGPoint(x: 193.0, y: 1.5)
-            
-            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
-            cell.endLabel.frame.origin = CGPoint(x: 213.0, y: 0.0)
-            
-        case 30.0: //15 minute TimeBlock
-            cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
-            
-            cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
-            cell.nameLabel.frame.origin.y = 2.5
-            
-            cell.alphaView.frame = CGRect(x: 116.0, y: 4.0, width: 160.0, height: 19.5)
-            cell.alphaView.layer.cornerRadius = 0.06 * cell.alphaView.bounds.size.width
-            
-            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
-            cell.startLabel.frame.origin = CGPoint(x: 127.0, y: 5.0)
-            
-            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 21)
-            cell.toLabel.frame.origin = CGPoint(x: 192.0, y: 6.5)
-            
-            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
-            cell.endLabel.frame.origin = CGPoint(x: 212.0, y: 5.0)
-            
-        case 40.0: //20 minute TimeBlock
-            cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
-            
-            cell.nameLabel.frame.origin.y = 8.0
-            
-            cell.alphaView.frame = CGRect(x: 116.0, y: 6.0, width: 160.0, height: 25.5)
-            cell.alphaView.layer.cornerRadius = 0.08 * cell.alphaView.bounds.size.width
-            
-            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13.5)
-            cell.startLabel.frame.origin = CGPoint(x: 128.0, y: 9.0)
-            
-            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
-            cell.toLabel.frame.origin = CGPoint(x: 196.0, y: 10.5)
-            
-            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13.5)
-            cell.endLabel.frame.origin = CGPoint(x: 213.0, y: 9.0)
-            
-        case 50.0: //25 minute TimeBlock
-            cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
-            
-            cell.nameLabel.frame.origin.y = 13.0
-            
-            cell.alphaView.frame = CGRect(x: 116.0, y: 8.0, width: 160.0, height: 31.5)
-            cell.alphaView.layer.cornerRadius = 0.095 * cell.alphaView.bounds.size.width
-            
-            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
-            cell.startLabel.frame.origin = CGPoint(x: 128.0, y: 14.0)
-            
-            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
-            cell.toLabel.frame.origin = CGPoint(x: 194.0, y: 15.5)
-            
-            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
-            cell.endLabel.frame.origin = CGPoint(x: 213.0, y: 14.0)
-            
-        case 60.0: //30 minute TimeBlock
-            cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
-            
-            cell.nameLabel.frame.origin.y = 19.0
-            
-            cell.alphaView.frame = CGRect(x: 116.0, y: 10.0, width: 160.0, height: 37.5)
-            cell.alphaView.layer.cornerRadius = 0.115 * cell.alphaView.bounds.size.width
-            
-            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
-            cell.startLabel.frame.origin = CGPoint(x: 128.0, y: 19.0)
-            
-            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
-            cell.toLabel.frame.origin = CGPoint(x: 193.0, y: 20.5)
-            
-            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
-            cell.endLabel.frame.origin = CGPoint(x: 213.0, y: 19.0)
-
-        default: //Any TimeBlock longer than 30 minutes
-            cell.cellContainerView.layer.cornerRadius = 0.05 * cell.cellContainerView.bounds.size.width
-            
-            cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 17.0)
-            cell.nameLabel.frame.origin.y = 8.0
-            
-            cell.alphaView.isHidden = false
-            cell.alphaView.frame = CGRect(x: 7, y: 35, width: 266, height: cell.cellContainerView.frame.height - 40.0)
-            cell.alphaView.layer.cornerRadius = 0.05 * cell.alphaView.bounds.size.width
-            
-            cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
-            cell.startLabel.frame.origin = CGPoint(x: 25.0, y: 40.0)
-            
-            cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
-            cell.toLabel.frame.origin = CGPoint(x: 90.0, y: 42.0)
-            
-            cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.5)
-            cell.endLabel.frame.origin = CGPoint(x: 110.0, y: 40.0)
-        }
-    }
-    
-    
-    //Function responsible for configuring the height of each Block
-    func configureBlockHeight (indexPath: IndexPath) -> CGFloat{
-
         var calcHour: Int = 0
         var calcMinute: Int = 0
-
-        //If statement mainly to ensure the code for this statement is running safely
-        if indexPath.row < blockArray.count {
         
+        rowHeights.removeAll()
+        
+        for block in blockArray {
+            
             //If the endMinute of the block is greater than the startMinute of the block
-            if Int(blockArray[indexPath.row].blockEndMinute)! > Int(blockArray[indexPath.row].blockStartMinute)! {
-
-                calcHour = Int(blockArray[indexPath.row].blockEndHour)! - Int(blockArray[indexPath.row].blockStartHour)!
-                calcMinute = Int(blockArray[indexPath.row].blockEndMinute)! - Int(blockArray[indexPath.row].blockStartMinute)!
-                return CGFloat((calcHour * 120) + calcMinute * 2)
+            if Int(block.endMinute)! > Int(block.startMinute)! {
+                
+                calcHour = Int(block.endHour)! - Int(block.startHour)!
+                calcMinute = Int(block.endMinute)! - Int(block.startMinute)!
+                rowHeights.append(CGFloat((calcHour * 120) + (calcMinute * 2)))
             }
-
+            
             //If the endMinute of the block is equal to the startMinute of the block
-            else if Int(blockArray[indexPath.row].blockEndMinute)! == Int(blockArray[indexPath.row].blockStartMinute)! {
-               
-                calcHour = Int(blockArray[indexPath.row].blockEndHour)! - Int(blockArray[indexPath.row].blockStartHour)!
-                return CGFloat(calcHour * 120)
+            else if Int(block.endMinute)! == Int(block.startMinute)! {
+                
+                calcHour = Int(block.endHour)! - Int(block.startHour)!
+                rowHeights.append(CGFloat(calcHour * 120))
             }
             
             //If the endMinute of the block is less than the startMinute of the block
             else {
                 
-                calcHour = (Int(blockArray[indexPath.row].blockEndHour)! - 1) - Int(blockArray[indexPath.row].blockStartHour)!
-                calcMinute = ((Int(blockArray[indexPath.row].blockEndMinute)! + 60) - Int(blockArray[indexPath.row].blockStartMinute)!)
-                return CGFloat((calcHour * 120) + (calcMinute * 2))
+                calcHour = (Int(block.endHour)! - 1) - Int(block.startHour)!
+                calcMinute = ((Int(block.endMinute)! + 60) - Int(block.startMinute)!)
+                rowHeights.append(CGFloat((calcHour * 120) + (calcMinute * 2)))
             }
         }
+    }
+    
+    //Function responsible for animating a TimeBlock
+    func animateBlock (_ cell: UITableViewCell, _ cellHeight: CGFloat, _ indexPath: IndexPath) {
         
-        else {
-            return 90.0
+        switch cellHeight {
+            
+        case 10.0:
+            
+            let funcCell = cell as! TimeFiveMinCell
+            
+            //If a certain TimeBlock has not yet been animated
+            if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
+                
+                //Sets the x coordinate of the "containerView" for the "CustomBlockTableCell" equal to 500 + (indexPath.row * 150)
+                funcCell.containerView.frame.origin.x = CGFloat(500) + CGFloat(indexPath.row * 150)
+                
+                //Animates a cell onto the screen
+                UIView.animate(withDuration: 1.3) {
+                    funcCell.containerView.frame.origin.x = 5.0
+                }
+                
+                cellAnimated.append(blockArray[indexPath.row].blockID) //Adds the animated TimeBlock's blockID into the cellAnimated array
+            }
+                
+                //If a cell has already been animated, it simply sets the x coordinate of the cell to be 5
+            else {
+                funcCell.containerView.frame.origin.x = 5.0
+            }
+            
+        case 20.0:
+            
+            let funcCell = cell as! TimeTenMinCell
+            
+            //If a certain TimeBlock has not yet been animated
+            if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
+                
+                //Sets the x coordinate of the "containerView" for the "CustomBlockTableCell" equal to 500 + (indexPath.row * 150)
+                funcCell.containerView.frame.origin.x = CGFloat(500) + CGFloat(indexPath.row * 150)
+                
+                //Animates a cell onto the screen
+                UIView.animate(withDuration: 1.3) {
+                    funcCell.containerView.frame.origin.x = 5.0
+                }
+                
+                cellAnimated.append(blockArray[indexPath.row].blockID) //Adds the animated TimeBlock's blockID into the cellAnimated array
+            }
+                
+                //If a cell has already been animated, it simply sets the x coordinate of the cell to be 5
+            else {
+                funcCell.containerView.frame.origin.x = 5.0
+            }
+            
+        case 30.0:
+            
+            let funcCell = cell as! TimeFifteenMinCell
+            
+            //If a certain TimeBlock has not yet been animated
+            if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
+                
+                //Sets the x coordinate of the "containerView" for the "CustomBlockTableCell" equal to 500 + (indexPath.row * 150)
+                funcCell.outlineView.frame.origin.x = CGFloat(500) + CGFloat(indexPath.row * 150)
+                
+                //Animates a cell onto the screen
+                UIView.animate(withDuration: 1.3) {
+                    funcCell.outlineView.frame.origin.x = 5.0
+                }
+                
+                cellAnimated.append(blockArray[indexPath.row].blockID) //Adds the animated TimeBlock's blockID into the cellAnimated array
+            }
+                
+                //If a cell has already been animated, it simply sets the x coordinate of the cell to be 5
+            else {
+                funcCell.outlineView.frame.origin.x = 5.0
+            }
+            
+        case 40.0:
+            
+            let funcCell = cell as! TimeTwentyMinCell
+            
+            //If a certain TimeBlock has not yet been animated
+            if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
+                
+                //Sets the x coordinate of the "containerView" for the "CustomBlockTableCell" equal to 500 + (indexPath.row * 150)
+                funcCell.outlineView.frame.origin.x = CGFloat(500) + CGFloat(indexPath.row * 150)
+                
+                //Animates a cell onto the screen
+                UIView.animate(withDuration: 1.3) {
+                    funcCell.outlineView.frame.origin.x = 5.0
+                }
+                
+                cellAnimated.append(blockArray[indexPath.row].blockID) //Adds the animated TimeBlock's blockID into the cellAnimated array
+            }
+                
+                //If a cell has already been animated, it simply sets the x coordinate of the cell to be 5
+            else {
+                funcCell.outlineView.frame.origin.x = 5.0
+            }
+            
+        case 50.0:
+            
+            let funcCell = cell as! TimeTwentyFiveMinCell
+            
+            //If a certain TimeBlock has not yet been animated
+            if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
+                
+                //Sets the x coordinate of the "containerView" for the "CustomBlockTableCell" equal to 500 + (indexPath.row * 150)
+                funcCell.outlineView.frame.origin.x = CGFloat(500) + CGFloat(indexPath.row * 150)
+                
+                //Animates a cell onto the screen
+                UIView.animate(withDuration: 1.3) {
+                    funcCell.outlineView.frame.origin.x = 5.0
+                }
+                
+                cellAnimated.append(blockArray[indexPath.row].blockID) //Adds the animated TimeBlock's blockID into the cellAnimated array
+            }
+                
+                //If a cell has already been animated, it simply sets the x coordinate of the cell to be 5
+            else {
+                funcCell.outlineView.frame.origin.x = 5.0
+            }
+            
+        default:
+            
+            let funcCell = cell as! TimeThirtyMinAndUpCell
+            
+            //If a certain TimeBlock has not yet been animated
+            if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
+                
+                //Sets the x coordinate of the "containerView" for the "CustomBlockTableCell" equal to 500 + (indexPath.row * 150)
+                funcCell.outlineView.frame.origin.x = CGFloat(500) + CGFloat(indexPath.row * 150)
+                
+                //Animates a cell onto the screen
+                UIView.animate(withDuration: 1.3) {
+                    funcCell.outlineView.frame.origin.x = 5.0
+                }
+                
+                cellAnimated.append(blockArray[indexPath.row].blockID) //Adds the animated TimeBlock's blockID into the cellAnimated array
+            }
+                
+                //If a cell has already been animated, it simply sets the x coordinate of the cell to be 5
+            else {
+                funcCell.outlineView.frame.origin.x = 5.0
+            }
+            
         }
     }
 
-    
-    //Function responsible for animating a TimeBlock
-    func animateBlock (_ cell: CustomBlockTableCell, _ indexPath: IndexPath) {
-        
-        //If a certain TimeBlock has not yet been animated
-        if cellAnimated.contains(blockArray[indexPath.row].blockID) != true {
-            
-            //Sets the x coordinate of the "cellContainerView" for the "CustomBlockTableCell" equal to 500 + (indexPath.row * 150)
-            cell.cellContainerView.frame.origin.x = CGFloat(500) + CGFloat(indexPath.row * 150)
-        
-            //Animates a cell onto the screen
-            UIView.animate(withDuration: 1) {
-                cell.cellContainerView.frame.origin.x = 5.0
-            }
-            
-            cellAnimated.append(blockArray[indexPath.row].blockID) //Adds the animated TimeBlock's blockID into the cellAnimated array
-        }
-            
-        //If a cell has already been animated, it simply sets the x coordinate of the cell to be 5
-        else {
-            cell.cellContainerView.frame.origin.x = 5.0
-        }
-    }
-    
     
     //Function that allows the tableViews to scroll to the first TimeBlock
     func scrollToFirstBlock() {
         
         if blockArray.count != 0 {
             
-            if blockArray[0].blockName != "Buffer Block" {
+            if blockArray[0].name != "Buffer Block" {
                 let indexPath = NSIndexPath(row: 0, section: 0)
                 blockTableView.scrollToRow(at: indexPath as IndexPath, at: .top, animated: true)
             }
@@ -791,12 +931,28 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             dayButton.setTitleColor(.lightGray, for: .normal)
             weekButton.setTitleColor(.lightGray, for: .normal)
             
-//            numberOfRows = 6 //Changes the number of rows for the calendar to 6
-//            calendarView.reloadData(withanchor: currentDate) //Reloads the calendar with the new date
+            //iPhone SE
+            if UIScreen.main.bounds.width == 320.0 {
+                
+                calendarContainerTopAnchor.constant = 5
+                calendarContainerHeightConstraint.constant = 195
+                
+            }
             
+            //iPhone 8
+            else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 {
+                
+                calendarContainerTopAnchor.constant = 5
+                calendarContainerHeightConstraint.constant = 230
+                
+            }
             
-            calendarContainerTopAnchor.constant = 5
-            calendarContainerHeightConstraint.constant = 255
+            else {
+                
+                calendarContainerTopAnchor.constant = 5
+                calendarContainerHeightConstraint.constant = 255
+            }
+            
             
             calendarViewBottomAnchor.constant = 2
             
@@ -823,55 +979,10 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 
             }
-            
-            print(calendarView.selectedDates)
-            
-//            //If the calendar isn't already on the screen
-//            if calendarView.frame.origin.x == 375.0 {
-//
-//                //First animate the tableView elements and the calendar to their appropriate size, with the calendar still not being presented
-//                UIView.animate(withDuration: 0.2, animations: {
-//
-//                    self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 260)
-//
-//                    self.timeTableView.frame = CGRect(x: 0, y: 400, width: 82, height: 330)
-//                    self.blockTableView.frame = CGRect(x: 84, y: 400, width: 291, height: 330)
-//                    self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 400, width: 2, height: 330)
-//
-//                }) { (finished: Bool) in
-//
-//                    //Then animate the calendar elements onto the screen
-//                    UIView.animate(withDuration: 0.2, animations: {
-//                        self.calendarView.frame.origin.x = 0
-//
-//
-//                        self.calendarView.selectDates([self.currentDate])
-//                        self.calendarView.reloadData(withanchor: self.currentDate)
-//                    })
-//                }
-//            }
-//
-//            //If the calendar is already on the screen
-//            else {
-//
-//                //Animate the tableView elements and the calendar to their appropriate size
-//                UIView.animate(withDuration: 0.2) {
-//
-//                    self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 260)
-//
-//                    self.timeTableView.frame = CGRect(x: 0, y: 400, width: 82, height: 330)
-//                    self.blockTableView.frame = CGRect(x: 84, y: 400, width: 291, height: 330)
-//                    self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 400, width: 2, height: 330)
-//                }
-//            }
         }
-        
-
     }
     
     @IBAction func dailyButton(_ sender: Any) {
-        
-        
         
         if dayButton.titleColor(for: .normal) == UIColor(hexString: "E35D5B") {
             
@@ -890,29 +1001,15 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
             calendarViewBottomAnchor.constant = 0
             
-//            UIView.animate(withDuration: 0.2) {
-//                self.view.layoutIfNeeded()
-//            }
-            
-            UIView.animate(withDuration: 0.2, animations: {
+            UIView.animate(withDuration: 0.2) {
                 self.view.layoutIfNeeded()
-            }) { (finished: Bool) in
-                
-                //self.calendarView.deselect(dates: [self.currentDate])
             }
-            
-            
-            
-
         }
-        
-
     }
 
     //Button that animates the Week calendar onto the view
     @IBAction func weeklyButton(_ sender: Any) {
 
-        
         if weekButton.titleColor(for: .normal) == UIColor(hexString: "E35D5B") {
             
             let generator = UINotificationFeedbackGenerator()
@@ -921,7 +1018,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         else {
             
-
             monthButton.setTitleColor(.lightGray, for: .normal)
             dayButton.setTitleColor(.lightGray, for: .normal)
             weekButton.setTitleColor(UIColor(hexString: "E35D5B"), for: .normal)
@@ -944,49 +1040,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 self.calendarView.reloadData(withanchor: self.currentDate)
                 
             }
-            
-            
-            
-            
-//            //If the calendar isn't already on the screen
-//            if calendarView.frame.origin.x == 375.0 {
-//
-//                //First animate the tableView elements and the calendar to their appropriate size, with the calendar still not being presented
-//                UIView.animate(withDuration: 0.2, animations: {
-//
-//                    self.calendarView.frame = CGRect(x: 375, y: 134, width: 375, height: 90)
-//
-//                    self.timeTableView.frame = CGRect(x: 0, y: 225, width: 82, height: 524)
-//                    self.blockTableView.frame = CGRect(x: 84, y: 225, width: 291, height: 524)
-//                    self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 225, width: 2, height: 524)
-//
-//                }) { (finished: Bool) in
-//
-//                    //Then animate the calendar elements onto the screen
-//                    UIView.animate(withDuration: 0.2, animations: {
-//                        self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 90)
-//
-//                        self.calendarView.selectDates([self.currentDate])
-//                        self.calendarView.reloadData(withanchor: self.currentDate)
-//                    })
-//                }
-//            }
-//
-//            //If the calendar is already on the screen
-//            else {
-//
-//                //Animate the tableView elements and the calendar to their appropriate size
-//                UIView.animate(withDuration: 0.2) {
-//
-//                    self.calendarView.frame = CGRect(x: 0, y: 134, width: 375, height: 90)
-//
-//                    self.timeTableView.frame = CGRect(x: 0, y: 225, width: 82, height: 524)
-//                    self.blockTableView.frame = CGRect(x: 84, y: 225, width: 291, height: 524)
-//                    self.verticalTableViewSeperator.frame = CGRect(x: 82, y: 225, width: 2, height: 524)
-//                }
-//            }
         }
-        
     }
     
 
@@ -1014,8 +1068,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
 
         }
     }
-    
-    
 }
 
 
@@ -1059,7 +1111,7 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         }
     }
     
-    //Function that tells the delegate that the JTAppleCalendar is about to display a date-cel
+    //Function that tells the delegate that the JTAppleCalendar is about to display a date-cell
     func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
         
         let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: "dateCell", for: indexPath) as! DateCell
@@ -1078,16 +1130,14 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         
         guard let cell = view as? DateCell else { return }
             cell.dateLabel.text = cellState.text
-        //cell.backgroundColor = UIColor.flatWhite()
         
-        handleCellTextColor(cell: cell, cellState: cellState)
+        handleCellText(cell: cell, cellState: cellState)
         handleCellSelected(cell: cell, cellState: cellState)
         handleCellEvents(cell: cell, cellState: cellState)
-        
     }
     
     //Function that handles the text color of each cell
-    func handleCellTextColor(cell: DateCell, cellState: CellState) {
+    func handleCellText(cell: DateCell, cellState: CellState) {
         
         //If the date isn't an end date for a certain month
         if cellState.dateBelongsTo == .thisMonth {
@@ -1097,6 +1147,14 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         //If the date is an end date for a certain month
         else {
             cell.dateLabel.textColor = UIColor.gray
+        }
+        
+        if UIScreen.main.bounds.width == 320.0 {
+            
+            cell.dateLabel.font = UIFont(name: "HelveticaNeue", size: 14)
+            
+            cell.selectedViewWidthConstraint.constant = 24
+            cell.selectedViewHeightConstraint.constant = 24
         }
     }
     

@@ -11,10 +11,11 @@ import JTAppleCalendar
 
 class DateCell: JTAppleCell {
     
-    @IBOutlet weak var dateLabel: UILabel! //Date label for the day cell in the UICollectionView
+    @IBOutlet weak var dateLabel: UILabel!
     
     @IBOutlet weak var dotView: UIView!
-    @IBOutlet weak var selectedView: UIView!
-    //@IBOutlet weak var dateContainer: UIView!
     
+    @IBOutlet weak var selectedView: UIView!
+    @IBOutlet weak var selectedViewWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var selectedViewHeightConstraint: NSLayoutConstraint!
 }

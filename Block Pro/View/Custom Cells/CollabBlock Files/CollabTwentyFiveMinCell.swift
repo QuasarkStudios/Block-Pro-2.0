@@ -1,5 +1,5 @@
 //
-//  TwentyMinCell.swift
+//  TwentyFiveMinCell.swift
 //  Block Pro
 //
 //  Created by Nimat Azeez on 8/24/19.
@@ -8,8 +8,7 @@
 
 import Foundation
 
-class TwentyMinCell: UITableViewCell {
-    
+class CollabTwentyFiveMinCell: UITableViewCell {
     
     @IBOutlet weak var outlineView: UIView!
     @IBOutlet weak var containerView: UIView!

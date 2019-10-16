@@ -1,5 +1,5 @@
 //
-//  TenMinCell.swift
+//  5min Cell.swift
 //  Block Pro
 //
 //  Created by Nimat Azeez on 8/24/19.
@@ -8,13 +8,9 @@
 
 import Foundation
 
-class TenMinCell: UITableViewCell {
+class CollabFiveMinCell: UITableViewCell {
     
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var nameLabel: UILabel!
-    @IBOutlet weak var alphaView: UIView!
-    @IBOutlet weak var startLabel: UILabel!
-    @IBOutlet weak var toLabel: UILabel!
-    @IBOutlet weak var endLabel: UILabel!
     
 }
