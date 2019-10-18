@@ -15,15 +15,6 @@ import UserNotifications
 
 class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    let realm = try! Realm() //Initializing a new "Realm"
-    
-    var allBlockDates: Results<TimeBlocksDate>? //Results container used to hold all "TimeBlocksDate" objects from the Realm database
-    var currentBlocksDate: Results<TimeBlocksDate>? //Results container that holds only one "TimeBlocksDate" object that matches the current date or user selected date
-    var currentDateObject: TimeBlocksDate? //Variable that will contain a "TimeBlocksDate" object that matches the current date or the selected user date
-    
-    var currentDate: Date = Date() //Variable that hold either the current date or the user selected date
-    
-    var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
     @IBOutlet weak var timeTableView: UITableView!
     @IBOutlet weak var timeTableViewTopAnchor: NSLayoutConstraint!
@@ -35,11 +26,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var blockTableViewTopAnchor: NSLayoutConstraint!
     
     
-    
     @IBOutlet weak var timeBlockBarItem: UITabBarItem!
-    
-    
-    @IBOutlet weak var dateLabel: UILabel!
     
     
     @IBOutlet weak var calendarContainer: UIView!
@@ -54,12 +41,15 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var dayButton: UIButton!
     @IBOutlet weak var weekButton: UIButton!
     
+    let realm = try! Realm() //Initializing a new "Realm"
     
-    @IBOutlet weak var monthlyContainer: UIView!
-    @IBOutlet weak var dailyContainer: UIView!
-    @IBOutlet weak var weeklyContainer: UIView!
+    var allBlockDates: Results<TimeBlocksDate>? //Results container used to hold all "TimeBlocksDate" objects from the Realm database
+    var currentBlocksDate: Results<TimeBlocksDate>? //Results container that holds only one "TimeBlocksDate" object that matches the current date or user selected date
+    var currentDateObject: TimeBlocksDate? //Variable that will contain a "TimeBlocksDate" object that matches the current date or the selected user date
     
-
+    var currentDate: Date = Date() //Variable that hold either the current date or the user selected date
+    
+    var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
     let formatter = DateFormatter() //Global initialization of DateFormatter object
     
@@ -67,31 +57,55 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
     //Dictionary that contains the color for each block based on its category
-    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
-    
-    var rowHeights: [CGFloat] = []
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
     
     var cellAnimated = [String]() //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
     //Creation of to pre-define the block tuple's structure and allow for it to be used as a return of a function
-    typealias blockTuple = ( blockID: String, notificationID: String, name: String, startHour: String, startMinute: String, startPeriod: String, endHour: String, endMinute: String, endPeriod: String, note1: String, note2: String, note3: String, category: String)
-    var functionTuple: blockTuple = (blockID: "", notificationID : "", name: "", startHour: "", startMinute: "", startPeriod: "", endHour: "", endMinute: "", endPeriod: "", note1: "", note2: "", note3: "", category: "")
+    typealias blockTuple = ( blockID: String, notificationID: String, name: String, startHour: String, startMinute: String, startPeriod: String, endHour: String, endMinute: String, endPeriod: String, category: String)
+    var functionTuple: blockTuple = (blockID: "", notificationID : "", name: "", startHour: "", startMinute: "", startPeriod: "", endHour: "", endMinute: "", endPeriod: "", category: "")
 
     var blockArray = [blockTuple]() //Array that holds all the data for each TimeBlock
-    
+    var rowHeights: [CGFloat] = []
+
     var bigBlockID: String = "" //Variable that stores the UUID for each TimeBlock
     var notificationID: String = "" //Variable that stores the UUID for each TimeBlock notification
     
     var numberOfRows: Int = 6 //Variable that stores how many rows the calendarView should display
     
-
     var timeBlockViewTracker: Bool = false //Variable that tracks whether or not the TimeBlock view is present
     
+    var selectedView: String = ""
     
     //MARK: - View Functions
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        configureView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+    
+        findTimeBlocks(currentDate)
+        allBlockDates = realm.objects(TimeBlocksDate.self)
+        blockTableView.reloadData()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        timeBlockViewTracker = true //TimeBlock view is present
+        timeBlockBarItem.image = UIImage(named: "plus") //Changes the TabBar Item to be a plus button
+        scrollToFirstBlock()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        timeBlockViewTracker = false //TimeBlock view is not present
+        timeBlockBarItem.image = UIImage(named: "list") //Changes the TabBar Item to be a list button
+    }
+    
+    func configureView () {
         
         timeTableView.delegate = self
         timeTableView.dataSource = self
@@ -101,24 +115,16 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         timeTableView.separatorStyle = .none
         timeTableView.rowHeight = 120.0
         
+        timeTableView.register(UINib(nibName: "CustomTimeTableCell", bundle: nil), forCellReuseIdentifier: "timeCell")
+
+        verticalTableViewSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
+        
         blockTableView.delegate = self
         blockTableView.dataSource = self
         blockTableView.separatorStyle = .none
         
-//        verticalTableViewSeperator.layer.cornerRadius = 0.5 * verticalTableViewSeperator.bounds.size.width
-//        verticalTableViewSeperator.clipsToBounds = true
-        
-        timeTableView.register(UINib(nibName: "CustomTimeTableCell", bundle: nil), forCellReuseIdentifier: "timeCell")
-        blockTableView.register(UINib(nibName: "CustomBlockTableCell", bundle: nil), forCellReuseIdentifier: "blockCell")
-        //blockTableView.register(UINib(nibName: "CustomAddBlockTableCell", bundle: nil), forCellReuseIdentifier: "addBlockCell")
-        
-        timeTableView.frame = CGRect(x: 0, y: 136, width: 82, height: 592)
-        verticalTableViewSeperator.frame = CGRect(x: 82, y: 136, width: 2, height: 592)
-        blockTableView.frame = CGRect(x: 84, y: 136, width: 291, height: 592)
-
-        verticalTableViewSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
-        
-        tabBarController?.delegate = self
+        formatter.dateFormat = "EEEE, MMMM d"
+        navigationItem.title = formatter.string(from: currentDate)
         
         calendarContainerTopAnchor.constant = 0
         calendarContainerHeightConstraint.constant = 0
@@ -133,48 +139,14 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         calendarView.calendarDataSource = self
         calendarView.calendarDelegate = self
         
-        
         calendarView.scrollDirection = .horizontal
         calendarView.scrollingMode = .stopAtEachCalendarFrame
         calendarView.showsHorizontalScrollIndicator = false
         
-    
-        
         monthButton.setTitleColor(.lightGray, for: .normal)
-        //dayButton.setTitleColor(.lightGray, for: .normal)
         weekButton.setTitleColor(.lightGray, for: .normal)
         
-
-        
-        allBlockDates = realm.objects(TimeBlocksDate.self)
-        
-        formatter.dateFormat = "EEEE, MMMM d"
-        //dateLabel.text = formatter.string(from: currentDate)
-        
-        navigationItem.title = formatter.string(from: currentDate)
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-    
-        findTimeBlocks(currentDate)
-        allBlockDates = realm.objects(TimeBlocksDate.self)
-        calculateBlockHeights()
-        blockTableView.reloadData()
-        
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        
-        timeBlockViewTracker = true //TimeBlock view is present
-        timeBlockBarItem.image = UIImage(named: "plus") //Changes the TabBar Item to be a plus button
-        scrollToFirstBlock()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        
-        timeBlockViewTracker = false //TimeBlock view is not present
-        timeBlockBarItem.image = UIImage(named: "list") //Changes the TabBar Item to be a list button
+        tabBarController?.delegate = self
     }
     
     
@@ -198,11 +170,13 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 blockData = currentDateObject?.timeBlocks.sorted(byKeyPath: "startHour")
                 blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
+                calculateBlockHeights()
             }
             
             //Used if blockArray was populated with TimeBlocks from a different date and now the user has selected a date with no TimeBlocks
             else {
                 blockArray.removeAll()
+                rowHeights.removeAll()
             }
   
         }
@@ -331,7 +305,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 timeBlockTuple.name = blocks.value.name
                 timeBlockTuple.startHour = blocks.value.startHour; timeBlockTuple.startMinute = blocks.value.startMinute; timeBlockTuple.startPeriod = blocks.value.startPeriod
                 timeBlockTuple.endHour = blocks.value.endHour; timeBlockTuple.endMinute = blocks.value.endMinute; timeBlockTuple.endPeriod = blocks.value.endPeriod
-                timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                 
                 timeBlockTuple.category = blocks.value.blockCategory
                 timeBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this timeBlock
@@ -363,7 +336,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     timeBlockTuple.name = blocks.value.name
                     timeBlockTuple.startHour = blocks.value.startHour; timeBlockTuple.startMinute = blocks.value.startMinute; timeBlockTuple.startPeriod = blocks.value.startPeriod
                     timeBlockTuple.endHour = blocks.value.endHour; timeBlockTuple.endMinute = blocks.value.endMinute; timeBlockTuple.endPeriod = blocks.value.endPeriod
-                    timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
                     timeBlockTuple.category = blocks.value.blockCategory
                     timeBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this timeBlock
@@ -386,7 +358,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                     timeBlockTuple.name = blocks.value.name
                     timeBlockTuple.startHour = blocks.value.startHour; timeBlockTuple.startMinute = blocks.value.startMinute; timeBlockTuple.startPeriod = blocks.value.startPeriod
                     timeBlockTuple.endHour = blocks.value.endHour; timeBlockTuple.endMinute = blocks.value.endMinute; timeBlockTuple.endPeriod = blocks.value.endPeriod
-                    timeBlockTuple.note1 = blocks.value.note1; timeBlockTuple.note2 = blocks.value.note2; timeBlockTuple.note3 = blocks.value.note3
                     
                     timeBlockTuple.category = blocks.value.blockCategory
                     timeBlockTuple.blockID = blocks.value.blockID //Assigning the blockID of this timeBlock
@@ -402,11 +373,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         arrayCleanCount = returnBlockArray.count
 
         while arrayCleanCount > 0 {
-            
-            //Not entirely sure if this if statement is still needed; delete later is no problems occur
-//            if returnBlockArray[arrayCleanCount - 1].blockName == "" {
-//                let remove = returnBlockArray.remove(at: arrayCleanCount - 1)
-//            }
         
              //If the startTime and endTime of a block are the same, remove it from the array to be returned
              if (returnBlockArray[arrayCleanCount - 1].startHour == returnBlockArray[arrayCleanCount - 1].endHour) && (returnBlockArray[arrayCleanCount - 1].startMinute == returnBlockArray[arrayCleanCount - 1].endMinute) && (returnBlockArray[arrayCleanCount - 1].startPeriod == returnBlockArray[arrayCleanCount - 1].endPeriod) {
@@ -415,6 +381,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             arrayCleanCount -= 1
         }
+        
         return returnBlockArray
     }
     
@@ -445,10 +412,10 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 var blockColor: UIColor!
                 
                 if blockArray[indexPath.row].category != "" {
-                    blockColor = UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category]!)
+                    blockColor = UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category] ?? "#AAAAAA")
                 }
                 else {
-                    blockColor = UIColor(hexString: "#EFEFF4")
+                    blockColor = UIColor(hexString: "#AAAAAA")
                 }
                 
                 switch rowHeights[indexPath.row] {
@@ -649,8 +616,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             
         }
-        
-        
     }
     
     //Function thats responsible for converting time stored in Realm from 24 hour format to 12 hour format
@@ -882,7 +847,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         currentDate = currentDate.addingTimeInterval(-86400) //Subtracts one day worth of seconds from the currentDate
         formatter.dateFormat = "EEEE, MMMM d"
-        //dateLabel.text = formatter.string(from: currentDate)
     
         navigationItem.title = formatter.string(from: currentDate)
         
@@ -902,7 +866,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         currentDate = currentDate.addingTimeInterval(86400) //Adds one day worth of seconds from the currentDate
         formatter.dateFormat = "EEEE, MMMM d"
-        //dateLabel.text = formatter.string(from: currentDate)
         
         navigationItem.title = formatter.string(from: currentDate)
         
@@ -958,7 +921,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
             numberOfRows = 6 //Changes the number of rows for the calendar to just 1
             calendarView.reloadData(withanchor: currentDate) //Reloads the calendar with the new date
-//
                 
             UIView.animate(withDuration: 0.2, animations: {
 
@@ -969,15 +931,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
 
                 UIView.animate(withDuration: 0.2, animations: {
                     
-                    //self.numberOfRows = 6 //Changes the number of rows for the calendar to 6
                     self.calendarView.selectDates([self.currentDate])
                     self.calendarView.reloadData(withanchor: self.currentDate) //Reloads the calendar with the new date
-                    
                 })
-                
-                
-                
-                
             }
         }
     }
@@ -1051,21 +1007,28 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             let bigBlockVC = segue.destination as! BlockPopoverViewController
 
             bigBlockVC.blockID = bigBlockID //Setting the blockID in the BlockPopoverView to the blockID of the selected TimeBlock
-            bigBlockVC.notificationID = notificationID //Setting the notificationID in the BlockPopoverView to the notificationID of the selected TimeBlock
-            bigBlockVC.currentDateObject = currentDateObject //Setting the currentDateObject of the BlockPopoverView to the currentDateObject of this view
             
+            bigBlockVC.updateTimeBlockDelegate = self
             bigBlockVC.blockDeletedDelegate = self //Neccasary for Delegates and Protocols of deleting blocks
-            bigBlockVC.reloadDataDelegate = self //Neccasary for Delegates and Protocols of reloading data
-            
         }
         
-        else if segue.identifier == "moveToAddBlockView" {
+        else if segue.identifier == "moveToAUBlockView" {
             
-            let createBlockVC = segue.destination as! Add_Update_BlockViewController
+            let add_updateBlockVC = segue.destination as! Add_Update_BlockViewController
             
-            createBlockVC.blockData = blockData //Setting the blockData of the AddBlockView to the blockData of this view
-            createBlockVC.currentDateObject = currentDateObject //Setting the currentDateObject of the AddBlockView to the currentDateObject of this view
-
+            add_updateBlockVC.blockData = blockData //Setting the blockData of the AddBlockView to the blockData of this view
+            add_updateBlockVC.currentDateObject = currentDateObject //Setting the currentDateObject of the AddBlockView to the currentDateObject of this view
+            add_updateBlockVC.selectedView = selectedView
+            
+            if selectedView == "Edit" {
+                
+                add_updateBlockVC.blockID = bigBlockID
+            }
+            
+            let cancelItem = UIBarButtonItem()
+            cancelItem.title = "Cancel"
+            navigationItem.backBarButtonItem = cancelItem
+            
         }
     }
 }
@@ -1079,7 +1042,8 @@ extension TimeBlockViewController: UITabBarControllerDelegate {
         
         //If the timeBlockView is currently presented, perform the segue
         if timeBlockViewTracker == true {
-            performSegue(withIdentifier: "moveToAddBlockView", sender: self)
+            selectedView = "Add"
+            performSegue(withIdentifier: "moveToAUBlockView", sender: self)
         }
     }
 }
@@ -1168,19 +1132,12 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
             cell.selectedView.alpha = 0.45
             
             //Responsible for cell selection animation
-            UIView.animate(withDuration: 0.05, animations: {
-
-                //cell.selectedView.frame = CGRect(x: 12, y: 4, width: 27, height: 27)
+            UIView.animate(withDuration: 0.05) {
                 cell.selectedView.layer.cornerRadius = 0.5 * cell.selectedView.bounds.size.width
-                
-            }) { (finished: Bool) in
-                
-                //cell.bringSubviewToFront(cell.dateContainer) //Bring the date text of cell to the front
             }
             
             currentDate = cellState.date //Sets the currentDate of the view to the date of the selected cell
             formatter.dateFormat = "EEEE, MMMM d"
-            //dateLabel.text = formatter.string(from: currentDate) //Changes the dateLabel of the view to the new currentDate
             
             navigationItem.title = formatter.string(from: currentDate)
             
@@ -1191,23 +1148,8 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
 
         else {
             
-            
-            
-            if cellState.date != currentDate {
-                
-            }
-            
-                //Responsible for cell deselection animation
-                UIView.animate(withDuration: 0.05, animations: {
-
-                    //cell.selectedView.frame = CGRect(x: 0, y: -8, width: 50, height: 50)
-
-                }) { (finished: Bool) in
-                    cell.selectedView.isHidden = true
-                    cell.selectedView.layer.cornerRadius = 0.0
-                    
-                }
-            
+            cell.selectedView.isHidden = true
+            cell.selectedView.layer.cornerRadius = 0.0
         }
     }
     
@@ -1218,7 +1160,7 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
 
         let cellDate = formatter.string(from: cellState.date)
 
-        var calandarData: [String : Results<Block>] = populateDataSource() //Setting calendarData to the "Block" container returned from the "poplateDataSource" function
+        let calandarData: [String : Results<Block>] = populateDataSource() //Setting calendarData to the "Block" container returned from the "poplateDataSource" function
 
         //If there is no "Block" container in calendarData that matches a certains cell's date
         if calandarData[cellDate] == nil {
@@ -1283,8 +1225,6 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         
         header.layer.addSublayer(gradientLayer)
         
-        //header.backgroundColor = UIColor(hexString: "E35D5B")
-        
         header.bringSubviewToFront(header.monthLabel)
         header.bringSubviewToFront(header.dayStackView)
         
@@ -1300,6 +1240,15 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
 
 
 //MARK: - BlockDeleted Protocol Extension
+
+extension TimeBlockViewController: UpdateTimeBlock {
+    
+    func moveToUpdateView () {
+        
+        selectedView = "Edit"
+        performSegue(withIdentifier: "moveToAUBlockView", sender: self)
+    }
+}
 
 extension TimeBlockViewController: BlockDeleted {
     
@@ -1318,20 +1267,5 @@ extension TimeBlockViewController: BlockDeleted {
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationID]) //Deletes a certain blocks notifcation
             findTimeBlocks(currentDate)
             blockTableView.reloadData()
-        
-    }
-    
-}
-
-
-//MARK: - ReloadData Protocol Extension
-
-extension TimeBlockViewController: ReloadData {
-    
-    func reloadData() {
-        
-        findTimeBlocks(currentDate)
-        allBlockDates = realm.objects(TimeBlocksDate.self)
-        blockTableView.reloadData()
     }
 }

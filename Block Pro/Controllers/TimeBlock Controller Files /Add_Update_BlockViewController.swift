@@ -10,40 +10,53 @@ import UIKit
 import RealmSwift
 import UserNotifications
 
-class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
-
+class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+    
+    @IBOutlet weak var blockOutline: UIView!
+    @IBOutlet weak var blockContainer: UIView!
+    
+    @IBOutlet weak var blockNameTextField: UITextField!
+    
+    @IBOutlet weak var alphaView: UIView!
+    @IBOutlet weak var startTimeTextField: UITextField!
+    @IBOutlet weak var endTimeTextField: UITextField!
+    
+    @IBOutlet weak var categoryTextField: UITextField!
+    
+    @IBOutlet weak var notificationView: UIView!
+    @IBOutlet weak var notificationViewHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var notificationSwitchContainer: UIView!
+    @IBOutlet weak var notificationSwitch: UISwitch!
+    
+    @IBOutlet weak var timeSegmentContainer: UIView!
+    @IBOutlet weak var notificationTimeSegments: UISegmentedControl!
+    @IBOutlet weak var segmentContainerBottomConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var timePickerContainer: UIView!
+    @IBOutlet weak var timeContainerTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var timeContainerHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var timePicker: UIDatePicker!
+    
+    @IBOutlet weak var categoryPickerContainer: UIView!
+    @IBOutlet weak var categoryContainerTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var categoryContainerHeightConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var categoryPicker: UIPickerView!
+    
     let realm = try! Realm() //Initializing a new "Realm"
     var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
     var currentDateObject: TimeBlocksDate? //Variable that will contain a "TimeBlocksDate" object that matches the current date or the selected user date
     
-    @IBOutlet weak var blockNameTextField: UITextField!
-    @IBOutlet weak var startTimeTextField: UITextField!
-    @IBOutlet weak var endTimeTextField: UITextField!
+    var selectedView: String = ""
     
-    @IBOutlet weak var note1TextView: UITextView!
-    @IBOutlet weak var note2TextView: UITextView!
-    @IBOutlet weak var note3TextView: UITextView!
-    
-    @IBOutlet weak var categoryColorIndicator: UIView!
-    @IBOutlet weak var categoryTextField: UITextField!
-    
-    @IBOutlet weak var notificationSwitch: UISwitch!
-    @IBOutlet weak var notificationTimeSegments: UISegmentedControl!
-    
-    @IBOutlet weak var timePicker: UIPickerView!
-    @IBOutlet weak var categoryPicker: UIPickerView!
-    
-    @IBOutlet weak var create_edit_blockButton: UIButton!
-    
-    //Arrays that holds the title for each row of the "timePicker"
-    let hours: [String] = ["", "12", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
-    let minutes: [String] = ["", "00", "05", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55"]
-    let timePeriods: [String] = ["", "AM", "PM"]
-    
+    let formatter = DateFormatter()
+
     //Arrays that holds the title for each row of the "categoryPicker"
     let blockCategories: [String] = ["", "Work", "Creative Time", "Sleep", "Food/Eat", "Leisure", "Exercise", "Self-Care", "Other"]
-    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
     
     var tag: String = "" //Variable that helps track if selectedRows from the "timePicker" should be assigned to the "startTime" variables and textFields or the "endTime" variables and textFields
     
@@ -62,159 +75,188 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     var notificationID: String = UUID().uuidString //Variable that holds either the notficationID of a new TimeBlock or the "notficationID" of a TimeBlock being updated
     var notificationTimes: [Int] = [5, 10, 15] //Variable that holds values that will be used after user selects the "Notification Time Segment"
     var notificationIndex: Int = 0 //Variable that tracks which segment of the "Notification Time Segment" is selected
-
+    
+    var containersPresentedTopAnchor: CGFloat = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        configureView1()
+        configureView2()
+        configureConstraints()
+    }
+    
+    func configureView1 () {
+        
+        blockOutline.backgroundColor = .lightGray
+        blockOutline.layer.cornerRadius = 0.05 * blockOutline.bounds.size.width
+        blockOutline.clipsToBounds = true
+        
+        blockContainer.backgroundColor = UIColor(hexString: "#EFEFF4")
+        blockContainer.layer.cornerRadius = 0.05 * blockContainer.bounds.size.width
+        blockContainer.clipsToBounds = true
+        
         blockNameTextField.delegate = self
+
+        alphaView.layer.cornerRadius = 0.03 * alphaView.bounds.size.width
+        alphaView.clipsToBounds = true
+        
         startTimeTextField.delegate = self
         endTimeTextField.delegate = self
-        
         categoryTextField.delegate = self
         
-        note1TextView.delegate = self
-        note2TextView.delegate = self
-        note3TextView.delegate = self
-        
-        timePicker.delegate = self
-        timePicker.dataSource = self
-        timePicker.frame.origin.y = 750
-        
-        categoryPicker.delegate = self
-        categoryPicker.dataSource = self
-        categoryPicker.frame.origin.y = 750
-        
-        //blockNameTextField.inputView = UIView()
         startTimeTextField.inputView = UIView()
         endTimeTextField.inputView = UIView()
         categoryTextField.inputView = UIView()
         
-        note1TextView.layer.cornerRadius = 0.05 * note1TextView.bounds.size.width
-        note1TextView.clipsToBounds = true
+        notificationView.clipsToBounds = true
         
-        note2TextView.layer.cornerRadius = 0.05 * note2TextView.bounds.size.width
-        note2TextView.clipsToBounds = true
-
-        note3TextView.layer.cornerRadius = 0.05 * note3TextView.bounds.size.width
-        note3TextView.clipsToBounds = true
-
-        categoryColorIndicator.layer.cornerRadius = 0.25 * categoryColorIndicator.bounds.size.width
-        categoryColorIndicator.clipsToBounds = true
+        notificationSwitchContainer.layer.cornerRadius = 0.053 * notificationSwitchContainer.bounds.size.width
+        notificationSwitchContainer.clipsToBounds = true
+        
+        timeSegmentContainer.layer.cornerRadius = 0.03 * timeSegmentContainer.bounds.size.width
+        
+        timePickerContainer.layer.cornerRadius = 0.1 * timePickerContainer.bounds.size.width
+        timePickerContainer.clipsToBounds = true
+        
+        timePicker?.addTarget(self, action: #selector(timeSelected(timePicker:)), for: .valueChanged)
+        timeSelected(timePicker: timePicker)
+        
+        categoryPickerContainer.layer.cornerRadius = 0.1 * categoryPickerContainer.bounds.size.width
+        categoryPickerContainer.clipsToBounds = true
+        
+        categoryPicker.delegate = self
+        categoryPicker.dataSource = self
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
-
-        configureEditView()
     }
     
+    func configureView2 () {
+        
+        if selectedView == "Add" {
+            
+            navigationItem.title = "Add Time Block"
+            
+            let addButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(add_editTimeBlock1))
+            navigationItem.rightBarButtonItem = addButton
+            
+        }
+            
+        else if selectedView == "Edit" {
+            
+            navigationItem.title = "Edit Time Block"
+            
+            let editButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.edit, target: self, action: #selector(add_editTimeBlock1))
+            navigationItem.rightBarButtonItem = editButton
+            
+            guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
+            
+                blockNameTextField.text = bigBlockData.name
+                startTimeTextField.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)
+                endTimeTextField.text = convertTo12Hour(bigBlockData.endHour, bigBlockData.endMinute)
+                
+                selectedStartHour = bigBlockData.startHour; selectedStartMinute = bigBlockData.startMinute; selectedStartPeriod = bigBlockData.startPeriod
+                selectedEndHour = bigBlockData.endHour; selectedEndMinute = bigBlockData.endMinute; selectedEndPeriod = bigBlockData.endPeriod
+                
+                notificationID = bigBlockData.notificationID
+                
+                if bigBlockData.scheduled == true {
+                    
+                    self.notificationViewHeightConstraint.constant = 85
+                    self.segmentContainerBottomConstraint.constant = 5
+                    
+                    notificationTimeSegments.selectedSegmentIndex = bigBlockData.minsBefore
+                    notificationSwitch.isOn = true
+                }
+                    
+                else {
+                    
+                    self.notificationViewHeightConstraint.constant = 43
+                    self.segmentContainerBottomConstraint.constant = -40
+                    
+                    notificationTimeSegments.selectedSegmentIndex = 0
+                    notificationSwitch.isOn = false
+                }
+                
+                categoryTextField.text = bigBlockData.blockCategory //Setting the block category
+                
+                guard let categoryColor = UIColor(hexString: blockCategoryColors[bigBlockData.blockCategory] ?? "#AAAAAA") else { return }
+                
+                    blockOutline.backgroundColor? = categoryColor
+        }
+    }
+    
+    func configureConstraints () {
+        
+        if selectedView == "Add" {
+            
+            notificationViewHeightConstraint.constant = 43
+            segmentContainerBottomConstraint.constant = -40
+        }
+        
+        timeContainerTopAnchor.constant = 500
+        categoryContainerTopAnchor.constant = 500
+        
+        //iPhone XS Max & iPhone XR
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+            
+            containersPresentedTopAnchor = 125
+        }
+            
+            //iPhone 8 Plus
+        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
+            
+            containersPresentedTopAnchor = 75
+        }
+            
+            //iPhone XS
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+            
+            containersPresentedTopAnchor = 80.5
+        }
+            
+            //iPhone 8
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 {
+            containersPresentedTopAnchor = 40
+        }
+            
+            //iPhone SE
+        else if UIScreen.main.bounds.width == 320.0 {
+            
+            timeContainerHeightConstraint.constant = 150
+            categoryContainerHeightConstraint.constant = 150
+            
+            containersPresentedTopAnchor = 17.5
+        }
+    }
+
     
     //MARK: - PickerView DataSource Methods
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         
-        //Assigning the number of components for the "timePicker"
-        if pickerView == timePicker {
-            return 3
-        }
-        
-            //Assigning the number of components for the "categoryPicker"
-        else {
-            return 1
-        }
+        return 1
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
-        //Assigning the number of rows for each component of the "timePicker"
-        if pickerView == timePicker {
-            
-            if component == 0 {
-                return hours.count
-            }
-                
-            else if component == 1 {
-                return minutes.count
-            }
-                
-            else {
-                return timePeriods.count
-            }
-        }
-        
-        //Assigning the number of rows for each component of the "categoryPicker"
-        else {
-            return blockCategories.count
-        }
+        return blockCategories.count
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         
-        //Assigning the title for each row of the "timePicker"
-        if pickerView == timePicker {
-            
-            if component == 0 {
-                
-                return hours[row]
-            }
-            else if component == 1 {
-                
-                return minutes[row]
-            }
-            else {
-                
-                return timePeriods[row]
-            }
-        }
-        
-        //Assigning the title for each row of the "categoryPicker"
-        else {
-            return blockCategories[row]
-        }
+        return blockCategories[row]
     }
     
     
     //MARK: - PickerView Delegate Method
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        
-        //Assigning the selected rows/times of the "timePicker" to its appropriate variables
-        if pickerView == timePicker {
             
-            if component == 0 && tag == "start" {
-                selectedStartHour = hours[row]
-            }
-            else if component == 0 && tag == "end" {
-                selectedEndHour = hours[row]
-            }
-            if component == 1 && tag == "start" {
-                selectedStartMinute = minutes[row]
-            }
-            else if component == 1 && tag == "end" {
-                selectedEndMinute = minutes[row]
-            }
-            if component == 2 && tag == "start" {
-                selectedStartPeriod = timePeriods[row]
-            }
-            else if component == 2 && tag == "end" {
-                selectedEndPeriod = timePeriods[row]
-            }
-            
-            //Setting the text of startTime and endTime textfields
-            startTimeTextField.text = selectedStartHour + ":" + selectedStartMinute + " " + selectedStartPeriod
-            endTimeTextField.text = selectedEndHour + ":" + selectedEndMinute + " " + selectedEndPeriod
-            
-        }
-            
-        //Assigning the selected categories of the "categoryPicker" to its appropriate variables
-        else if pickerView == categoryPicker {
-            selectedCategory = blockCategories[row]
-            categoryTextField.text = selectedCategory
-            
-            guard let categoryColor = UIColor(hexString: (blockCategoryColors[selectedCategory])!) else { return }
-            categoryColorIndicator.backgroundColor? = categoryColor
-        }
-        
+        categoryTextField.text = blockCategories[row]
+        selectedCategory = blockCategories[row]
+        blockOutline.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]] ?? "#AAAAAA")
     }
     
     
@@ -222,241 +264,140 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
-        //Resetting the PickerViews to their first row after a different textField is selected
-        timePicker.selectRow(0, inComponent: 0, animated: true)
-        timePicker.selectRow(0, inComponent: 1, animated: true)
-        timePicker.selectRow(0, inComponent: 2, animated: true)
-        
-        categoryPicker.selectRow(0, inComponent: 0, animated: true)
-        
         //Switch statement that handles the animations of the PickerViews and also sets the "tag" varibale based on the selected textField
         switch textField {
             
-            case blockNameTextField:
-                UIView.animate(withDuration: 0.2) {
-                    self.timePicker.frame.origin.y = 750
-                    self.categoryPicker.frame.origin.y = 750
-                }
+        case blockNameTextField:
             
-            case startTimeTextField:
-                tag = "start"
-                
-                UIView.animate(withDuration: 0.15, animations: {
-                    self.categoryPicker.frame.origin.y = 750
-                }) { (finished: Bool) in
-                    
-                    UIView.animate(withDuration: 0.15) {
-                        self.timePicker.frame.origin.y = 475
-                    }
-                }
-            
-            case endTimeTextField:
-                tag = "end"
-                
-                UIView.animate(withDuration: 0.15, animations: {
-                    self.categoryPicker.frame.origin.y = 750
-                }) { (finished: Bool) in
-                    
-                    UIView.animate(withDuration: 0.15) {
-                        self.timePicker.frame.origin.y = 475
-                    }
-                }
-            
-            case categoryTextField:
-                
-                UIView.animate(withDuration: 0.15, animations: {
-                    self.timePicker.frame.origin.y = 750
-                }) { (finished: Bool) in
-                    
-                    UIView.animate(withDuration: 0.15) {
-                        self.categoryPicker.frame.origin.y = 475
-                    }
-                }
-            
-            default:
-                print ("No textField selected")
-        }
-    }
-    
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        
-        //If statements that set text of the startTime and endTime textFields based on the user's selections
-        if textField == startTimeTextField {
-            startTimeTextField.text = ("\(selectedStartHour):" + "\(selectedStartMinute) " + selectedStartPeriod)
-        }
-            
-        else if textField == endTimeTextField {
-            endTimeTextField.text = ("\(selectedEndHour):" + "\(selectedEndMinute) " + selectedEndPeriod)
-        }
-    }
-    
-    
-    //MARK: - TextView Delegate Methods
-    
-    func textViewDidBeginEditing(_ textView: UITextView) {
-        
-        //Used to check which notifications are lined up; staying here for now lol
-        UNUserNotificationCenter.current().getPendingNotificationRequests { requests -> () in
-            print("\(requests.count) requests --------")
-            for request in requests {
-                print(request.identifier)
-                print(request.content)
-                print(request.trigger as Any)
-            }
-        }
-        
-        if textView == note1TextView {
+            self.view.layoutIfNeeded()
+            timeContainerTopAnchor.constant = 500
+            categoryContainerTopAnchor.constant = 500
             
             UIView.animate(withDuration: 0.2) {
                 
-                self.timePicker.frame.origin.y = 700
+                self.view.layoutIfNeeded()
             }
             
-            timePicker.selectRow(0, inComponent: 0, animated: true)
-            timePicker.selectRow(0, inComponent: 1, animated: true)
-            timePicker.selectRow(0, inComponent: 2, animated: true)
-        }
-        
-        else if textView == note2TextView {
+        case startTimeTextField:
             
-            UIView.animate(withDuration: 0.2) {
+            tag = "start"
+            
+            self.view.layoutIfNeeded()
+            categoryContainerTopAnchor.constant = 500
+            
+            UIView.animate(withDuration: 0.15, animations: {
+                self.view.layoutIfNeeded()
                 
-                self.timePicker.frame.origin.y = 700
-            }
-            
-            timePicker.selectRow(0, inComponent: 0, animated: true)
-            timePicker.selectRow(0, inComponent: 1, animated: true)
-            timePicker.selectRow(0, inComponent: 2, animated: true)
-        }
-        
-        else if textView == note3TextView {
-            
-            UIView.animate(withDuration: 0.2) {
+            }, completion: { (finished: Bool) in
                 
-                self.timePicker.frame.origin.y = 700
+                self.timeContainerTopAnchor.constant = self.containersPresentedTopAnchor
+                
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.view.layoutIfNeeded()
+                })
+            })
+            
+        case endTimeTextField:
+            
+            tag = "end"
+            
+            self.view.layoutIfNeeded()
+            categoryContainerTopAnchor.constant = 500
+            
+            UIView.animate(withDuration: 0.15, animations: {
+                self.view.layoutIfNeeded()
+            }, completion: { (finished: Bool) in
+                
+                self.timeContainerTopAnchor.constant = self.containersPresentedTopAnchor
+                
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.view.layoutIfNeeded()
+                })
+            })
+            
+        case categoryTextField:
+            
+            self.view.layoutIfNeeded()
+            timeContainerTopAnchor.constant = 500
+            
+            UIView.animate(withDuration: 0.15, animations: {
+                
+                self.view.layoutIfNeeded()
+            }) { (finished: Bool) in
+                
+                self.categoryContainerTopAnchor.constant = self.containersPresentedTopAnchor
+                
+                UIView.animate(withDuration: 0.15, animations: {
+                    self.view.layoutIfNeeded()
+                })
             }
             
-            timePicker.selectRow(0, inComponent: 0, animated: true)
-            timePicker.selectRow(0, inComponent: 1, animated: true)
-            timePicker.selectRow(0, inComponent: 2, animated: true)
+        default:
+            break
         }
     }
     
-    func textViewDidEndEditing(_ textView: UITextView) {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
-        if textView == note1TextView {
-            
-        }
-        
-        else if textView == note2TextView {
-            
-        }
-        
-        else if textView == note3TextView {
-            
-        }
+        textField.resignFirstResponder()
+        return true
     }
     
+    
+    @objc func timeSelected (timePicker: UIDatePicker) {
+        
+        if tag == "start" {
+            
+            formatter.dateFormat = "h:mm a"
+            startTimeTextField.text = formatter.string(from: timePicker.date)
+            
+            formatter.dateFormat = "H"
+            selectedStartHour = formatter.string(from: timePicker.date)
+            
+            formatter.dateFormat = "mm"
+            selectedStartMinute = formatter.string(from: timePicker.date)
+            
+            formatter.dateFormat = "a"
+            selectedStartPeriod = formatter.string(from: timePicker.date)
+        }
+        
+        else if tag == "end" {
+            
+            formatter.dateFormat = "h:mm a"
+            endTimeTextField.text = formatter.string(from: timePicker.date)
+            
+            formatter.dateFormat = "H"
+            selectedEndHour = formatter.string(from: timePicker.date)
+            
+            formatter.dateFormat = "mm"
+            selectedEndMinute = formatter.string(from: timePicker.date)
+            
+            formatter.dateFormat = "a"
+            selectedEndPeriod = formatter.string(from: timePicker.date)
+        }
+    }
+
     
     //MARK: - Time Conversion Functions
     
-    func convertTo12Hour (_ funcHour: String, _ funcMinute: String, _ funcPeriod: String, _ hour: String) -> String {
+    func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
         
-        var selectedHour: String = "" //Variable that will hold the converted hour
-        
-        //If the funcHour is "0" representing the time is around 12:00 AM
         if funcHour == "0" {
-            
-            selectedHour = "12"
+            return "12" + ":" + funcMinute + " " + "AM"
         }
-        //If the funcHour is "12" representing the time is around 12:00 PM
         else if funcHour == "12" {
-            
-            selectedHour = "12"
+            return "12" + ":" + funcMinute + " " + "PM"
         }
-        //If the funcHour is less than 12 PM representing the selectedHour should just be set to the funcHour
         else if Int(funcHour)! < 12 {
-            
-            selectedHour = funcHour
+            return funcHour + ":" + funcMinute + " " + "AM"
         }
-        //If the funcHour is greater than 12 PM representing the selectedHour should just be set to the funcHour - 12
         else if Int(funcHour)! > 12 {
-            
-            selectedHour = "\(Int(funcHour)! - 12)"
+            return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
         }
-        
-        //If the "hour" is "Start", set the selectedStartHour, otherwise, if it is "End", set the selectedEndHour
-        if hour == "Start" {
-            selectedStartHour = selectedHour
-        }
-        else if hour == "End" {
-            selectedEndHour = selectedHour
-        }
-        
-        return selectedHour + ":" + funcMinute + " " + funcPeriod
-    }
-    
-    func convertTo24Hour (_ funcStartHour: String, _ funcStartPeriod: String, _ funcEndHour: String, _ funcEndPeriod: String) {
-
-        //If the startTime is around 12:00 AM, set the "selectedStartHour" to be 0
-        if funcStartHour == "12" && funcStartPeriod == "AM" {
-            selectedStartHour = "0"
-        }
-        
-        //If the startTime is around 12:00 PM, set the "selectedStartHour" to be 12
-        if funcStartHour == "12"  && funcStartPeriod == "PM" {
-            selectedStartHour = "12"
-        }
-        
-        //If the startTime is from 1:00 PM - 11:55 PM, set the "selectedStartHour" to "funcStartHour" + 12
-        if (funcStartHour != "12") && (funcStartPeriod == "PM") {
-            selectedStartHour = "\(Int(funcStartHour)! + 12)"
-        }
-        
-        //If the endTime is around 12:00 AM, set the "selectedEndHour" to be 0
-        if funcEndHour == "12" && funcEndPeriod == "AM" {
-            selectedEndHour = "0"
-        }
-        
-        //If the endTime is around 12:00 PM, set the "selectedEndHour" to be 12
-        if funcEndHour == "12" && funcEndPeriod == "PM" {
-            selectedEndHour = "12"
-        }
-        
-        //If the endTime is from 1:00 PM - 11:55 PM, set the "selectedEndHour" to "funcEndHour" + 12
-        if (funcEndHour != "12") && (funcEndPeriod == "PM") {
-            selectedEndHour = "\(Int(funcEndHour)! + 12)"
+        else {
+            return "Error"
         }
     }
-    
-    //Function responsible for getting the "EditBlockView" ready
-    func configureEditView () {
-        
-        guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
-        
-            create_edit_blockButton.setTitle("Edit", for: .normal)
-        
-            //Setting the textFields for the "EditBlockView"; "convertTo12Hour" function also handles setting the "selectedStartHour" and "selectedEndHour"
-            blockNameTextField.text = bigBlockData.name
-            startTimeTextField.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute, bigBlockData.startPeriod, "Start")
-            endTimeTextField.text = convertTo12Hour(bigBlockData.endHour, bigBlockData.endMinute, bigBlockData.endPeriod, "End")
-        
-            //Setting the selectedStartMinute, selectedStartPeriod, selectedEndMinute, and selectedEndPeriod
-            selectedStartMinute = bigBlockData.startMinute; selectedStartPeriod = bigBlockData.startPeriod
-            selectedEndMinute = bigBlockData.endMinute; selectedEndPeriod = bigBlockData.endPeriod
-        
-            note1TextView.text = bigBlockData.note1
-            note2TextView.text = bigBlockData.note2
-            note3TextView.text = bigBlockData.note3
-        
-            categoryTextField.text = bigBlockData.blockCategory //Setting the block category
-        
-            guard let categoryColor = UIColor(hexString: blockCategoryColors[bigBlockData.blockCategory] ?? "#ffffff") else { return }
-                categoryColorIndicator.backgroundColor? = categoryColor
-        
-    }
-    
     
     //MARK: - Calculate Valid Time Blocks
     
@@ -523,8 +464,6 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     func scheduleNotification () {
         
         if notificationSwitch.isOn {
-        
-            print(Int(selectedStartMinute)! - notificationTimes[notificationIndex])
             
             var dateComponents = DateComponents()
             dateComponents.calendar = Calendar.current
@@ -624,15 +563,111 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
                 ProgressHUD.showError("Sorry, notifications coming a day prior isn't currently supported")
             }
         }
+        
+        else {
+            
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationID])
+        }
     }
 
     
     //MARK: - Add or Update TimeBlock Function
     
-    func add_updateTimeBlock() {
+    @objc func add_editTimeBlock1 () {
+        
+        var validTimeBlock : [String : Bool]
+        
+        let blockNameArray = Array(blockNameTextField.text ?? "")
+        var blockNameEntered: Bool = false
+        
+        //For loop that checks to see if "blockNameTextField" isn't empty
+        for char in blockNameArray {
+            
+            if char != " " {
+                blockNameEntered = true
+                break
+            }
+        }
+        
+        //If the user hasn't entered a name for a TimeBlock
+        if blockNameEntered != true {
+            ProgressHUD.showError("Please enter a name for this TimeBlock")
+        }
+        //If the user hasn't finished entering the start time for a TimeBlock
+        else if startTimeTextField.text == "" {
+            ProgressHUD.showError("Please finish entering when this TimeBlock should begin")
+        }
+        //If the user hasn't finished entering the end time for a TimeBlock
+        else if endTimeTextField.text == "" {
+            ProgressHUD.showError("Please finish entering when this TimeBlock should end")
+        }
+        //If the start time and end time for a TimeBlock are the same
+        else if selectedStartHour == selectedEndHour && selectedStartMinute == selectedEndMinute && selectedStartPeriod == selectedEndPeriod {
+            ProgressHUD.showError("Sorry, the times for TimeBlocks can't be the same")
+        }
+        //If end time is before the start time
+        else if Int(selectedEndHour)! < Int(selectedStartHour)! {
+            ProgressHUD.showError("Sorry, the end time for a TimeBlock can't be before it's start time")
+        }
+        //If end time is before the start time
+        else if (selectedEndHour == selectedStartHour) && (Int(selectedEndMinute)! < Int(selectedStartMinute)!) {
+            ProgressHUD.showError("Sorry, the end time for a TimeBlock can't be before it's start time")
+        }
+        //This code block is reached only if the TimeBlock passed all other tests
+        else {
+            
+            //If the user is creating a new TimeBlock, call "calcValidTimeBlock" without entering a "blockID" showing that a block isn't being updated
+            if selectedView == "Add" {
+            
+                validTimeBlock = calcValidTimeBlock(selectedStartHour, selectedStartMinute, selectedEndHour, selectedEndMinute)
+            }
+            //If the user is updating a TimeBlock, call "calcValidTimeBlock" entering a "blockID" showing that a block is being updated
+            else {
+                validTimeBlock = calcValidTimeBlock(selectedStartHour, selectedStartMinute, selectedEndHour, selectedEndMinute, blockID)
+            }
+            
+            //If statements that check if the TimeBlock failed any tests in the "calcValidTimeBlock" function
+            if validTimeBlock["startTimeValid"] == false {
+                ProgressHUD.showError("The starting time of this TimeBlock conflicts with another")
+            }
+                
+            else if validTimeBlock["endTimeValid"] == false {
+                ProgressHUD.showError("The ending time of this TimeBlock conflicts with another")
+            }
+                
+            else if validTimeBlock["validRange"] == false {
+                ProgressHUD.showError("This TimeBlock conflicts with another")
+            }
+            
+            //AYEEEE IT PASSED ALL THE TESTS
+            else {
+
+                scheduleNotification()
+                add_editTimeBlock2()
+                //dismiss(animated: true, completion: nil)
+            }
+        }
+        
+    }
+    
+    func add_editTimeBlock2 () {
+        
+        var scheduled: Bool = false
+        var minsBefore: Int = 0
+        
+        if notificationSwitch.isOn {
+            
+            scheduled = true
+            minsBefore = notificationIndex
+        }
+        
+        else {
+            scheduled = false
+            minsBefore = 0
+        }
         
         //If this is the "CreateBlockView", create a new TimeBlock
-        if create_edit_blockButton.titleLabel?.text == "Create" {
+        if selectedView == "Add" {
             
             let newBlock = Block()
             
@@ -648,11 +683,9 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             
             newBlock.blockCategory = selectedCategory
             
-            newBlock.note1 = note1TextView.text
-            newBlock.note2 = note2TextView.text
-            newBlock.note3 = note3TextView.text
-            
             newBlock.notificationID = notificationID
+            newBlock.scheduled = scheduled
+            newBlock.minsBefore = minsBefore
             
             do {
                 try realm.write {
@@ -662,11 +695,11 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
                 print ("Error adding a new block \(error)")
             }
             
-            //ProgressHUD.showSuccess("TimeBlock created!")
+            self.navigationController?.popViewController(animated: true)
         }
         
         //If this is the "EditBlockView", update a TimeBlock
-        else if create_edit_blockButton.titleLabel?.text == "Edit" {
+        else if selectedView == "Edit" {
             
             let updatedBlock = Block()
             
@@ -684,9 +717,9 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
             
             updatedBlock.blockCategory = categoryTextField.text!
             
-            updatedBlock.note1 = note1TextView.text
-            updatedBlock.note2 = note2TextView.text
-            updatedBlock.note3 = note3TextView.text
+            updatedBlock.notificationID = notificationID
+            updatedBlock.scheduled = scheduled
+            updatedBlock.minsBefore = minsBefore
             
             do {
                 try self.realm.write {
@@ -700,7 +733,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
                 
             }
             
-            //ProgressHUD.showSuccess("TimeBlock updated!")
+            self.navigationController?.popViewController(animated: true)
         }
     }
     
@@ -709,11 +742,23 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
     @IBAction func notificationSwitch(_ sender: Any) {
         
         if notificationSwitch.isOn == true {
-            notificationTimeSegments.isEnabled = true
+            
+            self.notificationViewHeightConstraint.constant = 85
+            self.segmentContainerBottomConstraint.constant = 5
+            
+            UIView.animate(withDuration: 0.2) {
+                self.view.layoutIfNeeded()
+            }
         }
-        
+            
         else {
-            notificationTimeSegments.isEnabled = false
+            
+            self.notificationViewHeightConstraint.constant = 43
+            self.segmentContainerBottomConstraint.constant = -40
+            
+            UIView.animate(withDuration: 0.2) {
+                self.view.layoutIfNeeded()
+            }
         }
     }
     
@@ -722,96 +767,18 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIT
         notificationIndex = notificationTimeSegments.selectedSegmentIndex
     }
     
-    
-    //MARK: - Cancel, Create, and Edit button Functions
-    
-    @IBAction func cancelPressed(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    
-    @IBAction func create_edit_ButtonPressed(_ sender: Any) {
-        
-        var validTimeBlock : [String : Bool]
-        
-        convertTo24Hour(selectedStartHour, selectedStartPeriod, selectedEndHour, selectedEndPeriod) //Function that converts the selected times to 24 hour format
-        
-        //If the user hasn't entered a name for a TimeBlock
-        if blockNameTextField.text! == "" {
-            ProgressHUD.showError("Please enter a name for this Time Block")
-        }
-        //If the user hasn't finished entering the start time for a TimeBlock
-        else if selectedStartHour == "" || selectedStartMinute == "" || selectedStartPeriod == "" {
-            ProgressHUD.showError("Please finish entering when this Time Block should begin")
-        }
-        //If the user hasn't finished entering the end time for a TimeBlock
-        else if selectedEndHour == "" || selectedEndMinute == "" || selectedEndPeriod == "" {
-            ProgressHUD.showError("Please finish entering when this Time Block should end")
-        }
-        //If the start time and end time for a TimeBlock are the same
-        else if selectedStartHour == selectedEndHour && selectedStartMinute == selectedEndMinute && selectedStartPeriod == selectedEndPeriod {
-            ProgressHUD.showError("Sorry, the times for Time Blocks can't be the same")
-        }
-        //If end time is before the start time
-        else if Int(selectedEndHour)! < Int(selectedStartHour)! {
-            ProgressHUD.showError("Sorry, the end time for a TimeBlock can't be before it's start time")
-        }
-        //If end time is before the start time
-        else if (selectedEndHour == selectedStartHour) && (Int(selectedEndMinute)! < Int(selectedStartMinute)!) {
-            ProgressHUD.showError("Sorry, the end time for a TimeBlock can't be before it's start time")
-        }
-        //This code block is reached only if the TimeBlock passed all other tests
-        else {
-            
-            //If the user is creating a new TimeBlock, call "calcValidTimeBlock" without entering a "blockID" showing that a block isn't being updated
-            if create_edit_blockButton.titleLabel?.text == "Create" {
-            
-                validTimeBlock = calcValidTimeBlock(selectedStartHour, selectedStartMinute, selectedEndHour, selectedEndMinute)
-            }
-            //If the user is updating a TimeBlock, call "calcValidTimeBlock" entering a "blockID" showing that a block is being updated
-            else {
-                validTimeBlock = calcValidTimeBlock(selectedStartHour, selectedStartMinute, selectedEndHour, selectedEndMinute, blockID)
-            }
-            
-            //If statements that check if the TimeBlock failed any tests in the "calcValidTimeBlock" function
-            if validTimeBlock["startTimeValid"] == false {
-                ProgressHUD.showError("The starting time of this TimeBlock conflicts with another")
-                timePicker.reloadAllComponents() //Not too sure if this is really needed
-            }
-            else if validTimeBlock["endTimeValid"] == false {
-                ProgressHUD.showError("The ending time of this TimeBlock conflicts with another")
-                timePicker.reloadAllComponents() //Not too sure if this is really needed
-            }
-            else if validTimeBlock["validRange"] == false {
-                ProgressHUD.showError("This TimeBlock conflicts with another")
-            }
-            
-            //AYEEEE IT PASSED ALL THE TESTS, GO AHEAD AND ADD THAT SHIT
-            else {
-
-                scheduleNotification()
-                add_updateTimeBlock()
-                dismiss(animated: true, completion: nil)
-            }
-        }
-    }
-    
     //Function that dismisses the keyboard and the PickerViews
     @objc func dismissKeyboard () {
         
         view.endEditing(true)
         
+        self.view.layoutIfNeeded()
+        timeContainerTopAnchor.constant = 500
+        categoryContainerTopAnchor.constant = 500
+        
         UIView.animate(withDuration: 0.2) {
-            
-            self.timePicker.frame.origin.y = 750
-            self.categoryPicker.frame.origin.y = 750
+            self.view.layoutIfNeeded()
+
         }
-        
-        timePicker.selectRow(0, inComponent: 0, animated: true)
-        timePicker.selectRow(0, inComponent: 1, animated: true)
-        timePicker.selectRow(0, inComponent: 2, animated: true)
-        
-        categoryPicker.selectRow(0, inComponent: 0, animated: true)
     }
-    
 }

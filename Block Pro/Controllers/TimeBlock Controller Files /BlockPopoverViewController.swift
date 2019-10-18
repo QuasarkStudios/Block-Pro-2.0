@@ -9,29 +9,21 @@
 import UIKit
 import RealmSwift
 
+protocol UpdateTimeBlock {
+    
+    func moveToUpdateView ()
+}
+
 protocol BlockDeleted {
     
     func deleteBlock()
 }
 
-protocol ReloadData {
-    
-    func reloadData()
-}
-
 class BlockPopoverViewController: UIViewController {
 
-    let realm = try! Realm()
-    var currentDateObject: TimeBlocksDate?
-    
-    let timeBlockViewObject = TimeBlockViewController()
-    
-    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
-    
-    var blockDeletedDelegate: BlockDeleted?
-    var reloadDataDelegate: ReloadData?
-    
-    @IBOutlet weak var bigTimeBlock: UIView!
+
+    @IBOutlet weak var bigOutlineView: UIView!
+    @IBOutlet weak var bigContainerView: UIView!
     
     @IBOutlet weak var alphaView: UIView!
     
@@ -40,19 +32,21 @@ class BlockPopoverViewController: UIViewController {
     @IBOutlet weak var blockStartTime: UILabel!
     @IBOutlet weak var blockEndTime: UILabel!
     
-    @IBOutlet weak var note1Bullet: UIView!
-    @IBOutlet weak var note2Bullet: UIView!
-    @IBOutlet weak var note3Bullet: UIView!
-    
-    @IBOutlet weak var note1TextView: UITextView!
-    @IBOutlet weak var note2TextView: UITextView!
-    @IBOutlet weak var note3TextView: UITextView!
-    
     @IBOutlet weak var blockCategory: UILabel!
     
     @IBOutlet weak var editButton: UIButton!
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var exitButton: UIButton!
+    
+    let realm = try! Realm()
+    var currentDateObject: TimeBlocksDate?
+    
+    let timeBlockViewObject = TimeBlockViewController()
+    
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
+    
+    var updateTimeBlockDelegate: UpdateTimeBlock?
+    var blockDeletedDelegate: BlockDeleted?
     
     var blockID: String = ""
     var notificationID: String = ""
@@ -64,6 +58,7 @@ class BlockPopoverViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
         configureBigBlock()
     }
     
@@ -71,37 +66,17 @@ class BlockPopoverViewController: UIViewController {
     func viewAdjustments () {
        
         //bigTimeBlock View Adjustments
-        bigTimeBlock.layer.cornerRadius = 0.05 * bigTimeBlock.bounds.size.width
-        bigTimeBlock.clipsToBounds = true
+        bigOutlineView.layer.cornerRadius = 0.055 * bigOutlineView.bounds.size.width
+        bigOutlineView.clipsToBounds = true
+        
+        bigContainerView.layer.cornerRadius = 0.055 * bigContainerView.bounds.size.width
+        bigContainerView.clipsToBounds = true
         
         //alphaView Adjustments
-        alphaView.layer.cornerRadius = 0.05 * alphaView.bounds.size.width
+        alphaView.layer.cornerRadius = 0.1 * alphaView.bounds.size.width
         alphaView.clipsToBounds = true
         
-        //Note Bullet View Adjustements
-        note1Bullet.layer.cornerRadius = 0.5 * note1Bullet.bounds.size.width
-        note1Bullet.clipsToBounds = true
-        
-        note2Bullet.layer.cornerRadius = 0.5 * note2Bullet.bounds.size.width
-        note2Bullet.clipsToBounds = true
-        
-        note3Bullet.layer.cornerRadius = 0.5 * note3Bullet.bounds.size.width
-        note3Bullet.clipsToBounds = true
-        
-        //Note TextView Adjustments
-        note1TextView.layer.cornerRadius = 0.05 * note1TextView.bounds.size.width
-        note1TextView.clipsToBounds = true
-        
-        note2TextView.layer.cornerRadius = 0.05 * note2TextView.bounds.size.width
-        note2TextView.clipsToBounds = true
-        
-        note3TextView.layer.cornerRadius = 0.05 * note3TextView.bounds.size.width
-        note3TextView.clipsToBounds = true
-        
-        //Exit, Edit, and Delete View Adjustments
-        exitButton.layer.cornerRadius = 0.5 * exitButton.bounds.size.width
-        exitButton.clipsToBounds = true
-        
+        //Edit and Delete View Adjustments
         editButton.backgroundColor = UIColor.flatWhite()
         editButton.layer.cornerRadius = 0.1 * editButton.bounds.size.width
         editButton.clipsToBounds = true
@@ -116,17 +91,16 @@ class BlockPopoverViewController: UIViewController {
         
         guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
         
-        bigTimeBlock.backgroundColor = UIColor(hexString: blockCategoryColors[bigBlockData.blockCategory] ?? "#EFEFF4")
+        bigOutlineView.backgroundColor = UIColor(hexString: blockCategoryColors[bigBlockData.blockCategory] ?? "#AAAAAA")
+        bigContainerView.backgroundColor = UIColor.flatWhite()
         
         blockName.text = bigBlockData.name
+        blockName.adjustsFontSizeToFitWidth = true
+        
         blockStartTime.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)
         blockEndTime.text = convertTo12Hour(bigBlockData.endHour, bigBlockData.endMinute) 
         
         blockCategory.text = bigBlockData.blockCategory
-        
-        note1TextView.text = bigBlockData.note1
-        note2TextView.text = bigBlockData.note2
-        note3TextView.text = bigBlockData.note3
     }
 
     //Function that converts the 24 hour format of the times from Realm to a 12 hour format
@@ -145,7 +119,7 @@ class BlockPopoverViewController: UIViewController {
             return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
         }
         else {
-            return "Tehee Opps"
+            return "Error"
         }
     }
     
@@ -163,7 +137,9 @@ class BlockPopoverViewController: UIViewController {
     
     @IBAction func editButton(_ sender: Any) {
         
-        performSegue(withIdentifier: "moveToUpdateBlockView", sender: self)
+        dismiss(animated: true, completion: nil)
+        
+        updateTimeBlockDelegate?.moveToUpdateView()
     }
     
     @IBAction func deleteButton(_ sender: Any) {
@@ -174,9 +150,9 @@ class BlockPopoverViewController: UIViewController {
         //Setting the delete action of the deleteAlert
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (deleteAction) in
             
-            self.blockDeletedDelegate?.deleteBlock()
-            
             self.dismiss(animated: true, completion: nil)
+            
+            self.blockDeletedDelegate?.deleteBlock()
         }
         
         //Setting the cancel action of the deleteAlert
@@ -186,13 +162,10 @@ class BlockPopoverViewController: UIViewController {
         deleteAlert.addAction(cancelAction) //Adds the cancel action to the alert
         
         present(deleteAlert, animated: true, completion: nil) //Presents the deleteAlert
-        
     }
     
     
     @IBAction func exitButton(_ sender: Any) {
-        
-        self.reloadDataDelegate?.reloadData()
         
         dismiss(animated: true, completion: nil)
     }

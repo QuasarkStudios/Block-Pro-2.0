@@ -1544,25 +1544,30 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W5h-yG-Sis">
                                         <rect key="frame" x="37.666666666666657" y="5" width="300" height="33"/>
                                         <subviews>
+                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="71l-jK-S46">
+                                                <rect key="frame" x="247.66666666666663" y="1" width="49" height="31"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="47" id="vJu-SE-2JO"/>
+                                                </constraints>
+                                                <connections>
+                                                    <action selector="notificationSwitch:" destination="WdP-Oj-Bd8" eventType="valueChanged" id="beW-Ma-RoT"/>
+                                                </connections>
+                                            </switch>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Notify Me" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KjE-lV-UT9">
-                                                <rect key="frame" x="10" y="0.0" width="69.666666666666657" height="32"/>
+                                                <rect key="frame" x="8" y="0.0" width="69.666666666666671" height="33"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue-Light" family="Helvetica Neue" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="71l-jK-S46">
-                                                <rect key="frame" x="247.66666666666666" y="1" width="49" height="31"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <connections>
-                                                    <action selector="notificationSwitch:" destination="WdP-Oj-Bd8" eventType="valueChanged" id="beW-Ma-RoT"/>
-                                                </connections>
-                                            </switch>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="71l-jK-S46" secondAttribute="bottom" constant="1" id="Jcp-NW-bVu"/>
+                                            <constraint firstItem="71l-jK-S46" firstAttribute="top" secondItem="W5h-yG-Sis" secondAttribute="top" constant="1" id="QX2-C1-kMC"/>
                                             <constraint firstAttribute="width" constant="300" id="gEU-ac-uBB"/>
                                             <constraint firstAttribute="height" constant="33" id="gm5-Eq-X5F"/>
+                                            <constraint firstAttribute="trailing" secondItem="71l-jK-S46" secondAttribute="trailing" constant="5.3300000000000001" id="sfP-Bx-JNA"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IHl-wy-Yqv" userLabel="Time Segment Container">

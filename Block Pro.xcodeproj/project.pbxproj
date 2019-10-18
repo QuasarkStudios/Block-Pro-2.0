@@ -23,7 +23,6 @@
 		0D23077622D3DB6D00A12393 /* SelectedFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23077522D3DB6D00A12393 /* SelectedFriendViewController.swift */; };
 		0D23077822D580CF00A12393 /* NewCollabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23077722D580CF00A12393 /* NewCollabViewController.swift */; };
 		0D23077A22D6CD9900A12393 /* CollabBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23077922D6CD9900A12393 /* CollabBlockViewController.swift */; };
-		0D23077C22D7028700A12393 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D23077B22D7028600A12393 /* GoogleService-Info.plist */; };
 		0D2707FC2326DF9000592EC8 /* PomodoroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2707FB2326DF9000592EC8 /* PomodoroViewController.swift */; };
 		0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECEF228FB55600CC9180 /* AppDelegate.swift */; };
 		0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */; };
@@ -31,8 +30,6 @@
 		0D2CECFA228FB55800CC9180 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CECF8228FB55800CC9180 /* LaunchScreen.storyboard */; };
 		0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CED082290829300CC9180 /* CustomTimeTableCell.swift */; };
 		0D2CED0B2290829300CC9180 /* CustomTimeTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CED092290829300CC9180 /* CustomTimeTableCell.xib */; };
-		0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CED142291EDE200CC9180 /* CustomBlockTableCell.swift */; };
-		0D2CED172291EDE200CC9180 /* CustomBlockTableCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */; };
 		0D3A9E2222EFF81F0052BCB6 /* AUCollabBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3A9E2122EFF81F0052BCB6 /* AUCollabBlockViewController.swift */; };
 		0D3A9E2522F367460052BCB6 /* CollabBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3A9E2422F367460052BCB6 /* CollabBlock.swift */; };
 		0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3A9E2622F3EE560052BCB6 /* CollabBlockPopoverViewController.swift */; };
@@ -64,6 +61,7 @@
 		0DADDAB22355918A00E79F89 /* TimeTwentyMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAB12355918A00E79F89 /* TimeTwentyMinCell.swift */; };
 		0DADDAB42355919800E79F89 /* TimeTwentyFiveMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAB32355919800E79F89 /* TimeTwentyFiveMinCell.swift */; };
 		0DADDAB6235591C200E79F89 /* TimeThirtyMinAndUpCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAB5235591C200E79F89 /* TimeThirtyMinAndUpCell.swift */; };
+		0DADDAB823579D1500E79F89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */; };
 		0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */; };
 		0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */; };
 		0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA522BB1E7900E180D2 /* DateCell.swift */; };
@@ -94,7 +92,6 @@
 		0D23077522D3DB6D00A12393 /* SelectedFriendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedFriendViewController.swift; sourceTree = "<group>"; };
 		0D23077722D580CF00A12393 /* NewCollabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCollabViewController.swift; sourceTree = "<group>"; };
 		0D23077922D6CD9900A12393 /* CollabBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabBlockViewController.swift; sourceTree = "<group>"; };
-		0D23077B22D7028600A12393 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0D2707FB2326DF9000592EC8 /* PomodoroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroViewController.swift; sourceTree = "<group>"; };
 		0D2CECEC228FB55600CC9180 /* Block Pro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Block Pro.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0D2CECEF228FB55600CC9180 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -104,8 +101,6 @@
 		0D2CECFB228FB55800CC9180 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0D2CED082290829300CC9180 /* CustomTimeTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTimeTableCell.swift; sourceTree = "<group>"; };
 		0D2CED092290829300CC9180 /* CustomTimeTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomTimeTableCell.xib; sourceTree = "<group>"; };
-		0D2CED142291EDE200CC9180 /* CustomBlockTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBlockTableCell.swift; sourceTree = "<group>"; };
-		0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomBlockTableCell.xib; sourceTree = "<group>"; };
 		0D3A9E2122EFF81F0052BCB6 /* AUCollabBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AUCollabBlockViewController.swift; sourceTree = "<group>"; };
 		0D3A9E2422F367460052BCB6 /* CollabBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabBlock.swift; sourceTree = "<group>"; };
 		0D3A9E2622F3EE560052BCB6 /* CollabBlockPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabBlockPopoverViewController.swift; sourceTree = "<group>"; };
@@ -137,6 +132,7 @@
 		0DADDAB12355918A00E79F89 /* TimeTwentyMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTwentyMinCell.swift; sourceTree = "<group>"; };
 		0DADDAB32355919800E79F89 /* TimeTwentyFiveMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTwentyFiveMinCell.swift; sourceTree = "<group>"; };
 		0DADDAB5235591C200E79F89 /* TimeThirtyMinAndUpCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeThirtyMinAndUpCell.swift; sourceTree = "<group>"; };
+		0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0DBF3E9322B03DC700E180D2 /* Block Pro-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Block Pro-Bridging-Header.h"; sourceTree = "<group>"; };
 		0DBF3E9422B03DC800E180D2 /* ProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
 		0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
@@ -268,7 +264,7 @@
 				0D13AC01232DDBD40025EDC3 /* Assets.xcassets */,
 				0D13AC00232A15F30025EDC3 /* Pomodoro Audio Files */,
 				0D2CECFB228FB55800CC9180 /* Info.plist */,
-				0D23077B22D7028600A12393 /* GoogleService-Info.plist */,
+				0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */,
 			);
 			path = "Block Pro";
 			sourceTree = "<group>";
@@ -302,7 +298,6 @@
 				0DADDAA923558D5D00E79F89 /* CollabBlock Files */,
 				0D1128342349A53B0080774C /* SettingsCell */,
 				0D933012229373B000B6191D /* TimeTableViewCell */,
-				0D933013229373D200B6191D /* BlockTableViewCells */,
 				0D23076922D29F6900A12393 /* UpcomingCollabViewCell */,
 			);
 			path = "Custom Cells";
@@ -350,15 +345,6 @@
 				0D2CED092290829300CC9180 /* CustomTimeTableCell.xib */,
 			);
 			path = TimeTableViewCell;
-			sourceTree = "<group>";
-		};
-		0D933013229373D200B6191D /* BlockTableViewCells */ = {
-			isa = PBXGroup;
-			children = (
-				0D2CED142291EDE200CC9180 /* CustomBlockTableCell.swift */,
-				0D2CED152291EDE200CC9180 /* CustomBlockTableCell.xib */,
-			);
-			path = BlockTableViewCells;
 			sourceTree = "<group>";
 		};
 		0DA9F83322A84788008BECAE /* Storyboards */ = {
@@ -502,7 +488,6 @@
 				0D2CECFA228FB55800CC9180 /* LaunchScreen.storyboard in Resources */,
 				0DA9F83D22A848A5008BECAE /* User.storyboard in Resources */,
 				0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */,
-				0D2CED172291EDE200CC9180 /* CustomBlockTableCell.xib in Resources */,
 				0D95C17C2328923000421BE0 /* Timer Running.wav in Resources */,
 				0D1128332349A51B0080774C /* SettingsTableViewCell.xib in Resources */,
 				0DA9F83B22A8488E008BECAE /* Collab.storyboard in Resources */,
@@ -517,7 +502,7 @@
 				0D13ABFD232A15DF0025EDC3 /* Break Timer Running.wav in Resources */,
 				0D13ABFB232A15D80025EDC3 /* Start Break.wav in Resources */,
 				0D13AC02232DDBD40025EDC3 /* Assets.xcassets in Resources */,
-				0D23077C22D7028700A12393 /* GoogleService-Info.plist in Resources */,
+				0DADDAB823579D1500E79F89 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -642,7 +627,6 @@
 				0DADDAB22355918A00E79F89 /* TimeTwentyMinCell.swift in Sources */,
 				0DFE5C1C231DF7C10025B4EB /* FriendCell.swift in Sources */,
 				0D41F5C2231203A200B4B11E /* CollabTwentyMinCell.swift in Sources */,
-				0D2CED162291EDE200CC9180 /* CustomBlockTableCell.swift in Sources */,
 				0DADDAAC2355915700E79F89 /* TimeFiveMinCell.swift in Sources */,
 				0DADDAB02355917C00E79F89 /* TimeFifteenMinCell.swift in Sources */,
 				0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */,

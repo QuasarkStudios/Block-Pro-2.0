@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>872807611594-r2qaalfubmjkjf11sitp47qgnbl3aen5.apps.googleusercontent.com</string>
+	<string>872807611594-ul9s1cflos1oqe1n529mq1ae25mqhfvb.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.872807611594-r2qaalfubmjkjf11sitp47qgnbl3aen5</string>
+	<string>com.googleusercontent.apps.872807611594-ul9s1cflos1oqe1n529mq1ae25mqhfvb</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBX5LsAYKtxEmLCksk_lzx7Z28YuGZ2mo0</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.quasarkstudios.blockpro</string>
+	<string>com.quasarkstudios.blockspro</string>
 	<key>PROJECT_ID</key>
 	<string>block-pro-1835c</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,7 +29,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:872807611594:ios:eceaa31811d3432a</string>
+	<string>1:872807611594:ios:78a2d7006d39f2425a8833</string>
 	<key>DATABASE_URL</key>
 	<string>https://block-pro-1835c.firebaseio.com</string>
 </dict>

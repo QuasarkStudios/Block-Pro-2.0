@@ -49,7 +49,7 @@ class CollabBlockPopoverViewController: UIViewController {
     var blockID: String = ""
     var notificationID: String = ""
     
-    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -144,7 +144,7 @@ class CollabBlockPopoverViewController: UIViewController {
         
         blockName.adjustsFontSizeToFitWidth = true
         
-        alphaView.layer.cornerRadius = 0.05 * alphaView.bounds.size.width
+        alphaView.layer.cornerRadius = 0.1 * alphaView.bounds.size.width
         alphaView.clipsToBounds = true
         
         editButton.backgroundColor = UIColor.flatWhite()
@@ -190,8 +190,8 @@ class CollabBlockPopoverViewController: UIViewController {
                     }
                     
                     if data["blockCategory"] as! String == "" {
-                        self.bigOutlineView.backgroundColor = UIColor(hexString: "#EFEFF4")
-                        self.initialOutline.backgroundColor = UIColor(hexString: "#EFEFF4")
+                        self.bigOutlineView.backgroundColor = UIColor(hexString: "#AAAAAA")
+                        self.initialOutline.backgroundColor = UIColor(hexString: "#AAAAAA")
                     }
                     else {
                        self.bigOutlineView.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String]!)

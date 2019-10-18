@@ -27,7 +27,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
-    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
     
     var collabID: String = ""
     var collabName: String = ""
@@ -67,7 +67,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         blockTableView.delegate = self
         blockTableView.dataSource = self
         
-        blockTableView.showsVerticalScrollIndicator = false
+        //blockTableView.showsVerticalScrollIndicator = false
         blockTableView.separatorStyle = .none
         
         timeTableView.register(UINib(nibName: "CustomTimeTableCell", bundle: nil), forCellReuseIdentifier: "timeCell")
@@ -232,7 +232,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                 }
                     //If the user didn't select a category for this TimeBlock
                 else {
-                    blockColor = UIColor(hexString: "#EFEFF4")
+                    blockColor = UIColor(hexString: "#AAAAAA")
                 }
                 
                 switch rowHeights[indexPath.row] {
@@ -290,9 +290,6 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     }
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
-                    
-//                    cell.containerView.backgroundColor = UIColor.white.withAlphaComponent(0.4)//UIColor(flatVersionOf: .yellow) //.flatYellow().withAlphaComponent(0.5)7-=*
-//                    cell.alphaView.backgroundColor = UIColor.white.withAlphaComponent(0.6)
                     
                     return configureBlock(cell, 40.0, blockColor) as! UITableViewCell
 

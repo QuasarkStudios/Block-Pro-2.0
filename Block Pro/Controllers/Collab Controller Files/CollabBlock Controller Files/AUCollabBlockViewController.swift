@@ -66,7 +66,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     
     //Arrays that holds the title for each row of the "categoryPicker"
     let blockCategories: [String] = ["", "Work", "Creative Time", "Sleep", "Food/Eat", "Leisure", "Exercise", "Self-Care", "Other"]
-    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#EFEFF4"]
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
     
     var tag: String = ""
     
@@ -80,7 +80,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     
     var selectedCategory: String = ""
     
-    var notificationID: String = UUID().uuidString //Variable that holds either the notficationID of a new TimeBlock or the "notficationID" of a TimeBlock being updated
+    var notificationID: String = UUID().uuidString //Variable that holds either the notficationID of a new CollabBlock or the "notficationID" of a CollabBlock being updated
     var notificationTimes: [Int] = [5, 10, 15] //Variable that holds values that will be used after user selects the "Notification Time Segment"
     var notificationIndex: Int = 0 //Variable that tracks which segment of the "Notification Time Segment" is selected
     
@@ -91,66 +91,185 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        blockNameTextField.delegate = self
-        startTimeTextField.delegate = self
-        endTimeTextField.delegate = self
-        
-        categoryTextField.delegate = self
-        
-        categoryPicker.delegate = self
-        categoryPicker.dataSource = self
-        
-        timePickerContainer.frame.origin.y = 750
-        categoryPickerContainer.frame.origin.y = 750
-        
-        alphaView.layer.cornerRadius = 0.03 * alphaView.bounds.size.width
-        alphaView.clipsToBounds = true
-        
-        startTimeTextField.inputView = UIView()
-        endTimeTextField.inputView = UIView()
-        categoryTextField.inputView = UIView()
-        
-        timePickerContainer.layer.cornerRadius = 0.1 * timePickerContainer.bounds.size.width
-        timePickerContainer.clipsToBounds = true
-        
-        timePicker?.addTarget(self, action: #selector(timeSelected(timePicker:)), for: .valueChanged)
-        timeSelected(timePicker: timePicker)
-        
-        categoryPickerContainer.layer.cornerRadius = 0.1 * categoryPickerContainer.bounds.size.width
-        categoryPickerContainer.clipsToBounds = true
-        
-        notificationView.clipsToBounds = true
-        
-        notificationSwitchContainer.layer.cornerRadius = 0.053 * notificationSwitchContainer.bounds.size.width
-        notificationSwitchContainer.clipsToBounds = true
-        
-        timeSegmentContainer.layer.cornerRadius = 0.02 * timeSegmentContainer.bounds.size.width
-        notificationTimeSegments.tintColor = UIColor(hexString: "#e53935")
-        
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
-        view.addGestureRecognizer(tap)
+        configureView1()
+        configureView2()
+        configureConstraints()
+    }
+    
+    func configureView1 () {
         
         blockOutline.backgroundColor = .lightGray
         blockOutline.layer.cornerRadius = 0.05 * blockOutline.bounds.size.width
         blockOutline.clipsToBounds = true
-        
+         
         blockContainer.backgroundColor = UIColor(hexString: "#EFEFF4")
         blockContainer.layer.cornerRadius = 0.05 * blockContainer.bounds.size.width
         blockContainer.clipsToBounds = true
-        
+         
         initialOutline.layer.cornerRadius = 0.5 * initialOutline.bounds.size.width
         initialOutline.clipsToBounds = true
-        
+         
         initialLabel.layer.cornerRadius = 0.5 * initialLabel.bounds.size.width
         initialLabel.clipsToBounds = true
+         
+        blockNameTextField.delegate = self
+         
+        alphaView.layer.cornerRadius = 0.03 * alphaView.bounds.size.width
+        alphaView.clipsToBounds = true
+         
+        startTimeTextField.delegate = self
+        endTimeTextField.delegate = self
+        categoryTextField.delegate = self
+         
+        startTimeTextField.inputView = UIView()
+        endTimeTextField.inputView = UIView()
+        categoryTextField.inputView = UIView()
+         
+        notificationView.clipsToBounds = true
+
+        notificationSwitchContainer.layer.cornerRadius = 0.053 * notificationSwitchContainer.bounds.size.width
+        notificationSwitchContainer.clipsToBounds = true
+         
+        timeSegmentContainer.layer.cornerRadius = 0.03 * timeSegmentContainer.bounds.size.width
+         
+        timePickerContainer.layer.cornerRadius = 0.1 * timePickerContainer.bounds.size.width
+        timePickerContainer.clipsToBounds = true
+         
+        timePicker?.addTarget(self, action: #selector(timeSelected(timePicker:)), for: .valueChanged)
+        timeSelected(timePicker: timePicker)
+         
+        categoryPickerContainer.layer.cornerRadius = 0.1 * categoryPickerContainer.bounds.size.width
+        categoryPickerContainer.clipsToBounds = true
+         
+        categoryPicker.delegate = self
+        categoryPicker.dataSource = self
+         
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    
+    func configureView2 () {
         
         notificationSettings = [currentUser.userID : ["notificationID" : "", "scheduled" : false, "minsBefore" : 0]]
         
-        configureView()
-        configureConstraints()
-    
+        if selectedView == "Add" {
+            
+            navigationItem.title = "Add Collab Block"
+            
+            let addButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(add_editCollabBlock1))
+            navigationItem.rightBarButtonItem = addButton
+            
+            initialLabel.text = "Me"
+            initialOutline.backgroundColor = UIColor(hexString: "#EFEFF4")
+            
+        }
+            
+        else if selectedView == "Edit" {
+            
+            navigationItem.title = "Edit Collab Block"
+            
+            let editButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.edit, target: self, action: #selector(add_editCollabBlock1))
+            navigationItem.rightBarButtonItem = editButton
+            
+            guard let block = selectedBlock else { return }
+            
+            if block.blockCategory == "" {
+                blockOutline.backgroundColor = .lightGray
+                initialOutline.backgroundColor = .lightGray
+            }
+            else {
+                blockOutline.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory]!)
+                initialOutline.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory]!)
+            }
+            
+            if block.creator["userID"] == currentUser.userID {
+                
+                initialLabel.text = "Me"
+            }
+            else {
+                
+                let firstNameArray = Array(block.creator["firstName"]!)
+                let lastNameArray = Array(block.creator["lastName"]!)
+                
+                initialLabel.text = "\(firstNameArray[0])" + "\(lastNameArray[0])"
+            }
+            
+            blockNameTextField.text = block.name
+            startTimeTextField.text = convertTo12Hour(block.startHour, block.startMinute)
+            endTimeTextField.text = convertTo12Hour(block.endHour, block.endMinute)
+            
+            selectedStartHour = block.startHour; selectedStartMinute = block.startMinute; selectedStartPeriod = block.startPeriod
+            selectedEndHour = block.endHour; selectedEndMinute = block.endMinute; selectedEndPeriod = block.endPeriod
+            
+            categoryTextField.text = block.blockCategory
+            selectedCategory = block.blockCategory
+            
+            
+            guard let notifSettings = block.notificationSettings[currentUser.userID] else { return }
+            
+            if notifSettings["scheduled"] as! Bool == true {
+                
+                notificationSettings = [currentUser.userID : ["notificationID" : notifSettings["notificationID"] as Any, "scheduled" : true, "minsBefore" : notifSettings["minsBefore"] as Any]]
+                
+                notificationID = notifSettings["notificationID"] as! String
+                
+                notificationSwitch.isOn = true
+                notificationTimeSegments.selectedSegmentIndex = notifSettings["minsBefore"] as! Int
+            }
+                
+            else {
+                notificationSwitch.isOn = false
+                
+                self.notificationViewHeightConstraint.constant = 43
+                self.segmentContainerBottomConstraint.constant = -40
+            }
+        }
     }
     
+    func configureConstraints () {
+        
+        if selectedView == "Add" {
+            
+            notificationViewHeightConstraint.constant = 43
+            segmentContainerBottomConstraint.constant = -40
+        }
+        
+        timeContainerTopAnchor.constant = 500
+        categoryContainerTopAnchor.constant = 500
+        
+        //iPhone XS Max & iPhone XR
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+            
+            containersPresentedTopAnchor = 125
+        }
+            
+            //iPhone 8 Plus
+        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
+            
+            containersPresentedTopAnchor = 75
+        }
+            
+            //iPhone XS
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+            
+            containersPresentedTopAnchor = 80.5
+        }
+            
+            //iPhone 8
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
+            containersPresentedTopAnchor = 40
+        }
+            
+            //iPhone SE
+        else if UIScreen.main.bounds.width == 320.0 {
+            
+            timeContainerHeightConstraint.constant = 150
+            categoryContainerHeightConstraint.constant = 150
+            
+            containersPresentedTopAnchor = 17.5
+        }
+    }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -169,8 +288,8 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         
         categoryTextField.text = blockCategories[row]
         selectedCategory = blockCategories[row]
-        blockOutline.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]] ?? "#ffffff")
-        initialOutline.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]] ?? "#ffffff")
+        blockOutline.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]] ?? "#AAAAAA")
+        initialOutline.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]] ?? "#AAAAAA")
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -290,128 +409,6 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         }
     }
     
-    func configureView () {
-        
-        if selectedView == "Add" {
-            
-            navigationItem.title = "Add Collab Block"
-            
-            let addButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(create_editCollabBlock))
-            navigationItem.rightBarButtonItem = addButton
-            
-            initialLabel.text = "Me"
-            initialOutline.backgroundColor = UIColor(hexString: "#EFEFF4")
-            
-        }
-        
-        else if selectedView == "Edit" {
-            
-            navigationItem.title = "Edit Collab Block"
-            
-            let editButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.edit, target: self, action: #selector(create_editCollabBlock))
-            navigationItem.rightBarButtonItem = editButton
-            
-            //let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.refresh, target: self, action: "buttonMethod")
-            
-            guard let block = selectedBlock else { return }
-            
-            if block.blockCategory == "" {
-                blockOutline.backgroundColor = UIColor(hexString: "#EFEFF4")
-            }
-            else {
-                blockOutline.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory]!)
-                initialOutline.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory]!)
-            }
-            
-            if block.creator["userID"] == currentUser.userID {
-                
-                initialLabel.text = "Me"
-            }
-            else {
-                
-                let firstNameArray = Array(block.creator["firstName"]!)
-                let lastNameArray = Array(block.creator["lastName"]!)
-                
-                initialLabel.text = "\(firstNameArray[0])" + "\(lastNameArray[0])"
-            }
-            
-            blockNameTextField.text = block.name
-            startTimeTextField.text = convertTo12Hour(block.startHour, block.startMinute)
-            endTimeTextField.text = convertTo12Hour(block.endHour, block.endMinute)
-            
-            selectedStartHour = block.startHour; selectedStartMinute = block.startMinute; selectedStartPeriod = block.startPeriod
-            selectedEndHour = block.endHour; selectedEndMinute = block.endMinute; selectedEndPeriod = block.endPeriod
-            
-            categoryTextField.text = block.blockCategory
-            selectedCategory = block.blockCategory
-            
-
-            guard let notifSettings = block.notificationSettings[currentUser.userID] else { return }
-            
-            if notifSettings["scheduled"] as! Bool == true {
-                
-                notificationSettings = [currentUser.userID : ["notificationID" : notifSettings["notificationID"] as Any, "scheduled" : true, "minsBefore" : notifSettings["minsBefore"] as Any]]
-                
-                notificationID = notifSettings["notificationID"] as! String
-                
-                notificationSwitch.isOn = true
-                notificationTimeSegments.selectedSegmentIndex = notifSettings["minsBefore"] as! Int
-            }
-                
-            else {
-                notificationSwitch.isOn = false
-                
-                self.notificationViewHeightConstraint.constant = 43
-                self.segmentContainerBottomConstraint.constant = -40
-            }
-        }
-        
-    }
-    
-    func configureConstraints () {
-        
-        if selectedView == "Add" {
-            
-            notificationViewHeightConstraint.constant = 43
-            segmentContainerBottomConstraint.constant = -40
-        }
-        
-        timeContainerTopAnchor.constant = 500
-        categoryContainerTopAnchor.constant = 500
-        
-        //iPhone XS Max & iPhone XR
-        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
-            
-            containersPresentedTopAnchor = 125
-        }
-            
-        //iPhone 8 Plus
-        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
-            
-            containersPresentedTopAnchor = 75
-        }
-            
-        //iPhone XS
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
-            
-            containersPresentedTopAnchor = 80.5
-        }
-            
-        //iPhone 8
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0{
-            containersPresentedTopAnchor = 40
-        }
-            
-        //iPhone SE
-        else if UIScreen.main.bounds.width == 320.0 {
-            
-            timeContainerHeightConstraint.constant = 150
-            categoryContainerHeightConstraint.constant = 150
-            
-            containersPresentedTopAnchor = 17.5
-        }
-    }
-    
     func getFirebaseBlocks (_ blockID: String = "0", completion: @escaping () -> ())  {
         
         blockObjectArray.removeAll()
@@ -472,7 +469,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         
         //If other TimeBlocks have already been created for this day, verify this new TimeBlocks time
         if blockObjectArray.count > 0 {
-            print("block object check reached", blockObjectArray.count)
+            
             let calendar = Calendar.current
             let now = Date()
 
@@ -499,17 +496,14 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
 
                     //If the "newBlockStart" is greater than or equal to "realmBlockStart" and less than "realmBlockEnd"
                     if newBlockStart >= firebaseBlockStart && newBlockStart < firebaseBlockEnd {
-                        print("newblockstart", newBlockStart)
-                        print("newblockend", newBlockEnd)
-                        print("firebaseblockstart", firebaseBlockStart)
-                        print("firebaseblockstart", firebaseBlockStart)
+ 
                         validCollabBlock["startTimeValidation"] = false
 
                         break
                     }
                         //If the "newBlockEnd" is greater than "realmBlockStart" and less than or equal to "realmBlockEnd"
                     else if newBlockEnd > firebaseBlockStart && newBlockEnd <= firebaseBlockEnd {
-                        print(newBlockEnd)
+                        
                         validCollabBlock["endTimeValidation"] = false
                         break
                     }
@@ -518,19 +512,14 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                     for times in newBlockArray {
 
                         if firebaseBlockRange.contains(times) {
-                            print(times)
+                            
                             validCollabBlock["rangeValidation"] = false
                             break
                         }
                     }
                 }
             }
-
         }
-
-
-        //print(validTimeBlock)
-        
     }
     
     
@@ -687,7 +676,111 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         }
     }
     
-    func add_updateCollabBlock() {
+    @objc func add_editCollabBlock1 () {
+        
+        let blockNameArray = Array(blockNameTextField.text ?? "")
+        var blockNameEntered: Bool = false
+        
+        //For loop that checks to see if "blockNameTextField" isn't empty
+        for char in blockNameArray {
+            
+            if char != " " {
+                blockNameEntered = true
+                break
+            }
+        }
+        
+        //If the user hasn't entered a name for a CollabBlock
+        if blockNameEntered != true {
+            ProgressHUD.showError("Please enter a name for this CollabBlock")
+        }
+            //If the user hasn't finished entering the start time for a CollabBlock
+        else if startTimeTextField.text == "" {
+            ProgressHUD.showError("Please enter when this CollabBlock should begin")
+        }
+            //If the user hasn't finished entering the end time for a CollabBlock
+        else if endTimeTextField.text == "" {
+            ProgressHUD.showError("Please enter when this CollabBlock should end")
+        }
+            //If the start time and end time for a CollabBlock are the same
+        else if selectedStartHour == selectedEndHour && selectedStartMinute == selectedEndMinute && selectedStartPeriod == selectedEndPeriod {
+            ProgressHUD.showError("Sorry, the times for CollabBlocks can't be the same")
+        }
+            //If end time is before the start time
+        else if Int(selectedEndHour)! < Int(selectedStartHour)! {
+            ProgressHUD.showError("Sorry, the end time for a CollabBlock can't be before it's start time")
+        }
+            //If end time is before the start time
+        else if (selectedEndHour == selectedStartHour) && (Int(selectedEndMinute)! < Int(selectedStartMinute)!) {
+            ProgressHUD.showError("Sorry, the end time for a CollabBlock can't be before it's start time")
+        }
+            //This code block is reached only if the CollabBlock passed all other tests
+        else {
+            
+            //If the user is creating a new TimeBlock, call "calcValidTimeBlock" without entering a "blockID" showing that a block isn't being updated
+            if selectedView == "Add" {
+                
+                getFirebaseBlocks {
+                    self.calcValidCollabBlock()
+                    
+                    //If statements that check if the CollabBlock failed any tests in the "calcValidCollabBlock" function
+                    if self.validCollabBlock["startTimeValidation"] == false {
+                        ProgressHUD.showError("The starting time of this TimeBlock conflicts with another")
+                    }
+                    else if self.validCollabBlock["endTimeValidation"] == false {
+                        ProgressHUD.showError("The ending time of this TimeBlock conflicts with another")
+                    }
+                    else if self.validCollabBlock["rangeValidation"] == false {
+                        ProgressHUD.showError("This TimeBlock conflicts with another")
+                    }
+                        
+                        //AYEEEE IT PASSED ALL THE TESTS
+                    else {
+                        
+                        self.scheduleNotification()
+                        self.add_editCollabBlock2()
+                        
+                    }
+                }
+            }
+                //If the user is updating a TimeBlock, call "calcValidTimeBlock" entering a "blockID" showing that a block is being updated
+            else if selectedView == "Edit" {
+                
+                //If the user is creating a new TimeBlock, call "calcValidTimeBlock" without entering a "blockID" showing that a block isn't being updated
+                
+                guard let block = selectedBlock else { return }
+                
+                getFirebaseBlocks {
+                    self.calcValidCollabBlock(block.blockID)
+                    
+                    print(self.validCollabBlock)
+                    
+                    //If statements that check if the TimeBlock failed any tests in the "calcValidTimeBlock" function
+                    if self.validCollabBlock["startTimeValidation"] == false {
+                        ProgressHUD.showError("The starting time of this TimeBlock conflicts with another")
+                    }
+                    else if self.validCollabBlock["endTimeValidation"] == false {
+                        ProgressHUD.showError("The ending time of this TimeBlock conflicts with another")
+                    }
+                    else if self.validCollabBlock["rangeValidation"] == false {
+                        ProgressHUD.showError("This TimeBlock conflicts with another")
+                    }
+                        
+                        //AYEEEE IT PASSED ALL THE TESTS, GO AHEAD AND ADD THAT SHIT
+                    else {
+                        
+                        self.scheduleNotification()
+                        self.add_editCollabBlock2()
+                        
+                    }
+                }
+                
+            }
+            
+        }
+    }
+    
+    func add_editCollabBlock2 () {
 
         if notificationSwitch.isOn {
             
@@ -760,113 +853,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     }
     
 
-    @objc func create_editCollabBlock () {
-        
-        let blockNameArray = Array(blockNameTextField.text ?? "")
-        var blockNameEntered: Bool = false
-        
-        //For loop that checks to see if "blockNameTextField" isn't empty
-        for char in blockNameArray {
-            
-            if char != " " {
-                blockNameEntered = true
-                break
-            }
-        }
-        
-        //If the user hasn't entered a name for a TimeBlock
-        if blockNameEntered != true {
-            ProgressHUD.showError("Please enter a name for this CollabBlock")
-        }
-            //If the user hasn't finished entering the start time for a TimeBlock
-        else if startTimeTextField.text == "" {
-            ProgressHUD.showError("Please enter when this CollabBlock should begin")
-        }
-            //If the user hasn't finished entering the end time for a TimeBlock
-        else if endTimeTextField.text == "" {
-            ProgressHUD.showError("Please finish entering when this CollabBlock should end")
-        }
-            //If the start time and end time for a TimeBlock are the same
-        else if selectedStartHour == selectedEndHour && selectedStartMinute == selectedEndMinute && selectedStartPeriod == selectedEndPeriod {
-            ProgressHUD.showError("Sorry, the times for CollabBlocks can't be the same")
-        }
-            //If end time is before the start time
-        else if Int(selectedEndHour)! < Int(selectedStartHour)! {
-            print("endhour", selectedEndHour)
-            print("starthour", selectedStartHour)
-            ProgressHUD.showError("Sorry, the end time for a CollabBlock can't be before it's start time")
-        }
-            //If end time is before the start time
-        else if (selectedEndHour == selectedStartHour) && (Int(selectedEndMinute)! < Int(selectedStartMinute)!) {
-            ProgressHUD.showError("Sorry, the end time for a CollabBlock can't be before it's start time")
-        }
-            //This code block is reached only if the TimeBlock passed all other tests
-        else {
-            
-            //If the user is creating a new TimeBlock, call "calcValidTimeBlock" without entering a "blockID" showing that a block isn't being updated
-            if selectedView == "Add" {
-                
-                getFirebaseBlocks {
-                    self.calcValidCollabBlock()
-                    
-                    print(self.validCollabBlock)
-                    
-                    //If statements that check if the TimeBlock failed any tests in the "calcValidTimeBlock" function
-                    if self.validCollabBlock["startTimeValidation"] == false {
-                        ProgressHUD.showError("The starting time of this TimeBlock conflicts with another")
-                    }
-                    else if self.validCollabBlock["endTimeValidation"] == false {
-                        ProgressHUD.showError("The ending time of this TimeBlock conflicts with another")
-                    }
-                    else if self.validCollabBlock["rangeValidation"] == false {
-                        ProgressHUD.showError("This TimeBlock conflicts with another")
-                    }
-                        
-                        //AYEEEE IT PASSED ALL THE TESTS, GO AHEAD AND ADD THAT SHIT
-                    else {
-                        
-                        self.scheduleNotification()
-                        self.add_updateCollabBlock()
-                        
-                    }
-                }
-            }
-                //If the user is updating a TimeBlock, call "calcValidTimeBlock" entering a "blockID" showing that a block is being updated
-            else if selectedView == "Edit" {
-                
-                //If the user is creating a new TimeBlock, call "calcValidTimeBlock" without entering a "blockID" showing that a block isn't being updated
-            
-                guard let block = selectedBlock else { return }
-                
-                getFirebaseBlocks {
-                    self.calcValidCollabBlock(block.blockID)
-                    
-                    print(self.validCollabBlock)
-                    
-                    //If statements that check if the TimeBlock failed any tests in the "calcValidTimeBlock" function
-                    if self.validCollabBlock["startTimeValidation"] == false {
-                        ProgressHUD.showError("The starting time of this TimeBlock conflicts with another")
-                    }
-                    else if self.validCollabBlock["endTimeValidation"] == false {
-                        ProgressHUD.showError("The ending time of this TimeBlock conflicts with another")
-                    }
-                    else if self.validCollabBlock["rangeValidation"] == false {
-                        ProgressHUD.showError("This TimeBlock conflicts with another")
-                    }
-                        
-                        //AYEEEE IT PASSED ALL THE TESTS, GO AHEAD AND ADD THAT SHIT
-                    else {
-                        
-                        self.scheduleNotification()
-                        self.add_updateCollabBlock()
-                                
-                    }
-                }
-                
-            }
-            
-        }
-    }
+
     
     @objc func dismissKeyboard () {
         
@@ -880,6 +867,6 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
             self.view.layoutIfNeeded()
 
         }
-        categoryPicker.selectRow(0, inComponent: 0, animated: true)
+        //categoryPicker.selectRow(0, inComponent: 0, animated: true)
     }
 }

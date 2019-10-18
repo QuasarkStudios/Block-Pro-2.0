@@ -42,6 +42,8 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
     
     lazy var db = Firestore.firestore()
     
+    let currentUser = UserData.singletonUser
+    
     //Variables used to verify if acceptable input has been provided by the user for those fields during registration
     var firstNameVerified: Bool?
     var lastNameVerified: Bool?
@@ -85,6 +87,8 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
+        
+        //tabBarController?.delegate = self
     }
     
     func configureConstraints () {
@@ -701,4 +705,82 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
             }
         }
     }
+}
+
+extension LogIn_RegisterViewController: UITabBarControllerDelegate {
+
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+
+        if tabBarController.selectedIndex == 0 {
+            print("check1")
+        }
+
+        else if tabBarController.selectedIndex == 1 {
+            print("check2")
+        }
+
+        else if tabBarController.selectedIndex == 2 {
+            print("check3")
+        }
+
+        else if tabBarController.selectedIndex == 3 {
+            print("check4")
+        }
+
+        else {
+            print ("check5")
+        }
+
+    }
+
+
+
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+
+        if tabBarController.selectedIndex == 3 {
+
+            print("func", viewController as! UIViewController)
+            print(navigationController?.viewControllers[0] )
+
+            return true
+        }
+        else {
+            return true
+        }
+
+//        print(navigationController?.viewControllers[0])
+//
+//        if viewController == navigationController?.viewControllers[0] {
+//
+//            print("progress maybe")
+//        }
+//
+////        tabBarController.tabBar(tabBarController.tabBar, didSelect: tabbaritem)
+//
+//        if tabBarController.selectedIndex == 3 && currentUser.userID != "" {
+//
+//            if let upcomingVC = navigationController?.viewControllers[1] {
+//
+//                navigationController?.popToViewController(upcomingVC, animated: true)
+//
+//            }
+//
+//
+//        }
+//
+//
+////        if currentUser.userID != "" {
+////            navigationController?.popToViewController(UpcomingCollabViewController, animated: <#T##Bool#>)
+////        }
+//
+//
+//
+//        if viewController.isKind(of: LogIn_RegisterViewController.self) {
+//            print("yes")
+//        }
+//
+//        return false
+//
+    }
+
 }

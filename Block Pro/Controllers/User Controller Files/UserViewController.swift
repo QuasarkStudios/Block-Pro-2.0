@@ -610,7 +610,9 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 do {
 
                     try Auth.auth().signOut()
+                    
                     self.signedInUser = nil
+                    self.currentUser.userID = ""
                     self.settingsTableView.reloadData()
 
                     ProgressHUD.dismiss()
