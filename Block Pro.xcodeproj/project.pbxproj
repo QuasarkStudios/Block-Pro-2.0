@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D035329235D634E00BB79B4 /* FreeTimeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D035328235D634E00BB79B4 /* FreeTimeViewController.swift */; };
 		0D1128322349A51B0080774C /* SettingsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1128302349A51B0080774C /* SettingsTableViewCell.swift */; };
 		0D1128332349A51B0080774C /* SettingsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D1128312349A51B0080774C /* SettingsTableViewCell.xib */; };
 		0D112836234C2BF00080774C /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D112835234C2BF00080774C /* InfoViewController.swift */; };
@@ -76,6 +77,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0D035328235D634E00BB79B4 /* FreeTimeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTimeViewController.swift; sourceTree = "<group>"; };
 		0D1128302349A51B0080774C /* SettingsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewCell.swift; sourceTree = "<group>"; };
 		0D1128312349A51B0080774C /* SettingsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingsTableViewCell.xib; sourceTree = "<group>"; };
 		0D112835234C2BF00080774C /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
@@ -272,6 +274,7 @@
 		0D2CED01228FC73A00CC9180 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				0D035328235D634E00BB79B4 /* FreeTimeViewController.swift */,
 				0D2707FD2326DFB900592EC8 /* Pomodoro Controller Files */,
 				0D23076122D2851C00A12393 /* TimeBlock Controller Files  */,
 				0D23076422D299E700A12393 /* Collab Controller Files */,
@@ -523,7 +526,7 @@
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework",
-				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
@@ -541,7 +544,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTAppleCalendar.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
@@ -623,6 +626,7 @@
 				0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */,
 				0D41F5C423124B3700B4B11E /* CollabTwentyFiveMinCell.swift in Sources */,
 				0DADDAB6235591C200E79F89 /* TimeThirtyMinAndUpCell.swift in Sources */,
+				0D035329235D634E00BB79B4 /* FreeTimeViewController.swift in Sources */,
 				0D23076C22D29FE900A12393 /* UpcomingCollabTableCell.swift in Sources */,
 				0DADDAB22355918A00E79F89 /* TimeTwentyMinCell.swift in Sources */,
 				0DFE5C1C231DF7C10025B4EB /* FriendCell.swift in Sources */,

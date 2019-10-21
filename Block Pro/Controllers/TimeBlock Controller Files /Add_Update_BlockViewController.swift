@@ -401,7 +401,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
     
     //MARK: - Calculate Valid Time Blocks
     
-    func calcValidTimeBlock (_ startHour: String, _ startMinute: String, _ endHour: String, _ endMinute: String, _ blockID: String = "0") -> [String : Bool]{
+    func calcValidTimeBlock (_ startHour: String, _ startMinute: String, _ endHour: String, _ endMinute: String, _ blockID: String = "0") -> [String : Bool] {
         
         var startTimeValidation: Bool = true //Variable that tracks if the startTime of the TimeBlock is valid
         var endTimeValidation: Bool = true //Variable that tracks if the endTime of the TimeBlock is valid
@@ -635,7 +635,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
                 ProgressHUD.showError("The ending time of this TimeBlock conflicts with another")
             }
                 
-            else if validTimeBlock["validRange"] == false {
+            else if validTimeBlock["rangeValid"] == false {
                 ProgressHUD.showError("This TimeBlock conflicts with another")
             }
             
