@@ -72,8 +72,10 @@
 		0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */; };
 		0DDF79C52346AB9B00BAAD51 /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF79C42346AB9B00BAAD51 /* UserViewController.swift */; };
 		0DDF79C72346CE0500BAAD51 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF79C62346CE0500BAAD51 /* ProfileCell.swift */; };
+		0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD7235FDD3A005255A1 /* Cards.swift */; };
+		0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD9235FDD49005255A1 /* Tasks.swift */; };
 		0DFE5C1C231DF7C10025B4EB /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */; };
-		561AFCE3BCA2CC53CAB19872 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */; };
+		BDD8D2BCA074E3C351301BA2 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 98E6050DEED70E18C306AE20 /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -146,10 +148,12 @@
 		0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSearchResults.swift; sourceTree = "<group>"; };
 		0DDF79C42346AB9B00BAAD51 /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		0DDF79C62346CE0500BAAD51 /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
+		0DE3CDD7235FDD3A005255A1 /* Cards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cards.swift; sourceTree = "<group>"; };
+		0DE3CDD9235FDD49005255A1 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 		0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
-		2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		991FA64DF47C5695E2C3A1F0 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
-		FFB4066A6F6866CBFB450C85 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
+		1D0490F2C7F38046D7568719 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
+		98E6050DEED70E18C306AE20 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D04DF5311F0F5E23147C9F68 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,13 +161,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				561AFCE3BCA2CC53CAB19872 /* Pods_Block_Pro.framework in Frameworks */,
+				BDD8D2BCA074E3C351301BA2 /* Pods_Block_Pro.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01F30856D4BDBF689B9226EF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1D0490F2C7F38046D7568719 /* Pods-Block Pro.debug.xcconfig */,
+				D04DF5311F0F5E23147C9F68 /* Pods-Block Pro.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		0D1128342349A53B0080774C /* SettingsCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -243,8 +256,8 @@
 				0D2CECEE228FB55600CC9180 /* Block Pro */,
 				0D2CECED228FB55600CC9180 /* Products */,
 				0DBF3E9222B03D7A00E180D2 /* Supporting Files */,
-				FF1C50C6473D8305D2DF4369 /* Pods */,
-				EF9F319EE4A9BB4E5C098186 /* Frameworks */,
+				01F30856D4BDBF689B9226EF /* Pods */,
+				228C6ABD480D61E87673ABC1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -336,6 +349,7 @@
 			children = (
 				0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */,
 				0D93300722927C7500B6191D /* Block.swift */,
+				0DE3CDDB235FDD5A005255A1 /* FreeTime Model */,
 				0D872F7D22E2AB72001D35B4 /* Collab Model Files */,
 			);
 			path = Model;
@@ -410,21 +424,21 @@
 			path = "User Controller Files";
 			sourceTree = "<group>";
 		};
-		EF9F319EE4A9BB4E5C098186 /* Frameworks */ = {
+		0DE3CDDB235FDD5A005255A1 /* FreeTime Model */ = {
 			isa = PBXGroup;
 			children = (
-				2E0764B353E188810031D6B1 /* Pods_Block_Pro.framework */,
+				0DE3CDD7235FDD3A005255A1 /* Cards.swift */,
+				0DE3CDD9235FDD49005255A1 /* Tasks.swift */,
 			);
-			name = Frameworks;
+			path = "FreeTime Model";
 			sourceTree = "<group>";
 		};
-		FF1C50C6473D8305D2DF4369 /* Pods */ = {
+		228C6ABD480D61E87673ABC1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				FFB4066A6F6866CBFB450C85 /* Pods-Block Pro.debug.xcconfig */,
-				991FA64DF47C5695E2C3A1F0 /* Pods-Block Pro.release.xcconfig */,
+				98E6050DEED70E18C306AE20 /* Pods_Block_Pro.framework */,
 			);
-			name = Pods;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -434,11 +448,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0D2CECFE228FB55800CC9180 /* Build configuration list for PBXNativeTarget "Block Pro" */;
 			buildPhases = (
-				DF4478704F542B150377D39D /* [CP] Check Pods Manifest.lock */,
+				2C4AC40C72960EAD31ECF451 /* [CP] Check Pods Manifest.lock */,
 				0D2CECE8228FB55600CC9180 /* Sources */,
 				0D2CECE9228FB55600CC9180 /* Frameworks */,
 				0D2CECEA228FB55600CC9180 /* Resources */,
-				63AD722FD4805B248C2135AB /* [CP] Embed Pods Frameworks */,
+				6C9E82B11182580C0B98BEAB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -512,53 +526,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		63AD722FD4805B248C2135AB /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
-				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
-				"${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework",
-				"${BUILT_PRODUCTS_DIR}/Protobuf/protobuf.framework",
-				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
-				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
-				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
-				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
-				"${BUILT_PRODUCTS_DIR}/iProgressHUD/iProgressHUD.framework",
-				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
-				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTAppleCalendar.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/protobuf.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/iProgressHUD.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DF4478704F542B150377D39D /* [CP] Check Pods Manifest.lock */ = {
+		2C4AC40C72960EAD31ECF451 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -578,6 +546,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6C9E82B11182580C0B98BEAB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
+				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
+				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SwipeCellKit/SwipeCellKit.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
+				"${BUILT_PRODUCTS_DIR}/iProgressHUD/iProgressHUD.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JTAppleCalendar.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeCellKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/iProgressHUD.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -604,6 +620,7 @@
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
 				0D41F5C02311EC6A00B4B11E /* CollabFifteenMinCell.swift in Sources */,
 				0D41F5C6231376FB00B4B11E /* CollabThirtyMinAndUpCell.swift in Sources */,
+				0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */,
 				0D23077A22D6CD9900A12393 /* CollabBlockViewController.swift in Sources */,
 				0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */,
 				0D3A9E2222EFF81F0052BCB6 /* AUCollabBlockViewController.swift in Sources */,
@@ -634,6 +651,7 @@
 				0DADDAAC2355915700E79F89 /* TimeFiveMinCell.swift in Sources */,
 				0DADDAB02355917C00E79F89 /* TimeFifteenMinCell.swift in Sources */,
 				0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */,
+				0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */,
 				0D13AC04232DF0560025EDC3 /* EditPomodoroViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -778,7 +796,7 @@
 		};
 		0D2CECFF228FB55800CC9180 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FFB4066A6F6866CBFB450C85 /* Pods-Block Pro.debug.xcconfig */;
+			baseConfigurationReference = 1D0490F2C7F38046D7568719 /* Pods-Block Pro.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -802,7 +820,7 @@
 		};
 		0D2CED00228FB55800CC9180 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 991FA64DF47C5695E2C3A1F0 /* Pods-Block Pro.release.xcconfig */;
+			baseConfigurationReference = D04DF5311F0F5E23147C9F68 /* Pods-Block Pro.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

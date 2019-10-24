@@ -15,7 +15,6 @@ import UserNotifications
 
 class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    
     @IBOutlet weak var timeTableView: UITableView!
     @IBOutlet weak var timeTableViewTopAnchor: NSLayoutConstraint!
     

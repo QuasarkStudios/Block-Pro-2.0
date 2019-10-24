@@ -7,12 +7,4 @@
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
-   <Group
-      location = "group:"
-      name = "Supporting Files">
-      <Group
-         location = "container:"
-         name = "Images">
-      </Group>
-   </Group>
 </Workspace>

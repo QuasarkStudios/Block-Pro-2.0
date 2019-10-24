@@ -256,7 +256,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
             
             progressAnimationViewTopAnchor.constant = -15
             
-            
             play_pauseButtonLeadingAnchor.constant = 30
             play_pauseButtonBottomAnchor.constant = 20
             
@@ -699,7 +698,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         if sessionTracker == "session" {
             
-            sessionLengthInSecs = (defaults.value(forKey: "pomodoroMinutes") as? Double ?? 25.0 * 60.0)
+            sessionLengthInSecs = ((defaults.value(forKey: "pomodoroMinutes") as? Double ?? 25.0) * 60.0)
             remainingSessionLengthInSecs = sessionLengthInSecs - (Double(pomodoroMinutes * 60) + Double(pomodoroSeconds))
             progressAnimationPart = (1.0 / sessionLengthInSecs)
             

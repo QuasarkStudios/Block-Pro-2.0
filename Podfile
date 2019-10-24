@@ -13,6 +13,7 @@ pod 'Firebase/Auth'
 pod 'ChameleonFramework/Swift', :git => 'https://github.com/ViccAlexander/Chameleon.git'
 pod 'JTAppleCalendar'
 pod 'iProgressHUD', '~> 1.1.1' 
+pod 'SwipeCellKit'
 
 
 end
