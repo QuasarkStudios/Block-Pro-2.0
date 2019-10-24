@@ -206,7 +206,7 @@ class FreeTimeViewController: UIViewController {
                 
                 tasks = selectedTaskLength?.tasks.sorted(byKeyPath: "dateCreated")
                 taskArray = organizeTasks(functionTuple)
-                print(taskArray)
+                print(Date(), taskArray)
             }
         }
         
@@ -291,6 +291,8 @@ class FreeTimeViewController: UIViewController {
             print("Error deleting task \(error)")
         }
         
+        loadTasks(self.selectedTask)
+        tasksTableView.reloadData()
         
     }
     
@@ -469,21 +471,43 @@ extension FreeTimeViewController: UITableViewDelegate, UITableViewDataSource, Sw
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return taskArray.count
+        if taskArray.count > 0 {
+            
+            return taskArray.count
+        }
+        
+        else {
+            
+            return 1
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
-        cell.delegate = self
+        if taskArray.count > 0 {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
+            cell.delegate = self
+            
+            cell.textLabel?.text = taskArray[indexPath.row].taskName
+            
+            //Ternary operator ==>
+            // value = condition ? valueIfTrue : valueIfFalse
+            cell.accessoryType = taskArray[indexPath.row].done ? .checkmark : .none
+            
+            return cell
+        }
         
-        cell.textLabel?.text = taskArray[indexPath.row].taskName
+        else {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+            cell.textLabel?.text = "No Tasks Saved"
+            cell.isUserInteractionEnabled = false
+            
+            return cell
+        }
         
-        //Ternary operator ==>
-        // value = condition ? valueIfTrue : valueIfFalse
-        cell.accessoryType = taskArray[indexPath.row].done ? .checkmark : .none
-        
-        return cell
+
     }
     
     
@@ -496,12 +520,9 @@ extension FreeTimeViewController: UITableViewDelegate, UITableViewDataSource, Sw
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
             
             self.deleteTask(indexPath.row)
-            self.loadTasks(self.selectedTask)
-            self.tasksTableView.reloadData()
+//            self.loadTasks(self.selectedTask)
+//            self.tasksTableView.reloadData()
         }
-
-        // customize the action appearance
-        deleteAction.image = nil //UIImage(named: "delete-circle")
 
         return [deleteAction]
         
