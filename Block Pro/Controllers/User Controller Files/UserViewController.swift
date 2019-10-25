@@ -170,10 +170,10 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     
                     cell.setting = "autoDeleteTasks"
                     
-                    cell.settingLabel.text = "Automatically Delete Completed Tasks"
+                    cell.settingLabel.text = "Auto Delete Completed Tasks"
                     cell.settingLabel.adjustsFontSizeToFitWidth = true
                     
-                    cell.settingSwitch.isOn = defaults.value(forKey: "autoDeleteTasks") as? Bool ?? true
+                    cell.settingSwitch.isOn = defaults.value(forKey: "autoDeleteTasks") as? Bool ?? false
                     
                     return cell
                 }
@@ -340,9 +340,9 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     cell.setting = "autoDeleteTasks"
                     
                     cell.settingLabel.adjustsFontSizeToFitWidth = true
-                    cell.settingLabel.text = "Automatically Delete Completed Tasks"
+                    cell.settingLabel.text = "Auto Delete Completed Tasks"
                     
-                    cell.settingSwitch.isOn = defaults.value(forKey: "autoDeleteTasks") as? Bool ?? true
+                    cell.settingSwitch.isOn = defaults.value(forKey: "autoDeleteTasks") as? Bool ?? false
                     
                     return cell
                 }

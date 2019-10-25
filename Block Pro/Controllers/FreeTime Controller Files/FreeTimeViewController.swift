@@ -16,6 +16,8 @@ class FreeTimeViewController: UIViewController {
     
     @IBOutlet weak var addTaskButton: UIBarButtonItem!
     
+    @IBOutlet weak var dismissCardViewButton: UIButton!
+    
     @IBOutlet weak var fiveMinContainer: UIView!
     @IBOutlet weak var fiveMinView: UIView!
     @IBOutlet weak var fiveMinTopAnchor: NSLayoutConstraint!
@@ -46,52 +48,63 @@ class FreeTimeViewController: UIViewController {
     @IBOutlet weak var oneHourTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var oneHourBottomAnchor: NSLayoutConstraint!
     
-    let tasksTableView = UITableView()
-    
     let realm = try! Realm()
+    let defaults = UserDefaults.standard
     
     var allCards: Results<Card>?
     var selectedTaskLength: Card?
     var tasks: Results<Task>?
     
-    var taskArray: [taskTuple] = []
-    
-    let taskLengths: [String] = ["5 mins", "10 mins", "15 mins", "30 mins", "45 mins", "1 hour"]
+    //Used to access a specific Card container from Realm
+    let taskLengths: [String] = ["5 Minute", "10 Minute", "15 Minute", "30 Minute", "45 Minute", "1 Hour"]
     var selectedTask: String = ""
     
-    var cards: [[String : Any]] = []
-    
-    var gradientLayer: CAGradientLayer!
-    
+    //Pre-defining the tasks tuple structure
     typealias taskTuple = (taskID: String, taskName: String, dateCreated: Date, done: Bool)
     var functionTuple: taskTuple = (taskID: "", taskName: "", dateCreated: Date(), done: false)
+    var taskArray: [taskTuple] = []
+    
+    var cards: [[String : Any]] = [] //Array containing the UIView, top anchor, bottom anchor, and animation status of each card
+    var tappedCard: UIView!
+    
+    let tasksTableView = UITableView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        gradientLayer = CAGradientLayer()
+        //Watches for when this view will resign its active state
+        NotificationCenter.default.addObserver(self, selector: #selector(autoDeleteCompletedTasks), name: UIApplication.willResignActiveNotification, object: nil)
+        
+        //Adding gradient layer to the view
+        let gradientLayer: CAGradientLayer = CAGradientLayer()
         gradientLayer.frame = view.frame
-        gradientLayer.colors = [UIColor(hexString: "#d3cce3")?.cgColor as Any, UIColor(hexString: "#e9e4f0")?.cgColor as Any]
-//        gradientLayer.colors = [ UIColor(hexString: "#e65245")?.cgColor as Any, UIColor(hexString: "#e43a15")?.cgColor as Any]
-        gradientLayer.locations = [0.0, 0.33, 0.66]
-
+        gradientLayer.colors = [UIColor(hexString: "#e9e4f0")?.cgColor as Any, UIColor(hexString: "#d3cce3")?.cgColor as Any]
+        gradientLayer.locations = [0.0, 0.66]
+        
         view.layer.addSublayer(gradientLayer)
         view.bringSubviewToFront(visualEffectView)
         
-        addTaskButton.isEnabled = false
-        
         configureContainers()
-        
     }
     
+
     override func viewDidAppear(_ animated: Bool) {
         
        setupTableView()
     }
     
-
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        autoDeleteCompletedTasks()
+    }
+    
+    
+    //MARK: - Configure Containers Function
+    
     func configureContainers () {
         
+        //5 Minute Card
         view.bringSubviewToFront(fiveMinContainer)
         
         fiveMinContainer.backgroundColor = fiveMinContainer.backgroundColor?.darken(byPercentage: 0.1)
@@ -104,6 +117,7 @@ class FreeTimeViewController: UIViewController {
         fiveMinView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         fiveMinView.clipsToBounds = true
         
+        //10 Minute Card
         view.bringSubviewToFront(tenMinContainer)
         
         tenMinContainer.backgroundColor = tenMinContainer.backgroundColor?.darken(byPercentage: 0.1)
@@ -116,6 +130,7 @@ class FreeTimeViewController: UIViewController {
         tenMinView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         tenMinView.clipsToBounds = true
         
+        //15 Minute Card
         view.bringSubviewToFront(fifteenMinContainer)
         
         fifteenMinContainer.backgroundColor = fifteenMinContainer.backgroundColor?.darken(byPercentage: 0.1)
@@ -129,6 +144,7 @@ class FreeTimeViewController: UIViewController {
         fifteenMinView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         fifteenMinView.clipsToBounds = true
         
+        //30 Minute Card
         view.bringSubviewToFront(thirtyMinContainer)
         
         thirtyMinContainer.backgroundColor = thirtyMinContainer.backgroundColor?.darken(byPercentage: 0.1)
@@ -142,6 +158,7 @@ class FreeTimeViewController: UIViewController {
         thirtyMinView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         thirtyMinView.clipsToBounds = true
         
+        //45 Minute Card
         view.bringSubviewToFront(fourty_fiveMinContainer)
         
         fourty_fiveMinContainer.backgroundColor = fourty_fiveMinContainer.backgroundColor?.darken(byPercentage: 0.1)
@@ -155,6 +172,7 @@ class FreeTimeViewController: UIViewController {
         fourty_fiveMinView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         fourty_fiveMinView.clipsToBounds = true
         
+        //1 Hour Card
         view.bringSubviewToFront(oneHourContainer)
         
         oneHourContainer.backgroundColor = oneHourContainer.backgroundColor?.darken(byPercentage: 0.1)
@@ -168,19 +186,17 @@ class FreeTimeViewController: UIViewController {
         oneHourView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         oneHourView.clipsToBounds = true
         
+        //Adding the UIView, top anchor, bottom anchor, and animation status of each card to the "cards" array
         cards.append(["card" : fiveMinContainer!, "cardTopAnchor" : fiveMinTopAnchor!, "cardBottomAnchor" : fiveMinBottomAnchor!, "cardAnimated" : false])
-        
         cards.append(["card" : tenMinContainer!, "cardTopAnchor" : tenMinTopAnchor!, "cardBottomAnchor" : tenMinBottomAnchor!, "cardAnimated" : false])
-        
         cards.append(["card" : fifteenMinContainer!, "cardTopAnchor" : fifteenMinTopAnchor!, "cardBottomAnchor" : fifteenMinBottomAnchor!, "cardAnimated" : false])
-        
         cards.append(["card" : thirtyMinContainer!, "cardTopAnchor" : thirtyMinTopAnchor!, "cardBottomAnchor" : thirtyMinBottomAnchor!, "cardAnimated" : false])
-        
         cards.append(["card" : fourty_fiveMinContainer!, "cardTopAnchor" : fourty_fiveMinTopAnchor!, "cardBottomAnchor" : fourty_fiveMinBottomAnchor!, "cardAnimated" : false])
-        
         cards.append(["card" : oneHourContainer!, "cardTopAnchor" : oneHourTopAnchor!, "cardBottomAnchor" : oneHourBottomAnchor!, "cardAnimated" : false])
-        
     }
+    
+    
+    //MARK: - Setup TableView Function
     
     func setupTableView () {
         
@@ -194,24 +210,30 @@ class FreeTimeViewController: UIViewController {
         tasksTableView.register(SwipeTableViewCell.self, forCellReuseIdentifier: "Cell")
     }
     
+    
+    //MARK: - Load Tasks Function
+    
     func loadTasks (_ taskLength: String) {
         
-        allCards = realm.objects(Card.self).filter("taskLength = %@", taskLength)
+        allCards = realm.objects(Card.self).filter("taskLength = %@", taskLength) //Getting the Card container that matches the selected "taskLength" if one exists
         
+        //If a card matching that selected "taskLength" was found/exists
         if allCards?.count ?? 0 != 0 {
             
             selectedTaskLength = allCards![0]
             
+            //If there are tasks within that card container
             if selectedTaskLength?.tasks.count != 0 {
                 
                 tasks = selectedTaskLength?.tasks.sorted(byKeyPath: "dateCreated")
                 taskArray = organizeTasks(functionTuple)
-                print(Date(), taskArray)
             }
         }
         
+        //If a card matching that selected "taskLength" was not found/ does not exist
         else {
             
+            //Creating a new card container for the selected "taskLength"
             let newTaskLength = Card()
             newTaskLength.taskLength = taskLength
             
@@ -230,11 +252,15 @@ class FreeTimeViewController: UIViewController {
         
     }
     
+    
+    //MARK: - Organize Tasks Function
+    
     func organizeTasks (_ taskTuple: taskTuple) -> [(taskTuple)] {
         
         var taskTuple = taskTuple
         var returnTaskArray: [taskTuple] = []
         
+        //Adding the tasks pulled from Realm to the "returnTaskArray"
         for task in tasks! {
             
             taskTuple.taskID = task.taskID
@@ -245,23 +271,30 @@ class FreeTimeViewController: UIViewController {
             returnTaskArray.append(taskTuple)
         }
         
-        returnTaskArray = returnTaskArray.sorted(by: {$0.dateCreated > $1.dateCreated})
+        returnTaskArray = returnTaskArray.sorted(by: {$0.dateCreated > $1.dateCreated}) //Sorting the "returnTaskArray" by the date each task was created
         
         var count: Int = 0
-        
-        while count < returnTaskArray.count {
+
+        //Adding all the tasks that have been completed to the bottom of the array
+        for task in returnTaskArray {
             
-            if returnTaskArray[count].done == true {
+            if task.done == true {
                 
                 let completedTask = returnTaskArray.remove(at: count)
                 returnTaskArray.append(completedTask)
             }
             
-            count += 1
+            else {
+                count += 1
+            }
+            
         }
         
         return returnTaskArray
     }
+    
+    
+    //MARK: - Save Tasks Function
     
     func saveTasks (_ name: String) {
         
@@ -279,9 +312,12 @@ class FreeTimeViewController: UIViewController {
         }
     }
     
+    
+    //MARK: - Delete Tasks Function
+    
     func deleteTask (_ selectedTask: Int) {
         
-        guard let deletedTask = realm.object(ofType: Task.self, forPrimaryKey: taskArray[selectedTask].taskID) else { return }
+        guard let deletedTask = realm.object(ofType: Task.self, forPrimaryKey: taskArray[selectedTask - 1].taskID) else { return }
     
         do {
             try realm.write {
@@ -290,79 +326,59 @@ class FreeTimeViewController: UIViewController {
         } catch {
             print("Error deleting task \(error)")
         }
+    }
+    
+    
+    //MARK: - Auto Delete Tasks Function
+    
+    @objc func autoDeleteCompletedTasks () {
         
-        loadTasks(self.selectedTask)
+        //If the user has enabled auto deleting tasks
+        if defaults.value(forKey: "autoDeleteTasks") as? Bool ?? false == true {
+            
+            for length in taskLengths {
+                
+                allCards = realm.objects(Card.self).filter("taskLength = %@", length)
+                
+                //If a card exists for the current "taskLength"
+                if allCards?.count ?? 0 != 0 {
+                    
+                    selectedTaskLength = allCards![0]
+                    tasks = selectedTaskLength?.tasks.sorted(byKeyPath: "name")
+                    
+                    //For loop that checks each "task" done property and deletes the task if it is true
+                    for task in tasks! {
+                        
+                        if task.done == true {
+                            
+                            guard let deletedTask = realm.object(ofType: Task.self, forPrimaryKey: task.taskID) else { return }
+                            
+                                do {
+                                    try realm.write {
+                                        realm.delete(deletedTask)
+                                    }
+                                } catch {
+                                    print("Error deleting task \(error)")
+                                }
+                        }
+                    }
+                }
+            }
+        }
+        
+        taskArray.removeAll()
+        loadTasks(selectedTask)
         tasksTableView.reloadData()
-        
-    }
-    
-    @IBAction func addTask(_ sender: Any) {
-        
-        var textField = UITextField()
-        
-        let addTaskAlert = UIAlertController(title: "Add A 5 Minute Task", message: nil, preferredStyle: .alert)
-        
-        let addAction = UIAlertAction(title: "Add", style: .default) { (action) in
-            
-            self.saveTasks(textField.text!)
-            self.loadTasks(self.selectedTask)
-            self.tasksTableView.reloadData()
-        }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        
-        addTaskAlert.addTextField { (field) in
-            
-            textField = field
-            textField.placeholder = "Enter Task Name Here"
-            
-        }
-        addTaskAlert.addAction(addAction)
-        addTaskAlert.addAction(cancelAction)
-        
-        present(addTaskAlert, animated: true, completion: nil)
     }
     
     
-    @IBAction func cardButtons(_ sender: UIButton) {
-        
-        let tappedCard: UIView = cards[sender.tag]["card"] as! UIView
-        let cardAnimated: Bool = cards[sender.tag]["cardAnimated"] as! Bool
-        
-        selectedTask = taskLengths[sender.tag]
-        
-        if cardAnimated == false {
-            
-            animateCards(tappedCard, true)
-            
-            addTaskButton.isEnabled = true
-        }
-        
-        else {
-            
-            animateCards(tappedCard, false)
-            
-            addTaskButton.isEnabled = false
-        }
-        
-        if cardAnimated == false {
-            
-            loadTasks(selectedTask)
-            tasksTableView.reloadData()
-        }
-        
-        else {
-            
-            taskArray.removeAll()
-        }
-        
-    }
-    
+    //MARK: - Animate Cards Function
     
     func animateCards (_ tappedCard: UIView, _ animateDown: Bool) {
         
         var count: Int = 0
         
+        //Animates the selected card up and the rest of the cards down
         if animateDown == true {
             
             while count < 6 {
@@ -380,7 +396,7 @@ class FreeTimeViewController: UIViewController {
                     
                     cards[count]["cardAnimated"] = true
                 }
-                
+                    
                 else {
                     
                     cardTopAnchor.constant = 750
@@ -395,6 +411,7 @@ class FreeTimeViewController: UIViewController {
             }
         }
         
+        //Animates all the cards to their original position
         else {
             
             while count < 6 {
@@ -407,7 +424,7 @@ class FreeTimeViewController: UIViewController {
                 case 0:
                     
                     cardTopAnchor.constant = 75
-                
+                    
                 case 1:
                     
                     cardTopAnchor.constant = 130
@@ -415,7 +432,7 @@ class FreeTimeViewController: UIViewController {
                 case 2:
                     
                     cardTopAnchor.constant = 185
-            
+                    
                 case 3:
                     
                     cardTopAnchor.constant = 240
@@ -441,16 +458,126 @@ class FreeTimeViewController: UIViewController {
                 count += 1
             }
             
+            //Removes the "tasksTableView" from the previously selected card after a small delay
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
                 self.tasksTableView.removeFromSuperview()
             }
         }
     }
     
+    
+    //MARK: - Add Task Button
+    
+    @IBAction func addTask(_ sender: Any) {
+        
+        var textField = UITextField()
+        
+        let addTaskAlert = UIAlertController(title: "Add A \(selectedTask) Task", message: nil, preferredStyle: .alert)
+        
+        let addAction = UIAlertAction(title: "Add", style: .default) { (action) in
+            
+            let taskNameArray = Array(textField.text ?? "")
+            var taskNameEntered: Bool = false
+            
+            //For loop that checks to see if "textField" isn't empty
+            for char in taskNameArray {
+                
+                if char != " " {
+                    taskNameEntered = true
+                    break
+                }
+            }
+            
+            if taskNameEntered == true {
+                self.saveTasks(textField.text!)
+                self.loadTasks(self.selectedTask)
+                self.tasksTableView.reloadData()
+            }
+            
+            else {
+                ProgressHUD.showError("Please enter a name for the task")
+            }
+
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        //Adding a textField to the "addTaskAlert"
+        addTaskAlert.addTextField { (field) in
+            
+            textField = field
+            textField.placeholder = "Enter Task Name Here"
+            
+        }
+        addTaskAlert.addAction(addAction)
+        addTaskAlert.addAction(cancelAction)
+        
+        present(addTaskAlert, animated: true, completion: nil)
+    }
+    
+   
+    //MARK: - Card Buttons
+    
+    @IBAction func cardButtons(_ sender: UIButton) {
+        
+        tappedCard = cards[sender.tag]["card"] as? UIView
+        let cardAnimated: Bool = cards[sender.tag]["cardAnimated"] as! Bool
+        
+        selectedTask = taskLengths[sender.tag]
+        
+        //If the selected card should be presented
+        if cardAnimated == false {
+            
+            animateCards(tappedCard, true)
+            
+            addTaskButton.isEnabled = true
+            dismissCardViewButton.isEnabled = true
+        }
+        
+        //If the selected card should be dismissed
+        else {
+            
+            animateCards(tappedCard, false)
+            
+            addTaskButton.isEnabled = false
+            dismissCardViewButton.isEnabled = false
+        }
+        
+        if cardAnimated == false {
+            
+            loadTasks(selectedTask)
+            tasksTableView.reloadData()
+        }
+        
+        else {
+            
+            taskArray.removeAll()
+        }
+        
+    }
+    
+    
+    //MARK: - Dismiss Cards Button
+    
+    //View button that will dismiss the selected card when tapped
+    @IBAction func dismissCards(_ sender: Any) {
+        
+        animateCards(tappedCard, false)
+        
+        addTaskButton.isEnabled = false
+        dismissCardViewButton.isEnabled = false
+    }
+    
 }
+
+
+//MARK: - Extension for the UITableViewDelegate, UITableViewDataSource and SwipeTableViewCellDelegate
 
 extension FreeTimeViewController: UITableViewDelegate, UITableViewDataSource, SwipeTableViewCellDelegate {
 
+    
+    //MARK: - TableView DataSource Methods
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         
         return 1
@@ -458,10 +585,7 @@ extension FreeTimeViewController: UITableViewDelegate, UITableViewDataSource, Sw
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         
-        view.tintColor = UIColor(hexString: "F2F2F2")//?.darken(byPercentage: 0.025)
-        //let header = view as! UITableViewHeaderFooterView
-        //header.textLabel?.textColor = UIColor.white
-        
+        view.tintColor = UIColor(hexString: "F2F2F2")
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -471,43 +595,91 @@ extension FreeTimeViewController: UITableViewDelegate, UITableViewDataSource, Sw
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if taskArray.count > 0 {
-            
-            return taskArray.count
-        }
-        
-        else {
-            
-            return 1
-        }
+        return taskArray.count + 1 //Must always add one more row than neccasary to allow for the "SwipeCellKit" methods to work properly
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if taskArray.count > 0 {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
-            cell.delegate = self
+            if indexPath.row == 0 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                return cell
+            }
             
-            cell.textLabel?.text = taskArray[indexPath.row].taskName
-            
-            //Ternary operator ==>
-            // value = condition ? valueIfTrue : valueIfFalse
-            cell.accessoryType = taskArray[indexPath.row].done ? .checkmark : .none
-            
-            return cell
+            else {
+              
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
+                cell.delegate = self
+                
+                cell.textLabel?.text = taskArray[indexPath.row - 1].taskName
+                cell.textLabel?.textColor = UIColor.black
+                
+                //Ternary operator ==>
+                // value = condition ? valueIfTrue : valueIfFalse
+                cell.accessoryType = taskArray[indexPath.row - 1].done ? .checkmark : .none
+                
+                cell.isUserInteractionEnabled = true
+                
+                return cell
+            }
         }
         
         else {
-            
+           
             let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
             cell.textLabel?.text = "No Tasks Saved"
+            cell.textLabel?.textColor = UIColor.lightGray
+            
             cell.isUserInteractionEnabled = false
             
             return cell
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-
+        if taskArray.count > 0 {
+            
+            if indexPath.row == 0 {
+                return 0.0
+            }
+            
+            else {
+                return 50.0
+            }
+        }
+        
+        else {
+            return 50.0
+        }
+    }
+    
+    
+    //MARK: - TableView Delegate Methods
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let tappedTask = Task()
+        
+        tappedTask.taskID = taskArray[indexPath.row - 1].taskID
+        tappedTask.name = taskArray[indexPath.row - 1].taskName
+        tappedTask.dateCreated = taskArray[indexPath.row - 1].dateCreated
+        tappedTask.done = !taskArray[indexPath.row - 1].done
+        
+        do {
+            try self.realm.write {
+                realm.add(tappedTask, update: .modified)
+            }
+        } catch {
+            print("Error updating task \(error)")
+        }
+        
+        loadTasks(selectedTask)
+        tasksTableView.reloadData()
+        tableView.deselectRow(at: indexPath, animated: false)
+        
     }
     
     
@@ -520,8 +692,7 @@ extension FreeTimeViewController: UITableViewDelegate, UITableViewDataSource, Sw
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
             
             self.deleteTask(indexPath.row)
-//            self.loadTasks(self.selectedTask)
-//            self.tasksTableView.reloadData()
+            self.taskArray.remove(at: indexPath.row - 1)
         }
 
         return [deleteAction]

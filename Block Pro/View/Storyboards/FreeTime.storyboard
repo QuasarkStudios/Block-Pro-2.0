@@ -20,6 +20,20 @@
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="DFH-eh-TUO">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X0m-01-3rw">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                                            <connections>
+                                                <action selector="dismissCards:" destination="Hhp-48-RHL" eventType="touchUpInside" id="G2V-28-Eci"/>
+                                            </connections>
+                                        </button>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="X0m-01-3rw" firstAttribute="leading" secondItem="DFH-eh-TUO" secondAttribute="leading" id="9tm-Df-vLF"/>
+                                        <constraint firstAttribute="trailing" secondItem="X0m-01-3rw" secondAttribute="trailing" id="Sn9-xL-QaJ"/>
+                                        <constraint firstItem="X0m-01-3rw" firstAttribute="top" secondItem="DFH-eh-TUO" secondAttribute="top" id="Su5-9I-IGH"/>
+                                        <constraint firstAttribute="bottom" secondItem="X0m-01-3rw" secondAttribute="bottom" id="Wrx-hq-Elm"/>
+                                    </constraints>
                                 </view>
                                 <blurEffect style="light"/>
                             </visualEffectView>
@@ -259,10 +273,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" alpha="0.5" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pgZ-jZ-jLk">
-                                                <rect key="frame" x="0.0" y="0.0" width="343" height="53"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="53" id="tWn-Ee-6tm"/>
-                                                </constraints>
+                                                <rect key="frame" x="0.0" y="0.0" width="343" height="289"/>
                                                 <connections>
                                                     <action selector="cardButtons:" destination="Hhp-48-RHL" eventType="touchUpInside" id="f3c-x9-wDb"/>
                                                 </connections>
@@ -270,12 +281,13 @@
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <constraints>
-                                            <constraint firstAttribute="trailing" secondItem="pgZ-jZ-jLk" secondAttribute="trailing" id="29V-o4-6dZ"/>
                                             <constraint firstItem="Rap-rZ-GnT" firstAttribute="top" secondItem="eRV-Md-KGG" secondAttribute="top" id="9lF-DM-jbq"/>
-                                            <constraint firstItem="pgZ-jZ-jLk" firstAttribute="leading" secondItem="eRV-Md-KGG" secondAttribute="leading" id="G58-Zf-MWW"/>
+                                            <constraint firstItem="pgZ-jZ-jLk" firstAttribute="top" secondItem="eRV-Md-KGG" secondAttribute="top" id="CHP-2W-BUH"/>
+                                            <constraint firstAttribute="bottom" secondItem="pgZ-jZ-jLk" secondAttribute="bottom" id="CpV-ii-uOd"/>
+                                            <constraint firstAttribute="trailing" secondItem="pgZ-jZ-jLk" secondAttribute="trailing" id="NKx-SG-30v"/>
+                                            <constraint firstItem="pgZ-jZ-jLk" firstAttribute="leading" secondItem="eRV-Md-KGG" secondAttribute="leading" id="g8x-2i-Lgj"/>
                                             <constraint firstItem="Rap-rZ-GnT" firstAttribute="leading" secondItem="eRV-Md-KGG" secondAttribute="leading" constant="20" id="h93-gK-elt"/>
                                             <constraint firstAttribute="trailing" secondItem="Rap-rZ-GnT" secondAttribute="trailing" id="n1r-sr-RBv"/>
-                                            <constraint firstItem="pgZ-jZ-jLk" firstAttribute="top" secondItem="eRV-Md-KGG" secondAttribute="top" id="zmb-JF-T58"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -331,6 +343,7 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="addTaskButton" destination="E2N-l4-V3Y" id="SXu-7h-YLb"/>
+                        <outlet property="dismissCardViewButton" destination="X0m-01-3rw" id="l0u-J3-1aI"/>
                         <outlet property="fifteenMinBottomAnchor" destination="XQl-V4-GMY" id="sJ3-SY-6q7"/>
                         <outlet property="fifteenMinContainer" destination="OGm-WA-Buj" id="UyQ-bf-zma"/>
                         <outlet property="fifteenMinTopAnchor" destination="8dW-RW-xtN" id="66U-fO-ycI"/>

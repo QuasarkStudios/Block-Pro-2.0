@@ -287,7 +287,7 @@
 		0D2CED01228FC73A00CC9180 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0D035328235D634E00BB79B4 /* FreeTimeViewController.swift */,
+				0DE3CDDC23629AAD005255A1 /* FreeTime Controller Files */,
 				0D2707FD2326DFB900592EC8 /* Pomodoro Controller Files */,
 				0D23076122D2851C00A12393 /* TimeBlock Controller Files  */,
 				0D23076422D299E700A12393 /* Collab Controller Files */,
@@ -431,6 +431,14 @@
 				0DE3CDD9235FDD49005255A1 /* Tasks.swift */,
 			);
 			path = "FreeTime Model";
+			sourceTree = "<group>";
+		};
+		0DE3CDDC23629AAD005255A1 /* FreeTime Controller Files */ = {
+			isa = PBXGroup;
+			children = (
+				0D035328235D634E00BB79B4 /* FreeTimeViewController.swift */,
+			);
+			path = "FreeTime Controller Files";
 			sourceTree = "<group>";
 		};
 		228C6ABD480D61E87673ABC1 /* Frameworks */ = {
