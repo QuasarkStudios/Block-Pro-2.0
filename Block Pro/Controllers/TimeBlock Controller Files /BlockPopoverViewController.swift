@@ -122,18 +122,7 @@ class BlockPopoverViewController: UIViewController {
             return "Error"
         }
     }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == "moveToUpdateBlockView" {
-            
-            let editBlockView = segue.destination as! Add_Update_BlockViewController
-            
-            editBlockView.blockID = blockID //Setting the blockID in the editBlockView to the blockID of the selected TimeBlock
-            editBlockView.notificationID = notificationID //Setting the notificationID in the editBlockView to the notificationID of the selected TimeBlock
-            editBlockView.currentDateObject = currentDateObject //Setting the currentDateObject of the editBlockView to the currentDateObject of this view
-        }
-    }
+
     
     @IBAction func editButton(_ sender: Any) {
         

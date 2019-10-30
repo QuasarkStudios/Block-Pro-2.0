@@ -700,8 +700,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         tableView.center = CGPoint(x: tableView.center.x, y: tableView.center.y + translation.y)
         
         sender.setTranslation(CGPoint.zero, in: friendView) //Sets the translation value in the coordinate system of the specified view
-        
-        
     }
     
     //Function that returns the views back to their origin point

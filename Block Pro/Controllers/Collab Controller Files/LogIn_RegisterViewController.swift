@@ -9,7 +9,6 @@
 import UIKit
 import Firebase
 
-
 class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var logInContainer: UIView!
@@ -149,6 +148,7 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
                     self.view.layoutIfNeeded()
                 }
             }
+                
             else if textField == usernameTextField {
                 
                 view.layoutIfNeeded()
@@ -168,6 +168,7 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
                     self.view.layoutIfNeeded()
                 }
             }
+                
             else if textField == registerPasswordTextField_1 || textField == registerReenterPasswordTextField_2 {
                 
                 view.layoutIfNeeded()
@@ -281,6 +282,8 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
             }
             else {
 
+                ProgressHUD.show()
+                
                 Auth.auth().createUser(withEmail: self.registerEmailTextField.text!, password: self.registerPasswordTextField_1.text!) { authResult, error in
 
                     if error != nil {
@@ -710,25 +713,38 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
 extension LogIn_RegisterViewController: UITabBarControllerDelegate {
 
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-
+        
         if tabBarController.selectedIndex == 0 {
-            print("check1")
+            
+            tabBarController.selectedIndex = 0
+            
+            print("free time")
         }
 
         else if tabBarController.selectedIndex == 1 {
-            print("check2")
+            print("pomodoro")
         }
 
         else if tabBarController.selectedIndex == 2 {
-            print("check3")
+            print("time block")
         }
 
         else if tabBarController.selectedIndex == 3 {
-            print("check4")
+            
+            if currentUser.userID != "" {
+                
+//                if let upcomingVC = navigationController?.viewControllers[1] {
+//                    print("OK")
+//                }
+                
+
+            }
+            
+            print("collab")
         }
 
         else {
-            print ("check5")
+            print ("user")
         }
 
     }
@@ -736,17 +752,58 @@ extension LogIn_RegisterViewController: UITabBarControllerDelegate {
 
 
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-
-        if tabBarController.selectedIndex == 3 {
-
-            print("func", viewController as! UIViewController)
-            print(navigationController?.viewControllers[0] )
-
-            return true
-        }
-        else {
-            return true
-        }
+        
+//        print(viewController.class)
+//
+//        if viewController.isKind(of: LogIn_RegisterViewController.self) {
+//            print("cool")
+//        }
+//
+//        if viewController is type(of: LogIn_RegisterViewController) {
+//            print("cool")
+//        }
+        
+        return true
+        
+        
+        
+        
+//        if viewController.nibBundle == navigationController?.viewControllers[0].nibBundle {
+//            print("access gained")
+//        }
+//
+//        return true
+        
+        
+        
+        
+//        print(navigationController?.viewControllers.count)
+//
+//        print(tabBarController.selectedIndex)
+//
+//        if tabBarController.selectedIndex == 3 && currentUser.userID != "" {
+//
+//            if currentUser.userID != "" {
+//
+//                return true
+//            }
+//
+//            //else
+//
+//        }
+        
+        
+        
+//        if tabBarController.selectedIndex == 3 {
+//
+//            print("func", viewController as! UIViewController)
+//            print(navigationController?.viewControllers[0] )
+//
+//            return true
+//        }
+//        else {
+//            return true
+//        }
 
 //        print(navigationController?.viewControllers[0])
 //

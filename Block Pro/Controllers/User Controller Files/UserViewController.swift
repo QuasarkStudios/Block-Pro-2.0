@@ -146,16 +146,53 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 cell.nameLabel.adjustsFontSizeToFitWidth = true
                 cell.nameLabel.text = currentUser.firstName + " " + currentUser.lastName
+                cell.nameLabel.layer.cornerRadius = 0.1 * cell.nameLabel.bounds.size.width
+                cell.nameLabel.clipsToBounds = true
+                
+                var boldText = "Username: \n"
+                let attrs = [NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 17)]
+                var attributedString = NSMutableAttributedString(string: boldText, attributes: attrs)
+                
+                var normalText = currentUser.username
+                var normalString = NSMutableAttributedString(string: normalText)
+                
+                attributedString.append(normalString)
                 
                 cell.usernameLabel.adjustsFontSizeToFitWidth = true
-                cell.usernameLabel.text = "Username: \n" + currentUser.username
+                //cell.usernameLabel.text = "Username: \n" + currentUser.username
+                
+                cell.usernameLabel.attributedText = attributedString
+                  
+                ////////////////////////////////////////////////////////////////////////////////////
+                
+                boldText = "\(friendsCount) "
+                attributedString = NSMutableAttributedString(string: boldText, attributes: attrs)
+                
+                normalText = "Friends"
+                normalString = NSMutableAttributedString(string: normalText)
+                
+                attributedString.append(normalString)
                 
                 cell.friendCountLabel.adjustsFontSizeToFitWidth = true
-                cell.friendCountLabel.text = "You have \(friendsCount) friends"
+                //cell.friendCountLabel.text = "You have \(friendsCount) friends"
+                
+                cell.friendCountLabel.attributedText = attributedString
+                
+                /////////////////////////////////////////////////////////////////////////////////////
+                
+                boldText = "Joined on: \n"
+                attributedString = NSMutableAttributedString(string: boldText, attributes: attrs)
+                
+                normalText = currentUser.createdOn
+                normalString = NSMutableAttributedString(string: normalText)
+                
+                attributedString.append(normalString)
                 
                 cell.accountCreatedLabel.adjustsFontSizeToFitWidth = true
-                cell.accountCreatedLabel.text = "Joined on: \n" + currentUser.createdOn
-
+                //cell.accountCreatedLabel.text = "Joined on: \n" + currentUser.createdOn
+                
+                cell.accountCreatedLabel.attributedText = attributedString
+                
                 return cell
             }
             

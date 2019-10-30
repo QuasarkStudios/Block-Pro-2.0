@@ -67,6 +67,7 @@
 		0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */; };
 		0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA522BB1E7900E180D2 /* DateCell.swift */; };
 		0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */; };
+		0DCAC8652366FE2100CB238C /* LaunchScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DCAC8642366FE2100CB238C /* LaunchScreenViewController.swift */; };
 		0DDDA64F22D7D61B00B69A4E /* LogIn_RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA64E22D7D61B00B69A4E /* LogIn_RegisterViewController.swift */; };
 		0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA65022DA59BE00B69A4E /* AddFriendViewController.swift */; };
 		0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */; };
@@ -143,6 +144,7 @@
 		0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
 		0DBF3EA522BB1E7900E180D2 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHeader.swift; sourceTree = "<group>"; };
+		0DCAC8642366FE2100CB238C /* LaunchScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreenViewController.swift; sourceTree = "<group>"; };
 		0DDDA64E22D7D61B00B69A4E /* LogIn_RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogIn_RegisterViewController.swift; sourceTree = "<group>"; };
 		0DDDA65022DA59BE00B69A4E /* AddFriendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendViewController.swift; sourceTree = "<group>"; };
 		0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSearchResults.swift; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 		0D2CED01228FC73A00CC9180 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				0DCAC8642366FE2100CB238C /* LaunchScreenViewController.swift */,
 				0DE3CDDC23629AAD005255A1 /* FreeTime Controller Files */,
 				0D2707FD2326DFB900592EC8 /* Pomodoro Controller Files */,
 				0D23076122D2851C00A12393 /* TimeBlock Controller Files  */,
@@ -615,6 +618,7 @@
 				0DDF79C52346AB9B00BAAD51 /* UserViewController.swift in Sources */,
 				0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */,
 				0D41F5BC2311C05B00B4B11E /* CollabFiveMinCell.swift in Sources */,
+				0DCAC8652366FE2100CB238C /* LaunchScreenViewController.swift in Sources */,
 				0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */,
 				0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */,
 				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,

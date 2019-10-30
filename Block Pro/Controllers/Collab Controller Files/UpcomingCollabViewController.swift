@@ -55,7 +55,6 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         //docRef = Firestore.firestore().collection("sampleData").document("inspiration")
 //        //Can also do
 //        //docRef = Firestore.firestore().document("sampleData/inspiration")
-
         
         self.getUserData(completion: {
             self.addHistoricCollabs(completion: {

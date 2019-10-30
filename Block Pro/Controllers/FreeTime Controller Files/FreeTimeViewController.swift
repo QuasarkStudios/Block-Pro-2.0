@@ -16,37 +16,44 @@ class FreeTimeViewController: UIViewController {
     
     @IBOutlet weak var addTaskButton: UIBarButtonItem!
     
-    @IBOutlet weak var dismissCardViewButton: UIButton!
+    @IBOutlet weak var dismissCardView: UIView!
+    @IBOutlet weak var dismissViewTopAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var fiveMinContainer: UIView!
     @IBOutlet weak var fiveMinView: UIView!
     @IBOutlet weak var fiveMinTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var fiveMinBottomAnchor: NSLayoutConstraint!
+    @IBOutlet weak var fiveLabelTopAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var tenMinContainer: UIView!
     @IBOutlet weak var tenMinView: UIView!
     @IBOutlet weak var tenMinTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var tenMinBottomAnchor: NSLayoutConstraint!
+    @IBOutlet weak var tenLabelTopAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var fifteenMinContainer: UIView!
     @IBOutlet weak var fifteenMinView: UIView!
     @IBOutlet weak var fifteenMinTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var fifteenMinBottomAnchor: NSLayoutConstraint!
+    @IBOutlet weak var fifteenLabelTopAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var thirtyMinContainer: UIView!
     @IBOutlet weak var thirtyMinView: UIView!
     @IBOutlet weak var thirtyMinTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var thirtyMinBottomAnchor: NSLayoutConstraint!
+    @IBOutlet weak var thirtyLabelTopAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var fourty_fiveMinContainer: UIView!
     @IBOutlet weak var fourty_fiveMinView: UIView!
     @IBOutlet weak var fourty_fiveMinTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var fourty_fiveMinBottomAnchor: NSLayoutConstraint!
+    @IBOutlet weak var fourty_fiveLabelTopAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var oneHourContainer: UIView!
     @IBOutlet weak var oneHourView: UIView!
     @IBOutlet weak var oneHourTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var oneHourBottomAnchor: NSLayoutConstraint!
+    @IBOutlet weak var oneHourLabelTopAnchor: NSLayoutConstraint!
     
     let realm = try! Realm()
     let defaults = UserDefaults.standard
@@ -66,8 +73,15 @@ class FreeTimeViewController: UIViewController {
     
     var cards: [[String : Any]] = [] //Array containing the UIView, top anchor, bottom anchor, and animation status of each card
     var tappedCard: UIView!
+    var tappedCardTopAnchor: NSLayoutConstraint!
+    var tappedCardBottomAnchor: NSLayoutConstraint!
+    var tappedCardLabelTopAnchor: NSLayoutConstraint!
+    
+    var dismissViewIndicator = UIView()
     
     let tasksTableView = UITableView()
+    
+    var pan: UIPanGestureRecognizer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,6 +97,8 @@ class FreeTimeViewController: UIViewController {
         
         view.layer.addSublayer(gradientLayer)
         view.bringSubviewToFront(visualEffectView)
+        
+        dismissCardView.backgroundColor = .clear
         
         configureContainers()
     }
@@ -187,12 +203,12 @@ class FreeTimeViewController: UIViewController {
         oneHourView.clipsToBounds = true
         
         //Adding the UIView, top anchor, bottom anchor, and animation status of each card to the "cards" array
-        cards.append(["card" : fiveMinContainer!, "cardTopAnchor" : fiveMinTopAnchor!, "cardBottomAnchor" : fiveMinBottomAnchor!, "cardAnimated" : false])
-        cards.append(["card" : tenMinContainer!, "cardTopAnchor" : tenMinTopAnchor!, "cardBottomAnchor" : tenMinBottomAnchor!, "cardAnimated" : false])
-        cards.append(["card" : fifteenMinContainer!, "cardTopAnchor" : fifteenMinTopAnchor!, "cardBottomAnchor" : fifteenMinBottomAnchor!, "cardAnimated" : false])
-        cards.append(["card" : thirtyMinContainer!, "cardTopAnchor" : thirtyMinTopAnchor!, "cardBottomAnchor" : thirtyMinBottomAnchor!, "cardAnimated" : false])
-        cards.append(["card" : fourty_fiveMinContainer!, "cardTopAnchor" : fourty_fiveMinTopAnchor!, "cardBottomAnchor" : fourty_fiveMinBottomAnchor!, "cardAnimated" : false])
-        cards.append(["card" : oneHourContainer!, "cardTopAnchor" : oneHourTopAnchor!, "cardBottomAnchor" : oneHourBottomAnchor!, "cardAnimated" : false])
+        cards.append(["card" : fiveMinContainer!, "cardTopAnchor" : fiveMinTopAnchor!, "cardBottomAnchor" : fiveMinBottomAnchor!, "labelTopAnchor" : fiveLabelTopAnchor!, "cardAnimated" : false])
+        cards.append(["card" : tenMinContainer!, "cardTopAnchor" : tenMinTopAnchor!, "cardBottomAnchor" : tenMinBottomAnchor!, "labelTopAnchor" : tenLabelTopAnchor!, "cardAnimated" : false])
+        cards.append(["card" : fifteenMinContainer!, "cardTopAnchor" : fifteenMinTopAnchor!, "cardBottomAnchor" : fifteenMinBottomAnchor!, "labelTopAnchor" : fifteenLabelTopAnchor!, "cardAnimated" : false])
+        cards.append(["card" : thirtyMinContainer!, "cardTopAnchor" : thirtyMinTopAnchor!, "cardBottomAnchor" : thirtyMinBottomAnchor!, "labelTopAnchor" : thirtyLabelTopAnchor!, "cardAnimated" : false])
+        cards.append(["card" : fourty_fiveMinContainer!, "cardTopAnchor" : fourty_fiveMinTopAnchor!, "cardBottomAnchor" : fourty_fiveMinBottomAnchor!, "labelTopAnchor" : fourty_fiveLabelTopAnchor!, "cardAnimated" : false])
+        cards.append(["card" : oneHourContainer!, "cardTopAnchor" : oneHourTopAnchor!, "cardBottomAnchor" : oneHourBottomAnchor!, "labelTopAnchor" : oneHourLabelTopAnchor!, "cardAnimated" : false])
     }
     
     
@@ -249,7 +265,6 @@ class FreeTimeViewController: UIViewController {
             
             loadTasks(taskLength)
         }
-        
     }
     
     
@@ -403,8 +418,19 @@ class FreeTimeViewController: UIViewController {
                     cardBottomAnchor.constant = -750
                 }
                 
-                UIView.animate(withDuration: 0.2) {
+                UIView.animate(withDuration: 0.2, animations: {
+                    
                     self.view.layoutIfNeeded()
+                    
+                }) { (finished: Bool) in
+                    
+                    self.tappedCardLabelTopAnchor.constant = 7.5
+                    
+                    UIView.animate(withDuration: 0.2) {
+                        
+                        self.dismissViewIndicator.center = CGPoint(x: self.tappedCard.center.x - 15, y: 12.5)
+                        self.view.layoutIfNeeded()
+                    }
                 }
                 
                 count += 1
@@ -458,11 +484,115 @@ class FreeTimeViewController: UIViewController {
                 count += 1
             }
             
-            //Removes the "tasksTableView" from the previously selected card after a small delay
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.18) {
-                self.tasksTableView.removeFromSuperview()
-            }
+            tasksTableView.removeFromSuperview()
+            dismissViewIndicator.removeFromSuperview()
+            tappedCardLabelTopAnchor.constant = 0
         }
+    }
+    
+    
+    //MARK: - Add Dismiss Indicator Function
+    
+    func addIndicator () {
+        
+        dismissViewIndicator.frame = CGRect(x: 0, y: 0, width: 50, height: 7.5)
+        dismissViewIndicator.center = CGPoint(x: tappedCard.center.x - 15, y: -10)
+        
+        dismissViewIndicator.layer.cornerRadius = 0.075 * 50
+        dismissViewIndicator.clipsToBounds = true
+        
+        dismissViewIndicator.backgroundColor = UIColor(hexString: "f2f2f2")?.darken(byPercentage: 0.05)
+        
+        tappedCard.addSubview(dismissViewIndicator)
+    }
+    
+    //MARK: - Pan Gesture Functions
+    
+    func addPanGesture (view: UIView) {
+        
+        view.addGestureRecognizer(pan)
+    }
+    
+    @objc func handlePan (sender: UIPanGestureRecognizer) {
+        
+        let dismissView = sender.view!
+        
+        switch sender.state {
+            
+        case .began, .changed:
+            
+            moveViewWithPan (sender: sender)
+        
+        case .ended:
+            
+            if tappedCardTopAnchor.constant >= view.frame.height / 2 {
+                
+                self.dismissView(dismissView, tappedCard)
+            }
+            
+            else {
+                
+                returnViewToOrigin()
+            }
+            
+        default:
+            break
+        }
+    }
+    
+    
+    func moveViewWithPan (sender: UIPanGestureRecognizer) {
+        
+        let translation = sender.translation(in: view)
+        
+        if tappedCardTopAnchor.constant + translation.y > 75 {
+            
+            tappedCardTopAnchor.constant += translation.y
+            tappedCardBottomAnchor.constant -= translation.y
+            sender.setTranslation(CGPoint.zero, in: view)
+        }
+        
+        else {
+            tappedCardTopAnchor.constant = 75
+            tappedCardBottomAnchor.constant = 0
+        }
+    }
+    
+    
+    func returnViewToOrigin () {
+        
+        tappedCardTopAnchor.constant = 75
+        
+        UIView.animate(withDuration: 0.2) {
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    
+    func dismissView (_ dismissView: UIView, _ tappedCard: UIView) {
+        
+        tappedCardTopAnchor.constant = 750
+        tappedCardBottomAnchor.constant = -750
+        
+        UIView.animate(withDuration: 0.15, animations: {
+            
+            self.view.layoutIfNeeded()
+            
+        }) { (finished: Bool) in
+            
+            self.animateCards(tappedCard, false)
+            self.removePanGesture(view: dismissView)
+            self.view.sendSubviewToBack(dismissView)
+        }
+        
+        addTaskButton.isEnabled = false
+        taskArray.removeAll()
+    }
+    
+    
+    func removePanGesture (view: UIView) {
+        
+        view.removeGestureRecognizer(pan)
     }
     
     
@@ -520,54 +650,28 @@ class FreeTimeViewController: UIViewController {
     
     @IBAction func cardButtons(_ sender: UIButton) {
         
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+        
         tappedCard = cards[sender.tag]["card"] as? UIView
-        let cardAnimated: Bool = cards[sender.tag]["cardAnimated"] as! Bool
+        tappedCardTopAnchor = cards[sender.tag]["cardTopAnchor"] as? NSLayoutConstraint
+        tappedCardBottomAnchor = cards[sender.tag]["cardBottomAnchor"] as? NSLayoutConstraint
+        tappedCardLabelTopAnchor = cards[sender.tag]["labelTopAnchor"] as? NSLayoutConstraint
         
         selectedTask = taskLengths[sender.tag]
         
-        //If the selected card should be presented
-        if cardAnimated == false {
-            
-            animateCards(tappedCard, true)
-            
-            addTaskButton.isEnabled = true
-            dismissCardViewButton.isEnabled = true
-        }
+        loadTasks(selectedTask)
+        tasksTableView.reloadData()
+
+        animateCards(tappedCard, true)
+        addIndicator()
         
-        //If the selected card should be dismissed
-        else {
-            
-            animateCards(tappedCard, false)
-            
-            addTaskButton.isEnabled = false
-            dismissCardViewButton.isEnabled = false
-        }
+        pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
+        addPanGesture(view: dismissCardView)
+        view.bringSubviewToFront(dismissCardView)
         
-        if cardAnimated == false {
-            
-            loadTasks(selectedTask)
-            tasksTableView.reloadData()
-        }
-        
-        else {
-            
-            taskArray.removeAll()
-        }
-        
+        addTaskButton.isEnabled = true
     }
-    
-    
-    //MARK: - Dismiss Cards Button
-    
-    //View button that will dismiss the selected card when tapped
-    @IBAction func dismissCards(_ sender: Any) {
-        
-        animateCards(tappedCard, false)
-        
-        addTaskButton.isEnabled = false
-        dismissCardViewButton.isEnabled = false
-    }
-    
 }
 
 

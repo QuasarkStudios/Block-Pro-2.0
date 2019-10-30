@@ -58,7 +58,7 @@ class InfoViewController: UIViewController {
         
         let screenshotImage = NSAttributedString(attachment: screenshot)
         
-        let text = NSMutableAttributedString(string: "hello \n yesterday i went on a walk to the end of the earth")
+        let text = NSMutableAttributedString(string: "hello \n ")
         
         text.addAttribute(.foregroundColor, value: UIColor.flatPink(), range: NSRange(location: 0, length: 5))
         

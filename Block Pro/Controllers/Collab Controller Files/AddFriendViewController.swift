@@ -253,8 +253,6 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
     
     //MARK: - SearchBar Delegate Methods
     
-    #warning("make the search case insensitive")
-    
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
         searchButtonTapped = true

@@ -20,23 +20,16 @@
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="DFH-eh-TUO">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <button opaque="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X0m-01-3rw">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
-                                            <connections>
-                                                <action selector="dismissCards:" destination="Hhp-48-RHL" eventType="touchUpInside" id="G2V-28-Eci"/>
-                                            </connections>
-                                        </button>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstItem="X0m-01-3rw" firstAttribute="leading" secondItem="DFH-eh-TUO" secondAttribute="leading" id="9tm-Df-vLF"/>
-                                        <constraint firstAttribute="trailing" secondItem="X0m-01-3rw" secondAttribute="trailing" id="Sn9-xL-QaJ"/>
-                                        <constraint firstItem="X0m-01-3rw" firstAttribute="top" secondItem="DFH-eh-TUO" secondAttribute="top" id="Su5-9I-IGH"/>
-                                        <constraint firstAttribute="bottom" secondItem="X0m-01-3rw" secondAttribute="bottom" id="Wrx-hq-Elm"/>
-                                    </constraints>
                                 </view>
                                 <blurEffect style="light"/>
                             </visualEffectView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GbV-xz-zsn">
+                                <rect key="frame" x="0.0" y="88" width="375" height="135"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="135" id="5XR-Tp-4VQ"/>
+                                </constraints>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RZd-bY-tCz">
                                 <rect key="frame" x="15" y="163" width="345" height="566"/>
                                 <subviews>
@@ -304,8 +297,10 @@
                         <constraints>
                             <constraint firstItem="OGm-WA-Buj" firstAttribute="leading" secondItem="7ap-kZ-39k" secondAttribute="leading" constant="15" id="0uv-Ya-Arp"/>
                             <constraint firstItem="Mzl-MF-7se" firstAttribute="leading" secondItem="7ap-kZ-39k" secondAttribute="leading" constant="15" id="4hY-UG-k0O"/>
+                            <constraint firstItem="GbV-xz-zsn" firstAttribute="top" secondItem="7ap-kZ-39k" secondAttribute="top" id="5e2-BF-xab"/>
                             <constraint firstItem="ew1-R8-cx8" firstAttribute="top" secondItem="9jE-ca-scU" secondAttribute="top" id="7TU-pK-Pcx"/>
                             <constraint firstItem="OGm-WA-Buj" firstAttribute="top" secondItem="7ap-kZ-39k" secondAttribute="top" constant="185" id="8dW-RW-xtN"/>
+                            <constraint firstItem="GbV-xz-zsn" firstAttribute="leading" secondItem="7ap-kZ-39k" secondAttribute="leading" id="BzY-J6-x9m"/>
                             <constraint firstItem="ew1-R8-cx8" firstAttribute="leading" secondItem="7ap-kZ-39k" secondAttribute="leading" id="Ego-dZ-gAu"/>
                             <constraint firstItem="RZd-bY-tCz" firstAttribute="top" secondItem="7ap-kZ-39k" secondAttribute="top" constant="75" id="Egt-Cs-9iz"/>
                             <constraint firstItem="7ap-kZ-39k" firstAttribute="trailing" secondItem="RZd-bY-tCz" secondAttribute="trailing" constant="15" id="Ela-xh-rp1"/>
@@ -325,6 +320,7 @@
                             <constraint firstItem="7ap-kZ-39k" firstAttribute="bottom" secondItem="Mzl-MF-7se" secondAttribute="bottom" id="bca-bu-ADP"/>
                             <constraint firstItem="Gfg-cH-RDE" firstAttribute="top" secondItem="7ap-kZ-39k" secondAttribute="top" constant="130" id="cyu-yD-aZl"/>
                             <constraint firstItem="Mzl-MF-7se" firstAttribute="top" secondItem="7ap-kZ-39k" secondAttribute="top" constant="350" id="e2T-HL-UWs"/>
+                            <constraint firstItem="7ap-kZ-39k" firstAttribute="trailing" secondItem="GbV-xz-zsn" secondAttribute="trailing" id="gp1-ur-W8v"/>
                             <constraint firstItem="0wZ-2s-a9t" firstAttribute="leading" secondItem="7ap-kZ-39k" secondAttribute="leading" constant="15" id="h65-OE-YWp"/>
                             <constraint firstItem="7ap-kZ-39k" firstAttribute="trailing" secondItem="0wZ-2s-a9t" secondAttribute="trailing" constant="15" id="hlO-kI-lU2"/>
                             <constraint firstItem="Gfg-cH-RDE" firstAttribute="leading" secondItem="7ap-kZ-39k" secondAttribute="leading" constant="15" id="kbD-1H-7oi"/>
@@ -343,27 +339,34 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="addTaskButton" destination="E2N-l4-V3Y" id="SXu-7h-YLb"/>
-                        <outlet property="dismissCardViewButton" destination="X0m-01-3rw" id="l0u-J3-1aI"/>
+                        <outlet property="dismissCardView" destination="GbV-xz-zsn" id="6VH-Ax-P6l"/>
+                        <outlet property="dismissViewTopAnchor" destination="5e2-BF-xab" id="Mao-7e-CZ2"/>
+                        <outlet property="fifteenLabelTopAnchor" destination="hiy-gK-cJx" id="S6R-jW-EAf"/>
                         <outlet property="fifteenMinBottomAnchor" destination="XQl-V4-GMY" id="sJ3-SY-6q7"/>
                         <outlet property="fifteenMinContainer" destination="OGm-WA-Buj" id="UyQ-bf-zma"/>
                         <outlet property="fifteenMinTopAnchor" destination="8dW-RW-xtN" id="66U-fO-ycI"/>
                         <outlet property="fifteenMinView" destination="m6t-Rk-6Tt" id="MrA-jS-KoN"/>
+                        <outlet property="fiveLabelTopAnchor" destination="KWF-CD-Rzd" id="0gb-3q-Nlh"/>
                         <outlet property="fiveMinBottomAnchor" destination="YmF-dk-1Wx" id="kz2-a0-dbQ"/>
                         <outlet property="fiveMinContainer" destination="RZd-bY-tCz" id="d2z-W9-Mad"/>
                         <outlet property="fiveMinTopAnchor" destination="Egt-Cs-9iz" id="42Y-vM-EjU"/>
                         <outlet property="fiveMinView" destination="tWH-YV-GXF" id="QfC-BD-jdZ"/>
+                        <outlet property="fourty_fiveLabelTopAnchor" destination="e7M-aw-VxE" id="iTg-KM-cJQ"/>
                         <outlet property="fourty_fiveMinBottomAnchor" destination="ZfC-rz-wiK" id="YQ8-Ij-IZZ"/>
                         <outlet property="fourty_fiveMinContainer" destination="UR8-64-c1G" id="1pL-Ib-nfo"/>
                         <outlet property="fourty_fiveMinTopAnchor" destination="TXR-ch-ScM" id="pKY-s2-Ao5"/>
                         <outlet property="fourty_fiveMinView" destination="SEh-hy-jCq" id="MbO-Wm-js9"/>
                         <outlet property="oneHourBottomAnchor" destination="bca-bu-ADP" id="iUB-ue-Vsh"/>
                         <outlet property="oneHourContainer" destination="Mzl-MF-7se" id="3e3-c2-a2y"/>
+                        <outlet property="oneHourLabelTopAnchor" destination="9lF-DM-jbq" id="wGe-gY-HVv"/>
                         <outlet property="oneHourTopAnchor" destination="e2T-HL-UWs" id="VpH-r7-pnJ"/>
                         <outlet property="oneHourView" destination="eRV-Md-KGG" id="egK-qo-efR"/>
+                        <outlet property="tenLabelTopAnchor" destination="Hmw-tT-3ID" id="Y4C-au-fS9"/>
                         <outlet property="tenMinBottomAnchor" destination="WYJ-EU-cx8" id="xhS-CY-tph"/>
                         <outlet property="tenMinContainer" destination="Gfg-cH-RDE" id="3kt-Uq-UB2"/>
                         <outlet property="tenMinTopAnchor" destination="cyu-yD-aZl" id="rGt-Qb-Zfs"/>
                         <outlet property="tenMinView" destination="5lU-zo-ZNv" id="m8n-We-v9t"/>
+                        <outlet property="thirtyLabelTopAnchor" destination="vWX-6Z-Tqo" id="srH-aN-fRb"/>
                         <outlet property="thirtyMinBottomAnchor" destination="S1W-QA-MS4" id="IQn-zI-NA3"/>
                         <outlet property="thirtyMinContainer" destination="0wZ-2s-a9t" id="Gz2-fR-jWf"/>
                         <outlet property="thirtyMinTopAnchor" destination="Obv-0d-mbX" id="e5o-q0-lyR"/>
