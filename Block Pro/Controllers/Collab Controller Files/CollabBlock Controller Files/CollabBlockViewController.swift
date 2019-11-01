@@ -23,11 +23,9 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     var listener: ListenerRegistration?
     let currentUser = UserData.singletonUser
     
-    let formatter = DateFormatter()
-    
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
-    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creativity" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
     
     var collabID: String = ""
     var collabName: String = ""
@@ -49,47 +47,15 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
     
     var selectedView: String = ""
     
-    var gradientLayer: CAGradientLayer!
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        timeTableView.delegate = self
-        timeTableView.dataSource = self
+        configureView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         
-        timeTableView.showsVerticalScrollIndicator = false
-        timeTableView.allowsSelection = false
-        timeTableView.separatorStyle = .none
-        timeTableView.rowHeight = 120.0
-        
-        verticalTableSeperator.backgroundColor = .black
-        
-        blockTableView.delegate = self
-        blockTableView.dataSource = self
-        
-        //blockTableView.showsVerticalScrollIndicator = false
-        blockTableView.separatorStyle = .none
-        
-        timeTableView.register(UINib(nibName: "CustomTimeTableCell", bundle: nil), forCellReuseIdentifier: "timeCell")
-        
-        formatter.dateFormat = "EEEE, MMMM d"
-        
-        //self.title = formatter.string(from: Date())
-        navigationItem.title = collabName
-        
-//        db.clearPersistence { (error) in
-//
-//            if error != nil {
-//                print("error clearing persistent data:", error)
-//            }
-//        }
-        
-        gradientLayer = CAGradientLayer()
-        gradientLayer.frame = verticalTableSeperator.bounds
-        gradientLayer.colors = [UIColor(hexString: "#b92b27")?.cgColor as Any, UIColor(hexString: "#1565C0")?.cgColor as Any]
-        
-         verticalTableSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
-        
+        tabBarController?.delegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -105,7 +71,6 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
             
             ProgressHUD.dismiss()
         }
-        
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -115,6 +80,30 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         ProgressHUD.dismiss()
     }
     
+    
+    func configureView () {
+        
+        navigationItem.title = collabName
+        
+        timeTableView.delegate = self
+        timeTableView.dataSource = self
+        
+        timeTableView.showsVerticalScrollIndicator = false
+        timeTableView.allowsSelection = false
+        timeTableView.separatorStyle = .none
+        timeTableView.rowHeight = 120.0
+        
+        timeTableView.register(UINib(nibName: "CustomTimeTableCell", bundle: nil), forCellReuseIdentifier: "timeCell")
+        
+        verticalTableSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
+        
+        blockTableView.delegate = self
+        blockTableView.dataSource = self
+        
+        blockTableView.separatorStyle = .none
+    }
+    
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if tableView == timeTableView {
@@ -122,24 +111,26 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         else {
-            
             return blockArray.count
         }
     }
 
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if tableView == timeTableView {
+            
             let cell: UITableViewCell = configureCell(tableView, indexPath)
             return cell
         }
         else {
+            
             let cell: UITableViewCell = configureCell(tableView, indexPath)
             cell.clipsToBounds = true
             return cell
         }
-        
     }
+    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
 
@@ -153,6 +144,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
             return 120.0
         }
     }
+    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -171,6 +163,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         tableView.deselectRow(at: indexPath, animated: false)
     }
     
+    
     //Function that controls both the timeTableView and the blockTableView moving together
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
@@ -183,6 +176,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
             timeTableView.contentSize.height = scrollView.contentSize.height
         }
     }
+    
     
     //Function that allows the tableViews to scroll to the first TimeBlock
     func scrollToFirstBlock() {
@@ -200,6 +194,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    
     func configureCell (_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell {
             
         if tableView == timeTableView {
@@ -216,6 +211,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
             else {
                 cell.cellSeperator.backgroundColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.3)
             }
+            
             return cell
         }
         
@@ -228,7 +224,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                 //If the user did select a category for this TimeBlock
                 if blockArray[indexPath.row].category != "" {
                     
-                    blockColor = UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category]!)
+                    blockColor = UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category] ?? "#AAAAAA")
                 }
                     //If the user didn't select a category for this TimeBlock
                 else {
@@ -268,7 +264,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     
                     return configureBlock(cell, 30.0, blockColor) as! UITableViewCell
                     
-            case 40.0:
+                case 40.0:
                    
                     let cell = tableView.dequeueReusableCell(withIdentifier: "twentyMinCell", for: indexPath) as! CollabTwentyMinCell
                     
@@ -359,12 +355,8 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         
     }
     
-
-    
     
     func getCollabBlocks (completion: @escaping () -> ()) {
-        
-//        blockObjectArray.removeAll()
         
         listener = db.collection("Collaborations").document(collabID).collection("CollabBlocks").addSnapshotListener { (snapshot, error) in
             
@@ -405,18 +397,15 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                         collabBlock.notificationSettings = document.data()["notificationSettings"] as! [String : [String : Any]]
                         
                         self.blockObjectArray.append(collabBlock)
-                        
                     }
 
                     self.blockTableView.reloadData()
                     completion()
-                    
                 }
-                
-
             }
         }
     }
+    
     
     func sortCollabBlocks () -> [(key: Int, value: CollabBlock)] {
         
@@ -429,6 +418,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         
         return sortedBlocks.sorted(by: {$0.key < $1.key})
     }
+    
     
     //Function responsible for organizing CollabBlocks and bufferBlocks
     func organizeBlocks (_ sortedBlocks: [(key: Int, value: CollabBlock)], _ blockTuple: blockTuple) -> [(blockTuple)] {
@@ -480,7 +470,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                 count += 1
             }
                 
-                //If the for loop is not on its first iteration
+            //If the for loop is not on its first iteration
             else {
                 
                 //If there is more than one CollabBlock left
@@ -508,7 +498,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                     count += 1
                 }
                     
-                    //If there is only one more CollabBlock left
+                //If there is only one more CollabBlock left
                 else {
                     
                     //Creating the next CollabBlock from the values returned from the sortBlocks func
@@ -564,6 +554,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    
     //Function responsible for calculating the height of each Block
     func calculateBlockHeights () {
         
@@ -599,9 +590,8 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    
     func deleteCollab () {
-        
-        #warning("possibly add a way to tell if this is a upcoming collab or a historic collab")
         
         db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").document(collabID).delete { (error) in
             
@@ -627,6 +617,7 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         performSegue(withIdentifier: "moveToAUBlockView", sender: self)
     }
     
+    
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         
         let deleteAlert = UIAlertController(title: "Are you sure you would like to delete this Collab?" , message: "All data associated with this Collab will also be deleted.", preferredStyle: .actionSheet)
@@ -642,8 +633,8 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         deleteAlert.addAction(cancelAction)
         
         present(deleteAlert, animated: true, completion: nil)
-        
     }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -656,7 +647,6 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
             
             bigBlockVC.collabID = collabID
             bigBlockVC.blockID = bigBlockID
-            //bigBlockVC.notificationID = notificationID
         }
         
         else if segue.identifier == "moveToAUBlockView" {
@@ -673,7 +663,6 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
             let backItem = UIBarButtonItem()
             backItem.title = "Cancel"
             navigationItem.backBarButtonItem = backItem
-            
         }
     }
 }
@@ -710,8 +699,37 @@ extension CollabBlockViewController: DeleteCollabBlock {
                     self.blockTableView.reloadData()
                     self.scrollToFirstBlock()
                 }
-                
             }
+        }
+    }
+}
+
+extension CollabBlockViewController: UITabBarControllerDelegate {
+
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        
+        if tabBarController.selectedIndex != 3 {
+            tabBarController.delegate = nil
+        }
+    }
+
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        
+        if viewController == navigationController {
+            
+            if currentUser.userID != "" {
+                
+                navigationController?.popToViewController(navigationController!.viewControllers[1], animated: true)
+                return false
+            }
+            
+            else {
+                return true
+            }
+        }
+        
+        else {
+            return true
         }
     }
 }
@@ -1370,7 +1388,6 @@ extension CollabBlockViewController {
             else {
                 funcCell.outlineView.frame.origin.x = 5.0
             }
-            
         }
     }
 }

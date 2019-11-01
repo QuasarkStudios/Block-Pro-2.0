@@ -25,8 +25,6 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
 
     let currentUser = UserData.singletonUser
     
-    //var gradientLayer: CAGradientLayer!
-    
     let formatter = DateFormatter()
     
     var pendingCollabObjectArray: [PendingCollab] = [PendingCollab]()
@@ -42,29 +40,17 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        upcomingCollabTableView.delegate = self
-        upcomingCollabTableView.dataSource = self
-        
-        searchBar.delegate = self
-        searchBar.barTintColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.05)
-        
-        upcomingCollabTableView.register(UINib(nibName: "UpcomingCollabTableCell", bundle: nil), forCellReuseIdentifier: "UpcomingCollabCell")
-        
-        upcomingCollabTableView.rowHeight = 105
-        
-        //docRef = Firestore.firestore().collection("sampleData").document("inspiration")
-//        //Can also do
-//        //docRef = Firestore.firestore().document("sampleData/inspiration")
+        configureView()
         
         self.getUserData(completion: {
             self.addHistoricCollabs(completion: {
                 self.getCollabs()
                 self.getCollabRequests()
-
             })
         })
         
     }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         
@@ -75,13 +61,31 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
 
             })
         }
+        
+        tabBarController?.delegate = self
     }
+    
     
     override func viewWillDisappear(_ animated: Bool) {
         
         upcomingCollabListener?.remove()
         pendingCollabListener?.remove()
     }
+    
+    
+    func configureView () {
+        
+        upcomingCollabTableView.delegate = self
+        upcomingCollabTableView.dataSource = self
+        
+        searchBar.delegate = self
+        searchBar.barTintColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.05)
+        
+        upcomingCollabTableView.register(UINib(nibName: "UpcomingCollabTableCell", bundle: nil), forCellReuseIdentifier: "UpcomingCollabCell")
+        
+        upcomingCollabTableView.rowHeight = 105
+    }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         
@@ -105,6 +109,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         }
         
     }
+    
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
@@ -137,7 +142,6 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
                 return "Upcoming Collabs"
             }
         }
-        
     }
     
     
@@ -184,6 +188,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if pendingCollabObjectArray.count > 0 {
@@ -228,6 +233,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
                 }
             }
         }
+            
         else {
             
             if collabObjectArray.count > 0 {
@@ -253,8 +259,8 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
             }
 
         }
-
     }
+    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
@@ -270,8 +276,8 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         else {
             return 105
         }
-        
     }
+    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -294,14 +300,14 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         
         
         tableView.deselectRow(at: indexPath, animated: true)
-        
-        
     }
+    
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
         searchCollabs(searchBar)
     }
+    
     
     func searchCollabs (_ searchBar: UISearchBar) {
         
@@ -381,7 +387,6 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
             sectionDateArray = filteredSectionDates
             sectionContentArray = filteredSectionContent
             upcomingCollabTableView.reloadData()
-            
         }
     }
     
@@ -424,9 +429,8 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         })
     }
     
+    
     func getCollabs () {
-        
-//        collabObjectArray.removeAll()
         
         formatter.dateFormat = "MMMM dd, yyyy"
         
@@ -467,6 +471,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    
     func sortCollabs () {
         
         sectionDateArray.removeAll()
@@ -496,12 +501,10 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         guard let sectionContent = sectionContentArray else { return }
         
         allSectionContent = sectionContent
-        
     }
     
+    
     func getCollabRequests () {
-        
-//        pendingCollabObjectArray.removeAll()
         
         pendingCollabListener = db.collection("Users").document(currentUser.userID).collection("PendingCollabs").addSnapshotListener { (snapshot, error) in
             
@@ -534,9 +537,10 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
                 }
             }
         }
-        ProgressHUD.dismiss()
         
+        ProgressHUD.dismiss()
     }
+    
     
     func addHistoricCollabs (completion: @escaping () -> ()) {
         
@@ -580,6 +584,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    
     func presentRequestAlert (_ selectedRequest: Int) {
         
         let handleRequestAlert = UIAlertController(title: "Collab Request", message: "Would you like to accept or decline this request?", preferredStyle: .alert)
@@ -601,6 +606,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         present(handleRequestAlert, animated: true, completion: nil)
     }
     
+    
     func acceptRequest (_ selectedRequest: Int) {
    
         let newCollab: [String : Any] = ["collabID" : pendingCollabObjectArray[selectedRequest].collabID, "collabName" : pendingCollabObjectArray[selectedRequest].collabName, "collabDate" : pendingCollabObjectArray[selectedRequest].collabDate, "with" : pendingCollabObjectArray[selectedRequest].collaborator as Any]
@@ -615,6 +621,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         
     }
     
+    
     func declineRequest (_ selectedRequest: Int) {
         
         db.collection("Users").document(currentUser.userID).collection("PendingCollabs").document(pendingCollabObjectArray[selectedRequest].collabID).delete()
@@ -623,15 +630,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         getCollabs()
         
     }
-
-    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        
-        addHistoricCollabs(completion: {
-            self.getCollabs()
-            self.getCollabRequests()
-
-        })
-    }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -666,6 +665,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
     }
 }
 
+
 extension UpcomingCollabViewController: GetNewCollab {
     
     func getNewCollab () {
@@ -676,6 +676,37 @@ extension UpcomingCollabViewController: GetNewCollab {
         }
         
         searchBar.text = ""
+    }
+}
+
+
+extension UpcomingCollabViewController: UITabBarControllerDelegate {
+
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        
+        if tabBarController.selectedIndex != 3 {
+            tabBarController.delegate = nil
+        }
+    }
+
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        
+        if viewController == navigationController {
+            
+            if currentUser.userID != "" {
+                
+                navigationController?.popToViewController(navigationController!.viewControllers[1], animated: true)
+                return false
+            }
+            
+            else {
+                return true
+            }
+        }
+        
+        else {
+            return true
+        }
     }
 }
 

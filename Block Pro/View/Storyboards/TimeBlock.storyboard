@@ -1284,7 +1284,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WjF-EC-zZI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2" y="-129"/>
+            <point key="canvasLocation" x="-17" y="-129"/>
         </scene>
     </scenes>
     <resources>

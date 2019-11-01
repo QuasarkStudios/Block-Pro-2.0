@@ -160,7 +160,7 @@
                                 </prototypes>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.94901960784313721" green="0.94901960784313721" blue="0.94901960784313721" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="ACc-qd-rxi" firstAttribute="bottom" secondItem="OF7-FW-Axn" secondAttribute="bottom" id="5XX-eF-CFA"/>
                             <constraint firstItem="OF7-FW-Axn" firstAttribute="trailing" secondItem="ACc-qd-rxi" secondAttribute="trailing" id="FJk-5c-5dz"/>

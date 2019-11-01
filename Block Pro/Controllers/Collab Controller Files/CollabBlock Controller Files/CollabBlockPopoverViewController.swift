@@ -49,7 +49,7 @@ class CollabBlockPopoverViewController: UIViewController {
     var blockID: String = ""
     var notificationID: String = ""
     
-    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creativity" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,6 +65,7 @@ class CollabBlockPopoverViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         listener?.remove()
     }
+    
     
     func viewAdjustments () {
         
@@ -156,6 +157,7 @@ class CollabBlockPopoverViewController: UIViewController {
         deleteButton.clipsToBounds = true
     }
     
+    
     func configureBigBlock () {
         
         listener = db.collection("Collaborations").document(collabID).collection("CollabBlocks").document(blockID).addSnapshotListener { (snapshot, error) in
@@ -181,6 +183,7 @@ class CollabBlockPopoverViewController: UIViewController {
 
                         self.initialLabel.text = "Me"
                     }
+                        
                     else {
                         
                         let firstNameArray = Array(creator["firstName"]!)
@@ -193,10 +196,10 @@ class CollabBlockPopoverViewController: UIViewController {
                         self.bigOutlineView.backgroundColor = UIColor(hexString: "#AAAAAA")
                         self.initialOutline.backgroundColor = UIColor(hexString: "#AAAAAA")
                     }
-                    else {
-                       self.bigOutlineView.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String]!)
-                        self.initialOutline.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String]!)
                         
+                    else {
+                        self.bigOutlineView.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String] ?? "#AAAAAA")
+                        self.initialOutline.backgroundColor = UIColor(hexString: self.blockCategoryColors[data["blockCategory"] as! String] ?? "#AAAAAA")
                     }
                     
                     self.blockName.text = (data["name"] as! String)
@@ -204,11 +207,11 @@ class CollabBlockPopoverViewController: UIViewController {
                     self.blockEndTime.text = self.convertTo12Hour(data["endHour"] as! String, data["endMinute"] as! String)
                     
                     self.blockCategory.text = (data["blockCategory"] as! String)
-                    
                 }
             }
         }
     }
+    
     
     //Function that converts the 24 hour format of the times from Firebase to a 12 hour format
     func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
@@ -238,6 +241,7 @@ class CollabBlockPopoverViewController: UIViewController {
         updateCollabBlockDelegate?.moveToUpdateView()
     }
     
+    
     @IBAction func deleteButton(_ sender: Any) {
         
         //Setting the title and message of the "deleteAlert"
@@ -258,13 +262,11 @@ class CollabBlockPopoverViewController: UIViewController {
         deleteAlert.addAction(cancelAction) //Adds the cancel action to the alert
         
         present(deleteAlert, animated: true, completion: nil) //Presents the deleteAlert
-        
     }
+    
     
     @IBAction func exitButton(_ sender: Any) {
         
         dismiss(animated: true, completion: nil)
     }
-    
-
 }

@@ -59,6 +59,11 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         configureConstraints()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+        tabBarController?.delegate = self
+    }
+    
     func configureView () {
         
         loginEmailTextField.delegate = self
@@ -86,8 +91,6 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
-        
-        //tabBarController?.delegate = self
     }
     
     func configureConstraints () {
@@ -714,130 +717,30 @@ extension LogIn_RegisterViewController: UITabBarControllerDelegate {
 
     func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         
-        if tabBarController.selectedIndex == 0 {
-            
-            tabBarController.selectedIndex = 0
-            
-            print("free time")
+        if tabBarController.selectedIndex != 3 {
+            tabBarController.delegate = nil //Sets the tabBar delgate to nil if the user is leaving the "Collab" tab
         }
-
-        else if tabBarController.selectedIndex == 1 {
-            print("pomodoro")
-        }
-
-        else if tabBarController.selectedIndex == 2 {
-            print("time block")
-        }
-
-        else if tabBarController.selectedIndex == 3 {
-            
-            if currentUser.userID != "" {
-                
-//                if let upcomingVC = navigationController?.viewControllers[1] {
-//                    print("OK")
-//                }
-                
-
-            }
-            
-            print("collab")
-        }
-
-        else {
-            print ("user")
-        }
-
     }
-
-
 
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
         
-//        print(viewController.class)
-//
-//        if viewController.isKind(of: LogIn_RegisterViewController.self) {
-//            print("cool")
-//        }
-//
-//        if viewController is type(of: LogIn_RegisterViewController) {
-//            print("cool")
-//        }
+        //If the user selected the "Collab" tab
+        if viewController == navigationController {
+            
+            //If the user is signed in, don't pop back to the LogIn_Register View
+            if currentUser.userID != "" {
+                
+                navigationController?.popToViewController(navigationController!.viewControllers[1], animated: true)
+                return false
+            }
+            
+            else {
+                return true
+            }
+        }
         
-        return true
-        
-        
-        
-        
-//        if viewController.nibBundle == navigationController?.viewControllers[0].nibBundle {
-//            print("access gained")
-//        }
-//
-//        return true
-        
-        
-        
-        
-//        print(navigationController?.viewControllers.count)
-//
-//        print(tabBarController.selectedIndex)
-//
-//        if tabBarController.selectedIndex == 3 && currentUser.userID != "" {
-//
-//            if currentUser.userID != "" {
-//
-//                return true
-//            }
-//
-//            //else
-//
-//        }
-        
-        
-        
-//        if tabBarController.selectedIndex == 3 {
-//
-//            print("func", viewController as! UIViewController)
-//            print(navigationController?.viewControllers[0] )
-//
-//            return true
-//        }
-//        else {
-//            return true
-//        }
-
-//        print(navigationController?.viewControllers[0])
-//
-//        if viewController == navigationController?.viewControllers[0] {
-//
-//            print("progress maybe")
-//        }
-//
-////        tabBarController.tabBar(tabBarController.tabBar, didSelect: tabbaritem)
-//
-//        if tabBarController.selectedIndex == 3 && currentUser.userID != "" {
-//
-//            if let upcomingVC = navigationController?.viewControllers[1] {
-//
-//                navigationController?.popToViewController(upcomingVC, animated: true)
-//
-//            }
-//
-//
-//        }
-//
-//
-////        if currentUser.userID != "" {
-////            navigationController?.popToViewController(UpcomingCollabViewController, animated: <#T##Bool#>)
-////        }
-//
-//
-//
-//        if viewController.isKind(of: LogIn_RegisterViewController.self) {
-//            print("yes")
-//        }
-//
-//        return false
-//
+        else {
+            return true
+        }
     }
-
 }

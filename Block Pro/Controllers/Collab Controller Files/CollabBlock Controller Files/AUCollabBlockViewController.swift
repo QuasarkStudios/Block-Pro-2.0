@@ -25,7 +25,6 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     @IBOutlet weak var startTimeTextField: UITextField!
     @IBOutlet weak var endTimeTextField: UITextField!
     
-
     @IBOutlet weak var categoryTextField: UITextField!
     
     @IBOutlet weak var notificationView: UIView!
@@ -65,8 +64,8 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     var selectedBlock: CollabBlock? //Variable that holds the CollabBlock being updated
     
     //Arrays that holds the title for each row of the "categoryPicker"
-    let blockCategories: [String] = ["", "Work", "Creative Time", "Sleep", "Food/Eat", "Leisure", "Exercise", "Self-Care", "Other"]
-    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
+    let blockCategories: [String] = ["", "Work", "Creativity", "Sleep", "Food/Eat", "Leisure", "Exercise", "Self-Care", "Other"]
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creativity" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
     
     var tag: String = ""
     
@@ -95,6 +94,12 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         configureView2()
         configureConstraints()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        tabBarController?.delegate = self
+    }
+    
     
     func configureView1 () {
         
@@ -179,8 +184,8 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                 initialOutline.backgroundColor = .lightGray
             }
             else {
-                blockOutline.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory]!)
-                initialOutline.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory]!)
+                blockOutline.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory] ?? "#AAAAAA")
+                initialOutline.backgroundColor = UIColor(hexString: blockCategoryColors[block.blockCategory] ?? "#AAAAAA")
             }
             
             if block.creator["userID"] == currentUser.userID {
@@ -227,6 +232,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         }
     }
     
+    
     func configureConstraints () {
         
         if selectedView == "Add" {
@@ -271,18 +277,22 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         }
     }
     
+    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
+    
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return blockCategories.count
     }
     
+    
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         
         return blockCategories[row]
     }
+    
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         
@@ -291,6 +301,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         blockOutline.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]] ?? "#AAAAAA")
         initialOutline.backgroundColor = UIColor(hexString: blockCategoryColors[blockCategories[row]] ?? "#AAAAAA")
     }
+    
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
@@ -368,6 +379,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         
     }
     
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         textField.resignFirstResponder()
@@ -409,6 +421,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         }
     }
     
+    
     func getFirebaseBlocks (_ blockID: String = "0", completion: @escaping () -> ())  {
         
         blockObjectArray.removeAll()
@@ -433,8 +446,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                         let collabBlock = CollabBlock()
                         
                         collabBlock.blockID = document.data()["blockID"] as! String
-                        //collabBlock.notificationID = document.data()["notificationID"] as! String
-                        collabBlock.name = document.data()["name"] as! String; #warning ("tell user which block the new one interferes with")
+                        collabBlock.name = document.data()["name"] as! String
                         
                         collabBlock.startHour = document.data()["startHour"] as! String
                         collabBlock.startMinute = document.data()["startMinute"] as! String
@@ -451,6 +463,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                         self.blockObjectArray.append(collabBlock)
                         
                     }
+                    
                     completion()
                 }
             }
@@ -458,7 +471,6 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     }
     
  
-    
     //MARK: - Calculate Valid Collab Blocks
     
     func calcValidCollabBlock ( _ blockID: String = "0")  {
@@ -526,7 +538,6 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     @IBAction func notificationSwitch(_ sender: Any) {
         
         if notificationSwitch.isOn == true {
-            //notificationTimeSegments.isEnabled = true
             
             self.notificationViewHeightConstraint.constant = 85
             self.segmentContainerBottomConstraint.constant = 5
@@ -534,25 +545,25 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
             UIView.animate(withDuration: 0.2) {
                 self.view.layoutIfNeeded()
             }
-            
         }
-        else {
-            //notificationTimeSegments.isEnabled = false
             
+        else {
+
             self.notificationViewHeightConstraint.constant = 43
             self.segmentContainerBottomConstraint.constant = -40
             
             UIView.animate(withDuration: 0.2) {
                 self.view.layoutIfNeeded()
             }
-        
         }
     }
+    
     
     @IBAction func notificationTimeSegments(_ sender: Any) {
         
         notificationIndex = notificationTimeSegments.selectedSegmentIndex
     }
+    
     
     func scheduleNotification () {
         
@@ -566,7 +577,6 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
             let content = UNMutableNotificationContent()
             let trigger: UNCalendarNotificationTrigger
             let request: UNNotificationRequest
-            
             
             var notificationDate: [String : String] = ["Month": "", "Day" : "", "Year": ""]
             
@@ -647,15 +657,17 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
 
                 //If the selectedStartHour will become negative signifying the user wants the notification to come a day before
             else if (Int(selectedStartHour)! ==  0) && (Int(selectedStartMinute)! - notificationTimes[notificationIndex] < 0) {
+                
                 ProgressHUD.showError("Sorry, notifications coming a day prior isn't currently supported")
             }
         }
         
         else {
+            
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationID])
         }
-    
     }
+    
     
     func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
         
@@ -675,6 +687,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
             return "Error"
         }
     }
+    
     
     @objc func add_editCollabBlock1 () {
         
@@ -753,8 +766,6 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                 getFirebaseBlocks {
                     self.calcValidCollabBlock(block.blockID)
                     
-                    print(self.validCollabBlock)
-                    
                     //If statements that check if the TimeBlock failed any tests in the "calcValidTimeBlock" function
                     if self.validCollabBlock["startTimeValidation"] == false {
                         ProgressHUD.showError("The starting time of this TimeBlock conflicts with another")
@@ -779,6 +790,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
             
         }
     }
+    
     
     func add_editCollabBlock2 () {
 
@@ -848,9 +860,9 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                     }
                 }
             }
-            
         }
     }
+    
     
     @objc func dismissKeyboard () {
         
@@ -862,8 +874,36 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         
         UIView.animate(withDuration: 0.2) {
             self.view.layoutIfNeeded()
-
         }
-        //categoryPicker.selectRow(0, inComponent: 0, animated: true)
+    }
+}
+
+extension AUCollabBlockViewController: UITabBarControllerDelegate {
+
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        
+        if tabBarController.selectedIndex != 3 {
+            tabBarController.delegate = nil
+        }
+    }
+
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        
+        if viewController == navigationController {
+            
+            if currentUser.userID != "" {
+                
+                navigationController?.popToViewController(navigationController!.viewControllers[1], animated: true)
+                return false
+            }
+            
+            else {
+                return true
+            }
+        }
+        
+        else {
+            return true
+        }
     }
 }

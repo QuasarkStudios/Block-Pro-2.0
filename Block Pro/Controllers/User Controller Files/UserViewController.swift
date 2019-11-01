@@ -11,7 +11,6 @@ import Firebase
 
 class UserViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    
     @IBOutlet weak var settingsTableView: UITableView!
     
     lazy var db =  Firestore.firestore()
@@ -22,20 +21,21 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
        
     let sectionHeaderArray = [nil, "Free Time", "Pomodoro", "Time Block", "Collab", "Privacy"]
     var selectedInfo: String = ""
-    var friendsCount: Int = 0
+    var friends: [String] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         settingsTableView.delegate = self
         settingsTableView.dataSource = self
-    
     }
     
     override func viewWillAppear(_ animated: Bool) {
 
         //Call to function that checks if the user is logged in, then checks to see how many friends they have
         getUserData {
+            
+            self.friends.removeAll()
             
             self.db.collection("Users").document(self.signedInUser!.uid).collection("Friends").getDocuments { (snapshot, error) in
                 
@@ -50,14 +50,21 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     
                     else {
                         
-                        self.friendsCount = snapshot!.count
+                        for document in snapshot!.documents {
+                            
+                            var friendID: String = ""
+                            friendID = document.data()["friendID"] as! String
+                            
+                            self.friends.append(friendID)
+                        }
                     }
                 }
+                
                 self.settingsTableView.reloadData()
             }
-            
         }
     }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         
@@ -71,6 +78,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             return 5
         }
     }
+    
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
@@ -86,6 +94,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             return sectionHeaderArray[section + 1]
         }
     }
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -159,13 +168,12 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 attributedString.append(normalString)
                 
                 cell.usernameLabel.adjustsFontSizeToFitWidth = true
-                //cell.usernameLabel.text = "Username: \n" + currentUser.username
                 
                 cell.usernameLabel.attributedText = attributedString
                   
-                ////////////////////////////////////////////////////////////////////////////////////
+                /////////////////////////////////////////////////////////////////////////////////////
                 
-                boldText = "\(friendsCount) "
+                boldText = "\(friends.count) "
                 attributedString = NSMutableAttributedString(string: boldText, attributes: attrs)
                 
                 normalText = "Friends"
@@ -174,7 +182,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 attributedString.append(normalString)
                 
                 cell.friendCountLabel.adjustsFontSizeToFitWidth = true
-                //cell.friendCountLabel.text = "You have \(friendsCount) friends"
                 
                 cell.friendCountLabel.attributedText = attributedString
                 
@@ -189,7 +196,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 attributedString.append(normalString)
                 
                 cell.accountCreatedLabel.adjustsFontSizeToFitWidth = true
-                //cell.accountCreatedLabel.text = "Joined on: \n" + currentUser.createdOn
                 
                 cell.accountCreatedLabel.attributedText = attributedString
                 
@@ -478,7 +484,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 return cell
             }
-        
         }
     }
     
@@ -510,6 +515,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         //If a user is signed in and the currentUser singleton has been populated with that users info
@@ -520,7 +526,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 selectedInfo = "Free Time"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
-                print("move bitch get out the way", "free time")
             }
             
             //Pomodoro info cell selected
@@ -528,7 +533,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 selectedInfo = "Pomodoro"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
-                print("move bitch get out the way", "pomodoro")
             }
             
             //Time Block info cell selected
@@ -536,7 +540,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 selectedInfo = "Time Block"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
-                print("move bitch get out the way time block")
             }
             
             
@@ -547,20 +550,17 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                     
                     selectedInfo = "Collab"
                     performSegue(withIdentifier: "moveToInfo", sender: self)
-                    print("move bitch get out the way collab")
                 }
                 
                 //Log Out cell selected
                 else if indexPath.row == 1 {
                     logOutUser()
-                    print("this man is over it smh")
                 }
                 
                 //Delete Account cell selected
                 else if indexPath.row == 3 {
                     
                     deleteUser()
-                    print("ohhh shit this man is really over it :/")
                 }
             }
             
@@ -569,7 +569,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 selectedInfo = "Privacy"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
-                print("move bitch get out the way privacy")
             }
             
         }
@@ -582,7 +581,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 selectedInfo = "Free Time"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
-                print("move bitch get out the way", "free time")
             }
             
             //Pomodoro info cell selected
@@ -590,7 +588,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 selectedInfo = "Pomodoro"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
-                print("move bitch get out the way", "pomodoro")
             }
             
             //Time Block info cell selected
@@ -598,7 +595,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 selectedInfo = "Time Block"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
-                print("move bitch get out the way time block")
             }
             
             //Collab info cell selected
@@ -606,7 +602,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 selectedInfo = "Collab"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
-                print("move bitch get out the way collab")
             }
             
             //Privacy info cell selected
@@ -614,12 +609,12 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 selectedInfo = "Privacy"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
-                print("move bitch get out the way privacy")
             }
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
+    
     
     //Function that helps verify is a user is signed in
     func getUserData (completion: @escaping () -> ()) {
@@ -631,70 +626,102 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self.signedInUser = user
                 
                 completion()
-                print(user?.email)
             }
-
         }
     }
+    
     
     func logOutUser () {
         
         ProgressHUD.show()
 
-        //Proceeds to log out user after a 0.5 second delay mostly to signify to user that something is happening lol
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
 
-                do {
+            do {
 
-                    try Auth.auth().signOut()
-                    
-                    self.signedInUser = nil
-                    self.currentUser.userID = ""
-                    self.settingsTableView.reloadData()
+                try Auth.auth().signOut()
+                
+                self.signedInUser = nil
+                self.currentUser.userID = ""
+                self.settingsTableView.reloadData()
 
-                    ProgressHUD.dismiss()
-                    print("user signed out")
+                ProgressHUD.dismiss()
+                print("user signed out")
 
-                } catch let signOutError as NSError {
+            } catch let signOutError as NSError {
 
-                    ProgressHUD.showError(signOutError.localizedDescription)
+                ProgressHUD.showError(signOutError.localizedDescription)
 
-                    print(signOutError.localizedDescription)
-                }
+                print(signOutError.localizedDescription)
+            }
         }
     }
+    
     
     func deleteUser () {
         
         let deleteAlert = UIAlertController(title: "Delete Account", message: "Are you sure you would like to delete your Collaboration account? The data associated with your account will also be deleted.", preferredStyle: .alert)
         
-        
         let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (delete) in
             
             ProgressHUD.show()
             
-            self.db.collection("Users").document(self.currentUser.userID).delete() //Deleting the user from the "Users" collection
+            //Craetion of a write batch which will help perform the multiple writes needed to delete this user from their friends collections
+            let batch = self.db.batch()
             
-            //Proceeds to delete user after a 0.5 second delay mostly to signify to user that something is happening lol
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            //Loop that adds which documents need to be deleted to the batch
+            for friend in self.friends {
                 
-                self.signedInUser?.delete(completion: { (error) in
-                    
-                    if error != nil {
-                        ProgressHUD.showError(error?.localizedDescription)
-                    }
-                    
-                    else {
-                        
-                        self.signedInUser = nil
-                        self.settingsTableView.reloadData()
-                        
-                        ProgressHUD.showSuccess("Your Acount Has Been Deleted!")
-                    }
-                    
-                })
+                let friendRef = self.db.collection("Users").document(friend).collection("Friends").document(self.currentUser.userID)
                 
+                batch.deleteDocument(friendRef)
             }
+            
+            //Gets the pending friend requests of the current user
+            self.db.collection("Users").document(self.currentUser.userID).collection("PendingFriends").getDocuments { (snapshot, error) in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription as Any)
+                }
+                
+                else {
+                    
+                    if snapshot?.isEmpty != true {
+                        
+                        //Uses the pending friend request of this user to get and add the friend requests that should be deleted to the batch
+                        for pending in snapshot!.documents {
+                            
+                            let pendingFriend = pending.data()["friendID"] as! String
+                            
+                            let pendingFriendRef = self.db.collection("Users").document(pendingFriend).collection("FriendRequests").document(self.currentUser.userID)
+                            
+                            batch.deleteDocument(pendingFriendRef)
+                        }
+                    }
+                }
+                
+                batch.commit() //Commits all the writes
+            }
+            
+            //Deleting the user from the "Users" collection
+            self.db.collection("Users").document(self.currentUser.userID).delete()
+            
+            //Deletes the account of the user
+            self.signedInUser?.delete(completion: { (error) in
+                
+                if error != nil {
+                    ProgressHUD.showError(error?.localizedDescription)
+                }
+                
+                else {
+                    
+                    self.signedInUser = nil
+                    self.settingsTableView.reloadData()
+                    
+                    ProgressHUD.showSuccess("Your Acount Has Been Deleted!")
+                }
+            })
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -703,8 +730,8 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
         deleteAlert.addAction(cancelAction)
         
         present(deleteAlert, animated: true, completion: nil)
-        
     }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -712,8 +739,6 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             let infoVC = segue.destination as! InfoViewController
             infoVC.selectedInfo = selectedInfo
-            
         }
     }
-
 }

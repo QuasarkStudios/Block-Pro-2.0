@@ -18,6 +18,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     var pendingFriendsListener: ListenerRegistration?
     var friendsListener: ListenerRegistration?
     
+    let currentUser = UserData.singletonUser
+    
     var pendingObjectArray: [PendingFriend] = [PendingFriend]()
     var friendObjectArray: [Friend] = [Friend]()
     
@@ -33,31 +35,38 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        friendsTableView.delegate = self
-        friendsTableView.dataSource = self
-        
-        searchBar.delegate = self
-        searchBar.barTintColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.05)
-        
-        //friendsTableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendCell")
-        friendsTableView.rowHeight = 55
-        
-        
+        configureView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
         getPendingFriends {
             self.getFriends()
         }
+        
+        tabBarController?.delegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        
         pendingObjectArray.removeAll()
         friendObjectArray.removeAll()
         
         pendingFriendsListener?.remove()
         friendsListener?.remove()
     }
+    
+    
+    func configureView () {
+        
+        friendsTableView.delegate = self
+        friendsTableView.dataSource = self
+        friendsTableView.rowHeight = 55
+        
+        searchBar.delegate = self
+        searchBar.barTintColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.05)
+    }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         
@@ -68,6 +77,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             return 1
         }
     }
+    
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
@@ -83,6 +93,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
         }
     }
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -111,12 +122,10 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
 
    
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if pendingObjectArray.count == 0 {
             
-            //let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
             let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendCell
             
             let firstNameArray = Array(friendObjectArray[indexPath.row].firstName)
@@ -131,8 +140,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.initialContainer.layer.cornerRadius = 0.5 * 45
             cell.initialContainer.clipsToBounds = true
             
-            print(cell.friendInitial.font)
-            
             return cell
         }
             
@@ -145,7 +152,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             }
             else {
                 
-                //let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
                 let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendCell
                 let firstNameArray = Array(friendObjectArray[indexPath.row].firstName)
                 
@@ -161,9 +167,9 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                 
                 return cell
             }
-            
         }
     }
+    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -190,9 +196,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                     self.selectedFriend = self.friendObjectArray[indexPath.row]
                     self.performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
                 }
-                
-//                selectedFriend = friendObjectArray[indexPath.row]
-//                performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
             }
         }
         
@@ -224,15 +227,13 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                         self.selectedFriend = self.friendObjectArray[indexPath.row]
                         self.performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
                     }
-                    
-//                    selectedFriend = friendObjectArray[indexPath.row]
-//                    performSegue(withIdentifier: "moveToSelectedFriend", sender: self)
                 }
             }
         }
         
         tableView.deselectRow(at: indexPath, animated: false)
     }
+    
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
@@ -311,16 +312,16 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                             self.db.collection("Users").document(Auth.auth().currentUser!.uid).collection("PendingFriends").document(document.documentID).delete()
                             
                         }
-                        
                     }
+                    
                     self.pendingObjectArray = self.pendingObjectArray.sorted(by: {$0.pendingLastName < $1.pendingLastName})
                     self.friendsTableView.reloadData()
                     completion()
                 }
             }
         }
-        
     }
+    
     
     func friendRequestAccepted (_ pendingFriend: PendingFriend) {
        
@@ -331,11 +332,12 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         db.collection("Users").document(Auth.auth().currentUser!.uid).collection("PendingFriends").document(pendingFriend.pendingID).delete()
     }
     
+    
     func friendRequestDeclined (_ pendingFriend: PendingFriend) {
         
         db.collection("Users").document(Auth.auth().currentUser!.uid).collection("PendingFriends").document(pendingFriend.pendingID).delete()
-        
     }
+    
     
     func getFriends () {
         
@@ -375,6 +377,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
+    
     func rescindFriendRequest (_ indexPath: IndexPath) {
         
         let rescindRequestAlert = UIAlertController(title: "Pending Request", message: "Would you like to rescind your request?", preferredStyle: .alert)
@@ -399,12 +402,6 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         present(rescindRequestAlert, animated: true, completion: nil)
     }
     
-    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        
-        getPendingFriends {
-            self.getFriends()
-        }
-    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -434,8 +431,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
             collabBlockVC.collabDate = collabDate
         }
     }
-    
 }
+
 
 extension FriendsViewController: CollabView {
     
@@ -447,6 +444,7 @@ extension FriendsViewController: CollabView {
         performSegue(withIdentifier: "moveToCollabBlockView", sender: self)
     }
 }
+
 
 extension FriendsViewController: ReconfigureCell {
 
@@ -461,6 +459,38 @@ extension FriendsViewController: ReconfigureCell {
         UIView.animate(withDuration: 0.3) {
             cell.initialContainer.layoutIfNeeded()
             cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.width
+        }
+    }
+}
+
+
+extension FriendsViewController: UITabBarControllerDelegate {
+
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        
+        if tabBarController.selectedIndex != 3 {
+            tabBarController.delegate = nil
+        }
+    }
+
+    
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        
+        if viewController == navigationController {
+            
+            if currentUser.userID != "" {
+                
+                navigationController?.popToViewController(navigationController!.viewControllers[1], animated: true)
+                return false
+            }
+            
+            else {
+                return true
+            }
+        }
+        
+        else {
+            return true
         }
     }
 }

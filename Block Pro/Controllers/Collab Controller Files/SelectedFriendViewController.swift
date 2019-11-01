@@ -326,6 +326,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         if sectionDateArray.count > 0 {
             return sectionDateArray[section]
         }
+            
         else {
             
             if tableViewIndicator == "upcoming" {
@@ -405,7 +406,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }
         
         reconfigureCellDelegate?.reconfigureCell()
-        
     }
     
     
@@ -466,7 +466,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
                     
                 }
             }
-            
         }
     }
     
@@ -645,7 +644,6 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         dismiss(animated: true) {
             ProgressHUD.showSuccess(self.selectedFriend!.firstName + " " + self.selectedFriend!.lastName + " has been deleted")
         }
-        
     }
     
     
@@ -655,6 +653,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         view.addGestureRecognizer(pan!) //Adds the pan gesture to the view that was passed in
     }
+    
     
     @objc func handlePan (sender: UIPanGestureRecognizer) {
         
@@ -686,6 +685,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    
     //Function that handles when the pan gesture is taking place
     func moveViewWithPan (dismissView: UIView, dismissIndicator: UIView, tableView: UIView, sender: UIPanGestureRecognizer) {
         
@@ -701,6 +701,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         sender.setTranslation(CGPoint.zero, in: friendView) //Sets the translation value in the coordinate system of the specified view
     }
+    
     
     //Function that returns the views back to their origin point
     func returnViewToOrigin (dismissView: UIView, dismissIndicator: UIView, tableView: UIView) {
@@ -721,6 +722,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
             RunLoop.main.add(self.timer!, forMode: .common)
         }
     }
+    
     
     //Function that dismisses the views
     func dismissView (dismissView: UIView, dismissIndicator: UIView, tableView: UIView) {
@@ -858,6 +860,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    
     @IBAction func historyButton(_ sender: Any) {
         
         getHistoricCollabs()
@@ -907,6 +910,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
+    
     @IBAction func deleteFriendButton (_ sender: Any) {
         
         presentDeleteAlert()
@@ -928,6 +932,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         
         self.reconfigureCellDelegate?.reconfigureCell()
     }
+    
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         

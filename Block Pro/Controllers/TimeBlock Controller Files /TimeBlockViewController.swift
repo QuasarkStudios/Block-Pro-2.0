@@ -11,6 +11,7 @@ import ChameleonFramework
 import RealmSwift
 import JTAppleCalendar
 import UserNotifications
+import iProgressHUD
 
 
 class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -24,9 +25,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     @IBOutlet weak var blockTableView: UITableView!
     @IBOutlet weak var blockTableViewTopAnchor: NSLayoutConstraint!
     
-    
     @IBOutlet weak var timeBlockBarItem: UITabBarItem!
-    
     
     @IBOutlet weak var calendarContainer: UIView!
     @IBOutlet weak var calendarContainerTopAnchor: NSLayoutConstraint!
@@ -56,7 +55,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     let cellTimes: [String] = ["12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM", "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"]
     
     //Dictionary that contains the color for each block based on its category
-    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creativity" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
     
     var cellAnimated = [String]() //Variable that helps track whether or not a certain cell has been animated onto the screen yet
     
@@ -76,6 +75,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var selectedView: String = ""
     
+    var viewInitiallyLoaded: Bool = false
+    
     //MARK: - View Functions
     
     override func viewDidLoad() {
@@ -84,11 +85,28 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         configureView()
     }
     
+    
     override func viewWillAppear(_ animated: Bool) {
     
-        findTimeBlocks(currentDate)
-        allBlockDates = realm.objects(TimeBlocksDate.self)
-        blockTableView.reloadData()
+        if viewInitiallyLoaded == false {
+            
+            presentSplashView {
+            
+                self.findTimeBlocks(self.currentDate)
+                self.allBlockDates = self.realm.objects(TimeBlocksDate.self)
+                
+                self.timeTableView.reloadData()
+                self.blockTableView.reloadData()
+                self.scrollToFirstBlock()
+            }
+            viewInitiallyLoaded = true
+        }
+        
+        else {
+            findTimeBlocks(currentDate)
+            allBlockDates = realm.objects(TimeBlocksDate.self)
+            blockTableView.reloadData()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -96,6 +114,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         timeBlockViewTracker = true //TimeBlock view is present
         timeBlockBarItem.image = UIImage(named: "plus") //Changes the TabBar Item to be a plus button
         scrollToFirstBlock()
+        
+        tabBarController?.delegate = self
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -144,8 +164,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         monthButton.setTitleColor(.lightGray, for: .normal)
         weekButton.setTitleColor(.lightGray, for: .normal)
-        
-        tabBarController?.delegate = self
     }
     
     
@@ -1032,6 +1050,76 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     }
 }
 
+//Extension for the splashView
+extension TimeBlockViewController {
+    
+    func presentSplashView (completion: @escaping () -> ()) {
+        
+        let splashView = UIView()
+        let blockLabel = UILabel()
+        
+        navigationController?.isNavigationBarHidden = true
+        tabBarController?.tabBar.isHidden = true
+        
+        view.addSubview(splashView)
+        
+        splashView.frame = self.view.frame
+        splashView.backgroundColor = UIColor(hexString: "23FCD1")
+        
+        blockLabel.font = UIFont(name: "HelveticaNeue-Bold", size: 50)
+        blockLabel.numberOfLines = 2
+        blockLabel.text = "BP"
+        blockLabel.textAlignment = .center
+        blockLabel.textColor = .white
+        
+        view.addSubview(blockLabel)
+        
+        blockLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        blockLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 10).isActive = true
+        blockLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -10).isActive = true
+        blockLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        blockLabel.heightAnchor.constraint(equalToConstant: 155).isActive = true
+        
+        presentProgress()
+        
+        //Removes the splash screen after 3 seconds
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            
+            self.view.dismissProgress()
+            
+            UIView.animate(withDuration: 0.25, animations: {
+                
+                self.navigationController?.isNavigationBarHidden = false
+                self.tabBarController?.tabBar.isHidden = false
+                
+                splashView.backgroundColor = .white
+                
+            }) { (finished: Bool) in
+                
+                splashView.removeFromSuperview()
+                blockLabel.removeFromSuperview()
+                
+                completion()
+            }
+        }
+    }
+    
+    func presentProgress () {
+        
+        let iProgress: iProgressHUD = iProgressHUD()
+        
+        iProgress.isShowModal = false
+        iProgress.isShowCaption = false
+        iProgress.isTouchDismiss = false
+        iProgress.boxColor = UIColor.clear
+        iProgress.indicatorSize = 180
+
+        iProgress.attachProgress(toView: view)
+        view.updateIndicator(style: .ballClipRotateMultiple)
+        view.showProgress()
+    }
+}
 
 //MARK: - UITabBarControllerDelegate Extension
 
@@ -1057,8 +1145,8 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
         
         formatter.dateFormat = "yyyy MM dd"
         
-        let startDate = formatter.date(from: "2019 05 17")! //Beginning date of the calendar
-        let endDate = formatter.date(from: "2020 01 01")! //Ending date of the calendar
+        let startDate = formatter.date(from: "2010 01 01")! //Beginning date of the calendar
+        let endDate = formatter.date(from: "2050 01 01")! //Ending date of the calendar
         
         let calendar = Calendar(identifier: .gregorian)
         
@@ -1211,7 +1299,7 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
     //Function that tells the delegate that the JTAppleCalendar is about to display a header
     func calendar(_ calendar: JTAppleCalendarView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTAppleCollectionReusableView {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM"
+        formatter.dateFormat = "MMMM yyyy"
 
         let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "DateHeader", for: indexPath) as! DateHeader
         header.monthLabel.text = formatter.string(from: range.start)

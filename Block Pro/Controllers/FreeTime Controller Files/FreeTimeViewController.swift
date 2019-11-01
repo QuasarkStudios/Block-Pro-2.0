@@ -428,7 +428,7 @@ class FreeTimeViewController: UIViewController {
                     
                     UIView.animate(withDuration: 0.2) {
                         
-                        self.dismissViewIndicator.center = CGPoint(x: self.tappedCard.center.x - 15, y: 12.5)
+                        self.dismissViewIndicator.center = CGPoint(x: self.tappedCard.center.x - 15, y: 15)
                         self.view.layoutIfNeeded()
                     }
                 }
@@ -525,7 +525,7 @@ class FreeTimeViewController: UIViewController {
         
         case .ended:
             
-            if tappedCardTopAnchor.constant >= view.frame.height / 2 {
+            if tappedCardTopAnchor.constant >= view.frame.height / 2.5 {
                 
                 self.dismissView(dismissView, tappedCard)
             }

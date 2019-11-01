@@ -9,10 +9,8 @@
 import UIKit
 import Firebase
 
-
 class AddFriendViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 
-    
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var resultsTableView: UITableView!
     
@@ -35,8 +33,23 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
+        configureView()
+        getFriendRequests()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        tabBarController?.delegate = self
+    }
 
-        addStateDidChangeListener()
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        friendRequestsListener?.remove()
+    }
+    
+    
+    func configureView () {
         
         resultsTableView.delegate = self
         resultsTableView.dataSource = self
@@ -47,16 +60,6 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         searchBar.autocapitalizationType = .none
         searchBar.spellCheckingType = .no
         searchBar.barTintColor = UIColor(hexString: "F2F2F2")?.darken(byPercentage: 0.05)
-        
-        //resultsTableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "FriendCell")
-        
-        getFriendRequests()
-        
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        
-        friendRequestsListener?.remove()
     }
     
     
@@ -71,6 +74,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
             return "Search Results"
         }
     }
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
@@ -109,9 +113,9 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 return cell
             }
+                
             else {
                 
-                //let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
                 let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendCell
                 let firstNameArray = Array(requestsObjectArray[indexPath.row].requesterFirstName)
                 
@@ -177,7 +181,6 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 else if friendPending == true {
                     
-                    //let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
                     let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendCell
                     let firstNameArray = Array(resultsObjectArray[indexPath.row].firstName)
                     
@@ -204,7 +207,6 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 else {
                    
-                    //let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendTableViewCell
                     let cell = tableView.dequeueReusableCell(withIdentifier: "FriendCell", for: indexPath) as! FriendCell
                     let firstNameArray = Array(resultsObjectArray[indexPath.row].firstName)
                     
@@ -259,6 +261,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         queryUsers(searchBar.text!.lowercased())
     }
     
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
         if searchBar.text?.count == 0 {
@@ -279,17 +282,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
             resultsTableView.reloadData()
         }
     }
-    
-    func addStateDidChangeListener () {
-        
-        handle = Auth.auth().addStateDidChangeListener({ (auth, user) in
-            
-            if let user = user {
-                let uid = user.uid
-                let email = user.email
-            }
-        })
-    }
+      
     
     func getFriendRequests () {
         
@@ -327,6 +320,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    
     func queryUsers (_ searchEntry: String) {
         
         resultsObjectArray.removeAll()
@@ -339,7 +333,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
             else {
                 
                 if snapshot?.isEmpty == true {
-                    //print ("that nigga dont exist smh")
+
                     self.tableViewTracker = "Results"
                     self.resultsTableView.reloadData()
                 }
@@ -362,11 +356,13 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                         
                         self.resultsObjectArray.append(friendSearchResults)
                     }
+                    
                     self.resultsTableView.reloadData()
                 }
             }
         }
     }
+    
     
     func presentRequestAlert (_ selectedRequest: Int) {
         
@@ -391,6 +387,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         present(handleRequestAlert, animated: true, completion: nil)
     }
     
+    
     func acceptRequest (_ selectedRequest: Int) {
         
         let friendDict: [String : String] = ["friendID" : requestsObjectArray[selectedRequest].requesterID, "firstName" : requestsObjectArray[selectedRequest].requesterFirstName, "lastName" : requestsObjectArray[selectedRequest].requesterLastName, "username" : requestsObjectArray[selectedRequest].requesterUsername]
@@ -400,6 +397,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
             }
+                
             else {
                 
                 if snapshot?.isEmpty == true {
@@ -407,31 +405,28 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                     self.db.collection("Users").document(self.currentUser.userID).collection("FriendRequests").document(friendDict["friendID"]!).delete()
                     
                     ProgressHUD.showError("Sorry, this friend request was rescinded")
-                    
-                    //self.findFriendRequests()
                 }
+                    
                 else {
+                    
                     self.db.collection("Users").document(self.currentUser.userID).collection("Friends").document(friendDict["friendID"]!).setData(friendDict)
             
                     self.db.collection("Users").document(self.currentUser.userID).collection("FriendRequests").document(friendDict["friendID"]!).delete()
             
                     self.db.collection("Users").document(self.requestsObjectArray[selectedRequest].requesterID).collection("PendingFriends").document(self.currentUser.userID).setData(["accepted" : "true"], mergeFields: ["accepted"])
-            
-                    //self.findFriendRequests()
                 }
             }
         }
     }
+    
     
     func declineRequest (_ selectedRequest: Int) {
         
         db.collection("Users").document(currentUser.userID).collection("FriendRequests").document(requestsObjectArray[selectedRequest].requesterID).delete()
         
         db.collection("Users").document(requestsObjectArray[selectedRequest].requesterID).collection("PendingFriends").document(currentUser.userID).setData(["accepted" : "false"], mergeFields: ["accepted"])
-        
-        //findFriendRequests()
-        
     }
+    
     
     func sendRequest (_ indexPath: IndexPath) {
         
@@ -453,12 +448,35 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         pendingFriends.append(pendingFriend)
         
         ProgressHUD.showSuccess("Friend Request Sent!")
-        
+        }
     }
-    
-    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+
+extension AddFriendViewController: UITabBarControllerDelegate {
+
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
         
-        //findFriendRequests()
+        if tabBarController.selectedIndex != 3 {
+            tabBarController.delegate = nil
+        }
+    }
+
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        
+        if viewController == navigationController {
+            
+            if currentUser.userID != "" {
+                
+                navigationController?.popToViewController(navigationController!.viewControllers[1], animated: true)
+                return false
+            }
+            
+            else {
+                return true
+            }
+        }
+        
+        else {
+            return true
+        }
     }
 }
-

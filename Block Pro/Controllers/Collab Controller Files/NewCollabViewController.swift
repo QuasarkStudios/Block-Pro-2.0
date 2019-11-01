@@ -75,74 +75,73 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewDidLoad() {
         super.viewDidLoad()
+                
+        configureView()
+        configureConstraints()
+        friendPreselected()
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        getFriends()
+    }
+    
+    
+    func configureView () {
         
-        friendsTableView.delegate = self
-        friendsTableView.dataSource = self
-        
-        friendsTableView.backgroundColor = UIColor(hexString: "2E2E2E")
-        friendsTableView.separatorColor = .white
+        newCollabView.layer.cornerRadius = 0.095 * newCollabView.bounds.size.width
+        newCollabView.clipsToBounds = true
         
         gradientLayer = CAGradientLayer()
         gradientLayer.frame =  CGRect(x: 0, y: 0, width: 400, height: 44)
         gradientLayer.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
         
         newCollabLabelContainer.layer.addSublayer(gradientLayer)
-        
         newCollabLabelContainer.bringSubviewToFront(newCollabLabel)
         
         collabNameTextField.delegate = self
-        collabWithTextField.delegate = self
-        dateTextField.delegate = self
         
-        newCollabView.layer.cornerRadius = 0.095 * newCollabView.bounds.size.width
-        newCollabView.clipsToBounds = true
+        collabWithTextField.delegate = self
+        collabWithTextField.inputView = UIView()
+        
+        dateTextField.delegate = self
+        dateTextField.inputView = UIView()
+        
+        formatter.dateFormat = "MMMM dd, yyyy"
+        dateTextField.text = formatter.string(from: datePicker.date)
         
         collabButtonContainerView.layer.cornerRadius = 0.06 * collabButton.bounds.size.width
         collabButtonContainerView.clipsToBounds = true
         
-//        collabButton.layer.cornerRadius = 0.065 * collabButton.bounds.size.width
-//        collabButton.clipsToBounds = true
-        
         buttonAnimationView.layer.cornerRadius = 0.3 * buttonAnimationView.bounds.size.width
         buttonAnimationView.clipsToBounds = true
-        //buttonAnimationView.backgroundColor = UIColor(hexString: "#e35d5b")
         buttonAnimationView.isHidden = true
         
-        datePickerContainer.layer.cornerRadius = 0.1 * datePickerContainer.bounds.size.width
-        datePickerContainer.clipsToBounds = true
+        friendsTableView.delegate = self
+        friendsTableView.dataSource = self
+        
+        friendsTableView.frame = CGRect(x: friendsTableView.frame.origin.x, y: 850, width: friendsTableView.frame.width, height: 810)
+        friendsTableView.backgroundColor = UIColor(hexString: "2E2E2E")
+        friendsTableView.separatorColor = .white
         
         friendsTableView.layer.cornerRadius = 0.065 * friendsTableView.bounds.size.width
         friendsTableView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] //Top left corner and top right corner respectively
         friendsTableView.clipsToBounds = true
         
+        datePickerContainer.layer.cornerRadius = 0.1 * datePickerContainer.bounds.size.width
+        datePickerContainer.clipsToBounds = true
+        datePickerContainer.frame.origin.y = 850
+        
         datePicker.setValue(UIColor.white, forKey: "textColor")
         datePicker?.addTarget(self, action: #selector(dateSelected(datePicker:)), for: .valueChanged)
         
         datePicker.setValue(false, forKey: "highlightsToday") //Stops the current date text from being black
-        
-        collabWithTextField.inputView = UIView()
-        dateTextField.inputView = UIView()
-        
-        datePickerContainer.frame.origin.y = 850
         datePicker.minimumDate = Date()
-        
-        friendsTableView.frame = CGRect(x: friendsTableView.frame.origin.x, y: 850, width: friendsTableView.frame.width, height: 810)
-        
-        formatter.dateFormat = "MMMM dd, yyyy"
-        dateTextField.text = formatter.string(from: datePicker.date)
         
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         newCollabView.addGestureRecognizer(tap)
-        
-        friendPreselected()
-        
-        configureConstraints()
-        
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        getFriends()
-    }
     
     func configureConstraints () {
         
@@ -160,14 +159,12 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
             
             collabViewTopAnchor.constant = 110
             collabViewInitialTop = 110
-            
         }
             
         //iPhone XS
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
             
             collabViewInitialTop = collabViewTopAnchor.constant // 150
-
         }
             
         //iPhone 8
@@ -188,9 +185,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
             
             buttonAnimationTrailingAnchor.constant = 93
             buttonAnimationLeadingAnchor.constant = 93
-            
         }
-        
     }
     
     
@@ -198,29 +193,24 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         return 1
     }
     
+    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return "Friends"
     }
     
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//
-//        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.size.width, height: 30))
-//        headerView.backgroundColor = UIColor(hexString: "2E2E2E")
-//        return headerView
-//
-//    }
     
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         
         view.tintColor = UIColor(hexString: "2E2E2E")?.darken(byPercentage: 0.025)
         let header = view as! UITableViewHeaderFooterView
         header.textLabel?.textColor = UIColor.white
-        
     }
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return friendObjectArray.count
     }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -241,6 +231,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         
             return cell
     }
+    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     
@@ -268,13 +259,14 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
             tableView.deselectRow(at: indexPath, animated: false)
-        
     }
+    
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
         animateViews(textField)
     }
+    
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
@@ -290,12 +282,14 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         return true
     }
     
+    
     func friendPreselected () {
         
         guard let friend = selectedFriend else { return }
         
             collabWithTextField.text! = friend.firstName + " " + friend.lastName
     }
+    
     
     func getFriends () {
         
@@ -329,7 +323,6 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    #warning("due to the fact that users can now delete thier accounts, write a way to check to see if the user a person wants to collab with still has an active account")
     
     func createCollab () {
         
@@ -353,6 +346,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         db.collection("Users").document(selectedFriend!.friendID).collection("PendingCollabs").document(collabID).setData(collaboratorData)
     }
     
+    
     func animateButton () {
         
         buttonAnimationView.isHidden = false
@@ -374,10 +368,10 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    
     @objc func dateSelected (datePicker: UIDatePicker) {
         
         dateTextField.text = formatter.string(from: datePicker.date)
-        
     }
     
 
@@ -404,10 +398,10 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         else {
             createCollab()
             animateButton()
-            //getCollabDelegate?.getNewCollab()
         }
         
     }
+    
     
     //Function that dismisses the keyboard and the PickerViews
     @objc func dismissKeyboard () {
@@ -425,13 +419,14 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         
     }
     
+    
     @IBAction func exitButton(_ sender: Any) {
         
         view.endEditing(true)
         dismiss(animated: true, completion: nil)
     }
-    
 }
+
 
 extension NewCollabViewController {
     
@@ -580,7 +575,7 @@ extension NewCollabViewController {
             case dateTextField:
                 
                 self.view.layoutIfNeeded()
-                collabViewTopAnchor.constant = 130//collabViewInitialTop
+                collabViewTopAnchor.constant = 130
                 tableViewHeightConstraint.constant = 0
                 dateContainerTopAnchor.constant = 480
                 
@@ -640,7 +635,6 @@ extension NewCollabViewController {
             default:
                 break
             }
-            
         }
             
         //iPhone SE
@@ -672,7 +666,6 @@ extension NewCollabViewController {
                     self.view.layoutIfNeeded()
                 }
                 
-                
             case dateTextField:
                 
                 self.view.layoutIfNeeded()
@@ -688,7 +681,6 @@ extension NewCollabViewController {
             default:
                 break
             }
-            
         }
     }
 }

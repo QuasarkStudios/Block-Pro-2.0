@@ -88,21 +88,19 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         configureView()
         configureConstraints()
-
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
         //Watches for when the app becomes active again from the background
         NotificationCenter.default.addObserver(self, selector: #selector(configurePomodoro), name: UIApplication.didBecomeActiveNotification, object: nil)
         
         //Watches for when this view will resign its active state
         NotificationCenter.default.addObserver(self, selector: #selector(viewResignedActive), name: UIApplication.willResignActiveNotification, object: nil)
-    }
-    
-    
-    override func viewWillAppear(_ animated: Bool) {
         
         //Removes the pending notification that would be scheduled if a user leaves this view during a active Pomodoro session
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [defaults.value(forKey: "pomodoroNotificationID") as? String ?? ""])
     }
-    
     
     override func viewDidAppear(_ animated: Bool) {
         
@@ -122,10 +120,12 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         }
     }
     
-    
     override func viewWillDisappear(_ animated: Bool) {
         
         viewResignedActive()
+        
+        NotificationCenter.default.removeObserver(self)
+
     }
     
     

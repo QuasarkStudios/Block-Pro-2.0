@@ -55,8 +55,8 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
     let formatter = DateFormatter()
 
     //Arrays that holds the title for each row of the "categoryPicker"
-    let blockCategories: [String] = ["", "Work", "Creative Time", "Sleep", "Food/Eat", "Leisure", "Exercise", "Self-Care", "Other"]
-    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creative Time" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
+    let blockCategories: [String] = ["", "Work", "Creativity", "Sleep", "Food/Eat", "Leisure", "Exercise", "Self-Care", "Other"]
+    let blockCategoryColors: [String : String] = ["Work": "#5065A0", "Creativity" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
     
     var tag: String = "" //Variable that helps track if selectedRows from the "timePicker" should be assigned to the "startTime" variables and textFields or the "endTime" variables and textFields
     
