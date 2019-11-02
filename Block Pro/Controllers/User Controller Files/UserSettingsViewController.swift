@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class UserViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class UserSettingsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var settingsTableView: UITableView!
     
@@ -524,7 +524,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             //Free Time info cell selected
             if indexPath.section == 1 && indexPath.row == 1 {
                 
-                selectedInfo = "Free Time"
+                selectedInfo = "Free Time Cards"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
             }
             
@@ -567,7 +567,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             //Free Time info cell selected
             else if indexPath.section == 5 {
                 
-                selectedInfo = "Privacy"
+                selectedInfo = "Privacy Policy"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
             }
             
@@ -579,7 +579,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             //Free Time info cell selected
             if indexPath.section == 0 && indexPath.row == 1 {
                 
-                selectedInfo = "Free Time"
+                selectedInfo = "Free Time Cards"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
             }
             
@@ -607,7 +607,7 @@ class UserViewController: UIViewController, UITableViewDelegate, UITableViewData
             //Privacy info cell selected
             else if indexPath.section == 4 {
                 
-                selectedInfo = "Privacy"
+                selectedInfo = "Privacy Policy"
                 performSegue(withIdentifier: "moveToInfo", sender: self)
             }
         }

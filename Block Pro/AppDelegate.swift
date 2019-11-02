@@ -29,12 +29,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         UINavigationBar.appearance().tintColor = UIColor(hexString: "#e35d5b")
         UITabBar.appearance().tintColor = UIColor(hexString: "#e35d5b")
-
-//        do {
-//            let realm = try Realm() //Creation of a new object from the Realm class
-//        } catch {
-//            print ("Error initializing new realm, \(error)")
-//        }
         
         UNUserNotificationCenter.current().delegate = self
         let notifOptions: UNAuthorizationOptions = [.badge, .sound]
@@ -42,11 +36,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UNUserNotificationCenter.current().requestAuthorization(options: notifOptions) { (granted, error) in
             
             if granted == true {
-                print ("aye dope")
+                print ("granted")
             }
             
             else {
-                print ("awhhh")
+                print ("denied")
             }
         }
         

@@ -24,5 +24,5 @@ class CollabBlock {
     var endMinute: String = ""
     var endPeriod: String = ""
     
-    var notificationSettings: [String : [String : Any]] = [:]  //["userID" : ["notificationID" : "", "scheduled" : false, "minsBefore" : 0]]  
+    var notificationSettings: [String : [String : Any]] = [:]
 }
