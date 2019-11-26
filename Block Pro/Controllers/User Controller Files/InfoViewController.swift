@@ -92,7 +92,7 @@ class InfoViewController: UIViewController {
             attributedString.append(description)
             
             
-            description = NSAttributedString(string: "You can now add those tasks and many more to the cards that matches their time lengths by simply tapping on the \"Plus\" icon in the upper right of your screen and entering in the name of the task. \n \n", attributes: standardText)
+            description = NSAttributedString(string: "You can now add those tasks and many more to the cards that match their time lengths by simply tapping on the \"Plus\" icon in the upper right of your screen and by entering the name of the task. \n \n", attributes: standardText)
             attributedString.append(description)
             
             
@@ -100,7 +100,7 @@ class InfoViewController: UIViewController {
             attributedString.append(description)
             
             
-            description = NSAttributedString(string: "Now the next time you have some unexpected free time, just check back to your Free Time Cards and see what tasks you've been meaning to get done. Once you've completed the task, you can mark in complete by simply tapping on it and delete it by swiping left on it. Or if you've enabled \"Auto Delete Completed Tasks\", the next time you leave the Free Time tab or Block Pro in general, all your tasks marked completed will be automatically deleted for you.", attributes: standardText)
+            description = NSAttributedString(string: "Now the next time you have some unexpected free time, just check back to your Free Time Cards and see what tasks you've been meaning to get done. Once you've completed the task, you can mark it complete by simply tapping on it or delete it by swiping left on it. Or if you've enabled \"Auto Delete Completed Tasks\", the next time you leave the Free Time tab or Block Pro in general, all your tasks marked completed will be automatically deleted for you.", attributes: standardText)
             attributedString.append(description)
             
             
@@ -116,7 +116,7 @@ class InfoViewController: UIViewController {
             attributedString.append(heading)
             
             
-            description = NSAttributedString(string: "The Pomodoro Technique is a time management method in which you break down whatever work you need to get done into 25 minute intervals followed by 5 minute breaks. After 4 intervals, or 4 \"Pomodoros\", you can take a longer break for about 30 minutes. These regularly scheduled breaks help remind you to take a breather while working on larger projects to avoid feeling burnt out earlier than you'd like. \n \n", attributes: standardText)
+            description = NSAttributedString(string: "The Pomodoro Technique is a time management method in which you break down whatever work you need to get done into 25-minute intervals followed by 5-minute breaks. After 4 intervals, or 4 \"Pomodoros\", you can take a longer break for about 30 minutes. These regularly scheduled breaks help remind you to take a breather while working on larger projects to avoid feeling burnt out earlier than you'd like. \n \n", attributes: standardText)
             attributedString.append(description)
             
             
@@ -168,7 +168,7 @@ class InfoViewController: UIViewController {
             attributedString.append(heading)
             
             
-            description = NSAttributedString(string: "\u{2022} Try to always start of by Blocking off the times you'll spend either at work or in class. This'll give you a good idea of when you can fit in any other projects or tasks you'd like to get done that day. \n \n ", attributes: standardText)
+            description = NSAttributedString(string: "\u{2022} Try to always start off by Blocking off the times you'll spend either at work or in class. This'll give you a good idea of when you can fit in any other projects or tasks you'd like to get done that day. \n \n ", attributes: standardText)
             attributedString.append(description)
             
             
@@ -203,7 +203,7 @@ class InfoViewController: UIViewController {
             attributedString.append(description)
             
             
-            description = NSAttributedString(string: "After registering for an account, you should now be moved to the \"Upcoming Collabs\" View. You'll want to add some friends to Collab with, and you can that by navigating to the \"Add Friends\" View by first tapping on the \"Friends\" icon located on the upper left of your screen, and then tapping on the \"Add Friends\" icon located on the upper right of your screen. \n \n", attributes: standardText)
+            description = NSAttributedString(string: "After registering for an account, you should now be moved to the \"Upcoming Collabs\" View. You'll want to add some friends to Collab with, and you can do that by navigating to the \"Add Friends\" View by first tapping on the \"Friends\" icon located on the upper left of your screen, and then by tapping on the \"Add Friends\" icon located on the upper right of your screen. \n \n", attributes: standardText)
             attributedString.append(description)
             
             
@@ -211,7 +211,7 @@ class InfoViewController: UIViewController {
             attributedString.append(description)
             
             
-            description = NSAttributedString(string: "You should now be on the \"Add Friends\" View. Here you can search for your friends by entering in their username, or you can accept or decline friend requests that are sent to you. \n \n", attributes: standardText)
+            description = NSAttributedString(string: "You should now be on the \"Add Friends\" View. Here you can search for your friends by entering their usernames, or you can accept or decline friend requests that are sent to you. \n \n", attributes: standardText)
             attributedString.append(description)
             
             
@@ -219,7 +219,7 @@ class InfoViewController: UIViewController {
             attributedString.append(description)
             
             
-            description = NSAttributedString(string: "After sending some Friend Requests and hopefully getting accepted, or after accepting some Friend Requests sent to you, you can now start Collaborating. To do this, you can either go back to the \"Upcoming Collab\" View and tapping on the \"Plus\" icon located on the upper right corner of your screen, or you can go to the \"Friends\" View and tap on the friend you'd like to Collab with. After tapping on a friend, tap on the \"New Collab\" Button and set up a New Collab. \n \n", attributes: standardText)
+            description = NSAttributedString(string: "After sending some Friend Requests and hopefully getting accepted, or after accepting some Friend Requests sent to you, you can now start Collaborating. To do this, you can either go back to the \"Upcoming Collab\" View and tap on the \"Plus\" icon located on the upper right corner of your screen, or you can go to the \"Friends\" View and tap on the friend you'd like to Collab with. After tapping on a friend, tap on the \"New Collab\" button and set up a New Collab. \n \n", attributes: standardText)
             attributedString.append(description)
             
             
@@ -231,7 +231,7 @@ class InfoViewController: UIViewController {
             attributedString.append(description)
             
             
-            description = NSAttributedString(string: "You can delete a Collab by opening the Collab that you'd like to delete and giving your phone a little shake", attributes: semiBoldText)
+            description = NSAttributedString(string: "You can delete a Collab by opening the Collab that you'd like to delete and by giving your phone a little shake", attributes: semiBoldText)
             attributedString.append(description)
             
             

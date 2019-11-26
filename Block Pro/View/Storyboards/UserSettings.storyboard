@@ -203,7 +203,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="698" id="yb2-tm-XLN"/>
                                 </constraints>
-                                <mutableString key="text">Privacy Policy
+                                <string key="text">Privacy Policy
 
 Effective date: November 01, 2019
 
@@ -223,24 +223,25 @@ Personal Data
 
 While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you ("Personal Data"). Personally identifiable information may include, but is not limited to:
 
-Email address
-First name and last name
+∙ email address
+∙ first name and last name
 
 When you access the Service by or through a mobile device, we may collect certain information automatically, including, but not limited to, the type of mobile device you use, your mobile device unique ID, the IP address of your mobile device, your mobile operating system, the type of mobile Internet browser you use, unique device identifiers and other diagnostic data ("Usage Data").
 
 Tracking &amp; Cookies Data
 
-We do not user cookies or any other similar tracking tenchnologies to track your activity on Block Pro.
+We do not use cookies or any other similar tracking tenchnologies to track your activity on Block Pro.
 
-Block Pro uses the collected data for various purposes:
+Block Pro uses the collected data to:
 
-To provide and maintain the Service
-To notify you about changes to our Service
-To allow you to participate in interactive features of our Service when you choose to do so
-To provide customer care and support
-To provide analysis or valuable information so that we can improve the Service
-To monitor the usage of the Service
-To detect, prevent and address technical issues
+∙ provide and maintain the Service
+∙ notify you about changes to our Service
+∙ allow you to participate in interactive features of our Service when you choose to do so
+∙ provide customer care and support
+∙ provide analysis or valuable information so that we can improve the Service
+∙ monitor the usage of the Service
+∙ detect, prevent and address technical issues  
+                                                                                                                                                                                                              
 Transfer Of Data
 
 Your information, including Personal Data, may be transferred to — and maintained on — computers located outside of your state, province, country or other governmental jurisdiction where the data protection laws may differ than those from your jurisdiction.
@@ -257,11 +258,12 @@ Legal Requirements
 
 Block Pro may disclose your Personal Data in the good faith belief that such action is necessary to:
 
-To comply with a legal obligation
-To protect and defend the rights or property of Block Pro
-To prevent or investigate possible wrongdoing in connection with the Service
-To protect the personal safety of users of the Service or the public
-To protect against legal liability
+∙ comply with a legal obligation
+∙ protect and defend the rights or property of Block Pro
+∙ prevent or investigate possible wrongdoing in connection with the Service
+∙ protect the personal safety of users of the Service or the public
+∙ protect against legal liability
+
 Security Of Data
 
 The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Data, we cannot guarantee its absolute security.
@@ -296,7 +298,7 @@ Contact Us
 
 If you have any questions about this Privacy Policy, please contact us:
 
-By email: quasarkstudios@gmail.com</mutableString>
+By email: quasarkstudios@gmail.com</string>
                                 <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <fontDescription key="fontDescription" name=".SFNSDisplay" family=".SF NS Display" pointSize="25"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>

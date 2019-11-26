@@ -632,7 +632,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                 UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
             }
 
-                //If the selectedStartMinute will not become negative
+            //If the selectedStartMinute will not become negative
             else if Int(selectedStartMinute)! - notificationTimes[notificationIndex] >= 0 {
                 
                 //Assigning the dateComponents year, month, and day values from the "notificationDate" dictionary
@@ -691,6 +691,8 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     
     @objc func add_editCollabBlock1 () {
         
+        navigationItem.rightBarButtonItem?.isEnabled = false
+        
         let blockNameArray = Array(blockNameTextField.text ?? "")
         var blockNameEntered: Bool = false
         
@@ -705,29 +707,47 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
         
         //If the user hasn't entered a name for a CollabBlock
         if blockNameEntered != true {
+            
             ProgressHUD.showError("Please enter a name for this CollabBlock")
+            navigationItem.rightBarButtonItem?.isEnabled = true
         }
-            //If the user hasn't finished entering the start time for a CollabBlock
+            
+        //If the user hasn't finished entering the start time for a CollabBlock
         else if startTimeTextField.text == "" {
+            
             ProgressHUD.showError("Please enter when this CollabBlock should begin")
+            navigationItem.rightBarButtonItem?.isEnabled = true
         }
-            //If the user hasn't finished entering the end time for a CollabBlock
+            
+        //If the user hasn't finished entering the end time for a CollabBlock
         else if endTimeTextField.text == "" {
+            
             ProgressHUD.showError("Please enter when this CollabBlock should end")
+            navigationItem.rightBarButtonItem?.isEnabled = true
         }
-            //If the start time and end time for a CollabBlock are the same
+            
+        //If the start time and end time for a CollabBlock are the same
         else if selectedStartHour == selectedEndHour && selectedStartMinute == selectedEndMinute && selectedStartPeriod == selectedEndPeriod {
+            
             ProgressHUD.showError("Sorry, the times for CollabBlocks can't be the same")
+            navigationItem.rightBarButtonItem?.isEnabled = true
         }
-            //If end time is before the start time
+            
+        //If end time is before the start time
         else if Int(selectedEndHour)! < Int(selectedStartHour)! {
+            
             ProgressHUD.showError("Sorry, the end time for a CollabBlock can't be before it's start time")
+            navigationItem.rightBarButtonItem?.isEnabled = true
         }
-            //If end time is before the start time
+            
+        //If end time is before the start time
         else if (selectedEndHour == selectedStartHour) && (Int(selectedEndMinute)! < Int(selectedStartMinute)!) {
+            
             ProgressHUD.showError("Sorry, the end time for a CollabBlock can't be before it's start time")
+            navigationItem.rightBarButtonItem?.isEnabled = true
         }
-            //This code block is reached only if the CollabBlock passed all other tests
+            
+        //This code block is reached only if the CollabBlock passed all other tests
         else {
             
             //If the user is creating a new TimeBlock, call "calcValidTimeBlock" without entering a "blockID" showing that a block isn't being updated
@@ -738,25 +758,32 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                     
                     //If statements that check if the CollabBlock failed any tests in the "calcValidCollabBlock" function
                     if self.validCollabBlock["startTimeValidation"] == false {
+                        
                         ProgressHUD.showError("The starting time of this TimeBlock conflicts with another")
-                    }
-                    else if self.validCollabBlock["endTimeValidation"] == false {
-                        ProgressHUD.showError("The ending time of this TimeBlock conflicts with another")
-                    }
-                    else if self.validCollabBlock["rangeValidation"] == false {
-                        ProgressHUD.showError("This TimeBlock conflicts with another")
+                        self.navigationItem.rightBarButtonItem?.isEnabled = true
                     }
                         
-                        //AYEEEE IT PASSED ALL THE TESTS
+                    else if self.validCollabBlock["endTimeValidation"] == false {
+                        
+                        ProgressHUD.showError("The ending time of this TimeBlock conflicts with another")
+                        self.navigationItem.rightBarButtonItem?.isEnabled = true
+                    }
+                        
+                    else if self.validCollabBlock["rangeValidation"] == false {
+                        
+                        ProgressHUD.showError("This TimeBlock conflicts with another")
+                        self.navigationItem.rightBarButtonItem?.isEnabled = true
+                    }
+                        
+                    //AYEEEE IT PASSED ALL THE TESTS
                     else {
                         
                         self.scheduleNotification()
                         self.add_editCollabBlock2()
-                        
                     }
                 }
             }
-                //If the user is updating a TimeBlock, call "calcValidTimeBlock" entering a "blockID" showing that a block is being updated
+            //If the user is updating a TimeBlock, call "calcValidTimeBlock" entering a "blockID" showing that a block is being updated
             else if selectedView == "Edit" {
                 
                 //If the user is creating a new TimeBlock, call "calcValidTimeBlock" without entering a "blockID" showing that a block isn't being updated
@@ -768,16 +795,25 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                     
                     //If statements that check if the TimeBlock failed any tests in the "calcValidTimeBlock" function
                     if self.validCollabBlock["startTimeValidation"] == false {
+                        
                         ProgressHUD.showError("The starting time of this TimeBlock conflicts with another")
+                        
+                        self.navigationItem.rightBarButtonItem?.isEnabled = true
                     }
                     else if self.validCollabBlock["endTimeValidation"] == false {
+                        
                         ProgressHUD.showError("The ending time of this TimeBlock conflicts with another")
+                        
+                        self.navigationItem.rightBarButtonItem?.isEnabled = true
                     }
                     else if self.validCollabBlock["rangeValidation"] == false {
+                        
                         ProgressHUD.showError("This TimeBlock conflicts with another")
+                        
+                        self.navigationItem.rightBarButtonItem?.isEnabled = true
                     }
                         
-                        //AYEEEE IT PASSED ALL THE TESTS, GO AHEAD AND ADD THAT SHIT
+                    //AYEEEE IT PASSED ALL THE TESTS, GO AHEAD AND ADD THAT SHIT
                     else {
                         
                         self.scheduleNotification()
@@ -785,9 +821,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                         
                     }
                 }
-                
             }
-            
         }
     }
     
@@ -853,7 +887,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
                                 ProgressHUD.showError(error?.localizedDescription)
                             }
                             else {
-                                //ProgressHUD.showSuccess("CollabBlock Updated!")
+                                
                                 self.navigationController?.popViewController(animated: true)
                             }
                         }

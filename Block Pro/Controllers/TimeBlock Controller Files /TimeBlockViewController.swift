@@ -192,6 +192,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
             //Used if blockArray was populated with TimeBlocks from a different date and now the user has selected a date with no TimeBlocks
             else {
+                
+                blockData = nil
                 blockArray.removeAll()
                 rowHeights.removeAll()
             }
@@ -872,6 +874,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         calendarView.selectDates([currentDate]) //Selects the new date in the calendar
         findTimeBlocks(currentDate) //Restarts the process of retreiving the data from Realm with the new date
         blockTableView.reloadData()
+        scrollToFirstBlock()
     }
     
     
@@ -891,6 +894,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         calendarView.selectDates([currentDate]) //Selects the new date in the calendar
         findTimeBlocks(currentDate) //Restarts the process of retreiving the data from Realm with the new date
         blockTableView.reloadData()
+        scrollToFirstBlock()
     }
     
     
@@ -1085,21 +1089,21 @@ extension TimeBlockViewController {
         
         //Removes the splash screen after 3 seconds
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            
+
             self.view.dismissProgress()
-            
+
             UIView.animate(withDuration: 0.25, animations: {
-                
+
                 self.navigationController?.isNavigationBarHidden = false
                 self.tabBarController?.tabBar.isHidden = false
-                
+
                 splashView.backgroundColor = .white
-                
+
             }) { (finished: Bool) in
-                
+
                 splashView.removeFromSuperview()
                 blockLabel.removeFromSuperview()
-                
+
                 completion()
             }
         }

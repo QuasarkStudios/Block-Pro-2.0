@@ -101,6 +101,8 @@ class FreeTimeViewController: UIViewController {
         dismissCardView.backgroundColor = .clear
         
         configureContainers()
+        
+        //setupTableView()
     }
     
 
@@ -216,12 +218,10 @@ class FreeTimeViewController: UIViewController {
     
     func setupTableView () {
         
-        tasksTableView.frame = CGRect(x: 1, y: 60, width: fiveMinContainer.frame.width - 2, height: fiveMinContainer.frame.height)
+        tasksTableView.frame = CGRect(x: 1, y: 60, width: fiveMinContainer.frame.width - 2, height: fiveMinContainer.frame.height - 60)
         tasksTableView.backgroundColor = .white
         tasksTableView.delegate = self
         tasksTableView.dataSource = self
-        
-        tasksTableView.rowHeight = 50
         
         tasksTableView.register(SwipeTableViewCell.self, forCellReuseIdentifier: "Cell")
     }
@@ -244,9 +244,14 @@ class FreeTimeViewController: UIViewController {
                 tasks = selectedTaskLength?.tasks.sorted(byKeyPath: "dateCreated")
                 taskArray = organizeTasks(functionTuple)
             }
+            
+            else {
+                
+                taskArray.removeAll()
+            }
         }
         
-        //If a card matching that selected "taskLength" was not found/ does not exist
+        //If a card matching that selected "taskLength" was not found / does not exist
         else {
             
             //Creating a new card container for the selected "taskLength"
@@ -599,7 +604,7 @@ class FreeTimeViewController: UIViewController {
     //MARK: - Add Task Button
     
     @IBAction func addTask(_ sender: Any) {
-        
+
         var textField = UITextField()
         
         let addTaskAlert = UIAlertController(title: "Add A \(selectedTask) Task", message: nil, preferredStyle: .alert)
@@ -619,6 +624,7 @@ class FreeTimeViewController: UIViewController {
             }
             
             if taskNameEntered == true {
+                
                 self.saveTasks(textField.text!)
                 self.loadTasks(self.selectedTask)
                 self.tasksTableView.reloadData()
@@ -707,18 +713,21 @@ extension FreeTimeViewController: UITableViewDelegate, UITableViewDataSource, Sw
         if taskArray.count > 0 {
             
             if indexPath.row == 0 {
-                
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
                 return cell
             }
             
             else {
               
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
-                cell.delegate = self
                 
+                cell.delegate = self
+            
                 cell.textLabel?.text = taskArray[indexPath.row - 1].taskName
-                cell.textLabel?.textColor = UIColor.black
+                cell.textLabel?.textColor = .black
+                cell.textLabel?.numberOfLines = 0
+                cell.textLabel?.adjustsFontSizeToFitWidth = true
                 
                 //Ternary operator ==>
                 // value = condition ? valueIfTrue : valueIfFalse
@@ -732,9 +741,12 @@ extension FreeTimeViewController: UITableViewDelegate, UITableViewDataSource, Sw
         
         else {
            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SwipeTableViewCell
+            
             cell.textLabel?.text = "No Tasks Saved"
             cell.textLabel?.textColor = UIColor.lightGray
+            
+            cell.accessoryType = .none
             
             cell.isUserInteractionEnabled = false
             
@@ -742,24 +754,39 @@ extension FreeTimeViewController: UITableViewDelegate, UITableViewDataSource, Sw
         }
     }
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        if taskArray.count > 0 {
-            
-            if indexPath.row == 0 {
-                return 0.0
-            }
-            
-            else {
-                return 50.0
-            }
-        }
-        
-        else {
-            return 50.0
-        }
-    }
+        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     
+            if taskArray.count > 0 {
+    
+                if indexPath.row == 0 {
+    
+                    return 0.0
+                }
+    
+                else {
+    
+                    let attributes = [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17)]
+                    let size = CGSize(width: tasksTableView.frame.size.width, height: 1000)
+                    let estimatedFrame = NSString(string: taskArray[indexPath.row - 1].taskName).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes as [NSAttributedString.Key : Any], context: nil)
+                    
+                    if estimatedFrame.height < 50 {
+                        
+                        return 50
+                    }
+                    
+                    else {
+                        
+                        return estimatedFrame.height + 20
+                    }
+                }
+            }
+    
+            else {
+    
+                return 55.0
+            }
+        }
+
     
     //MARK: - TableView Delegate Methods
     
@@ -783,7 +810,6 @@ extension FreeTimeViewController: UITableViewDelegate, UITableViewDataSource, Sw
         loadTasks(selectedTask)
         tasksTableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: false)
-        
     }
     
     
