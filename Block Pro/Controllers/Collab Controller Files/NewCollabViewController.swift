@@ -83,6 +83,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     override func viewWillAppear(_ animated: Bool) {
+        
         getFriends()
     }
     

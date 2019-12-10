@@ -64,6 +64,8 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
         tabBarController?.delegate = self
     }
     
+    #warning("fix progress hud persisting after user leaves this view during log in")
+    
     func configureView () {
         
         loginEmailTextField.delegate = self

@@ -122,6 +122,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         
         timeBlockViewTracker = false //TimeBlock view is not present
         timeBlockBarItem.image = UIImage(named: "list") //Changes the TabBar Item to be a list button
+        
+        dismiss(animated: true, completion: nil)
     }
     
     func configureView () {
@@ -1104,6 +1106,9 @@ extension TimeBlockViewController {
                 splashView.removeFromSuperview()
                 blockLabel.removeFromSuperview()
 
+                let defaults = UserDefaults.standard
+                defaults.setValue(true, forKey: "splashViewPresented")
+                
                 completion()
             }
         }

@@ -115,6 +115,8 @@ class FreeTimeViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         
         autoDeleteCompletedTasks()
+        
+        dismiss(animated: true, completion: nil)
     }
     
     

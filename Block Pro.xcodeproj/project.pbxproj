@@ -40,6 +40,7 @@
 		0D41F5C2231203A200B4B11E /* CollabTwentyMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41F5C1231203A200B4B11E /* CollabTwentyMinCell.swift */; };
 		0D41F5C423124B3700B4B11E /* CollabTwentyFiveMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41F5C323124B3700B4B11E /* CollabTwentyFiveMinCell.swift */; };
 		0D41F5C6231376FB00B4B11E /* CollabThirtyMinAndUpCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41F5C5231376FB00B4B11E /* CollabThirtyMinAndUpCell.swift */; };
+		0D7C6483238DBC1700E68AE8 /* RadialGradients.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7C6482238DBC1700E68AE8 /* RadialGradients.swift */; };
 		0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7522DBE435001D35B4 /* FriendRequest.swift */; };
 		0D872F7822DEE925001D35B4 /* PendingFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7722DEE925001D35B4 /* PendingFriend.swift */; };
 		0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7922E01F7C001D35B4 /* Friend.swift */; };
@@ -114,6 +115,7 @@
 		0D41F5C1231203A200B4B11E /* CollabTwentyMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabTwentyMinCell.swift; sourceTree = "<group>"; };
 		0D41F5C323124B3700B4B11E /* CollabTwentyFiveMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabTwentyFiveMinCell.swift; sourceTree = "<group>"; };
 		0D41F5C5231376FB00B4B11E /* CollabThirtyMinAndUpCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabThirtyMinAndUpCell.swift; sourceTree = "<group>"; };
+		0D7C6482238DBC1700E68AE8 /* RadialGradients.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RadialGradients.swift; path = "Custom Cells/TimeTableViewCell/RadialGradients.swift"; sourceTree = "<group>"; };
 		0D872F7522DBE435001D35B4 /* FriendRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequest.swift; sourceTree = "<group>"; };
 		0D872F7722DEE925001D35B4 /* PendingFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingFriend.swift; sourceTree = "<group>"; };
 		0D872F7922E01F7C001D35B4 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
@@ -299,6 +301,7 @@
 		0D2CED02228FC75B00CC9180 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0D7C6482238DBC1700E68AE8 /* RadialGradients.swift */,
 				0DA9F83322A84788008BECAE /* Storyboards */,
 				0D2CED0722907B0E00CC9180 /* Custom Cells */,
 			);
@@ -656,6 +659,7 @@
 				0D41F5BE2311E4F100B4B11E /* CollabTenMinCell.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
 				0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */,
+				0D7C6483238DBC1700E68AE8 /* RadialGradients.swift in Sources */,
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
 				0D2707FC2326DF9000592EC8 /* PomodoroViewController.swift in Sources */,
 				0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */,

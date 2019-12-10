@@ -56,7 +56,58 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        
         completionHandler([.alert, .sound])
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+        //print("hopefully the notification id", response.notification.request.identifier)
+        
+        let tabBarController = self.window?.rootViewController as! UITabBarController
+        
+        let defaults = UserDefaults.standard
+        
+        //If the selected notification is a Pomodoro notification
+        if defaults.value(forKey: "pomodoroNotificationID") as? String ?? "" == response.notification.request.identifier {
+            
+            let application = UIApplication.shared
+            
+            //If BlockPro is active
+            if application.applicationState == .active {
+                
+                tabBarController.delegate = nil
+                tabBarController.selectedIndex = 1
+            }
+            
+            //If BlockPro isn't active
+            else if application.applicationState == .inactive {
+                
+                //If the loading splashView has already been presented
+                if defaults.value(forKey: "splashViewPresented") as? Bool ?? false == true {
+                    
+                    tabBarController.delegate = nil
+                    tabBarController.selectedIndex = 1
+                }
+                
+                //If it hasn't been presented
+                else {
+                    
+                    //Move to the Pomodoro view after a small delay
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.25) {
+                        
+                        tabBarController.delegate = nil
+                        tabBarController.selectedIndex = 1
+                    }
+                }
+            }
+        }
+        
+        else {
+            
+            tabBarController.delegate = nil
+            tabBarController.selectedIndex = 2
+        }
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -80,6 +131,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        
+        let defaults = UserDefaults.standard
+        defaults.setValue(false, forKey: "splashViewPresented")
         
         do {
             try Auth.auth().signOut()

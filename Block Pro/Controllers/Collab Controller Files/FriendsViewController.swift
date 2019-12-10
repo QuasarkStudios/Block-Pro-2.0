@@ -54,6 +54,8 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         pendingFriendsListener?.remove()
         friendsListener?.remove()
+        
+        dismiss(animated: true, completion: nil)
     }
     
     

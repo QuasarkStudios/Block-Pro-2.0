@@ -70,6 +70,8 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
         
         upcomingCollabListener?.remove()
         pendingCollabListener?.remove()
+        
+        dismiss(animated: true, completion: nil)
     }
     
     
@@ -669,6 +671,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
 extension UpcomingCollabViewController: GetNewCollab {
     
     func getNewCollab () {
+        
         getCollabs()
         
         DispatchQueue.main.async {

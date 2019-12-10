@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="gnd-d0-FTQ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="gnd-d0-FTQ">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -324,7 +324,7 @@
                                                     <rect key="frame" x="35" y="335" width="227" height="24"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                                     <state key="normal" title="Already have an account? Click here to log in!">
-                                                        <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="backToLoginButton:" destination="LrT-ev-N3D" eventType="touchUpInside" id="Qxd-Mo-mKA"/>
@@ -337,7 +337,7 @@
                                                         <constraint firstAttribute="height" constant="30" id="kpa-bt-N1v"/>
                                                     </constraints>
                                                     <state key="normal" title="Register">
-                                                        <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     </state>
                                                     <connections>
                                                         <action selector="registerButton:" destination="LrT-ev-N3D" eventType="touchUpInside" id="z5q-qX-CN7"/>
@@ -500,7 +500,7 @@
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                         <state key="normal" title="Don't have an account? Click here to register!">
-                                            <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
                                             <action selector="newRegisterButton:" destination="LrT-ev-N3D" eventType="touchUpInside" id="swY-eY-3sv"/>
@@ -513,7 +513,7 @@
                                             <constraint firstAttribute="height" constant="30" id="7VL-XG-rNo"/>
                                         </constraints>
                                         <state key="normal" title="Log In">
-                                            <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         </state>
                                         <connections>
                                             <action selector="loginButton:" destination="LrT-ev-N3D" eventType="touchUpInside" id="TmE-uF-YBI"/>
@@ -2000,6 +2000,6 @@
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="qny-Qz-1HN"/>
-        <segue reference="pZJ-Fh-llS"/>
+        <segue reference="iTD-aJ-FDE"/>
     </inferredMetricsTieBreakers>
 </document>

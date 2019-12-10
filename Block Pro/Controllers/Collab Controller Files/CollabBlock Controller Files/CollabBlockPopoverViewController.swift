@@ -63,6 +63,7 @@ class CollabBlockPopoverViewController: UIViewController {
     }
     
     override func viewDidDisappear(_ animated: Bool) {
+        
         listener?.remove()
     }
     

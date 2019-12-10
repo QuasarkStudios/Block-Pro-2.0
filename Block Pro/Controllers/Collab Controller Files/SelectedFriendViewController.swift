@@ -116,8 +116,9 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         if selectedFriend == nil {
             
             dismiss(animated: true) {
-                ProgressHUD.showError("Sorry, sorry went wrong retrieving your friends data")
+                ProgressHUD.showError("Sorry, something went wrong retrieving your friend's data")
             }
+            
             reconfigureCellDelegate?.reconfigureCell()
         }
         

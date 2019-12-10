@@ -65,6 +65,11 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
         }
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
     
     func numberOfSections(in tableView: UITableView) -> Int {
         

@@ -73,6 +73,11 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
     override func viewDidDisappear(_ animated: Bool) {
         
         listener?.remove()
