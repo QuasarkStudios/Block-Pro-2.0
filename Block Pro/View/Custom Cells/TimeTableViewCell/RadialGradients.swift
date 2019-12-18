@@ -8,69 +8,76 @@
 
 import UIKit
 
-//@IBDesignable
 class RadialGradients: UIView {
-    
-    var innerGradientInsideColor: UIColor = UIColor.flatMint().lighten(byPercentage: 0.25)!
-    var innerGradientOutsideColor: UIColor = .white
-    
-    var outerGradientInsideColor: UIColor = .white
-    var outerGradientOusideColor: UIColor = UIColor.flatMint().lighten(byPercentage: 0.25)!
     
     override func draw(_ rect: CGRect) {
         
-        var colors = [innerGradientInsideColor.cgColor, innerGradientOutsideColor.cgColor] as CFArray
-        let gradient = CGGradient(colorsSpace: nil, colors: colors, locations: nil/*[0.0, 1/*0.93*/]*/)
+        let innerGradientInsideColor: UIColor = UIColor.flatMint().lighten(byPercentage: 0.25)!
+        let innerGradientOutsideColor: UIColor = .white
         
-        colors = [outerGradientInsideColor.cgColor, outerGradientOusideColor.cgColor] as CFArray
+        let innerGradientColors = [innerGradientInsideColor.cgColor, innerGradientOutsideColor.cgColor] as CFArray
+        let innerGradient = CGGradient(colorsSpace: nil, colors: innerGradientColors, locations: nil)
         
-        let gradient2 = CGGradient(colorsSpace: nil, colors: colors, locations: [0.0, 0.5])
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////
         
-        let center: CGPoint?
-        let endRadius: CGFloat? //min(frame.width, frame.height) / 2
+        let outerGradientInsideColor: UIColor = .white
+        let outerGradientOusideColor: UIColor = UIColor.flatMint().lighten(byPercentage: 0.25)!
+        
+        let outerGradientColors = [outerGradientInsideColor.cgColor, outerGradientOusideColor.cgColor] as CFArray
+        let outerGradient = CGGradient(colorsSpace: nil, colors: outerGradientColors, locations: [0.0, 0.5])
+        
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+        let center: CGPoint!
+        let startRadius: CGFloat!
+        let endRadius: CGFloat!
     
         
-        //Initializing the center of the gradient
-        
-        //iPhone XS Max & iPhone XR
-        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+        //Initializing the center of the gradients
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 { //iPhone XS Max & iPhone XR
             
             center = CGPoint(x: bounds.size.width / 2, y: (bounds.size.height / 2) - 7.5)
-
         }
             
-        //iPhone XS
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 { //iPhone XS
             
             center = CGPoint(x: bounds.size.width / 2, y: (bounds.size.height / 2) - 30)
         }
             
-        //iPhone 8 Plus
-        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
+        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 { //iPhone 8 Plus
             
-            center = CGPoint(x: bounds.size.width / 2, y: (bounds.size.height / 2) - 65)
-
+            center = CGPoint(x: bounds.size.width / 2, y: (bounds.size.height / 2) - 60)
+        }
+        
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 { //iPhone 8
+            
+            center = CGPoint(x: bounds.size.width / 2, y: (bounds.size.height / 2) - 95)
         }
             
-        //iPhone 8
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 {
+        else { //iPhone SE
             
-            center = CGPoint(x: bounds.size.width / 2, y: (bounds.size.height / 2) - 30)
-
-        }
-            
-        //iPhone SE
-        else {
-            
-            center = CGPoint(x: bounds.size.width / 2, y: (bounds.size.height / 2) - 30)
-
+            center = CGPoint(x: bounds.size.width / 2, y: (bounds.size.height / 2) - 120)
         }
             
         
+        //Initializing the startRadius of the gradient
+        if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 { //iPhone 8
+            
+            startRadius = 120
+        }
+        
+        else if UIScreen.main.bounds.width == 320.0  { //iPhone SE
+            
+            startRadius = 104
+        }
+        
+        else { //Every other iPhone
+            
+            startRadius = 125
+        }
         
         
-        //Initializing the endRadius of the gradient
-        
+        //Initializing the endRadius of the gradients
         if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 { //iPhone 8
             
             endRadius = 122.5
@@ -81,14 +88,14 @@ class RadialGradients: UIView {
             endRadius = 106.5
         }
         
-        else {
-            
+        else { //Every other iPhone
             endRadius = 127.5
         }
         
-        UIGraphicsGetCurrentContext()!.drawRadialGradient(gradient!, startCenter: center! , startRadius: 5, endCenter: center!, endRadius: endRadius!, options: CGGradientDrawingOptions.drawsBeforeStartLocation)
+        //Drawing the radial gradients onto the view
+        UIGraphicsGetCurrentContext()!.drawRadialGradient(innerGradient!, startCenter: center , startRadius: 5, endCenter: center, endRadius: endRadius, options: CGGradientDrawingOptions.drawsBeforeStartLocation)
         
-        UIGraphicsGetCurrentContext()!.drawRadialGradient(gradient2!, startCenter: center!, startRadius: 125, endCenter: center!, endRadius: 400, options: CGGradientDrawingOptions.drawsAfterEndLocation)
+        UIGraphicsGetCurrentContext()!.drawRadialGradient(outerGradient!, startCenter: center, startRadius: startRadius, endCenter: center, endRadius: 400, options: CGGradientDrawingOptions.drawsAfterEndLocation)
         
     }
 

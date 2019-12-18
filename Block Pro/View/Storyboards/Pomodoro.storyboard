@@ -139,11 +139,11 @@
                                             <constraint firstItem="puW-eh-bF5" firstAttribute="centerX" secondItem="Nhl-zt-K1U" secondAttribute="centerX" id="AWk-aI-TcS"/>
                                             <constraint firstItem="Sxy-Ry-keW" firstAttribute="top" secondItem="Nhl-zt-K1U" secondAttribute="top" constant="184" id="GRx-aD-oHI"/>
                                             <constraint firstItem="puW-eh-bF5" firstAttribute="top" secondItem="Nhl-zt-K1U" secondAttribute="top" constant="8" id="Jeq-la-14c"/>
+                                            <constraint firstItem="lia-3g-XVQ" firstAttribute="top" secondItem="Nhl-zt-K1U" secondAttribute="top" constant="99.670000000000002" id="O2B-AZ-b2J"/>
                                             <constraint firstAttribute="trailing" secondItem="Sxy-Ry-keW" secondAttribute="trailing" id="W24-Um-Tfk"/>
-                                            <constraint firstItem="lia-3g-XVQ" firstAttribute="top" secondItem="uiU-Ov-WSw" secondAttribute="bottom" constant="30" id="XOy-gg-Z1y"/>
                                             <constraint firstItem="uiU-Ov-WSw" firstAttribute="leading" secondItem="Nhl-zt-K1U" secondAttribute="leading" constant="8" id="Yat-el-e14"/>
+                                            <constraint firstItem="RNp-xa-6TS" firstAttribute="top" secondItem="Nhl-zt-K1U" secondAttribute="top" constant="99.670000000000002" id="aeV-8C-FsB"/>
                                             <constraint firstItem="RNp-xa-6TS" firstAttribute="centerX" secondItem="Nhl-zt-K1U" secondAttribute="centerX" constant="-90" id="fhN-ai-jHR"/>
-                                            <constraint firstItem="RNp-xa-6TS" firstAttribute="top" secondItem="uiU-Ov-WSw" secondAttribute="bottom" constant="30" id="gfh-l5-rBM"/>
                                             <constraint firstItem="lia-3g-XVQ" firstAttribute="centerX" secondItem="Nhl-zt-K1U" secondAttribute="centerX" constant="90" id="jNZ-0X-gnb"/>
                                             <constraint firstItem="Sxy-Ry-keW" firstAttribute="leading" secondItem="Nhl-zt-K1U" secondAttribute="leading" id="pLp-op-h0v"/>
                                         </constraints>
@@ -198,16 +198,17 @@
                         <outlet property="controlView" destination="Nhl-zt-K1U" id="xqK-KH-t1K"/>
                         <outlet property="controlViewContainer" destination="fzT-hD-7Da" id="bOg-UB-uYm"/>
                         <outlet property="countDownLabel" destination="uiU-Ov-WSw" id="i0g-Zh-ERD"/>
+                        <outlet property="countLabelTopAnchor" destination="58c-Wu-0py" id="hnZ-9c-ClP"/>
                         <outlet property="dismissIndicator" destination="puW-eh-bF5" id="TN0-QE-9tz"/>
                         <outlet property="gestureView" destination="Xo4-Rm-WhK" id="RnU-sm-yMv"/>
                         <outlet property="gestureViewHeightConstraint" destination="Zt4-a2-LC6" id="25S-6J-xSK"/>
                         <outlet property="gestureViewTopAnchor" destination="bFK-F1-6Vo" id="ERs-vH-2mj"/>
-                        <outlet property="gradientView" destination="onc-gJ-tJg" id="8nM-h8-Y9A"/>
                         <outlet property="gradientViewTopAnchor" destination="o3O-E6-Qec" id="yhm-75-hdL"/>
                         <outlet property="iProgressView" destination="huP-nL-yZH" id="UhS-tB-34V"/>
                         <outlet property="play_pauseButton" destination="RNp-xa-6TS" id="Gcb-4p-UbL"/>
-                        <outlet property="play_pauseButtonTopAnchor" destination="gfh-l5-rBM" id="AYI-yb-8rS"/>
                         <outlet property="play_pauseCenterXAnchor" destination="fhN-ai-jHR" id="EBy-Km-SR0"/>
+                        <outlet property="play_pauseHeightConstraint" destination="mIU-vA-xaI" id="ZoT-2i-iOL"/>
+                        <outlet property="play_pauseTopAnchor" destination="aeV-8C-FsB" id="EKk-IT-ubA"/>
                         <outlet property="pomodoroCountAnimationView" destination="2S1-JQ-Ms9" id="8YW-Iq-Ikq"/>
                         <outlet property="pomodoroCountLabel" destination="HoG-JG-r3S" id="Wo7-3C-gNF"/>
                         <outlet property="pomodoroProgressAnimationView" destination="onc-gJ-tJg" id="JqQ-Hp-qRP"/>
@@ -217,7 +218,8 @@
                         <outlet property="sessionLabel" destination="bmv-ca-KcT" id="Rob-up-hqv"/>
                         <outlet property="stopButton" destination="lia-3g-XVQ" id="bbg-60-xUF"/>
                         <outlet property="stopButtonCenterXAnchor" destination="jNZ-0X-gnb" id="TEf-na-V78"/>
-                        <outlet property="stopButtonTopAnchor" destination="XOy-gg-Z1y" id="bK7-gJ-vUH"/>
+                        <outlet property="stopButtonHeightConstraint" destination="egR-gf-WcA" id="I1v-3h-3FY"/>
+                        <outlet property="stopButtonTopAnchor" destination="O2B-AZ-b2J" id="ZmN-Nn-YG2"/>
                         <segue destination="Hhe-MH-Gtd" kind="show" identifier="moveToEditView" id="Pdr-XA-Azq"/>
                     </connections>
                 </viewController>

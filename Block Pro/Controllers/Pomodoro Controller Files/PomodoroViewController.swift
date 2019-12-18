@@ -13,10 +13,7 @@ import iProgressHUD
 
 class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
 
-    
-    @IBOutlet weak var gradientView: RadialGradients!
     @IBOutlet weak var gradientViewTopAnchor: NSLayoutConstraint!
-    @IBOutlet weak var gradientViewBottomAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var controlViewContainer: UIView!
     @IBOutlet weak var controlContainerTopAnchor: NSLayoutConstraint!
@@ -27,45 +24,31 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     @IBOutlet weak var gestureViewTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var gestureViewHeightConstraint: NSLayoutConstraint!
     
-    
     @IBOutlet weak var dismissIndicator: UIView!
     
     @IBOutlet weak var countDownLabel: UILabel!
-    @IBOutlet weak var countDownLabelTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var countLabelTopAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var pomodoroProgressAnimationView: UIView!
-    @IBOutlet weak var progressAnimationViewTopAnchor: NSLayoutConstraint!
-    @IBOutlet weak var progressAnimationViewHeightConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var iProgressView: UIView!
     @IBOutlet weak var progressViewCenterYAnchor: NSLayoutConstraint!
     
-    
     @IBOutlet weak var play_pauseButton: UIButton!
     
+    @IBOutlet weak var play_pauseTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var play_pauseCenterXAnchor: NSLayoutConstraint!
-    @IBOutlet weak var play_pauseButtonTopAnchor: NSLayoutConstraint!
-    
-    
-    @IBOutlet weak var play_pauseButtonLeadingAnchor: NSLayoutConstraint!
-    @IBOutlet weak var play_pauseButtonBottomAnchor: NSLayoutConstraint!
-    @IBOutlet weak var play_pauseButtonWidthConstraint: NSLayoutConstraint!
-    @IBOutlet weak var play_pauseButtonHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var play_pauseHeightConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var stopButton: UIButton!
+    
     @IBOutlet weak var stopButtonTopAnchor: NSLayoutConstraint!
-    
-    
     @IBOutlet weak var stopButtonCenterXAnchor: NSLayoutConstraint!
-    @IBOutlet weak var stopButtonTrailingAnchor: NSLayoutConstraint!
-    @IBOutlet weak var stopButtonBottomAnchor: NSLayoutConstraint!
-    @IBOutlet weak var stopButtonWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var stopButtonHeightConstraint: NSLayoutConstraint!
-
+    
     @IBOutlet weak var sessionInfoContainer: UIView!
     @IBOutlet weak var sessionContainerTopAnchor: NSLayoutConstraint!
     
-    @IBOutlet weak var sessionLabelContainer: UIView!
     @IBOutlet weak var sessionLabel: UILabel!
     
     @IBOutlet weak var pomodoroCountAnimationView: UIView!
@@ -109,37 +92,22 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     
     var resumeFromBackground: Bool = false //Variable that tracks whether or not this view is returning to the foreground
     
-    var originalStopButtonBottomAnchor: CGFloat = 0 //Variable that hold the original bottom constraint constant of the stop button
+    var controlViewHeight: CGFloat = 0 //Variable that holds the original height of the "controlView"
     
-//    var controlViewOriginAnchor: CGFloat = 0
-//    var gestureViewOriginAnchor: CGFloat = 0
+    var gradientViewOrigin: CGFloat = 0 //Original topAnchor constant of the "gradientView"
+    var controlViewOrigin: CGFloat = 0 //Original topAnchor constant of the "controlView"
+    var gestureViewOrigin: CGFloat = 0 //Original topAnchor constant of the "gestureView"
     
-    var gradientViewOrigin: CGFloat = 0
-    var controlViewOrigin: CGFloat = 0
-    var gestureViewOrigin: CGFloat = 0
-    
-    var gradientViewAnimatedPosition: CGFloat = 0
-    var progressAnimatedPosition: CGFloat = 0
-    var controlViewAnimatedPosition: CGFloat = 0
-    var gestureViewAnimatedPosition: CGFloat = 0
+    var gradientViewAnimatedPosition: CGFloat = 0 //Animated topAnchor constant of the "gradientView"
+    var progressAnimatedPosition: CGFloat = 0 //Animated topAnchor constant of the "progressView"
+    var controlViewAnimatedPosition: CGFloat = 0 //Animated topAnchor constant of the "controlView"
+    var gestureViewAnimatedPosition: CGFloat = 0 //Animate topAnchor constant of the "gestureView"
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         configureView()
-        //configureConstraints()
-        
-        play_pauseCenterXAnchor.constant = 0
-        stopButtonCenterXAnchor.constant = 0
-        
-        print("controlView height didLoad", controlView.frame.height)
-        
-//        controlViewOriginAnchor = controlContainerTopAnchor.constant
-//        gestureViewOriginAnchor = gestureViewTopAnchor.constant
-        
-        
-        print(controlView.frame.height)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -159,7 +127,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         //If the view hasn't been loaded up at least once before
         if viewIntiallyLoaded == false {
             
-            configureConstraints2()
+            configureConstraints()
             
             configurePomodoroProgressAnimation()
             configureiProgress()
@@ -172,8 +140,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         else {
             configurePomodoro()
         }
-        
-        print("controlView height didAppear", controlView.frame.height)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -181,7 +147,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         viewResignedActive()
         
         NotificationCenter.default.removeObserver(self)
-
     }
     
     
@@ -234,7 +199,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         progressShapeLayer.removeAllAnimations()
         countShapeLayer.removeAllAnimations()
-        //pomodoroProgressAnimationView.dismissProgress()
         iProgressView.dismissProgress()
         
         audioPlayer?.stop()
@@ -244,23 +208,14 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     //MARK: - Configure View Function
     
     func configureView () {
-        
-        //controlView.isHidden = true
-        
-        //view.backgroundColor = UIColor.flatMint().lighten(byPercentage: 0.25)
+
+        pomodoroProgressAnimationView.backgroundColor = .clear
         
         iProgressView.backgroundColor = .clear
         
-//        print(progressShapeLayer.actions?["position"])
-//
-//        let layerActions = ["position": NSNull()]
-//        progressTrackLayer.actions = layerActions
-//        progressShapeLayer.actions = ["position" : nil] as? [String : CAAction]//layerActions
-//
-//        print(progressShapeLayer.actions?["position"])
+        gestureView.backgroundColor = .clear
         
-        
-        controlViewContainer.backgroundColor = UIColor(hexString: "f2f2f2")?.darken(byPercentage: 0.05)//UIColor(hexString: "f2f2f2")?.darken(byPercentage: 0.1)
+        controlViewContainer.backgroundColor = UIColor(hexString: "f2f2f2")?.darken(byPercentage: 0.05)
         controlViewContainer.layer.cornerRadius = 0.065 * controlViewContainer.bounds.size.width
         controlViewContainer.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] //Top left corner and top right corner respectively
         controlViewContainer.clipsToBounds = true
@@ -273,51 +228,38 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         dismissIndicator.layer.cornerRadius = 0.075 * 50
         dismissIndicator.clipsToBounds = true
         
-        gestureView.backgroundColor = .lightGray
-        
-        
-        
-        
-        pomodoroProgressAnimationView.backgroundColor = .clear//.white
-        
-        countDownLabel.backgroundColor = .blue
         countDownLabel.adjustsFontSizeToFitWidth = true
         
         play_pauseButton.layer.cornerRadius = 0.1 * play_pauseButton.bounds.size.width
         play_pauseButton.clipsToBounds = true
-        play_pauseButton.backgroundColor = UIColor.flatMint().lighten(byPercentage: 0.35)//?.withAlphaComponent(0.75)
+        play_pauseButton.backgroundColor = UIColor.flatMint().lighten(byPercentage: 0.35)
+        play_pauseCenterXAnchor.constant = 0
         
         stopButton.layer.cornerRadius = 0.1 * stopButton.bounds.size.width
         stopButton.clipsToBounds = true
         stopButton.backgroundColor = .flatRed()
+        stopButtonCenterXAnchor.constant = 0
         
         sessionInfoContainer.backgroundColor = UIColor.flatMint().lighten(byPercentage: 0.35)
-        
-  //      sessionLabelContainer.backgroundColor = UIColor.flatMint().lighten(byPercentage: 0.25)
-  //      sessionLabelContainer.layer.cornerRadius = 0.08 * sessionLabel.bounds.size.width
-    //    sessionLabelContainer.clipsToBounds = true
-        
-        sessionLabel.backgroundColor = .white//UIColor.flatMint().lighten(byPercentage: 0.25)
+    
+        sessionLabel.backgroundColor = .white
         sessionLabel.layer.cornerRadius = 0.075 * sessionLabel.bounds.size.width
         sessionLabel.clipsToBounds = true
         
         sessionLabel.adjustsFontSizeToFitWidth = true
         
-        pomodoroCountAnimationView.backgroundColor = .white//UIColor.flatMint().lighten(byPercentage: 0.25)
+        pomodoroCountAnimationView.backgroundColor = .white
         pomodoroCountAnimationView.layer.cornerRadius = 0.5 * pomodoroCountAnimationView.bounds.size.width
         pomodoroCountAnimationView.clipsToBounds = true
         
         let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
         gestureView.addGestureRecognizer(pan)
-        
     }
     
     
     //MARK: - Configure Constraints Function
     
-    func configureConstraints2 () {
-        
-        gradientViewOrigin = gradientViewTopAnchor.constant
+    func configureConstraints () {
         
         //iPhone XS Max & iPhone XR
         if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
@@ -325,211 +267,127 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
             progressViewCenterYAnchor.constant = -7.5
             
             controlContainerTopAnchor.constant += 50
+            controlViewHeight = controlView.frame.height - 50
             
-            gestureViewTopAnchor.constant += 35
+            gestureViewTopAnchor.constant += 25
             gestureViewHeightConstraint.constant += 36
+            
+            play_pauseTopAnchor.constant = ((controlView.frame.height - 50) / 2) - (play_pauseButton.frame.height / 2)
+            stopButtonTopAnchor.constant = ((controlView.frame.height - 50) / 2) - (play_pauseButton.frame.height / 2)
+            
+            sessionContainerTopAnchor.constant = (controlView.frame.height - 50) - (sessionInfoContainer.frame.height + 5)
+            
+            gradientViewOrigin = gradientViewTopAnchor.constant
+            
+            gradientViewAnimatedPosition = gradientViewOrigin + 95
+            progressAnimatedPosition = 95
+            
+            gestureViewAnimatedPosition = (view.frame.height - (view.safeAreaInsets.top + view.safeAreaInsets.bottom)) - (gestureView.frame.height + 36)
+            controlViewAnimatedPosition = (controlContainerTopAnchor.constant) + ((controlView.frame.height - 50) - 82)
+        }
+            
+        //iPhone XS
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+            
+            controlViewHeight = controlView.frame.height
+            
+            gradientViewOrigin = gradientViewTopAnchor.constant
+            
+            gestureViewTopAnchor.constant -= 20
+            gestureViewHeightConstraint.constant += 20
+            
+            gradientViewAnimatedPosition = gradientViewOrigin + 82.5
+            progressAnimatedPosition = 82.5
+            
+            gestureViewAnimatedPosition = (view.frame.height - (view.safeAreaInsets.top + view.safeAreaInsets.bottom)) - (gestureView.frame.height + 20)
+            controlViewAnimatedPosition = (controlContainerTopAnchor.constant) + ((controlView.frame.height - 0) - 82)
+        }
+            
+        //iPhone 8 Plus
+        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
+            
+            progressViewCenterYAnchor.constant = -60
+
+            controlContainerTopAnchor.constant -= 10
+            controlViewHeight = controlView.frame.height + 10
+            
+            gestureViewTopAnchor.constant -= 20
+            gestureViewHeightConstraint.constant += 10
+            
+            play_pauseTopAnchor.constant = ((controlView.frame.height + 10) / 2) - (play_pauseButton.frame.height / 2)
+            stopButtonTopAnchor.constant = ((controlView.frame.height + 10) / 2) - (play_pauseButton.frame.height / 2)
+
+            sessionContainerTopAnchor.constant = (controlView.frame.height + 10) - (sessionInfoContainer.frame.height + 5)
+
+            gradientViewOrigin = gradientViewTopAnchor.constant
+
+            gradientViewAnimatedPosition = gradientViewOrigin + 82.5
+            progressAnimatedPosition = 82.5
+
+            gestureViewAnimatedPosition = (view.frame.height - (view.safeAreaInsets.top + view.safeAreaInsets.bottom)) - (gestureView.frame.height + 10)
+            controlViewAnimatedPosition = (controlContainerTopAnchor.constant) + ((controlView.frame.height + 10) - 82)
+        }
+            
+        //iPhone 8
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 {
+            
+            progressViewCenterYAnchor.constant = -95//-90
+            
+            controlContainerTopAnchor.constant -= 80
+            controlViewHeight = controlView.frame.height + 80
+            
+            gestureViewTopAnchor.constant -= 90
+            
+            play_pauseTopAnchor.constant = ((controlView.frame.height + 80) / 2) - (play_pauseButton.frame.height / 2)
+            stopButtonTopAnchor.constant = ((controlView.frame.height + 80) / 2) - (play_pauseButton.frame.height / 2)
+            
+            sessionContainerTopAnchor.constant = (controlView.frame.height + 80) - (sessionInfoContainer.frame.height + 5)
             
             gradientViewOrigin = gradientViewTopAnchor.constant
             
             gradientViewAnimatedPosition = gradientViewOrigin + 82.5
             progressAnimatedPosition = 82.5
             
-            
-            
-            sessionContainerTopAnchor.constant = (controlView.frame.height - 50) - (sessionInfoContainer.frame.height + 5)
-            
-            gestureViewAnimatedPosition = (view.frame.height - (view.safeAreaInsets.top + view.safeAreaInsets.bottom)) - (gestureView.frame.height + 36)
-            controlViewAnimatedPosition = (controlContainerTopAnchor.constant) + ((controlView.frame.height - 50) - 82)
-            
-        }
-            
-        //iPhone XS
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
-            
-            gradientViewAnimatedPosition = gradientViewOrigin + 82.5
-            progressAnimatedPosition = 82.5
-            
-            controlViewOrigin = controlContainerTopAnchor.constant
-            gestureViewOrigin = gestureViewTopAnchor.constant
-            
-            gestureViewAnimatedPosition = (view.frame.height - (view.safeAreaInsets.top + view.safeAreaInsets.bottom)) - (gestureView.frame.height) //Setting the gesture view to be at the bottom of the screen after it's animated
-            controlViewAnimatedPosition = (controlContainerTopAnchor.constant) + ((controlView.frame.height - 0) - 82) //Setting the controlView to only show the count down label plus a little buffer after its animated
-            
-
-              
-            
-
-        }
-            
-        //iPhone 8 Plus
-        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
-            
-            controlContainerTopAnchor.constant += 25
-            
-            sessionContainerTopAnchor.constant = (controlView.frame.height - 25) - (sessionInfoContainer.frame.height + 5)
-            
-        }
-            
-        //iPhone 8
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 {
-            
-
+            gestureViewAnimatedPosition = (view.frame.height - (view.safeAreaInsets.top + view.safeAreaInsets.bottom)) - (gestureView.frame.height)
+            controlViewAnimatedPosition = (controlContainerTopAnchor.constant) + ((controlView.frame.height + 80) - 82)
         }
             
         //iPhone SE
         else {
 
+            progressViewCenterYAnchor.constant = -120
+            
+            controlContainerTopAnchor.constant -= 130
+            controlViewHeight = controlView.frame.height + 130
+            
+            gestureViewTopAnchor.constant -= 150
+            
+            countLabelTopAnchor.constant -= 10
+            
+            play_pauseHeightConstraint.constant -= 2.5
+            stopButtonHeightConstraint.constant -= 2.5
+            
+            play_pauseTopAnchor.constant = ((controlView.frame.height + 130) / 2) - (play_pauseButton.frame.height / 2)
+            play_pauseTopAnchor.constant -= 3.5
+            
+            stopButtonTopAnchor.constant = ((controlView.frame.height + 130) / 2) - (play_pauseButton.frame.height / 2)
+            stopButtonTopAnchor.constant -= 3.5
+            
+            sessionContainerTopAnchor.constant = (controlView.frame.height + 130) - (sessionInfoContainer.frame.height + 2.5)
+            
+            gradientViewOrigin = gradientViewTopAnchor.constant
+            
+            gradientViewAnimatedPosition = gradientViewOrigin + 60
+            progressAnimatedPosition = 60
+            
+            gestureViewAnimatedPosition = (view.frame.height - (view.safeAreaInsets.top + view.safeAreaInsets.bottom)) - (gestureView.frame.height)
+            controlViewAnimatedPosition = (controlContainerTopAnchor.constant) + ((controlView.frame.height + 130) - 68)
         }
         
-        
-        
-
-        
-
-        
-//        controlViewAnimatedPosition = 556
-//        gestureViewAnimatedPosition = 515
+        controlViewOrigin = controlContainerTopAnchor.constant
+        gestureViewOrigin = gestureViewTopAnchor.constant
     }
-    
-    func configureConstraints () {
-        
-        
-        
-        print(controlView.frame.height)
-        
-        
-        
-        //iPhone XS Max & iPhone XR
-        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
-            
-            //Tweaking layout
-            
-            progressViewCenterYAnchor.constant = -7.5
-            
-            controlContainerTopAnchor.constant += 35
-            
-            gestureViewTopAnchor.constant += 35
-            gestureViewHeightConstraint.constant += 36
-            
-            play_pauseButtonTopAnchor.constant += 20//17.5
-            stopButtonTopAnchor.constant += 20//17.5
-            
-            //sessionContainerTopAnchor.constant += 20//17.5
-            
-            //Setting the origins
-            gradientViewOrigin = gradientViewTopAnchor.constant
-            
-            controlViewOrigin = controlContainerTopAnchor.constant //391
-            gestureViewOrigin = 350
-            
-            gradientViewAnimatedPosition = gradientViewOrigin + 82.5
-            progressAnimatedPosition = 82.5
-    
-            controlViewAnimatedPosition = 640//556 + 35
-            gestureViewAnimatedPosition = 564//515 + 49
-            
-            print(controlView.frame.height)
-            
-            sessionContainerTopAnchor.constant = (controlView.frame.height + 49) - (sessionInfoContainer.frame.height + 3.5)
-            
-        }
-            
-        //iPhone XS
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
-            
-            gradientViewOrigin = gradientViewTopAnchor.constant
-            
-            controlViewOrigin = controlContainerTopAnchor.constant //391
-            gestureViewOrigin = gestureViewTopAnchor.constant //350
-            
-            gradientViewAnimatedPosition = gradientViewOrigin + 82.5
-            progressAnimatedPosition = 82.5
-    
-            controlViewAnimatedPosition = 556
-            gestureViewAnimatedPosition = 515
-            
-            sessionContainerTopAnchor.constant = (controlView.frame.height) - (sessionInfoContainer.frame.height + 3.5)
-        }
-            
-        //iPhone 8 Plus
-        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
-            
-            progressViewCenterYAnchor.constant = -65
-            
-            controlContainerTopAnchor.constant -= 17.5
-            
-            gradientViewOrigin = gradientViewTopAnchor.constant
-            
-            controlViewOrigin = controlContainerTopAnchor.constant //391
-            gestureViewOrigin = gestureViewTopAnchor.constant //350
-            
-            gradientViewAnimatedPosition = gradientViewOrigin + 82.5
-            progressAnimatedPosition = 82.5
-    
-            controlViewAnimatedPosition = 556
-            gestureViewAnimatedPosition = 515
-            
-//            progressAnimationViewTopAnchor.constant = 30
-//
-//            play_pauseButtonLeadingAnchor.constant = 52.5
-//            stopButtonTrailingAnchor.constant = 52.5
-            
-            
-            
-            sessionContainerTopAnchor.constant = (controlView.frame.height) - (sessionInfoContainer.frame.height + 3.5)
-            
-        }
-            
-        //iPhone 8
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 {
-            
-                    gradientViewOrigin = gradientViewTopAnchor.constant
-                    
-                    controlViewOrigin = controlContainerTopAnchor.constant //391
-                    gestureViewOrigin = gestureViewTopAnchor.constant //350
-                    
-                    gradientViewAnimatedPosition = gradientViewOrigin + 82.5
-                    progressAnimatedPosition = 82.5
-            
-                    controlViewAnimatedPosition = 556
-                    gestureViewAnimatedPosition = 515
-            
-//            countDownLabelTopAnchor.constant = 20
-//
-//            progressAnimationViewTopAnchor.constant = 10
-//
-//            play_pauseButtonBottomAnchor.constant = 45
-//            stopButtonBottomAnchor.constant = 45
-        }
-            
-        //iPhone SE
-        else if UIScreen.main.bounds.width == 320.0 {
-            
-                    gradientViewOrigin = gradientViewTopAnchor.constant
-                    
-                    controlViewOrigin = controlContainerTopAnchor.constant //391
-                    gestureViewOrigin = gestureViewTopAnchor.constant //350
-                    
-                    gradientViewAnimatedPosition = gradientViewOrigin + 82.5
-                    progressAnimatedPosition = 82.5
-            
-                    controlViewAnimatedPosition = 556
-                    gestureViewAnimatedPosition = 515
-            
-//            countDownLabelTopAnchor.constant = 10
-//
-//            progressAnimationViewTopAnchor.constant = -15
-//
-//            play_pauseButtonLeadingAnchor.constant = 30
-//            play_pauseButtonBottomAnchor.constant = 20
-//
-//            stopButtonTrailingAnchor.constant = 30
-//            stopButtonBottomAnchor.constant = 20
-        }
-        
-        
-        //originalStopButtonBottomAnchor = stopButtonBottomAnchor.constant
-    }
+
     
 
     //MARK: - Configure Pomodoro Function
@@ -760,47 +618,41 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     
     func configurePomodoroProgressAnimation () {
         
-        //Centers the trackLayer and the shapeLayer's position to be in the center of the "pomodoroProgressAnimationView"
         
+        let circlePosition: CGPoint!
         
-        let circlePosition: CGPoint?
-        
-        //iPhone XS Max & iPhone XR
-        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+        //Centers the trackLayer and the shapeLayer's position to be in the center of the view
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 { //iPhone XS Max & iPhone XR
             
             circlePosition = CGPoint(x: pomodoroProgressAnimationView.center.x, y: pomodoroProgressAnimationView.center.y - 7.5)
         }
             
-        //iPhone XS
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 { //iPhone XS
+            
             circlePosition = CGPoint(x: pomodoroProgressAnimationView.center.x, y: pomodoroProgressAnimationView.center.y - 30)
         }
             
-        //iPhone 8 Plus
-        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 {
+        else if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 736.0 { //iPhone 8 Plus
 
-            circlePosition = CGPoint(x: pomodoroProgressAnimationView.center.x, y: pomodoroProgressAnimationView.center.y - 65)
+            circlePosition = CGPoint(x: pomodoroProgressAnimationView.center.x, y: pomodoroProgressAnimationView.center.y - 60)
         }
             
-        //iPhone 8
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 {
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 { //iPhone 8
             
-            circlePosition = CGPoint(x: pomodoroProgressAnimationView.center.x, y: pomodoroProgressAnimationView.center.y - 30)
+            circlePosition = CGPoint(x: pomodoroProgressAnimationView.center.x, y: pomodoroProgressAnimationView.center.y - 95)
         }
             
-        //iPhone SE
-        else {
+        else { //iPhone SE
 
-            circlePosition = CGPoint(x: pomodoroProgressAnimationView.center.x, y: pomodoroProgressAnimationView.center.y - 30)
+            circlePosition = CGPoint(x: pomodoroProgressAnimationView.center.x, y: pomodoroProgressAnimationView.center.y - 120)
         }
-        
         
         let circularPath: UIBezierPath //A path that consists of straight and curved line segments rendered into views
         
         //If statements that adjust the radius and line width of the circle depending on the iPhone/screen size
         if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 { //iPhone 8
             
-            circularPath = UIBezierPath(arcCenter: circlePosition!, radius: 115, startAngle:  (-CGFloat.pi * 3) / 4, endAngle: -CGFloat.pi / 4, clockwise: false)
+            circularPath = UIBezierPath(arcCenter: circlePosition, radius: 118.5, startAngle:  (-CGFloat.pi) / 2, endAngle: -(2.5 * CGFloat.pi), clockwise: false)
             
             progressTrackLayer.lineWidth = 12//15
             progressShapeLayer.lineWidth = 10
@@ -808,15 +660,15 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
             
         else if UIScreen.main.bounds.width == 320.0  { //iPhone SE
             
-            circularPath = UIBezierPath(arcCenter: circlePosition!, radius: 100, startAngle:  (-CGFloat.pi * 3) / 4, endAngle: -CGFloat.pi / 4, clockwise: false)
+            circularPath = UIBezierPath(arcCenter: circlePosition, radius: 105/*100*/, startAngle:  (-CGFloat.pi) / 2, endAngle: -(2.5 * CGFloat.pi), clockwise: false)
             
-            progressTrackLayer.lineWidth = 13
-            progressShapeLayer.lineWidth = 8
+            progressTrackLayer.lineWidth = 11//13
+            progressShapeLayer.lineWidth = 9
         }
             
             
         else { //Every other iPhone
-            circularPath = UIBezierPath(arcCenter: circlePosition!, radius: 123.5, startAngle:  (-CGFloat.pi) / 2, endAngle: -(2.5 * CGFloat.pi), clockwise: false)
+            circularPath = UIBezierPath(arcCenter: circlePosition, radius: 123.5, startAngle:  (-CGFloat.pi) / 2, endAngle: -(2.5 * CGFloat.pi), clockwise: false)
             
             progressTrackLayer.lineWidth = 12
             progressShapeLayer.lineWidth = 10
@@ -824,8 +676,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         progressTrackLayer.path = circularPath.cgPath
         progressTrackLayer.fillColor = UIColor.clear.cgColor
-        //progressTrackLayer.strokeColor = UIColor.white.withAlphaComponent(0.01).cgColor
-        progressTrackLayer.strokeColor = UIColor.white.withAlphaComponent(0.1).cgColor //UIColor.clear.cgColor
+        progressTrackLayer.strokeColor = UIColor.white.withAlphaComponent(0.1).cgColor
         
         progressTrackLayer.lineCap = CAShapeLayerLineCap.round
         
@@ -841,6 +692,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         view.layer.addSublayer(progressShapeLayer)
     }
     
+    
     //MARK: - Configure iProgress Function
     
     func configureiProgress () {
@@ -852,16 +704,13 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         iProgress.isTouchDismiss = false
         iProgress.boxColor = UIColor.clear
         
-        
-        //iProgress.indicatorView.bounds = CGRect(x: pomodoroProgressAnimationView.bounds.size.width / 2, y: (pomodoroProgressAnimationView.bounds.size.height / 2) - 17.5, width: 50, height: 50)
-        
         //If statement that tweaks the size of the iProgress indicator
         if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 { //iPhone 8
             iProgress.indicatorSize = 195
         }
             
         else if  UIScreen.main.bounds.width == 320.0 { //iPhone SE
-            iProgress.indicatorSize = 210
+            iProgress.indicatorSize = 200
         }
             
         else { //Every other iPhone
@@ -869,7 +718,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         }
         
         iProgress.attachProgress(toView: iProgressView)
-        //iProgress.attachProgress(toView: pomodoroProgressAnimationView)
     }
     
     //MARK: - Configure Pomodoro Count Animation
@@ -901,7 +749,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         //If the currentPomodoroCount is 0, make the countLabel invisiible
         if currentPomodoroCount == 0 {
-            pomodoroCountLabel.textColor = .white //UIColor.flatMint().lighten(byPercentage: 0.25)
+            pomodoroCountLabel.textColor = .white
         }
         else {
             pomodoroCountLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25) //.white
@@ -910,6 +758,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         pomodoroCountStops.removeAll() //Cleans the pomodoroCountStops array
         
         while count <= totalPomodoroCount {
+            
             //If this is the first run of the loop, add 0 to index 0 of the array
             if count == 1 {
                 pomodoroCountStops.append(0)
@@ -921,7 +770,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
             count += 1
         }
     }
-    
     
     //MARK: - Start Session Function
     
@@ -936,7 +784,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         sessionTracker = "session"
         setSessionLabelText(sessionTracker)
         
-        //pomodoroProgressAnimationView.updateIndicator(style: .ballScaleMultiple)
         iProgressView.updateIndicator(style: .ballScaleMultiple)
         
         soundEffectTracker = "Start Timer"
@@ -956,7 +803,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
 
         sessionTask = DispatchWorkItem(block: {
             self.progressShapeLayer.add(self.progressBasicAnimation, forKey: "pomodoroKey")
-            //self.pomodoroProgressAnimationView.showProgress()
             self.iProgressView.showProgress()
         })
 
@@ -975,7 +821,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         progressShapeLayer.speed = 0.0
         progressShapeLayer.timeOffset = pausedTime
         
-        //pomodoroProgressAnimationView.dismissProgress()
         iProgressView.dismissProgress()
         
         audioPlayer?.stop()
@@ -1037,7 +882,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         progressShapeLayer.add(progressBasicAnimation, forKey: "pomodoroKey")
         
-        //pomodoroProgressAnimationView.showProgress()
         iProgressView.showProgress()
 
         let timeSincePause = progressShapeLayer.convertTime(CACurrentMediaTime(), from: nil) - pausedTime
@@ -1099,11 +943,10 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         soundEffectTimer?.invalidate()
         
         progressShapeLayer.removeAllAnimations()
-        //pomodoroProgressAnimationView.dismissProgress()
         iProgressView.dismissProgress()
         
         countShapeLayer.removeAllAnimations()
-        pomodoroCountLabel.textColor = .white //UIColor.flatMint().lighten(byPercentage: 0.25)
+        pomodoroCountLabel.textColor = .white
         pomodoroCountLabel.text = "0"
         
         sessionTask?.cancel()
@@ -1118,7 +961,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     
     @objc func startBreak () {
 
-        //pomodoroProgressAnimationView.updateIndicator(style: .ballScale)
         iProgressView.updateIndicator(style: .ballScale)
         
         play_pauseButton.isEnabled = false
@@ -1131,7 +973,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
 
         if sessionTracker == "5MinBreak" {
             pomodoroMinutes = 5
-            pomodoroSeconds = 10
+            pomodoroSeconds = 0
             
             progressBasicAnimation.fromValue = 1
             progressBasicAnimation.toValue = 0
@@ -1157,7 +999,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
 
         breakTask2 = DispatchWorkItem(block: {
             self.progressShapeLayer.add(self.progressBasicAnimation, forKey: "breakKey")
-            //self.pomodoroProgressAnimationView.showProgress()
             self.iProgressView.showProgress()
         })
 
@@ -1178,7 +1019,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         playSoundEffect()
         
-        //pomodoroProgressAnimationView.dismissProgress()
         iProgressView.dismissProgress()
         
         breakTask1 = DispatchWorkItem(block: {
@@ -1195,22 +1035,25 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         if session == "session" {
             
-            sessionLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25) //.white
+            sessionLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25)
             sessionLabel.text = "Pomodoro Session"
         }
+            
         else if session == "5MinBreak" {
             
-            sessionLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25) //.white
+            sessionLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25)
             sessionLabel.text = "5 Minute Break"
         }
+            
         else if session == "30MinBreak" {
             
-            sessionLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25) //.white
+            sessionLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25)
             sessionLabel.text = "30 Minute Break"
         }
+            
         else if session == "none" {
             
-            sessionLabel.textColor = .white //UIColor.flatMint().lighten(byPercentage: 0.25)
+            sessionLabel.textColor = .white
         }
     }
     
@@ -1233,7 +1076,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
                 
                 audioPlayer?.stop()
                 
-                //pomodoroProgressAnimationView.dismissProgress()
                 iProgressView.dismissProgress()
                 
                 sessionTracker = "30MinBreak"
@@ -1256,11 +1098,10 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
                 soundEffectTimer?.invalidate()
                 
                 progressShapeLayer.removeAllAnimations()
-                //pomodoroProgressAnimationView.dismissProgress()
                 iProgressView.dismissProgress()
                 
                 countShapeLayer.removeAllAnimations()
-                pomodoroCountLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25)
+                pomodoroCountLabel.textColor = .white
                 pomodoroCountLabel.text = "0"
                 
                 sessionTracker = "none"
@@ -1286,7 +1127,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
                     
                     audioPlayer?.stop()
                     
-                    //pomodoroProgressAnimationView.dismissProgress()
                     iProgressView.dismissProgress()
                     
                     sessionTracker = "5MinBreak"
@@ -1394,7 +1234,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
                 audioPlayer?.play()
             }
             
-            
             //If statement used on every sound effect except "End Break"
             if soundEffectTracker != "End Break" {
                 
@@ -1414,8 +1253,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
                 }
             }
         }
-        
-
     }
     
     
@@ -1431,7 +1268,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
             self.pomodoroCountLabel.text = "\(self.currentPomodoroCount)"
             
             UIView.animate(withDuration: 2, animations: {
-                self.pomodoroCountLabel.textColor = .white
+                self.pomodoroCountLabel.textColor = UIColor.flatMint().lighten(byPercentage: 0.25)//.white
             })
         }
         
@@ -1568,15 +1405,19 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         if animation == "grow" {
             
-//            play_pauseButtonWidthConstraint.constant = 130
-//            play_pauseButtonHeightConstraint.constant = 65
-//
-//            stopButtonWidthConstraint.constant = 100
-//            stopButtonHeightConstraint.constant = 50
-//            stopButtonBottomAnchor.constant = originalStopButtonBottomAnchor + 7
+            //iPhone SE
+            if UIScreen.main.bounds.width == 320.0 {
+                
+                play_pauseCenterXAnchor.constant = -75
+                stopButtonCenterXAnchor.constant = 75
+            }
             
-            play_pauseCenterXAnchor.constant = -90
-            stopButtonCenterXAnchor.constant = 90
+            //Every other iPhone
+            else {
+                
+                play_pauseCenterXAnchor.constant = -90
+                stopButtonCenterXAnchor.constant = 90
+            }
             
             UIView.animate(withDuration: duration) {
                 
@@ -1585,13 +1426,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         }
             
         else if animation == "shrink" {
-            
-//            play_pauseButtonWidthConstraint.constant = 110
-//            play_pauseButtonHeightConstraint.constant = 55
-//
-//            stopButtonWidthConstraint.constant = 110
-//            stopButtonHeightConstraint.constant = 55
-//            stopButtonBottomAnchor.constant = originalStopButtonBottomAnchor
             
             play_pauseCenterXAnchor.constant = 0
             stopButtonCenterXAnchor.constant = 0
@@ -1651,7 +1485,6 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         soundEffectTimer?.invalidate()
         
         progressShapeLayer.removeAllAnimations()
-        //pomodoroProgressAnimationView.dismissProgress()
         iProgressView.dismissProgress()
         
         countShapeLayer.removeAllAnimations()
@@ -1743,8 +1576,6 @@ extension PomodoroViewController {
     
     @objc func handlePan (sender: UIPanGestureRecognizer) {
         
-
-        
         switch sender.state {
             
         case .began, .changed:
@@ -1753,8 +1584,7 @@ extension PomodoroViewController {
         
         case .ended:
             
-            
-            if controlView.frame.height > 180 {
+            if controlView.frame.height > controlViewHeight / 2 {
                 
                 returnToOrigin()
             }
@@ -1769,72 +1599,95 @@ extension PomodoroViewController {
         }
     }
     
+    
     func moveViewWithPan (sender: UIPanGestureRecognizer) {
         
         let translation = sender.translation(in: view)
         
-        if controlContainerTopAnchor.constant + translation.y > controlViewOrigin - 25/* 391 */{
+        //If the controlView topAnchor isn't greater than it's original topAnchor constant plus 25 and it's not equal to the height of the view
+        if (controlContainerTopAnchor.constant + translation.y > controlViewOrigin - 25) && ((controlContainerTopAnchor.constant + translation.y) < (view.frame.height - (view.safeAreaInsets.top + view.safeAreaInsets.bottom))) {
 
+            //Makes the gradient view animate properly
+            gradientViewTopAnchor.constant += translation.y / ((controlViewAnimatedPosition - controlViewOrigin) / (gradientViewAnimatedPosition - gradientViewOrigin))
             
-            //control view difference 165
-            gradientViewTopAnchor.constant += translation.y / ((controlViewAnimatedPosition - controlViewOrigin) / (gradientViewAnimatedPosition - gradientViewOrigin))  //2
-            
+            //Disables the implicit animation of the progressTrackLayer and the progressShapeLayer
             CATransaction.begin()
             CATransaction.setDisableActions(true)
             
-            progressTrackLayer.frame.origin.y += translation.y / ((controlViewAnimatedPosition - controlViewOrigin) / (gradientViewAnimatedPosition - gradientViewOrigin)) //2
-            progressShapeLayer.frame.origin.y += translation.y / ((controlViewAnimatedPosition - controlViewOrigin) / (gradientViewAnimatedPosition - gradientViewOrigin)) //2
+            //Makes the progressLayer's animate properly
+            progressTrackLayer.frame.origin.y += translation.y / ((controlViewAnimatedPosition - controlViewOrigin) / (gradientViewAnimatedPosition - gradientViewOrigin))
+            progressShapeLayer.frame.origin.y += translation.y / ((controlViewAnimatedPosition - controlViewOrigin) / (gradientViewAnimatedPosition - gradientViewOrigin))
             
             CATransaction.commit()
             
-        
-            
             controlContainerTopAnchor.constant += translation.y
             gestureViewTopAnchor.constant += translation.y
-            
         }
         
         sender.setTranslation(CGPoint.zero, in: view)
     }
     
+    
     func returnToOrigin () {
         
         gradientViewTopAnchor.constant = gradientViewOrigin
         
-        progressTrackLayer.frame.origin.y = 0
-        progressShapeLayer.frame.origin.y = 0
+        if play_pauseTracker != "play" {
+            
+            progressTrackLayer.frame.origin.y = 0
+            progressShapeLayer.frame.origin.y = 0
+        }
         
-        controlContainerTopAnchor.constant = controlViewOrigin//391
-        gestureViewTopAnchor.constant = gestureViewOrigin//350
+        else {
+            
+            //Disables the implicit animation of the progressTrackLayer and the progressShapeLayer
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            
+            progressTrackLayer.frame.origin.y = 0
+            progressShapeLayer.frame.origin.y = 0
+            
+            CATransaction.commit()
+        }
+        
+        controlContainerTopAnchor.constant = controlViewOrigin
+        gestureViewTopAnchor.constant = gestureViewOrigin
         
         UIView.animate(withDuration: 0.15) {
             
             self.view.layoutIfNeeded()
         }
-        
     }
+    
     
     func shrinkView () {
         
         gradientViewTopAnchor.constant = gradientViewAnimatedPosition
         
-        progressTrackLayer.frame.origin.y = progressAnimatedPosition
-        progressShapeLayer.frame.origin.y = progressAnimatedPosition
+        if play_pauseTracker != "play" {
+            
+            progressTrackLayer.frame.origin.y = progressAnimatedPosition
+            progressShapeLayer.frame.origin.y = progressAnimatedPosition
+        }
         
-        controlContainerTopAnchor.constant = controlViewAnimatedPosition//556
-        gestureViewTopAnchor.constant = gestureViewAnimatedPosition//515
+        else {
+            
+            //Disables the implicit animation of the progressTrackLayer and the progressShapeLayer
+            CATransaction.begin()
+            CATransaction.setDisableActions(true)
+            
+            progressTrackLayer.frame.origin.y = progressAnimatedPosition
+            progressShapeLayer.frame.origin.y = progressAnimatedPosition
+            
+            CATransaction.commit()
+        }
         
-
+        controlContainerTopAnchor.constant = controlViewAnimatedPosition
+        gestureViewTopAnchor.constant = gestureViewAnimatedPosition
         
-        UIView.animate(withDuration: 0.15, animations: {
+        UIView.animate(withDuration: 0.15) {
+            
             self.view.layoutIfNeeded()
-        }) { (finished: Bool) in
-            
-            //print(self.controlView.frame.height) //iPhone XS = 84
-            
         }
     }
-    
-    
-  
 }
