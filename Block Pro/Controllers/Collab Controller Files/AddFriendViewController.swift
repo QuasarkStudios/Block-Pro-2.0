@@ -111,6 +111,8 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.textLabel?.textColor = UIColor.lightGray
                 cell.isUserInteractionEnabled = false
                 
+                cell.accessoryType = .none
+                
                 return cell
             }
                 
@@ -124,6 +126,8 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 cell.initialContainer.layer.cornerRadius = 0.5 * cell.initialContainer.bounds.size.width
                 cell.initialContainer.clipsToBounds = true
+                
+                cell.accessoryType = .none
                 
                 return cell
             }
@@ -145,6 +149,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                 }
             
                 cell.accessoryType = .none
+                
                 return cell
             }
                 
@@ -176,6 +181,8 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                     cell.textLabel?.textColor = UIColor.lightGray
                     cell.isUserInteractionEnabled = false
 
+                    cell.accessoryType = .none
+                    
                     return cell
                 }
                 
@@ -201,6 +208,8 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                     cell.textLabel?.text = "Sorry, you can't add yourself as a friend"
                     cell.textLabel?.textColor = UIColor.lightGray
                     cell.isUserInteractionEnabled = false
+                    
+                    cell.accessoryType = .none
                     
                     return cell
                 }
@@ -234,19 +243,20 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
         if tableViewTracker == "Requests" {
             
             presentRequestAlert(indexPath.row)
-            
         }
         
         else {
             
             if cell.accessoryType != .checkmark {
+                
                 cell.accessoryType = .checkmark
                 sendRequest(indexPath)
             }
+                
             else {
+                
                 ProgressHUD.showSuccess("You've already sent \(resultsObjectArray[indexPath.row].firstName) a friend request!")
             }
-            
         }
         
         tableView.deselectRow(at: indexPath, animated: false)

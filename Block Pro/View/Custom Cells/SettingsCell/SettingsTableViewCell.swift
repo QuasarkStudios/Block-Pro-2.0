@@ -12,6 +12,8 @@ class SettingsTableViewCell: UITableViewCell {
 
     
     @IBOutlet weak var settingLabel: UILabel!
+    @IBOutlet weak var settingLabelLeadingAnchor: NSLayoutConstraint!
+    
     @IBOutlet weak var settingSwitch: UISwitch!
     
     let defaults = UserDefaults.standard

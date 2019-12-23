@@ -88,6 +88,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewWillAppear(_ animated: Bool) {
     
+        UINavigationBar.appearance().tintColor = .red
+        
         if viewInitiallyLoaded == false {
             
             presentSplashView {
@@ -99,10 +101,12 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 self.blockTableView.reloadData()
                 self.scrollToFirstBlock()
             }
+            
             viewInitiallyLoaded = true
         }
         
         else {
+            
             findTimeBlocks(currentDate)
             allBlockDates = realm.objects(TimeBlocksDate.self)
             blockTableView.reloadData()
@@ -119,6 +123,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        
+        UINavigationBar.appearance().tintColor = UIColor(hexString: "#e35d5b")
         
         timeBlockViewTracker = false //TimeBlock view is not present
         timeBlockBarItem.image = UIImage(named: "list") //Changes the TabBar Item to be a list button

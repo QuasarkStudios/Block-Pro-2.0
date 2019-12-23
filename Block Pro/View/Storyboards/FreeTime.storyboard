@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3GI-Ou-WB8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3GI-Ou-WB8">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -330,7 +331,7 @@
                         <viewLayoutGuide key="safeArea" id="7ap-kZ-39k"/>
                     </view>
                     <navigationItem key="navigationItem" title="Free Time Cards" id="PBw-p1-G1Q">
-                        <barButtonItem key="rightBarButtonItem" enabled="NO" title="Item" image="plus" catalog="system" id="E2N-l4-V3Y">
+                        <barButtonItem key="rightBarButtonItem" enabled="NO" systemItem="add" id="E2N-l4-V3Y">
                             <connections>
                                 <action selector="addTask:" destination="Hhp-48-RHL" id="y3e-EN-uI3"/>
                             </connections>
@@ -400,6 +401,5 @@
     </scenes>
     <resources>
         <image name="albums" width="30" height="30"/>
-        <image name="plus" catalog="system" width="64" height="58"/>
     </resources>
 </document>

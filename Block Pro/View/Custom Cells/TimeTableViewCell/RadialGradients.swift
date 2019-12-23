@@ -33,7 +33,7 @@ class RadialGradients: UIView {
         let endRadius: CGFloat!
     
         
-        //Initializing the center of the gradients
+        //Setting the center of the gradients
         if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 { //iPhone XS Max & iPhone XR
             
             center = CGPoint(x: bounds.size.width / 2, y: (bounds.size.height / 2) - 7.5)
@@ -60,7 +60,7 @@ class RadialGradients: UIView {
         }
             
         
-        //Initializing the startRadius of the gradient
+        //Setting the startRadius of the gradient
         if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 { //iPhone 8
             
             startRadius = 120
@@ -77,7 +77,7 @@ class RadialGradients: UIView {
         }
         
         
-        //Initializing the endRadius of the gradients
+        //Setting the endRadius of the gradients
         if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 667.0 { //iPhone 8
             
             endRadius = 122.5

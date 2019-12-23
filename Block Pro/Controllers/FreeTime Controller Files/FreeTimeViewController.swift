@@ -101,8 +101,6 @@ class FreeTimeViewController: UIViewController {
         dismissCardView.backgroundColor = .clear
         
         configureContainers()
-        
-        //setupTableView()
     }
     
 

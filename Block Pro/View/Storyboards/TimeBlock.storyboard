@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="m1B-Bh-YOA">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="m1B-Bh-YOA">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -821,12 +821,12 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Time Block" image="plus" id="4jO-IO-lLv"/>
                     <navigationItem key="navigationItem" id="vWp-4p-OCf">
-                        <barButtonItem key="leftBarButtonItem" title="Item" image="chevron.left" catalog="system" id="Twg-Po-0KW">
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="icons8-back-25" id="Twg-Po-0KW">
                             <connections>
                                 <action selector="previousDay:" destination="hyC-FP-KMM" id="XvY-2L-PSm"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="chevron.right" catalog="system" id="11Y-4J-kme">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="icons8-forward-25" id="11Y-4J-kme">
                             <connections>
                                 <action selector="nextDay:" destination="hyC-FP-KMM" id="gNR-YR-apn"/>
                             </connections>
@@ -1288,8 +1288,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="chevron.left" catalog="system" width="46" height="64"/>
-        <image name="chevron.right" catalog="system" width="46" height="64"/>
+        <image name="icons8-back-25" width="25" height="25"/>
+        <image name="icons8-forward-25" width="25" height="25"/>
         <image name="plus" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>

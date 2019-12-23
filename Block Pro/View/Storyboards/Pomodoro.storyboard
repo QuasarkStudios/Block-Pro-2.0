@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="E6s-Xj-VKL">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -403,11 +404,13 @@
                         <outlet property="lengthLabelTopAnchor" destination="qf0-uL-WjZ" id="aD7-qc-0Vh"/>
                         <outlet property="nameTextFieldTopAnchor" destination="E0Z-zW-J2K" id="r6W-HH-Bwh"/>
                         <outlet property="pomodoroCountContainer" destination="Ksj-h2-8I8" id="Urd-rx-zRx"/>
-                        <outlet property="pomodoroCountLabel" destination="FXf-dL-5rw" id="M39-GH-W3B"/>
+                        <outlet property="pomodoroDynamicCountLabel" destination="FXf-dL-5rw" id="EEP-Q7-Kft"/>
+                        <outlet property="pomodoroDynamicLengthLabel" destination="2Gj-fh-C6l" id="2fJ-31-sOI"/>
                         <outlet property="pomodoroLengthContainer" destination="bb2-vO-UMZ" id="jZ2-ab-K1I"/>
-                        <outlet property="pomodoroLengthLabel" destination="2Gj-fh-C6l" id="jck-cF-5CM"/>
                         <outlet property="pomodoroLengthLabelCenterY" destination="YlL-dT-eIE" id="6zf-0g-0it"/>
                         <outlet property="pomodoroNameTextField" destination="liW-Ze-Ade" id="0Vm-ty-crV"/>
+                        <outlet property="pomodoroStaticCountLabel" destination="bUB-5f-Mqo" id="23f-pc-sYW"/>
+                        <outlet property="pomodoroStaticLengthLabel" destination="1DZ-sf-LGv" id="Aw5-Zu-JeV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1dk-6V-bFr" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -418,7 +421,7 @@
         <scene sceneID="YAb-mE-hff">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="E6s-Xj-VKL" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Pomodoro" image="icons8-ios-30" id="MSQ-ph-gI6"/>
+                    <tabBarItem key="tabBarItem" title="Pomodoro" image="icons8-tomato-37" id="MSQ-ph-gI6"/>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="nNo-NF-QeB">
@@ -436,6 +439,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="icons8-ios-30" width="30" height="30"/>
+        <image name="icons8-tomato-37" width="37" height="37"/>
     </resources>
 </document>

@@ -15,7 +15,8 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var lengthLabelTopAnchor: NSLayoutConstraint!
     
-    @IBOutlet weak var pomodoroLengthLabel: UILabel!
+    @IBOutlet weak var pomodoroStaticLengthLabel: UILabel!
+    @IBOutlet weak var pomodoroDynamicLengthLabel: UILabel!
     @IBOutlet weak var pomodoroLengthLabelCenterY: NSLayoutConstraint!
     
     @IBOutlet weak var pomodoroLengthContainer: UIView!
@@ -25,7 +26,8 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var decrementPomodoroLength: UIButton!
     @IBOutlet weak var incrementPomodoroLength: UIButton!
     
-    @IBOutlet weak var pomodoroCountLabel: UILabel!
+    @IBOutlet weak var pomodoroStaticCountLabel: UILabel!
+    @IBOutlet weak var pomodoroDynamicCountLabel: UILabel!
     @IBOutlet weak var countLabelTopAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var pomodoroCountContainer: UIView!
@@ -45,14 +47,29 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureView()
         configureConstraints()
+    }
+    
+    func configureView () {
+        
+        let gradientLayer: CAGradientLayer!
+        gradientLayer = CAGradientLayer()
+        gradientLayer.frame = view.frame
+        gradientLayer.colors = [UIColor.flatMint().lighten(byPercentage: 0.25)!.cgColor as Any, UIColor.white.cgColor as Any]
+        
+        view.layer.addSublayer(gradientLayer)
+        
+        view.bringSubviewToFront(pomodoroNameTextField)
+        view.bringSubviewToFront(pomodoroStaticLengthLabel)
+        view.bringSubviewToFront(pomodoroLengthContainer)
+        view.bringSubviewToFront(pomodoroStaticCountLabel)
+        view.bringSubviewToFront(pomodoroCountContainer)
         
         pomodoroNameTextField.delegate = self
-    
-        //Setting background colors
-        view.backgroundColor = UIColor.flatMint().lighten(byPercentage: 0.25)
-        pomodoroLengthContainer.backgroundColor = UIColor.white.withAlphaComponent(0.65)
-        pomodoroCountContainer.backgroundColor = UIColor.white.withAlphaComponent(0.65)
+        
+        pomodoroLengthContainer.backgroundColor = UIColor.white
+        pomodoroCountContainer.backgroundColor = UIColor.white
         
         //Setting button colors
         decrementPomodoroLength.tintColor = UIColor.flatRed()
@@ -87,7 +104,7 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
             lengthContainerTopAnchor.constant -= 5
             lengthContainerHeightConstraint.constant = 50
             
-            pomodoroLengthLabel.font = UIFont(name: "ChalkboardSE-Regular", size: 25)
+            pomodoroDynamicLengthLabel.font = UIFont(name: "ChalkboardSE-Regular", size: 25)
             pomodoroLengthLabelCenterY.constant -= 1.5
             
             countLabelTopAnchor.constant -= 5
@@ -95,7 +112,7 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
             countContainerTopAnchor.constant -= 5
             countContainerHeightConstraint.constant = 50
             
-            pomodoroCountLabel.font = UIFont(name: "ChalkboardSE-Regular", size: 27)
+            pomodoroDynamicCountLabel.font = UIFont(name: "ChalkboardSE-Regular", size: 27)
         }
         
     }
@@ -156,7 +173,7 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
         
         if pomodoroMinutes != 15 {
             pomodoroMinutes -= 5
-            pomodoroLengthLabel.text = "\(pomodoroMinutes):00"
+            pomodoroDynamicLengthLabel.text = "\(pomodoroMinutes):00"
         }
         else {
             
@@ -169,7 +186,7 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
         
         if pomodoroMinutes != 30 {
             pomodoroMinutes += 5
-            pomodoroLengthLabel.text = "\(pomodoroMinutes):00"
+            pomodoroDynamicLengthLabel.text = "\(pomodoroMinutes):00"
         }
         else {
           
@@ -182,7 +199,7 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
         
         if pomodoroCount != 2 {
             pomodoroCount -= 1
-            pomodoroCountLabel.text = "\(pomodoroCount)"
+            pomodoroDynamicCountLabel.text = "\(pomodoroCount)"
         }
         else {
             
@@ -195,7 +212,7 @@ class EditPomodoroViewController: UIViewController, UITextFieldDelegate {
         
         if pomodoroCount != 5 {
             pomodoroCount += 1
-            pomodoroCountLabel.text = "\(pomodoroCount)"
+            pomodoroDynamicCountLabel.text = "\(pomodoroCount)"
         }
         else {
             

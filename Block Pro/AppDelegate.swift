@@ -62,8 +62,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         
-        //print("hopefully the notification id", response.notification.request.identifier)
-        
         let tabBarController = self.window?.rootViewController as! UITabBarController
         
         let defaults = UserDefaults.standard

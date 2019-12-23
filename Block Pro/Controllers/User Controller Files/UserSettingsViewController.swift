@@ -221,6 +221,8 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
                     cell.settingLabel.text = "Auto Delete Completed Tasks"
                     cell.settingLabel.adjustsFontSizeToFitWidth = true
                     
+                    cell.settingLabelLeadingAnchor.constant = cell.separatorInset.left
+                    
                     cell.settingSwitch.isOn = defaults.value(forKey: "autoDeleteTasks") as? Bool ?? false
                     
                     return cell
@@ -255,6 +257,8 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
                     
                     cell.settingLabel.adjustsFontSizeToFitWidth = true
                     cell.settingLabel.text = "Enable Timer Sound Effects"
+                    
+                    cell.settingLabelLeadingAnchor.constant = cell.separatorInset.left
                     
                     cell.settingSwitch.isOn = defaults.value(forKey: "playPomodoroSoundEffects") as? Bool ?? true
                     
@@ -337,7 +341,7 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
                     cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
                     
                     cell.textLabel?.text = ""
-
+                    
                     return cell
                 }
             
@@ -390,6 +394,8 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
                     cell.settingLabel.adjustsFontSizeToFitWidth = true
                     cell.settingLabel.text = "Auto Delete Completed Tasks"
                     
+                    cell.settingLabelLeadingAnchor.constant = cell.separatorInset.left
+                    
                     cell.settingSwitch.isOn = defaults.value(forKey: "autoDeleteTasks") as? Bool ?? false
                     
                     return cell
@@ -425,6 +431,8 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
                     cell.settingLabel.adjustsFontSizeToFitWidth = true
                     cell.settingLabel.text = "Enable Timer Sound Effects"
                     
+                    cell.settingLabelLeadingAnchor.constant = cell.separatorInset.left
+                    
                     cell.settingSwitch.isOn = defaults.value(forKey: "playPomodoroSoundEffects") as? Bool ?? true
                     
                     return cell
@@ -458,6 +466,8 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
                 cell.textLabel?.text = "Time Block Info"
                 cell.textLabel?.textColor = .black
                 
+                print(cell.separatorInset)
+                
                 return cell
             }
             
@@ -478,6 +488,7 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
         
             //Privacy section info cell
             else {
+                
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
                                 
                 cell.selectionStyle = .default
@@ -487,6 +498,16 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
                 cell.textLabel?.text = "Privacy Policy"
                 cell.textLabel?.textColor = .black
                 
+                if UIScreen.main.bounds.width == 414.0 {
+
+                    cell.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
+                }
+
+                else {
+
+                    cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+                }
+
                 return cell
             }
         }
@@ -620,6 +641,20 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
+    func tweakSeperator (_ cell: UITableViewCell) -> UITableViewCell {
+        
+        if UIScreen.main.bounds.width == 414.0 {
+            
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 0)
+        }
+        
+        else {
+
+            cell.separatorInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
+        }
+        
+        return cell
+    }
     
     //Function that helps verify is a user is signed in
     func getUserData (completion: @escaping () -> ()) {
