@@ -466,8 +466,6 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
                 cell.textLabel?.text = "Time Block Info"
                 cell.textLabel?.textColor = .black
                 
-                print(cell.separatorInset)
-                
                 return cell
             }
             

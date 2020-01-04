@@ -436,28 +436,12 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
             
             if blockArray[indexPath.row].name != "Buffer Block" {
                 
-                var blockColor: UIColor!
-                
-                if blockArray[indexPath.row].category != "" {
-                    blockColor = UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category] ?? "#AAAAAA")
-                }
-                else {
-                    blockColor = UIColor(hexString: "#AAAAAA")
-                }
-                
                 switch rowHeights[indexPath.row] {
                     
                 case 10.0:
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "fiveMinCell", for: indexPath) as! TimeFiveMinCell
-                    
-                    cell.containerView.backgroundColor = blockColor
-                    cell.containerView.layer.cornerRadius = 0.013 * cell.containerView.bounds.size.width
-                    cell.containerView.clipsToBounds = true
-                    
-                    cell.nameLabel.text = blockArray[indexPath.row].name
-                    cell.nameLabel.font = UIFont(name: "HelveticaNeue", size: 10.5)
-                    cell.nameLabel.textColor = ContrastColorOf(blockColor, returnFlat: false)
+                    cell.block = blockArray[indexPath.row]
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
@@ -466,32 +450,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 case 20.0:
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "tenMinCell", for: indexPath) as! TimeTenMinCell
-                    
-                    cell.containerView.backgroundColor = blockColor
-                    cell.containerView.layer.cornerRadius = 0.03 * cell.containerView.bounds.size.width
-                    cell.containerView.clipsToBounds = true
-                    
-                    cell.nameLabel.text = blockArray[indexPath.row].name
-                    cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
-                    cell.nameLabel.textColor = ContrastColorOf(blockColor, returnFlat: false)
-                    cell.nameLabel.adjustsFontSizeToFitWidth = true
-                    
-                    cell.alphaView.backgroundColor = UIColor.white.withAlphaComponent(0.4)
-                    cell.alphaView.layer.cornerRadius = 0.045 * cell.alphaView.bounds.size.width
-                    cell.alphaView.clipsToBounds = true
-                    
-                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
-                    
-                    cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
-                    cell.startLabel.textColor = UIColor.black
-                    
-                    cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
-                    cell.toLabel.textColor = UIColor.black
-                    
-                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
-                    
-                    cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
-                    cell.endLabel.textColor = UIColor.black
+                    cell.block = blockArray[indexPath.row]
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
@@ -500,28 +459,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 case 30.0:
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "fifteenMinCell", for: indexPath) as! TimeFifteenMinCell
-                    
-                    cell.outlineView.backgroundColor = blockColor
-                    cell.outlineView.layer.cornerRadius = 0.035 * cell.outlineView.bounds.size.width
-                    cell.outlineView.clipsToBounds = true
-                    
-                    cell.containerView.layer.cornerRadius = 0.035 * cell.containerView.bounds.size.width
-                    cell.containerView.clipsToBounds = true
-                    
-                    cell.nameLabel.text = blockArray[indexPath.row].name
-                    cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 14.0)
-                    cell.nameLabel.adjustsFontSizeToFitWidth = true
-                    
-                    cell.alphaView.layer.cornerRadius = 0.05 * cell.alphaView.bounds.size.width
-                    cell.alphaView.clipsToBounds = true
-                    
-                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
-                    cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
-                    
-                    cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
-                    
-                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
-                    cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
+                    cell.block = blockArray[indexPath.row]
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
@@ -530,29 +468,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 case 40.0:
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "twentyMinCell", for: indexPath) as! TimeTwentyMinCell
-                    
-                    cell.outlineView.backgroundColor = blockColor
-                    cell.outlineView.layer.cornerRadius = 0.035 * cell.outlineView.bounds.size.width
-                    cell.outlineView.clipsToBounds = true
-                    
-                    cell.containerView.layer.cornerRadius = 0.035 * cell.containerView.bounds.size.width
-                    cell.containerView.clipsToBounds = true
-                    
-                    cell.nameLabel.text = blockArray[indexPath.row].name
-                    cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
-                    cell.nameLabel.adjustsFontSizeToFitWidth = true
-                    
-                    cell.alphaView.layer.cornerRadius = 0.085 * cell.alphaView.bounds.size.width
-                    cell.alphaView.clipsToBounds = true
-                    
-                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
-                    cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
-                    
-                    cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 22)
-                    
-                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
-                    cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
-                    
+                    cell.block = blockArray[indexPath.row]
+                                        
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
                     return cell
@@ -560,35 +477,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 case 50.0:
                   
                     let cell = tableView.dequeueReusableCell(withIdentifier: "twentyfiveMinCell", for: indexPath) as! TimeTwentyFiveMinCell
-                    
-                    cell.outlineView.backgroundColor = blockColor
-                    cell.outlineView.layer.cornerRadius = 0.035 * cell.outlineView.bounds.size.width
-                    cell.outlineView.clipsToBounds = true
-
-                    cell.containerView.layer.cornerRadius = 0.035 * cell.containerView.bounds.size.width
-                    cell.containerView.clipsToBounds = true
-
-                    cell.nameLabel.text = blockArray[indexPath.row].name
-                    cell.nameLabel.adjustsFontSizeToFitWidth = true
-                    cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
-                    
-                    if UIScreen.main.bounds.width == 320.0 {
-                        
-                        cell.alphaViewLeadingAnchor.constant = 30
-                        cell.alphaViewTrailingAnchor.constant = 30
-                        
-                    }
-                    
-                    cell.alphaView.layer.cornerRadius = 0.035 * cell.alphaView.bounds.size.width
-                    cell.alphaView.clipsToBounds = true
-                    
-                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
-                    cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
-                    
-                    cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 24)
-                    
-                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
-                    cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
+                    cell.block = blockArray[indexPath.row]
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
@@ -597,41 +486,11 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 default:
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "thirtyMinAndUpCell", for: indexPath) as! TimeThirtyMinAndUpCell
-                    
-                    cell.outlineView.backgroundColor = blockColor
-                    cell.outlineView.layer.cornerRadius = 0.035 * cell.outlineView.bounds.size.width
-                    cell.outlineView.clipsToBounds = true
-                    
-                    cell.superContainerView.layer.cornerRadius = 0.035 * cell.superContainerView.bounds.size.width
-                    cell.superContainerView.clipsToBounds = true
-                    
-                    cell.subContainerView.backgroundColor = .none
-                    
-                    cell.nameLabel.text = blockArray[indexPath.row].name
-                    cell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 16.0)
-                    cell.nameLabel.adjustsFontSizeToFitWidth = true
-                    
-                    if UIScreen.main.bounds.width == 320.0 {
-                        
-                        cell.alphaViewLeadingAnchor.constant = 30
-                        cell.alphaViewTrailingAnchor.constant = 30
-                    }
-                    
-                    cell.alphaView.layer.cornerRadius = 0.035 * cell.alphaView.bounds.size.width
-                    cell.alphaView.clipsToBounds = true
-                    
-                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
-                    cell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
-                    
-                    cell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 24)
-                    
-                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
-                    cell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
+                    cell.block = blockArray[indexPath.row]
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
                     return cell
-                    
                 }
             }
             
@@ -641,7 +500,6 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
                 cell.isUserInteractionEnabled = false
                 return cell
             }
-            
         }
     }
     
@@ -1227,7 +1085,6 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
     //Function that handles when a certain cell is selected
     func handleCellSelected (cell: DateCell, cellState: CellState) {
 
-        
         if cellState.isSelected == true {
             
             cell.selectedView.isHidden = false

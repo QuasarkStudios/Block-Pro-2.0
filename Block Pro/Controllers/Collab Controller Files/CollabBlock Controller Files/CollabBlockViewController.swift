@@ -223,129 +223,63 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         else {
             
             if blockArray[indexPath.row].name != "Buffer Block" {
-
-                var blockColor: UIColor!
-                
-                //If the user did select a category for this TimeBlock
-                if blockArray[indexPath.row].category != "" {
-                    
-                    blockColor = UIColor(hexString: blockCategoryColors[blockArray[indexPath.row].category] ?? "#AAAAAA")
-                }
-                    //If the user didn't select a category for this TimeBlock
-                else {
-                    blockColor = UIColor(hexString: "#AAAAAA")
-                }
                 
                 switch rowHeights[indexPath.row] {
                     
                 case 10.0:
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "fiveMinCell", for: indexPath) as! CollabFiveMinCell
-                    cell.nameLabel.text = blockArray[indexPath.row].name
+                    cell.block = blockArray[indexPath.row]
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
-                    return configureBlock(cell, 10.0, blockColor) as! UITableViewCell
+                    return cell
+                    
                 case 20.0:
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "tenMinCell", for: indexPath) as! CollabTenMinCell
-                    cell.nameLabel.text = blockArray[indexPath.row].name
-                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
-                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
+                    cell.block = blockArray[indexPath.row]
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
-                    return configureBlock(cell, 20.0, blockColor) as! UITableViewCell
-                    
+                    return cell
+
                 case 30.0:
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "fifteenMinCell", for: indexPath) as! CollabFifteenMinCell
-                    
-                    cell.nameLabel.text = blockArray[indexPath.row].name
-                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
-                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
+                    cell.block = blockArray[indexPath.row]
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
-                    return configureBlock(cell, 30.0, blockColor) as! UITableViewCell
+                    return cell
                     
                 case 40.0:
                    
                     let cell = tableView.dequeueReusableCell(withIdentifier: "twentyMinCell", for: indexPath) as! CollabTwentyMinCell
-                    
-                    cell.nameLabel.text = blockArray[indexPath.row].name
-                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
-                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
-                    
-                    if blockArray[indexPath.row].creator["userID"] == currentUser.userID {
-    
-                        cell.initialLabel.text = "Me"
-    
-                    }
-                    else {
-    
-                        let firstNameArray = Array(blockArray[indexPath.row].creator["firstName"]!)
-                        let lastNameArray = Array(blockArray[indexPath.row].creator["lastName"]!)
-    
-                        cell.initialLabel.text = "\(firstNameArray[0])" + "\(lastNameArray[0])"
-                    }
+                    cell.block = blockArray[indexPath.row]
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
-                    return configureBlock(cell, 40.0, blockColor) as! UITableViewCell
+                    return cell
 
                 case 50.0:
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "twentyfiveMinCell", for: indexPath) as! CollabTwentyFiveMinCell
-                    
-                    cell.nameLabel.text = blockArray[indexPath.row].name
-                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
-                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
-                    
-                    if blockArray[indexPath.row].creator["userID"] == currentUser.userID {
-                        
-                        cell.initialLabel.text = "Me"
-                        
-                    }
-                    else {
-                        
-                        let firstNameArray = Array(blockArray[indexPath.row].creator["firstName"]!)
-                        let lastNameArray = Array(blockArray[indexPath.row].creator["lastName"]!)
-                        
-                        cell.initialLabel.text = "\(firstNameArray[0])" + "\(lastNameArray[0])"
-                    }
+                    cell.block = blockArray[indexPath.row]
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
-                    return configureBlock(cell, 50.0, blockColor) as! UITableViewCell
+                    return cell
                     
                 default:
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "thirtyMinAndUpCell", for: indexPath) as! CollabThirtyMinAndUpCell
-                    
-                    cell.nameLabel.text = blockArray[indexPath.row].name
-                    cell.startLabel.text = convertTo12Hour(blockArray[indexPath.row].startHour, blockArray[indexPath.row].startMinute)
-                    cell.endLabel.text = convertTo12Hour(blockArray[indexPath.row].endHour, blockArray[indexPath.row].endMinute)
-                    
-                    if blockArray[indexPath.row].creator["userID"] == currentUser.userID {
-                        
-                        cell.initialLabel.text = "Me"
-                        
-                    }
-                    else {
-                        
-                        let firstNameArray = Array(blockArray[indexPath.row].creator["firstName"]!)
-                        let lastNameArray = Array(blockArray[indexPath.row].creator["lastName"]!)
-                        
-                        cell.initialLabel.text = "\(firstNameArray[0])" + "\(lastNameArray[0])"
-                    }
+                    cell.block = blockArray[indexPath.row]
                     
                     animateBlock(cell, rowHeights[indexPath.row], indexPath)
                     
-                    return configureBlock(cell, rowHeights[indexPath.row], blockColor) as! UITableViewCell
-                    
+                    return cell
                 }
-                
             }
             
             else {
@@ -357,7 +291,6 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
                 
             }
         }
-        
     }
     
     
@@ -595,662 +528,6 @@ class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    
-    func deleteCollab () {
-        
-        db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").document(collabID).delete { (error) in
-            
-            if error != nil {
-                ProgressHUD.showError(error?.localizedDescription)
-            }
-        }
-        
-        db.collection("Users").document(currentUser.userID).collection("HistoricCollabs").document(collabID).delete { (error) in
-            
-            if error != nil {
-                ProgressHUD.showError(error?.localizedDescription)
-            }
-        }
-        
-        self.navigationController?.popViewController(animated: true)
-    }
-    
-    
-    @IBAction func addBlockButton(_ sender: Any) {
-        
-        selectedView = "Add"
-        performSegue(withIdentifier: "moveToAUBlockView", sender: self)
-    }
-    
-    
-    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        
-        let deleteAlert = UIAlertController(title: "Are you sure you would like to delete this Collab?" , message: "All data associated with this Collab will also be deleted.", preferredStyle: .actionSheet)
-        
-        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (deleteAction) in
-            
-            self.deleteCollab()
-        }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        
-        deleteAlert.addAction(deleteAction)
-        deleteAlert.addAction(cancelAction)
-        
-        present(deleteAlert, animated: true, completion: nil)
-    }
-    
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == "presentBlockPopover" {
-            
-            let bigBlockVC = segue.destination as! CollabBlockPopoverViewController
-            
-            bigBlockVC.updateCollabBlockDelegate = self
-            bigBlockVC.deleteCollabBlockDelegate = self
-            
-            bigBlockVC.collabID = collabID
-            bigBlockVC.blockID = bigBlockID
-        }
-        
-        else if segue.identifier == "moveToAUBlockView" {
-            
-            let add_updateBlockVC = segue.destination as! AUCollabBlockViewController
-            add_updateBlockVC.collabID = collabID
-            add_updateBlockVC.collabDate = collabDate
-            add_updateBlockVC.selectedView = selectedView
-            
-            if selectedView == "Edit" {
-                add_updateBlockVC.selectedBlock = selectedBlock
-            }
-            
-            let backItem = UIBarButtonItem()
-            backItem.title = "Cancel"
-            navigationItem.backBarButtonItem = backItem
-        }
-    }
-}
-
-extension CollabBlockViewController: UpdateCollabBlock {
-    
-    func moveToUpdateView () {
-        
-        selectedView = "Edit"
-        performSegue(withIdentifier: "moveToAUBlockView", sender: self)
-    }
-}
-
-extension CollabBlockViewController: DeleteCollabBlock {
-    
-    func deleteBlock () {
-        
-        db.collection("Collaborations").document(collabID).collection("CollabBlocks").document(bigBlockID).delete { (error) in
-            
-            if error != nil {
-                ProgressHUD.showError(error?.localizedDescription)
-            }
-            else {
-                
-                ProgressHUD.showSuccess("Collab Block deleted!")
-                
-                if let notifSettings = self.selectedBlock?.notificationSettings[self.currentUser.userID] {
-                    UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notifSettings["notificationID"] as! String])
-                }
-                
-                self.getCollabBlocks {
-                    
-                    self.blockArray = self.organizeBlocks(self.sortCollabBlocks(), self.functionTuple)
-                    self.blockTableView.reloadData()
-                    self.scrollToFirstBlock()
-                }
-            }
-        }
-    }
-}
-
-extension CollabBlockViewController: UITabBarControllerDelegate {
-
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        
-        if tabBarController.selectedIndex != 3 {
-            tabBarController.delegate = nil
-        }
-    }
-
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        
-        if viewController == navigationController {
-            
-            if currentUser.userID != "" {
-                
-                navigationController?.popToViewController(navigationController!.viewControllers[1], animated: true)
-                return false
-            }
-            
-            else {
-                return true
-            }
-        }
-        
-        else {
-            return true
-        }
-    }
-}
-
-extension CollabBlockViewController {
-    
-    func configureBlock (_ cell: UITableViewCell, _ cellHeight: CGFloat, _ blockColor: UIColor) -> Any {
-        
-        switch cellHeight {
-            
-        case 10.0:
-            
-            let funcCell = cell as! CollabFiveMinCell
-            
-            funcCell.containerView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.containerView.topAnchor.constraint(equalTo: funcCell.topAnchor, constant: 0.5).isActive = true
-            funcCell.containerView.bottomAnchor.constraint(equalTo: funcCell.bottomAnchor
-                , constant: -0.5).isActive = true
-            funcCell.containerView.leadingAnchor.constraint(equalTo: funcCell.leadingAnchor, constant: 5).isActive = true
-            funcCell.containerView.trailingAnchor.constraint(equalTo: funcCell.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.containerView.backgroundColor = blockColor
-            funcCell.containerView.layer.cornerRadius = 0.013 * funcCell.containerView.bounds.size.width
-            funcCell.containerView.clipsToBounds = true
-            
-            funcCell.nameLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.nameLabel.topAnchor.constraint(equalTo: funcCell.containerView.topAnchor, constant: 0.5).isActive = true
-            funcCell.nameLabel.bottomAnchor.constraint(equalTo: funcCell.containerView.bottomAnchor, constant: -0.5).isActive = true
-            funcCell.nameLabel.leadingAnchor.constraint(equalTo: funcCell.containerView.leadingAnchor, constant: 10).isActive = true
-            funcCell.nameLabel.trailingAnchor.constraint(equalTo: funcCell.containerView.trailingAnchor, constant: -10).isActive = true
-            
-            funcCell.nameLabel.font = UIFont(name: "HelveticaNeue", size: 10.5)
-            funcCell.nameLabel.textColor = ContrastColorOf(blockColor, returnFlat: false)
-            
-            return funcCell
-            
-        case 20.0:
-            
-            let funcCell = cell as! CollabTenMinCell
-            
-            funcCell.containerView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.containerView.topAnchor.constraint(equalTo: funcCell.topAnchor, constant: 0.5).isActive = true
-            funcCell.containerView.bottomAnchor.constraint(equalTo: funcCell.bottomAnchor, constant: -0.5).isActive = true
-            funcCell.containerView.leadingAnchor.constraint(equalTo: funcCell.leadingAnchor, constant: 5).isActive = true
-            funcCell.containerView.trailingAnchor.constraint(equalTo: funcCell.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.containerView.backgroundColor = blockColor
-            funcCell.containerView.layer.cornerRadius = 0.03 * funcCell.containerView.bounds.size.width
-            funcCell.containerView.clipsToBounds = true
-            
-            funcCell.nameLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.nameLabel.topAnchor.constraint(equalTo: funcCell.containerView.topAnchor, constant: 1).isActive = true
-            funcCell.nameLabel.bottomAnchor.constraint(equalTo: funcCell.containerView.bottomAnchor, constant: -1).isActive = true
-            funcCell.nameLabel.leadingAnchor.constraint(equalTo: funcCell.containerView.leadingAnchor, constant: 10).isActive = true
-            funcCell.nameLabel.trailingAnchor.constraint(equalTo: funcCell.alphaView.leadingAnchor, constant: -10).isActive = true
-            
-            funcCell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
-            funcCell.nameLabel.textColor = ContrastColorOf(blockColor, returnFlat: false)
-            funcCell.nameLabel.adjustsFontSizeToFitWidth = true
-            
-            funcCell.alphaView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.alphaView.topAnchor.constraint(equalTo: funcCell.containerView.topAnchor, constant: 3).isActive = true
-            funcCell.alphaView.bottomAnchor.constraint(equalTo: funcCell.containerView.bottomAnchor, constant: -3).isActive = true
-            funcCell.alphaView.widthAnchor.constraint(equalToConstant: 140).isActive = true
-            funcCell.alphaView.trailingAnchor.constraint(equalTo: funcCell.containerView.trailingAnchor, constant: -10).isActive = true
-            
-            funcCell.alphaView.alpha = 0.4
-            funcCell.alphaView.layer.cornerRadius = 0.0325 * funcCell.alphaView.bounds.size.width
-            funcCell.alphaView.clipsToBounds = true
-            
-            funcCell.startLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.startLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
-            funcCell.startLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
-            funcCell.startLabel.leadingAnchor.constraint(equalTo: funcCell.alphaView.leadingAnchor, constant: 5).isActive = true
-            funcCell.startLabel.trailingAnchor.constraint(equalTo: funcCell.toLabel.leadingAnchor, constant: -5).isActive = true
-            
-            funcCell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
-            funcCell.startLabel.textColor = UIColor.black
-            
-            
-            funcCell.toLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.toLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 0).isActive = true
-            funcCell.toLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -4).isActive = true
-            funcCell.toLabel.centerXAnchor.constraint(equalTo: funcCell.alphaView.centerXAnchor).isActive = true
-            
-            funcCell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
-            funcCell.toLabel.textColor = UIColor.black
-            
-            
-            funcCell.endLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.endLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
-            funcCell.endLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
-            funcCell.endLabel.leadingAnchor.constraint(equalTo: funcCell.toLabel.trailingAnchor, constant: 5).isActive = true
-            funcCell.endLabel.trailingAnchor.constraint(equalTo: funcCell.alphaView.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
-            funcCell.endLabel.textColor = UIColor.black
-            
-            return funcCell
-            
-        case 30.0:
-            
-            let funcCell = cell as! CollabFifteenMinCell
-            
-            funcCell.outlineView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.outlineView.topAnchor.constraint(equalTo: funcCell.topAnchor, constant: 0.5).isActive = true
-            funcCell.outlineView.bottomAnchor.constraint(equalTo: funcCell.bottomAnchor, constant: -0.5).isActive = true
-            funcCell.outlineView.leadingAnchor.constraint(equalTo: funcCell.leadingAnchor, constant: 5).isActive = true
-            funcCell.outlineView.trailingAnchor.constraint(equalTo: funcCell.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.outlineView.backgroundColor = blockColor
-            funcCell.outlineView.layer.cornerRadius = 0.035 * funcCell.outlineView.bounds.size.width
-            funcCell.outlineView.clipsToBounds = true
-            
-            funcCell.containerView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.containerView.topAnchor.constraint(equalTo: funcCell.outlineView.topAnchor, constant: 4).isActive = true
-            funcCell.containerView.bottomAnchor.constraint(equalTo: funcCell.outlineView.bottomAnchor, constant: -4).isActive = true
-            funcCell.containerView.leadingAnchor.constraint(equalTo: funcCell.outlineView.leadingAnchor, constant: 2).isActive = true
-            funcCell.containerView.trailingAnchor.constraint(equalTo: funcCell.outlineView.trailingAnchor, constant: -2).isActive = true
-            
-            funcCell.containerView.layer.cornerRadius = 0.035 * funcCell.containerView.bounds.size.width
-            funcCell.containerView.clipsToBounds = true
-            
-            funcCell.nameLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.nameLabel.topAnchor.constraint(equalTo: funcCell.containerView.topAnchor, constant: 1).isActive = true
-            funcCell.nameLabel.bottomAnchor.constraint(equalTo: funcCell.containerView.bottomAnchor, constant: -1).isActive = true
-            funcCell.nameLabel.leadingAnchor.constraint(equalTo: funcCell.containerView.leadingAnchor, constant: 10).isActive = true
-            funcCell.nameLabel.trailingAnchor.constraint(equalTo: funcCell.alphaView.leadingAnchor, constant: -10).isActive = true
-            
-            funcCell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
-            funcCell.nameLabel.adjustsFontSizeToFitWidth = true
-            
-            funcCell.alphaView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.alphaView.topAnchor.constraint(equalTo: funcCell.containerView.topAnchor, constant: 3).isActive = true
-            funcCell.alphaView.bottomAnchor.constraint(equalTo: funcCell.containerView.bottomAnchor, constant: -3).isActive = true
-            funcCell.alphaView.widthAnchor.constraint(equalToConstant: 140).isActive = true
-            funcCell.alphaView.trailingAnchor.constraint(equalTo: funcCell.containerView.trailingAnchor, constant: -10).isActive = true
-            
-            funcCell.alphaView.layer.cornerRadius = 0.035 * funcCell.alphaView.bounds.size.width
-            funcCell.alphaView.clipsToBounds = true
-            
-            funcCell.startLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.startLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
-            funcCell.startLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
-            funcCell.startLabel.leadingAnchor.constraint(equalTo: funcCell.alphaView.leadingAnchor, constant: 5).isActive = true
-            funcCell.startLabel.trailingAnchor.constraint(equalTo: funcCell.toLabel.leadingAnchor, constant: -5).isActive = true
-            
-            funcCell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
-            
-            
-            funcCell.toLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.toLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 0).isActive = true
-            funcCell.toLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -4).isActive = true
-            funcCell.toLabel.centerXAnchor.constraint(equalTo: funcCell.alphaView.centerXAnchor).isActive = true
-            
-            funcCell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 20)
-            
-            
-            funcCell.endLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.endLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
-            funcCell.endLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
-            funcCell.endLabel.leadingAnchor.constraint(equalTo: funcCell.toLabel.trailingAnchor, constant: 5).isActive = true
-            funcCell.endLabel.trailingAnchor.constraint(equalTo: funcCell.alphaView.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 11.5)
-            
-            
-            return funcCell
-            
-        case 40.0:
-            
-            let funcCell = cell as! CollabTwentyMinCell
-            
-            funcCell.outlineView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.outlineView.topAnchor.constraint(equalTo: funcCell.topAnchor, constant: 0.5).isActive = true
-            funcCell.outlineView.bottomAnchor.constraint(equalTo: funcCell.bottomAnchor, constant: -0.5).isActive = true
-            funcCell.outlineView.leadingAnchor.constraint(equalTo: funcCell.leadingAnchor, constant: 5).isActive = true
-            funcCell.outlineView.trailingAnchor.constraint(equalTo: funcCell.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.outlineView.backgroundColor = blockColor
-            funcCell.outlineView.layer.cornerRadius = 0.035 * funcCell.outlineView.bounds.size.width
-            funcCell.outlineView.clipsToBounds = true
-            
-            funcCell.containerView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.containerView.topAnchor.constraint(equalTo: funcCell.outlineView.topAnchor, constant: 4).isActive = true
-            funcCell.containerView.bottomAnchor.constraint(equalTo: funcCell.outlineView.bottomAnchor, constant: -4).isActive = true
-            funcCell.containerView.leadingAnchor.constraint(equalTo: funcCell.outlineView.leadingAnchor, constant: 2).isActive = true
-            funcCell.containerView.trailingAnchor.constraint(equalTo: funcCell.outlineView.trailingAnchor, constant: -2).isActive = true
-            
-            funcCell.containerView.layer.cornerRadius = 0.035 * funcCell.containerView.bounds.size.width
-            funcCell.containerView.clipsToBounds = true
-            
-            
-            funcCell.initialOutline.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.initialOutline.leadingAnchor.constraint(equalTo: funcCell.containerView.leadingAnchor, constant: 5).isActive = true
-            funcCell.initialOutline.centerYAnchor.constraint(equalTo: funcCell.containerView.centerYAnchor).isActive = true
-            funcCell.initialOutline.widthAnchor.constraint(equalToConstant: 28).isActive = true
-            funcCell.initialOutline.heightAnchor.constraint(equalToConstant: 28).isActive = true
-            
-            funcCell.initialOutline.backgroundColor = blockColor
-            funcCell.initialOutline.layer.cornerRadius = 0.5 * 28
-            funcCell.initialOutline.clipsToBounds = true
-            
-            funcCell.initialLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.initialLabel.centerXAnchor.constraint(equalTo: funcCell.initialOutline.centerXAnchor).isActive = true
-            funcCell.initialLabel.centerYAnchor.constraint(equalTo: funcCell.initialOutline.centerYAnchor).isActive = true
-            funcCell.initialLabel.widthAnchor.constraint(equalToConstant: 24).isActive = true
-            funcCell.initialLabel.heightAnchor.constraint(equalToConstant: 24).isActive = true
-            
-            funcCell.initialLabel.backgroundColor = UIColor.lightGray.lighten(byPercentage: 0.1)
-            funcCell.initialLabel.layer.cornerRadius = 0.5 * 24
-            funcCell.initialLabel.clipsToBounds = true
-            
-            funcCell.nameLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.nameLabel.topAnchor.constraint(equalTo: funcCell.containerView.topAnchor, constant: 1).isActive = true
-            funcCell.nameLabel.bottomAnchor.constraint(equalTo: funcCell.containerView.bottomAnchor, constant: -1).isActive = true
-            funcCell.nameLabel.leadingAnchor.constraint(equalTo: funcCell.containerView.leadingAnchor, constant: 40).isActive = true
-            funcCell.nameLabel.trailingAnchor.constraint(equalTo: funcCell.alphaView.leadingAnchor, constant: -10).isActive = true
-            
-            funcCell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 15.0)
-            funcCell.nameLabel.adjustsFontSizeToFitWidth = true
-            
-            funcCell.alphaView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.alphaView.topAnchor.constraint(equalTo: funcCell.containerView.topAnchor, constant: 3).isActive = true
-            funcCell.alphaView.bottomAnchor.constraint(equalTo: funcCell.containerView.bottomAnchor, constant: -3).isActive = true
-            funcCell.alphaView.widthAnchor.constraint(equalToConstant: 140).isActive = true
-            funcCell.alphaView.trailingAnchor.constraint(equalTo: funcCell.containerView.trailingAnchor, constant: -10).isActive = true
-            
-            funcCell.alphaView.layer.cornerRadius = 0.08 * funcCell.alphaView.bounds.size.width
-            funcCell.alphaView.clipsToBounds = true
-            
-            funcCell.startLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.startLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
-            funcCell.startLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
-            funcCell.startLabel.leadingAnchor.constraint(equalTo: funcCell.alphaView.leadingAnchor, constant: 5).isActive = true
-            funcCell.startLabel.trailingAnchor.constraint(equalTo: funcCell.toLabel.leadingAnchor, constant: -5).isActive = true
-            
-            funcCell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
-            
-            
-            funcCell.toLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.toLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 0).isActive = true
-            funcCell.toLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -4).isActive = true
-            funcCell.toLabel.centerXAnchor.constraint(equalTo: funcCell.alphaView.centerXAnchor).isActive = true
-            
-            funcCell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 22)
-            
-            
-            funcCell.endLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.endLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
-            funcCell.endLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
-            funcCell.endLabel.leadingAnchor.constraint(equalTo: funcCell.toLabel.trailingAnchor, constant: 5).isActive = true
-            funcCell.endLabel.trailingAnchor.constraint(equalTo: funcCell.alphaView.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 12.5)
-            
-            return funcCell
-            
-        case 50.0:
-            
-            let funcCell = cell as! CollabTwentyFiveMinCell
-            
-            funcCell.outlineView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.outlineView.topAnchor.constraint(equalTo: funcCell.topAnchor, constant: 0.5).isActive = true
-            funcCell.outlineView.bottomAnchor.constraint(equalTo: funcCell.bottomAnchor, constant: -0.5).isActive = true
-            funcCell.outlineView.leadingAnchor.constraint(equalTo: funcCell.leadingAnchor, constant: 5).isActive = true
-            funcCell.outlineView.trailingAnchor.constraint(equalTo: funcCell.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.outlineView.backgroundColor = blockColor
-            funcCell.outlineView.layer.cornerRadius = 0.035 * funcCell.outlineView.bounds.size.width
-            funcCell.outlineView.clipsToBounds = true
-            
-            funcCell.containerView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.containerView.topAnchor.constraint(equalTo: funcCell.outlineView.topAnchor, constant: 4).isActive = true
-            funcCell.containerView.bottomAnchor.constraint(equalTo: funcCell.outlineView.bottomAnchor, constant: -4).isActive = true
-            funcCell.containerView.leadingAnchor.constraint(equalTo: funcCell.outlineView.leadingAnchor, constant: 2).isActive = true
-            funcCell.containerView.trailingAnchor.constraint(equalTo: funcCell.outlineView.trailingAnchor, constant: -2).isActive = true
-            
-            funcCell.containerView.layer.cornerRadius = 0.035 * funcCell.containerView.bounds.size.width
-            funcCell.containerView.clipsToBounds = true
-            
-            funcCell.initialOutline.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.initialOutline.leadingAnchor.constraint(equalTo: funcCell.containerView.leadingAnchor, constant: 5).isActive = true
-            funcCell.initialOutline.centerYAnchor.constraint(equalTo: funcCell.containerView.centerYAnchor).isActive = true
-            funcCell.initialOutline.widthAnchor.constraint(equalToConstant: 34).isActive = true
-            funcCell.initialOutline.heightAnchor.constraint(equalToConstant: 34).isActive = true
-            
-            funcCell.initialOutline.backgroundColor = blockColor
-            funcCell.initialOutline.layer.cornerRadius = 0.5 * 34
-            funcCell.initialOutline.clipsToBounds = true
-            
-            
-            funcCell.initialLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.initialLabel.centerXAnchor.constraint(equalTo: funcCell.initialOutline.centerXAnchor).isActive = true
-            funcCell.initialLabel.centerYAnchor.constraint(equalTo: funcCell.initialOutline.centerYAnchor).isActive = true
-            funcCell.initialLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
-            funcCell.initialLabel.heightAnchor.constraint(equalToConstant: 30).isActive = true
-            
-            funcCell.initialLabel.font = UIFont(name: "HelveticaNeue", size: 13)
-
-            funcCell.initialLabel.backgroundColor = UIColor.lightGray.lighten(byPercentage: 0.1)
-            funcCell.initialLabel.layer.cornerRadius = 0.5 * 30
-            funcCell.initialLabel.clipsToBounds = true
-            
-            funcCell.nameLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.nameLabel.topAnchor.constraint(equalTo: funcCell.containerView.topAnchor, constant: 1).isActive = true
-            funcCell.nameLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: -4).isActive = true
-            funcCell.nameLabel.leadingAnchor.constraint(equalTo: funcCell.containerView.leadingAnchor, constant: 50).isActive = true
-            funcCell.nameLabel.trailingAnchor.constraint(equalTo: funcCell.containerView.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.nameLabel.adjustsFontSizeToFitWidth = true
-            funcCell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 16.0)
-            
-            funcCell.alphaView.translatesAutoresizingMaskIntoConstraints = false
-            
-            if UIScreen.main.bounds.width == 320.0 && UIScreen.main.bounds.height == 568 {
-                
-                funcCell.alphaView.leadingAnchor.constraint(equalTo: funcCell.nameLabel.leadingAnchor, constant: 20).isActive = true
-                funcCell.alphaView.trailingAnchor.constraint(equalTo: funcCell.nameLabel.trailingAnchor, constant: -20).isActive = true
-                funcCell.alphaView.bottomAnchor.constraint(equalTo: funcCell.containerView.bottomAnchor, constant: -4).isActive = true
-                funcCell.alphaView.heightAnchor.constraint(equalToConstant: 15).isActive = true
-            }
-            else {
-                
-                funcCell.alphaView.leadingAnchor.constraint(equalTo: funcCell.nameLabel.leadingAnchor, constant: 45).isActive = true
-                funcCell.alphaView.trailingAnchor.constraint(equalTo: funcCell.nameLabel.trailingAnchor, constant: -45).isActive = true
-                funcCell.alphaView.bottomAnchor.constraint(equalTo: funcCell.containerView.bottomAnchor, constant: -4).isActive = true
-                funcCell.alphaView.heightAnchor.constraint(equalToConstant: 15).isActive = true
-            }
-            
-            funcCell.alphaView.layer.cornerRadius = 0.0475 * funcCell.alphaView.bounds.size.width
-            funcCell.alphaView.clipsToBounds = true
-            
-            funcCell.startLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.startLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
-            funcCell.startLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
-            funcCell.startLabel.leadingAnchor.constraint(equalTo: funcCell.alphaView.leadingAnchor, constant: 10).isActive = true
-            funcCell.startLabel.trailingAnchor.constraint(equalTo: funcCell.toLabel.leadingAnchor, constant: -5).isActive = true
-            
-            funcCell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
-            
-            
-            funcCell.toLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.toLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 0).isActive = true
-            funcCell.toLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -4).isActive = true
-            funcCell.toLabel.centerXAnchor.constraint(equalTo: funcCell.alphaView.centerXAnchor).isActive = true
-            
-            funcCell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 24)
-            
-            
-            funcCell.endLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.endLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
-            funcCell.endLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
-            funcCell.endLabel.leadingAnchor.constraint(equalTo: funcCell.toLabel.trailingAnchor, constant: 5).isActive = true
-            funcCell.endLabel.trailingAnchor.constraint(equalTo: funcCell.alphaView.trailingAnchor, constant: -10).isActive = true
-            
-            funcCell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
-            
-            return funcCell
-            
-        default:
-            
-            let funcCell = cell as! CollabThirtyMinAndUpCell
-            
-            funcCell.outlineView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.outlineView.topAnchor.constraint(equalTo: funcCell.topAnchor, constant: 0.5).isActive = true
-            funcCell.outlineView.bottomAnchor.constraint(equalTo: funcCell.bottomAnchor, constant: -0.5).isActive = true
-            funcCell.outlineView.leadingAnchor.constraint(equalTo: funcCell.leadingAnchor, constant: 5).isActive = true
-            funcCell.outlineView.trailingAnchor.constraint(equalTo: funcCell.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.outlineView.backgroundColor = blockColor
-            funcCell.outlineView.layer.cornerRadius = 0.035 * funcCell.outlineView.bounds.size.width
-            funcCell.outlineView.clipsToBounds = true
-            
-            funcCell.superContainerView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.superContainerView.topAnchor.constraint(equalTo: funcCell.outlineView.topAnchor, constant: 4).isActive = true
-            funcCell.superContainerView.bottomAnchor.constraint(equalTo: funcCell.outlineView.bottomAnchor, constant: -4).isActive = true
-            funcCell.superContainerView.leadingAnchor.constraint(equalTo: funcCell.outlineView.leadingAnchor, constant: 2).isActive = true
-            funcCell.superContainerView.trailingAnchor.constraint(equalTo: funcCell.outlineView.trailingAnchor, constant: -2).isActive = true
-            
-            funcCell.superContainerView.layer.cornerRadius = 0.035 * funcCell.superContainerView.bounds.size.width
-            funcCell.superContainerView.clipsToBounds = true
-            
-            
-            funcCell.subContainerView.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.subContainerView.topAnchor.constraint(equalTo: funcCell.superContainerView.topAnchor, constant: 5).isActive = true
-            funcCell.subContainerView.heightAnchor.constraint(equalToConstant: 40).isActive = true
-            funcCell.subContainerView.leadingAnchor.constraint(equalTo: funcCell.superContainerView.leadingAnchor, constant: 5).isActive = true
-            funcCell.subContainerView.trailingAnchor.constraint(equalTo: funcCell.superContainerView.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.subContainerView.backgroundColor = .none
-            
-            funcCell.initialOutline.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.initialOutline.leadingAnchor.constraint(equalTo: funcCell.subContainerView.leadingAnchor, constant: 5).isActive = true
-            funcCell.initialOutline.centerYAnchor.constraint(equalTo: funcCell.subContainerView.centerYAnchor).isActive = true
-            funcCell.initialOutline.widthAnchor.constraint(equalToConstant: 40).isActive = true
-            funcCell.initialOutline.heightAnchor.constraint(equalToConstant: 40).isActive = true
-            
-            funcCell.initialOutline.backgroundColor = blockColor
-            funcCell.initialOutline.layer.cornerRadius = 0.5 * 40
-            funcCell.initialOutline.clipsToBounds = true
-            
-            
-            funcCell.initialLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.initialLabel.centerXAnchor.constraint(equalTo: funcCell.initialOutline.centerXAnchor).isActive = true
-            funcCell.initialLabel.centerYAnchor.constraint(equalTo: funcCell.initialOutline.centerYAnchor).isActive = true
-            funcCell.initialLabel.widthAnchor.constraint(equalToConstant: 36).isActive = true
-            funcCell.initialLabel.heightAnchor.constraint(equalToConstant: 36).isActive = true
-            
-            funcCell.initialLabel.font = UIFont(name: "HelveticaNeue", size: 17)
-    
-            funcCell.initialLabel.backgroundColor = UIColor.lightGray.lighten(byPercentage: 0.1)
-            funcCell.initialLabel.layer.cornerRadius = 0.5 * 36
-            funcCell.initialLabel.clipsToBounds = true
-            
-            funcCell.nameLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.nameLabel.topAnchor.constraint(equalTo: funcCell.subContainerView.topAnchor, constant: 1).isActive = true
-            funcCell.nameLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: -4).isActive = true
-            funcCell.nameLabel.leadingAnchor.constraint(equalTo: funcCell.subContainerView.leadingAnchor, constant: 50).isActive = true
-            funcCell.nameLabel.trailingAnchor.constraint(equalTo: funcCell.subContainerView.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.nameLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 18.0)
-            funcCell.nameLabel.adjustsFontSizeToFitWidth = true
-            
-            funcCell.alphaView.translatesAutoresizingMaskIntoConstraints = false
-            
-            if UIScreen.main.bounds.width == 320.0 && UIScreen.main.bounds.height == 568 {
-                
-                funcCell.alphaView.leadingAnchor.constraint(equalTo: funcCell.nameLabel.leadingAnchor, constant: 20).isActive = true
-                funcCell.alphaView.trailingAnchor.constraint(equalTo: funcCell.nameLabel.trailingAnchor, constant: -20).isActive = true
-                funcCell.alphaView.bottomAnchor.constraint(equalTo: funcCell.subContainerView.bottomAnchor, constant: -4).isActive = true
-                funcCell.alphaView.heightAnchor.constraint(equalToConstant: 15).isActive = true
-                
-            }
-            else {
-                
-                funcCell.alphaView.leadingAnchor.constraint(equalTo: funcCell.nameLabel.leadingAnchor, constant: 30).isActive = true
-                funcCell.alphaView.trailingAnchor.constraint(equalTo: funcCell.nameLabel.trailingAnchor, constant: -30).isActive = true
-                funcCell.alphaView.bottomAnchor.constraint(equalTo: funcCell.subContainerView.bottomAnchor, constant: -4).isActive = true
-                funcCell.alphaView.heightAnchor.constraint(equalToConstant: 15).isActive = true
-                
-                
-            }
-            
-            funcCell.alphaView.layer.cornerRadius = 0.04 * funcCell.alphaView.bounds.size.width
-            funcCell.alphaView.clipsToBounds = true
-            
-            funcCell.startLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.startLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
-            funcCell.startLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
-            funcCell.startLabel.leadingAnchor.constraint(equalTo: funcCell.alphaView.leadingAnchor, constant: 5).isActive = true
-            funcCell.startLabel.trailingAnchor.constraint(equalTo: funcCell.toLabel.leadingAnchor, constant: -5).isActive = true
-            
-            funcCell.startLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
-            
-            funcCell.toLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.toLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 0).isActive = true
-            funcCell.toLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -4).isActive = true
-            funcCell.toLabel.centerXAnchor.constraint(equalTo: funcCell.alphaView.centerXAnchor).isActive = true
-            
-            funcCell.toLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 24)
-            
-            
-            funcCell.endLabel.translatesAutoresizingMaskIntoConstraints = false
-            
-            funcCell.endLabel.topAnchor.constraint(equalTo: funcCell.alphaView.topAnchor, constant: 1.5).isActive = true
-            funcCell.endLabel.bottomAnchor.constraint(equalTo: funcCell.alphaView.bottomAnchor, constant: -1.5).isActive = true
-            funcCell.endLabel.leadingAnchor.constraint(equalTo: funcCell.toLabel.trailingAnchor, constant: 5).isActive = true
-            funcCell.endLabel.trailingAnchor.constraint(equalTo: funcCell.alphaView.trailingAnchor, constant: -5).isActive = true
-            
-            funcCell.endLabel.font = UIFont(name: "HelveticaNeue-Thin", size: 13)
-            
-            return funcCell
-        }
-    }
-    
     //Function responsible for animating a CollabBlock
     func animateBlock (_ cell: UITableViewCell, _ cellHeight: CGFloat, _ indexPath: IndexPath) {
         
@@ -1393,6 +670,148 @@ extension CollabBlockViewController {
             else {
                 funcCell.outlineView.frame.origin.x = 5.0
             }
+        }
+    }
+    
+    func deleteCollab () {
+        
+        db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").document(collabID).delete { (error) in
+            
+            if error != nil {
+                ProgressHUD.showError(error?.localizedDescription)
+            }
+        }
+        
+        db.collection("Users").document(currentUser.userID).collection("HistoricCollabs").document(collabID).delete { (error) in
+            
+            if error != nil {
+                ProgressHUD.showError(error?.localizedDescription)
+            }
+        }
+        
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    
+    @IBAction func addBlockButton(_ sender: Any) {
+        
+        selectedView = "Add"
+        performSegue(withIdentifier: "moveToAUBlockView", sender: self)
+    }
+    
+    
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        
+        let deleteAlert = UIAlertController(title: "Are you sure you would like to delete this Collab?" , message: "All data associated with this Collab will also be deleted.", preferredStyle: .actionSheet)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { (deleteAction) in
+            
+            self.deleteCollab()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        deleteAlert.addAction(deleteAction)
+        deleteAlert.addAction(cancelAction)
+        
+        present(deleteAlert, animated: true, completion: nil)
+    }
+    
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "presentBlockPopover" {
+            
+            let bigBlockVC = segue.destination as! CollabBlockPopoverViewController
+            
+            bigBlockVC.updateCollabBlockDelegate = self
+            bigBlockVC.deleteCollabBlockDelegate = self
+            
+            bigBlockVC.collabID = collabID
+            bigBlockVC.blockID = bigBlockID
+        }
+        
+        else if segue.identifier == "moveToAUBlockView" {
+            
+            let add_updateBlockVC = segue.destination as! AUCollabBlockViewController
+            add_updateBlockVC.collabID = collabID
+            add_updateBlockVC.collabDate = collabDate
+            add_updateBlockVC.selectedView = selectedView
+            
+            if selectedView == "Edit" {
+                add_updateBlockVC.selectedBlock = selectedBlock
+            }
+            
+            let backItem = UIBarButtonItem()
+            backItem.title = "Cancel"
+            navigationItem.backBarButtonItem = backItem
+        }
+    }
+}
+
+extension CollabBlockViewController: UpdateCollabBlock {
+    
+    func moveToUpdateView () {
+        
+        selectedView = "Edit"
+        performSegue(withIdentifier: "moveToAUBlockView", sender: self)
+    }
+}
+
+extension CollabBlockViewController: DeleteCollabBlock {
+    
+    func deleteBlock () {
+        
+        db.collection("Collaborations").document(collabID).collection("CollabBlocks").document(bigBlockID).delete { (error) in
+            
+            if error != nil {
+                ProgressHUD.showError(error?.localizedDescription)
+            }
+            else {
+                
+                ProgressHUD.showSuccess("Collab Block deleted!")
+                
+                if let notifSettings = self.selectedBlock?.notificationSettings[self.currentUser.userID] {
+                    UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notifSettings["notificationID"] as! String])
+                }
+                
+                self.getCollabBlocks {
+                    
+                    self.blockArray = self.organizeBlocks(self.sortCollabBlocks(), self.functionTuple)
+                    self.blockTableView.reloadData()
+                    self.scrollToFirstBlock()
+                }
+            }
+        }
+    }
+}
+
+extension CollabBlockViewController: UITabBarControllerDelegate {
+
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        
+        if tabBarController.selectedIndex != 3 {
+            tabBarController.delegate = nil
+        }
+    }
+
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        
+        if viewController == navigationController {
+            
+            if currentUser.userID != "" {
+                
+                navigationController?.popToViewController(navigationController!.viewControllers[1], animated: true)
+                return false
+            }
+            
+            else {
+                return true
+            }
+        }
+        
+        else {
+            return true
         }
     }
 }
