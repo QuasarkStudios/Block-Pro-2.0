@@ -96,7 +96,5 @@ class RadialGradients: UIView {
         UIGraphicsGetCurrentContext()!.drawRadialGradient(innerGradient!, startCenter: center , startRadius: 5, endCenter: center, endRadius: endRadius, options: CGGradientDrawingOptions.drawsBeforeStartLocation)
         
         UIGraphicsGetCurrentContext()!.drawRadialGradient(outerGradient!, startCenter: center, startRadius: startRadius, endCenter: center, endRadius: 400, options: CGGradientDrawingOptions.drawsAfterEndLocation)
-        
     }
-
 }

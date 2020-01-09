@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3GI-Ou-WB8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="3GI-Ou-WB8">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -31,10 +31,10 @@
                                     <constraint firstAttribute="height" constant="135" id="5XR-Tp-4VQ"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RZd-bY-tCz">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RZd-bY-tCz" customClass="CardContainer" customModule="Block_Pro" customModuleProvider="target">
                                 <rect key="frame" x="15" y="163" width="345" height="566"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tWH-YV-GXF">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tWH-YV-GXF" customClass="CardView" customModule="Block_Pro" customModuleProvider="target">
                                         <rect key="frame" x="1" y="1" width="343" height="564"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5 Minutes Free" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dk4-Al-9t2">
@@ -75,10 +75,10 @@
                                     <constraint firstItem="tWH-YV-GXF" firstAttribute="leading" secondItem="RZd-bY-tCz" secondAttribute="leading" constant="1" id="g34-Zb-QL9"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gfg-cH-RDE">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gfg-cH-RDE" customClass="CardContainer" customModule="Block_Pro" customModuleProvider="target">
                                 <rect key="frame" x="15" y="218" width="345" height="511"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5lU-zo-ZNv">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5lU-zo-ZNv" customClass="CardView" customModule="Block_Pro" customModuleProvider="target">
                                         <rect key="frame" x="1" y="1" width="343" height="509"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10 Minutes Free" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CRt-cJ-afR">
@@ -119,19 +119,24 @@
                                     <constraint firstItem="5lU-zo-ZNv" firstAttribute="leading" secondItem="Gfg-cH-RDE" secondAttribute="leading" constant="1" id="fIQ-0l-ZE0"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OGm-WA-Buj">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OGm-WA-Buj" customClass="CardContainer" customModule="Block_Pro" customModuleProvider="target">
                                 <rect key="frame" x="15" y="273" width="345" height="456"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m6t-Rk-6Tt">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m6t-Rk-6Tt" customClass="CardView" customModule="Block_Pro" customModuleProvider="target">
                                         <rect key="frame" x="1" y="1" width="343" height="454"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="15 Minutes Free" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AIv-0w-ihQ">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AIv-0w-ihQ">
                                                 <rect key="frame" x="20" y="0.0" width="323" height="53"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="53" id="VJM-6u-pYs"/>
                                                 </constraints>
-                                                <fontDescription key="fontDescription" name="Verdana-Bold" family="Verdana" pointSize="17"/>
-                                                <nil key="textColor"/>
+                                                <attributedString key="attributedText">
+                                                    <fragment content="15 Minutes Free">
+                                                        <attributes>
+                                                            <font key="NSFont" size="17" name="Verdana-Bold"/>
+                                                        </attributes>
+                                                    </fragment>
+                                                </attributedString>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" alpha="0.5" tag="2" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xy2-eL-wTt">
@@ -163,10 +168,10 @@
                                     <constraint firstAttribute="bottom" secondItem="m6t-Rk-6Tt" secondAttribute="bottom" constant="1" id="uCf-Ac-sV7"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0wZ-2s-a9t">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0wZ-2s-a9t" customClass="CardContainer" customModule="Block_Pro" customModuleProvider="target">
                                 <rect key="frame" x="15" y="328" width="345" height="401"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YQb-2B-Lum">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YQb-2B-Lum" customClass="CardView" customModule="Block_Pro" customModuleProvider="target">
                                         <rect key="frame" x="1" y="1" width="343" height="399"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="30 Minutes Free" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KPS-BQ-6fQ">
@@ -207,10 +212,10 @@
                                     <constraint firstItem="YQb-2B-Lum" firstAttribute="top" secondItem="0wZ-2s-a9t" secondAttribute="top" constant="1" id="sdy-KV-UNf"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UR8-64-c1G" userLabel="Fourty Five Min Container">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UR8-64-c1G" userLabel="Fourty Five Min Container" customClass="CardContainer" customModule="Block_Pro" customModuleProvider="target">
                                 <rect key="frame" x="15" y="383" width="345" height="346"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SEh-hy-jCq">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SEh-hy-jCq" customClass="CardView" customModule="Block_Pro" customModuleProvider="target">
                                         <rect key="frame" x="1" y="1" width="343" height="344"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="45 Minutes Free" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5tZ-Hd-Imh">
@@ -251,10 +256,10 @@
                                     <constraint firstItem="SEh-hy-jCq" firstAttribute="leading" secondItem="UR8-64-c1G" secondAttribute="leading" constant="1" id="rwD-ii-vGL"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mzl-MF-7se">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mzl-MF-7se" customClass="CardContainer" customModule="Block_Pro" customModuleProvider="target">
                                 <rect key="frame" x="15" y="438" width="345" height="291"/>
                                 <subviews>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eRV-Md-KGG">
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eRV-Md-KGG" customClass="CardView" customModule="Block_Pro" customModuleProvider="target">
                                         <rect key="frame" x="1" y="1" width="343" height="289"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1 Hour Free" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rap-rZ-GnT">

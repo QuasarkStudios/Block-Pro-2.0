@@ -122,87 +122,12 @@ class FreeTimeViewController: UIViewController {
     
     func configureContainers () {
         
-        //5 Minute Card
         view.bringSubviewToFront(fiveMinContainer)
-        
-        fiveMinContainer.backgroundColor = fiveMinContainer.backgroundColor?.darken(byPercentage: 0.1)
-        
-        fiveMinContainer.layer.cornerRadius = 0.08 * fiveMinContainer.bounds.size.width
-        fiveMinContainer.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        fiveMinContainer.clipsToBounds = true
-        
-        fiveMinView.layer.cornerRadius = 0.075 * fiveMinView.bounds.size.width
-        fiveMinView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        fiveMinView.clipsToBounds = true
-        
-        //10 Minute Card
         view.bringSubviewToFront(tenMinContainer)
-        
-        tenMinContainer.backgroundColor = tenMinContainer.backgroundColor?.darken(byPercentage: 0.1)
-        
-        tenMinContainer.layer.cornerRadius = 0.08 * tenMinContainer.bounds.size.width
-        tenMinContainer.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        tenMinContainer.clipsToBounds = true
-        
-        tenMinView.layer.cornerRadius = 0.075 * fiveMinView.bounds.size.width
-        tenMinView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        tenMinView.clipsToBounds = true
-        
-        //15 Minute Card
         view.bringSubviewToFront(fifteenMinContainer)
-        
-        fifteenMinContainer.backgroundColor = fifteenMinContainer.backgroundColor?.darken(byPercentage: 0.1)
-        
-        fifteenMinContainer.layer.cornerRadius = 0.08 * tenMinContainer.bounds.size.width
-        fifteenMinContainer.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        fifteenMinContainer.clipsToBounds = true
-        
-        
-        fifteenMinView.layer.cornerRadius = 0.075 * fiveMinView.bounds.size.width
-        fifteenMinView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        fifteenMinView.clipsToBounds = true
-        
-        //30 Minute Card
         view.bringSubviewToFront(thirtyMinContainer)
-        
-        thirtyMinContainer.backgroundColor = thirtyMinContainer.backgroundColor?.darken(byPercentage: 0.1)
-        
-        thirtyMinContainer.layer.cornerRadius = 0.08 * thirtyMinContainer.bounds.size.width
-        thirtyMinContainer.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        thirtyMinContainer.clipsToBounds = true
-
-        
-        thirtyMinView.layer.cornerRadius = 0.075 * fiveMinView.bounds.size.width
-        thirtyMinView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        thirtyMinView.clipsToBounds = true
-        
-        //45 Minute Card
         view.bringSubviewToFront(fourty_fiveMinContainer)
-        
-        fourty_fiveMinContainer.backgroundColor = fourty_fiveMinContainer.backgroundColor?.darken(byPercentage: 0.1)
-        
-        fourty_fiveMinContainer.layer.cornerRadius = 0.08 * fourty_fiveMinContainer.bounds.size.width
-        fourty_fiveMinContainer.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        fourty_fiveMinContainer.clipsToBounds = true
-        
-        
-        fourty_fiveMinView.layer.cornerRadius = 0.075 * fourty_fiveMinView.bounds.size.width
-        fourty_fiveMinView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        fourty_fiveMinView.clipsToBounds = true
-        
-        //1 Hour Card
         view.bringSubviewToFront(oneHourContainer)
-        
-        oneHourContainer.backgroundColor = oneHourContainer.backgroundColor?.darken(byPercentage: 0.1)
-        
-        oneHourContainer.layer.cornerRadius = 0.08 * oneHourContainer.bounds.size.width
-        oneHourContainer.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        oneHourContainer.clipsToBounds = true
-        
-        
-        oneHourView.layer.cornerRadius = 0.075 * oneHourView.bounds.size.width
-        oneHourView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        oneHourView.clipsToBounds = true
         
         //Adding the UIView, top anchor, bottom anchor, and animation status of each card to the "cards" array
         cards.append(["card" : fiveMinContainer!, "cardTopAnchor" : fiveMinTopAnchor!, "cardBottomAnchor" : fiveMinBottomAnchor!, "labelTopAnchor" : fiveLabelTopAnchor!, "cardAnimated" : false])
