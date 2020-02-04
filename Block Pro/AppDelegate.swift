@@ -27,7 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let tabBarController = self.window?.rootViewController as! UITabBarController
         tabBarController.selectedIndex = 2
 
-        UINavigationBar.appearance().tintColor = UIColor(hexString: "#e35d5b")
+//        UINavigationBar.appearance().tintColor = UIColor(hexString: "#e35d5b")
+        UINavigationBar.appearance().tintColor = .black
         UITabBar.appearance().tintColor = UIColor(hexString: "#e35d5b")
         
         UNUserNotificationCenter.current().delegate = self

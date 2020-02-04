@@ -8,6 +8,112 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Home-->
+        <scene sceneID="gi7-yj-d6J">
+            <objects>
+                <viewController id="3Mf-SO-JUs" customClass="HomeViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="WMI-rd-sby">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Nimat's Face" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cf2-P4-RvC">
+                                <rect key="frame" x="23" y="44" width="55" height="55"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tPM-xI-MVD">
+                                <rect key="frame" x="0.0" y="113" width="100" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="12"/>
+                                <state key="normal" title="Personal">
+                                    <color key="titleColor" red="0.70588235294117641" green="0.71372549019607845" blue="0.7803921568627451" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="monthlyButton:" destination="hyC-FP-KMM" eventType="touchUpInside" id="BWh-nn-OUZ"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Ru-72-iqh">
+                                <rect key="frame" x="275" y="113" width="100" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="12"/>
+                                <state key="normal" title="Collabs">
+                                    <color key="titleColor" red="0.70588235294117641" green="0.71372549019607845" blue="0.7803921568627451" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="weeklyButton:" destination="hyC-FP-KMM" eventType="touchUpInside" id="XWK-zG-nih"/>
+                                </connections>
+                            </button>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Q4j-qX-POR" customClass="SelectionIndicator" customModule="Block_Pro" customModuleProvider="target">
+                                <rect key="frame" x="148" y="112" width="80" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.94901960784313721" green="0.14901960784313725" blue="0.074509803921568626" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OlG-fK-GnA">
+                                <rect key="frame" x="138" y="113" width="100" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="12"/>
+                                <state key="normal" title="Both">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="dailyButton:" destination="hyC-FP-KMM" eventType="touchUpInside" id="D9G-KG-1dR"/>
+                                </connections>
+                            </button>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="kXD-a7-cJw">
+                                <rect key="frame" x="0.0" y="147" width="375" height="533"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="IJg-wJ-IMg">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="IJg-wJ-IMg" id="831-H6-h3v">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="kXD-a7-cJw" firstAttribute="top" secondItem="WMI-rd-sby" secondAttribute="top" constant="147" id="2Af-w2-ufs"/>
+                            <constraint firstItem="dgE-Y1-3mr" firstAttribute="bottom" secondItem="kXD-a7-cJw" secondAttribute="bottom" id="7pG-IN-ebw"/>
+                            <constraint firstItem="kXD-a7-cJw" firstAttribute="leading" secondItem="dgE-Y1-3mr" secondAttribute="leading" id="E08-nk-p52"/>
+                            <constraint firstItem="kXD-a7-cJw" firstAttribute="trailing" secondItem="dgE-Y1-3mr" secondAttribute="trailing" id="HHj-oi-Hxy"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="dgE-Y1-3mr"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Home" image="home" id="C2l-j2-0lO"/>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" id="HSI-Sa-qJq">
+                        <barButtonItem key="rightBarButtonItem" image="genius" id="Rlp-nR-gzh"/>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="faceImage" destination="cf2-P4-RvC" id="Im7-uu-47p"/>
+                        <outlet property="homeTableView" destination="kXD-a7-cJw" id="ZJS-EY-Ur8"/>
+                        <outlet property="selectionIndicator" destination="Q4j-qX-POR" id="42c-Xm-IOA"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YgO-hF-ygr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1261.5999999999999" y="-1017.4876847290641"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="7NM-TJ-0e5">
+            <objects>
+                <viewController id="9RS-Fm-7HK" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="jFg-L9-Iay">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="z12-Yg-UeT"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="J5T-Ps-uZh"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZyE-da-Cgo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2033" y="-1065"/>
+        </scene>
         <!--Time Block-->
         <scene sceneID="gLf-lS-UKu">
             <objects>
@@ -17,7 +123,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fve-Nh-PIx" userLabel="timeTableView">
-                                <rect key="frame" x="0.0" y="284.66666666666674" width="63" height="444.33333333333326"/>
+                                <rect key="frame" x="0.0" y="240.66666666666666" width="63" height="488.33333333333337"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="63" id="E1h-fi-qdv"/>
@@ -34,7 +140,7 @@
                                 </prototypes>
                             </tableView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="iI0-0F-O4B" userLabel="blockTableView">
-                                <rect key="frame" x="63.666666666666657" y="284.66666666666674" width="311.33333333333337" height="444.33333333333326"/>
+                                <rect key="frame" x="63.666666666666657" y="240.66666666666666" width="311.33333333333337" height="488.33333333333337"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="fiveMinCell" rowHeight="40" id="Bb2-Kv-qjW" customClass="TimeFiveMinCell" customModule="Block_Pro" customModuleProvider="target">
@@ -582,7 +688,7 @@
                                 </prototypes>
                             </tableView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zjp-3g-y2g" userLabel="Button Container">
-                                <rect key="frame" x="0.0" y="88.666666666666671" width="375" height="40.000000000000014"/>
+                                <rect key="frame" x="0.0" y="44.666666666666657" width="375" height="40"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YIf-t5-V3G">
                                         <rect key="frame" x="14.999999999999996" y="1" width="52.666666666666657" height="38"/>
@@ -639,7 +745,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jRh-5S-ZpK">
-                                <rect key="frame" x="5" y="133.66666666666666" width="365" height="149.99999999999997"/>
+                                <rect key="frame" x="5" y="89.666666666666686" width="365" height="150"/>
                                 <subviews>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="KUm-KZ-R2F" customClass="JTAppleCalendarView" customModule="JTAppleCalendar">
                                         <rect key="frame" x="2" y="0.0" width="361" height="148"/>
@@ -792,7 +898,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fei-C3-M3C">
-                                <rect key="frame" x="63" y="284" width="0.6666666666666643" height="445"/>
+                                <rect key="frame" x="63" y="240" width="0.6666666666666643" height="489"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="0.5" id="ZLH-qg-JE9"/>
@@ -1024,11 +1130,11 @@
             <objects>
                 <viewController id="Mbg-tS-1pY" customClass="Add_Update_BlockViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="jXO-Is-Omx">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7qU-9n-eua">
-                                <rect key="frame" x="8" y="108" width="359" height="160"/>
+                                <rect key="frame" x="8" y="20" width="359" height="160"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dbr-cs-DAH" userLabel="Block Container">
                                         <rect key="frame" x="4" y="7" width="351" height="146"/>
@@ -1118,7 +1224,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Eav-8s-jQm">
-                                <rect key="frame" x="0.0" y="288" width="375" height="85"/>
+                                <rect key="frame" x="0.0" y="200" width="375" height="85"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="82F-dR-UkT">
                                         <rect key="frame" x="37.666666666666657" y="5" width="300" height="33"/>
@@ -1189,7 +1295,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gQF-um-Udz">
-                                <rect key="frame" x="10" y="700" width="355" height="225"/>
+                                <rect key="frame" x="10" y="612" width="355" height="225"/>
                                 <subviews>
                                     <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="G9v-Vd-eTb">
                                         <rect key="frame" x="0.0" y="0.0" width="355" height="225"/>
@@ -1205,7 +1311,7 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F5w-Ky-rjW">
-                                <rect key="frame" x="10" y="443" width="355" height="225"/>
+                                <rect key="frame" x="10" y="355" width="355" height="225"/>
                                 <subviews>
                                     <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="5" translatesAutoresizingMaskIntoConstraints="NO" id="CVV-nG-mE5">
                                         <rect key="frame" x="0.0" y="0.0" width="355" height="225"/>
@@ -1280,7 +1386,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="hyC-FP-KMM" kind="relationship" relationship="rootViewController" id="Dqz-VJ-jFX"/>
+                        <segue destination="3Mf-SO-JUs" kind="relationship" relationship="rootViewController" id="Bgw-hN-PYR"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WjF-EC-zZI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -1289,6 +1395,9 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Nimat's Face" width="283" height="327"/>
+        <image name="genius" width="30" height="30"/>
+        <image name="home" width="30" height="30"/>
         <image name="icons8-back-25" width="25" height="25"/>
         <image name="icons8-forward-25" width="25" height="25"/>
         <image name="plus" width="30" height="30"/>
