@@ -22,15 +22,15 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="55"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1/5 - 1/11" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RJ8-Ib-gMt">
-                        <rect key="frame" x="23" y="0.0" width="297" height="55"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1/5 - 1/11" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RJ8-Ib-gMt">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="55"/>
                         <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="25"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="RJ8-Ib-gMt" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="23" id="08k-6S-ux9"/>
+                    <constraint firstItem="RJ8-Ib-gMt" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="08k-6S-ux9"/>
                     <constraint firstAttribute="bottom" secondItem="RJ8-Ib-gMt" secondAttribute="bottom" id="2AY-T8-s9q"/>
                     <constraint firstItem="RJ8-Ib-gMt" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="9Qe-cm-ujk"/>
                     <constraint firstAttribute="trailing" secondItem="RJ8-Ib-gMt" secondAttribute="trailing" id="Kmg-9u-0yM"/>

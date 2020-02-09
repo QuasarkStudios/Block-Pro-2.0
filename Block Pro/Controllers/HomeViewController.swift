@@ -11,13 +11,16 @@ import UIKit
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var faceImage: UIImageView!
+    
     @IBOutlet weak var selectionIndicator: SelectionIndicator!
     
     @IBOutlet weak var homeTableView: UITableView!
     
+    @IBOutlet weak var monthButton: UIButton!
+    
     let formatter = DateFormatter()
     
-    var weekSectionArray: [[String]] = [[]]
+    var weekSectionArray: [[Date]] = [[]]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,11 +30,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.navigationController?.navigationBar.isTranslucent = true
         self.navigationController?.view.backgroundColor = .clear
         
-        
         formatter.dateFormat = "MMMM"
-        
         navigationItem.title = formatter.string(from: Date())
-        
         self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 25)!]
         
         faceImage.layer.cornerRadius = 0.5 * faceImage.bounds.width
@@ -42,10 +42,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         homeTableView.showsVerticalScrollIndicator = false
         homeTableView.separatorStyle = .none
-        homeTableView.rowHeight = 350
+        //homeTableView.rowHeight = 430
         
         homeTableView.register(UINib(nibName: "WeekHeaderCell", bundle: nil), forCellReuseIdentifier: "weekHeaderCell")
         homeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: "HomeCell")
+        
+        monthButton.layer.cornerRadius = 0.5 * monthButton.bounds.width
+        monthButton.clipsToBounds = true
+        view.bringSubviewToFront(monthButton)
         
         determineWeeks()
         
@@ -71,11 +75,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         else {
     
-            return 350
+            return 450
         }
-        
     }
-    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -86,12 +88,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             if weekSectionArray[indexPath.section].count == 1 {
                 
-                cell.weekRangeLabel.text = weekSectionArray[indexPath.section][indexPath.row]
+                formatter.dateFormat = "M/d"
+                cell.weekRangeLabel.text = formatter.string(from: weekSectionArray[indexPath.section][indexPath.row])
             }
             
             else {
                 
-                cell.weekRangeLabel.text = weekSectionArray[indexPath.section].first! + " - " + weekSectionArray[indexPath.section].last!
+                formatter.dateFormat = "M/d"
+                cell.weekRangeLabel.text = formatter.string(from: weekSectionArray[indexPath.section].first!) + " - " + formatter.string(from: weekSectionArray[indexPath.section].last!)
             }
             
             return cell
@@ -131,7 +135,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             let currentDate: Date = calendar.date(byAdding: .day, value: loopCount, to: startOfMonth)!
             
-            weekSectionArray[weekCount].append(formatter.string(from: currentDate))
+            weekSectionArray[weekCount].append(currentDate)//(formatter.string(from: currentDate))
             
             if (calendar.component(.weekday, from: currentDate) == 7) && (loopCount + 1 != days) {
                 
@@ -139,13 +143,11 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 weekSectionArray.append([])
             }
             
-            print(weekSectionArray)
+            //print(weekSectionArray)
 
             
             loopCount += 1
         }
-        
-        homeTableView.reloadData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -154,5 +156,4 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         item.title = ""
         navigationItem.backBarButtonItem = item
     }
-
 }
