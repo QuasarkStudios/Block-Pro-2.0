@@ -25,30 +25,6 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        let dx: CGFloat = 50
- //       let rect = CGRect(x: cellBackground.bounds.minX, y: cellBackground.bounds.minY, width: cellBackground.bounds.width + 5, height: cellBackground.bounds.height)
-        
-        //print(cellBackground.bounds)
-        
-        let shadowLayer: CAShapeLayer = CAShapeLayer()
-        shadowLayer.path = UIBezierPath(roundedRect: bounds, cornerRadius: 19).cgPath
-        shadowLayer.fillColor = UIColor.white.cgColor
-
-        shadowLayer.shadowColor = UIColor(hexString: "444F57")?.cgColor
-        shadowLayer.shadowPath = shadowLayer.path
-        shadowLayer.shadowOffset = CGSize(width: 1, height: 2)
-        shadowLayer.shadowOpacity = 0.5
-        shadowLayer.shadowRadius = 3
-
-    //    cellBackground.layer.insertSublayer(shadowLayer, at: 0)
-        
-   //     cellBackground.layer.cornerRadius = 19
-   //     cellBackground.clipsToBounds = true
-        
-  //      cellBackground.backgroundColor = .clear
-        
-       // cellBackground.layer.masksToBounds = false
-        
         personalCollectionView.delegate = self
         personalCollectionView.dataSource = self
 
@@ -63,15 +39,13 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         
         personalCollectionView.collectionViewLayout = layout
         
-        personalCollectionView.showsHorizontalScrollIndicator = false
-        
         personalCollectionView.register(UINib(nibName: "PersonalCell", bundle: nil), forCellWithReuseIdentifier: "personalCell")
+        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-
+        
     }
 
     
@@ -88,11 +62,6 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "personalCell", for: indexPath) as! PersonalCell
-        
-        //cell.backgroundColor = .green
-        
-//        cell.layer.cornerRadius = 20
-//        cell.clipsToBounds = true
 
         formatter.dateFormat = "EEEE"
         cell.dayLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])//calendar.weekdaySymbols[indexPath.row]
@@ -105,26 +74,57 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         
-        if personalCollectionContent.count == 1 {
-            
-            let leftInset: CGFloat = (UIScreen.main.bounds.width - 5) / 4
-            
-            //print(leftInset)
-            
-            return UIEdgeInsets(top: 10, left: leftInset, bottom: 10, right: 0)
-        }
+        let leftInset: CGFloat = (UIScreen.main.bounds.width - 5) / 4
         
-        else {
+        return UIEdgeInsets(top: 10, left: leftInset, bottom: 10, right: 0)
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        if decelerate == false {
             
-            return UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+            scrollToMostVisibleItem()
         }
     }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        
+        scrollToMostVisibleItem()
+    }
+
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         print("check")
     }
+    
+    private func scrollToMostVisibleItem () {
+        
+        let visibleItems: [IndexPath] = personalCollectionView.indexPathsForVisibleItems
+        let centeredRect: CGRect = CGRect(x: personalCollectionView.center.x - 10, y: 0, width: 20, height: personalCollectionView.frame.height)
+        var centeredItems: [IndexPath] = []
+        
+        var count = 0
+        
+        for cell in personalCollectionView.visibleCells {
+            
+            let cellFrame: CGRect = CGRect(x: cell.frame.minX - personalCollectionView.contentOffset.x, y: cell.frame.minY, width: cell.frame.width, height: cell.frame.height)
+            
+            if cellFrame.intersects(centeredRect) {
+                
+                centeredItems.append(visibleItems[count])
+            }
+            
+            count += 1
+        }
+        
+        let indexPath: IndexPath = IndexPath(item: centeredItems[0].last!, section: 0)
+        personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        
+    }
 }
+
+
 
 extension CALayer {
     

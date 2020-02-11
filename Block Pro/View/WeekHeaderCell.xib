@@ -23,21 +23,48 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1/5 - 1/11" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RJ8-Ib-gMt">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="55"/>
+                        <rect key="frame" x="60" y="0.0" width="200" height="55"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="200" id="hkI-cy-c9j"/>
+                        </constraints>
                         <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="25"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5x1-MX-j0K">
+                        <rect key="frame" x="0.0" y="0.0" width="60" height="55"/>
+                        <state key="normal" title="Button"/>
+                        <connections>
+                            <action selector="leftButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="zLm-y3-9lX"/>
+                        </connections>
+                    </button>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QbF-Sh-UMX">
+                        <rect key="frame" x="260" y="0.0" width="60" height="55"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <state key="normal" title="Button"/>
+                        <connections>
+                            <action selector="rightButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="t8O-Gc-Cgv"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="RJ8-Ib-gMt" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="08k-6S-ux9"/>
-                    <constraint firstAttribute="bottom" secondItem="RJ8-Ib-gMt" secondAttribute="bottom" id="2AY-T8-s9q"/>
-                    <constraint firstItem="RJ8-Ib-gMt" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="9Qe-cm-ujk"/>
-                    <constraint firstAttribute="trailing" secondItem="RJ8-Ib-gMt" secondAttribute="trailing" id="Kmg-9u-0yM"/>
+                    <constraint firstAttribute="bottom" secondItem="QbF-Sh-UMX" secondAttribute="bottom" id="8T3-gz-uvL"/>
+                    <constraint firstItem="5x1-MX-j0K" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="ANm-2h-wuq"/>
+                    <constraint firstItem="RJ8-Ib-gMt" firstAttribute="leading" secondItem="5x1-MX-j0K" secondAttribute="trailing" id="OPi-WG-SHD"/>
+                    <constraint firstAttribute="bottom" secondItem="5x1-MX-j0K" secondAttribute="bottom" id="R4l-6a-pYV"/>
+                    <constraint firstItem="QbF-Sh-UMX" firstAttribute="leading" secondItem="RJ8-Ib-gMt" secondAttribute="trailing" id="S8i-WZ-68b"/>
+                    <constraint firstItem="RJ8-Ib-gMt" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="UV8-m1-Cj6"/>
+                    <constraint firstItem="QbF-Sh-UMX" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Wnv-NI-vbF"/>
+                    <constraint firstAttribute="bottom" secondItem="RJ8-Ib-gMt" secondAttribute="bottom" id="bNv-as-fwm"/>
+                    <constraint firstAttribute="trailing" secondItem="QbF-Sh-UMX" secondAttribute="trailing" id="dej-b6-BDu"/>
+                    <constraint firstItem="5x1-MX-j0K" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="fKP-Pq-mPj"/>
+                    <constraint firstItem="RJ8-Ib-gMt" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="tep-n1-mWc"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="leftButton" destination="5x1-MX-j0K" id="0bj-1d-08X"/>
+                <outlet property="rightButton" destination="QbF-Sh-UMX" id="XqO-PY-wde"/>
                 <outlet property="weekRangeLabel" destination="RJ8-Ib-gMt" id="1ex-nx-0RH"/>
             </connections>
             <point key="canvasLocation" x="137.68115942028987" y="150.33482142857142"/>

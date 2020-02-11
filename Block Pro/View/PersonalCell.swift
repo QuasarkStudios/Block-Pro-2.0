@@ -16,31 +16,11 @@ class PersonalCell: UICollectionViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        let gradientLayer: CAGradientLayer!
-        
-        gradientLayer = CAGradientLayer()
-        gradientLayer.frame = contentView.frame
-        gradientLayer.colors = [UIColor(hexString: "F22613")?.cgColor as Any, UIColor(hexString: "DC281E")?.cgColor as Any]
-        gradientLayer.locations = [0.5, 1]
 
-        //contentView.layer.addSublayer(gradientLayer)
-        
-        dayLabel.backgroundColor = .none
-        //dayLabel.textColor = .white
-        
-//        dateLabel.backgroundColor = UIColor(hexString: "000000", withAlpha: 0.25)
-        //dateLabel.textColor = .white
-        
-        contentView.bringSubviewToFront(dayLabel)
-        contentView.bringSubviewToFront(dateLabel)
-        
         drawShadow()
     }
     
     func drawShadow () {
-        
-        let rect: CGRect = CGRect(x: 0, y: 0, width: 188, height: 420)
         
         let shadowLayer: CAShapeLayer = CAShapeLayer()
         shadowLayer.path = UIBezierPath(roundedRect: cellBackground.bounds, cornerRadius: 20).cgPath

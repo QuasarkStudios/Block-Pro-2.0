@@ -25,7 +25,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="12"/>
                                 <state key="normal" title="Personal">
-                                    <color key="titleColor" red="0.70588235294117641" green="0.71372549019607845" blue="0.7803921568627451" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
                                     <action selector="monthlyButton:" destination="hyC-FP-KMM" eventType="touchUpInside" id="BWh-nn-OUZ"/>

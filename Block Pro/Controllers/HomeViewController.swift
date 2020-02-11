@@ -22,6 +22,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var weekSectionArray: [[Date]] = [[]]
     
+    var tableViewAutoScrolled: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -45,14 +47,18 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         //homeTableView.rowHeight = 430
         
         homeTableView.register(UINib(nibName: "WeekHeaderCell", bundle: nil), forCellReuseIdentifier: "weekHeaderCell")
-        homeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: "HomeCell")
+        homeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: "homeCell")
         
-        monthButton.layer.cornerRadius = 0.5 * monthButton.bounds.width
-        monthButton.clipsToBounds = true
         view.bringSubviewToFront(monthButton)
         
-        determineWeeks()
+        monthButton.configureMonthButton()
         
+        determineWeeks()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        scrollToCurrentDate()
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -84,7 +90,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         if indexPath.row == 0 {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "weekHeaderCell", for: indexPath) as! WeekHeaderCell
-            cell.selectionStyle = .none
+            //cell.selectionStyle = .none
             
             if weekSectionArray[indexPath.section].count == 1 {
                 
@@ -96,6 +102,11 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
                 formatter.dateFormat = "M/d"
                 cell.weekRangeLabel.text = formatter.string(from: weekSectionArray[indexPath.section].first!) + " - " + formatter.string(from: weekSectionArray[indexPath.section].last!)
+                
+                cell.leftButton.isHidden = true
+                cell.rightButton.isHidden = true
+//                cell.homeViewController = self
+//                cell.indexPath = indexPath
             }
             
             return cell
@@ -103,13 +114,135 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         else {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "HomeCell", for: indexPath) as! HomeTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "homeCell", for: indexPath) as! HomeTableViewCell
             cell.selectionStyle = .none
             
             cell.personalCollectionContent = weekSectionArray[indexPath.section]
             
             return cell
         }
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        if decelerate == false {
+            
+            scrollToMostVisibleCell()
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        
+        scrollToMostVisibleCell()
+    }
+    
+    private func scrollToCurrentDate () {
+        
+        homeTableView.allowsSelection = false
+        
+        let currentDate: Date = Date()
+        formatter.dateFormat = "MMMM d yyyy"
+        
+        var sectionToScrollTo: Int?
+         
+        var count: Int = 0
+        
+        for dates in weekSectionArray {
+            
+            for date in dates {
+
+                if formatter.string(from: date) == formatter.string(from: currentDate) {
+
+                    sectionToScrollTo = count
+                    break
+                }
+            }
+            
+            if sectionToScrollTo != nil {
+                
+                break
+            }
+            
+            count += 1
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            
+            let indexPath: IndexPath = IndexPath(row: 0, section: sectionToScrollTo ?? 0)
+            self.homeTableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            
+            self.tableViewAutoScrolled = true
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if tableViewAutoScrolled == true {
+           
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                
+                if tableView.cellForRow(at: indexPath) == tableView.visibleCells[1] {
+                    
+                    let currentDate: Date = Date()
+                    self.formatter.dateFormat = "MMMM d yyyy"
+                    
+                    let homeCell = cell as! HomeTableViewCell
+                    var indexToScrollTo: Int = 0
+                    var count: Int = 0
+                    
+                    for date in homeCell.personalCollectionContent {
+                        
+                        if self.formatter.string(from: date) == self.formatter.string(from: currentDate) {
+                            
+                            indexToScrollTo = count
+                            break
+                        }
+                        
+                        count += 1
+                    }
+                    
+                    let indexPath: IndexPath = IndexPath(row: indexToScrollTo, section: 0)
+                    homeCell.personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+                    
+                    self.tableViewAutoScrolled = false
+                }
+            }
+        }
+    }
+    
+//    func testFunc (cell: UITableViewCell, indexPath: IndexPath) {
+//
+//        let homeCell = cell as! HomeTableViewCell
+//
+//        print(homeCell.personalCollectionContent)
+//
+//        homeCell.personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+//
+//        print("hello")
+//    }
+    
+    private func scrollToMostVisibleCell () {
+        
+        let visibleRows: [IndexPath] = homeTableView.indexPathsForVisibleRows!
+        let topHalfRect: CGRect = CGRect(x: 0, y: selectionIndicator.frame.maxY, width: view.frame.width, height: (view.center.y - selectionIndicator.frame.maxY))
+        var topHalfCells: [IndexPath] = []
+        
+        var count = 0
+        
+        for cell in homeTableView.visibleCells {
+            
+            let cellFrame: CGRect = CGRect(x: cell.frame.minX, y: cell.frame.minY - homeTableView.contentOffset.y, width: cell.frame.width, height: cell.frame.height)
+                
+            if cellFrame.intersects(topHalfRect) {
+                
+                topHalfCells.append(visibleRows[count])
+            }
+            
+            count += 1
+        }
+        
+        let indexPath: IndexPath = IndexPath(row: 0, section: topHalfCells[0][0])
+        homeTableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
     
     private func determineWeeks () {
@@ -156,4 +289,22 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         item.title = ""
         navigationItem.backBarButtonItem = item
     }
+}
+
+extension UIButton {
+    
+    func configureMonthButton () {
+
+        backgroundColor = UIColor(hexString: "#CFDEF3")
+
+        layer.shadowRadius = 2.5
+        layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowOpacity = 0.35
+        
+        layer.cornerRadius = 0.5 * bounds.size.width
+        layer.masksToBounds = false
+        clipsToBounds = false
+    }
+    
 }
