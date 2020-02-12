@@ -21,6 +21,7 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         }
     }
     
+    var visibleItem: IndexPath?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -79,6 +80,22 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         return UIEdgeInsets(top: 10, left: leftInset, bottom: 10, right: 0)
     }
     
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        
+        if let item = visibleItem {
+            
+            if let cell = personalCollectionView.cellForItem(at: item) as? PersonalCell {
+                
+                cell.cellBackgroundBottomAnchor.constant = 75
+
+                UIView.animate(withDuration: 0.3) {
+
+                    cell.layoutIfNeeded()
+                }
+            }
+        }
+    }
+    
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         
         if decelerate == false {
@@ -91,7 +108,6 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         
         scrollToMostVisibleItem()
     }
-
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
@@ -120,31 +136,80 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         
         let indexPath: IndexPath = IndexPath(item: centeredItems[0].last!, section: 0)
         personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        visibleItem = indexPath
         
-    }
-}
-
-
-
-extension CALayer {
-    
-    func applyShadow (color: UIColor, alpha: Float = 0.5, x: CGFloat, y: CGFloat, blur: CGFloat, spread: CGFloat, bounds: CGRect) {
+        let cell = personalCollectionView.cellForItem(at: indexPath) as! PersonalCell
         
-        shadowColor = color.cgColor
-        shadowOpacity = alpha
-        shadowOffset = CGSize(width: x, height: y)
-        shadowRadius = blur / 2.0
+        cell.cellBackgroundBottomAnchor.constant = 5
         
-        if spread == 0 {
+        UIView.animate(withDuration: 0.3) {
             
-            shadowPath = nil
+            cell.layoutIfNeeded()
+        }
+    }
+    
+    func assignVisibleCell () {
+        
+        let visibleItems: [IndexPath] = personalCollectionView.indexPathsForVisibleItems
+        let centeredRect: CGRect = CGRect(x: personalCollectionView.center.x - 10, y: 0, width: 20, height: personalCollectionView.frame.height)
+        var centeredItems: [IndexPath] = []
+        
+        var count = 0
+        
+        for cell in personalCollectionView.visibleCells {
+            
+            let cellFrame: CGRect = CGRect(x: cell.frame.minX - personalCollectionView.contentOffset.x, y: cell.frame.minY, width: cell.frame.width, height: cell.frame.height)
+            
+            if cellFrame.intersects(centeredRect) {
+                
+                centeredItems.append(visibleItems[count])
+            }
+            
+            count += 1
         }
         
-        else {
-          
-            let dx = -spread
-            let rect = bounds.insetBy(dx: dx, dy: dx)
-            shadowPath = UIBezierPath(rect: rect).cgPath
+        let indexPath: IndexPath = IndexPath(item: centeredItems[0].last!, section: 0)
+        visibleItem = indexPath
+        
+        let cell = personalCollectionView.cellForItem(at: indexPath) as! PersonalCell
+        
+        cell.cellBackgroundBottomAnchor.constant = 5
+        
+        UIView.animate(withDuration: 0.3) {
+            
+            cell.layoutIfNeeded()
+        }
+    }
+    
+    func growPersonalCell () {
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            
+            let cell = self.personalCollectionView.cellForItem(at: self.visibleItem!) as! PersonalCell
+            
+            cell.cellBackgroundBottomAnchor.constant = 5
+            
+            UIView.animate(withDuration: 0.3) {
+                
+                cell.layoutIfNeeded()
+            }
+        }
+    }
+    
+    func shrinkPersonalCell () {
+        
+        if visibleItem ?? nil != nil {
+            
+            let cell = self.personalCollectionView.cellForItem(at: self.visibleItem!) as! PersonalCell
+            
+            cell.cellBackgroundBottomAnchor.constant = 75
+            
+            print("check2")
+            
+            UIView.animate(withDuration: 0.3) {
+                
+                cell.layoutIfNeeded()
+            }
         }
     }
 }

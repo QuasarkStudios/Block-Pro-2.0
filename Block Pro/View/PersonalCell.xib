@@ -61,17 +61,19 @@
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="lNL-ih-vfe" secondAttribute="trailing" constant="5" id="127-MD-mKQ"/>
                 <constraint firstItem="lNL-ih-vfe" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="5" id="PnA-tN-UeO"/>
-                <constraint firstAttribute="bottom" secondItem="lNL-ih-vfe" secondAttribute="bottom" constant="5" id="VY8-l5-mtq"/>
+                <constraint firstAttribute="bottom" secondItem="lNL-ih-vfe" secondAttribute="bottom" constant="5" id="hC8-0O-jNt"/>
                 <constraint firstItem="lNL-ih-vfe" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="5" id="ia1-2x-f7h"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <size key="customSize" width="188" height="430"/>
             <connections>
                 <outlet property="cellBackground" destination="lNL-ih-vfe" id="VW4-Li-gos"/>
+                <outlet property="cellBackgroundBottomAnchor" destination="hC8-0O-jNt" id="iYt-4G-zeA"/>
+                <outlet property="cellBackgroundTopAnchor" destination="ia1-2x-f7h" id="6CI-9I-ml2"/>
                 <outlet property="dateLabel" destination="7lv-UZ-k5n" id="E9n-F3-E3N"/>
                 <outlet property="dayLabel" destination="cdH-5O-oVG" id="rgw-ci-SR3"/>
             </connections>
-            <point key="canvasLocation" x="181.8840579710145" y="254.12946428571428"/>
+            <point key="canvasLocation" x="181.8840579710145" y="253.79464285714283"/>
         </collectionViewCell>
     </objects>
 </document>

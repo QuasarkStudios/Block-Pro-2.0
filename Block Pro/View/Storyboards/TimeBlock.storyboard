@@ -42,11 +42,14 @@
                                     <action selector="weeklyButton:" destination="hyC-FP-KMM" eventType="touchUpInside" id="XWK-zG-nih"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9HX-bx-ZU7">
-                                <rect key="frame" x="300" y="630" width="60" height="60"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9HX-bx-ZU7">
+                                <rect key="frame" x="290" y="622" width="65" height="65"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" title="Button"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="65" id="DCr-1u-x07"/>
+                                    <constraint firstAttribute="width" constant="65" id="OBI-Vp-7dj"/>
+                                </constraints>
+                                <state key="normal" title="Month"/>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="kXD-a7-cJw">
                                 <rect key="frame" x="0.0" y="147" width="375" height="533"/>
@@ -78,7 +81,9 @@
                             <constraint firstItem="kXD-a7-cJw" firstAttribute="top" secondItem="WMI-rd-sby" secondAttribute="top" constant="147" id="2Af-w2-ufs"/>
                             <constraint firstItem="dgE-Y1-3mr" firstAttribute="bottom" secondItem="kXD-a7-cJw" secondAttribute="bottom" id="7pG-IN-ebw"/>
                             <constraint firstItem="kXD-a7-cJw" firstAttribute="leading" secondItem="dgE-Y1-3mr" secondAttribute="leading" id="E08-nk-p52"/>
+                            <constraint firstItem="dgE-Y1-3mr" firstAttribute="trailing" secondItem="9HX-bx-ZU7" secondAttribute="trailing" constant="20" id="FB8-lP-WeE"/>
                             <constraint firstItem="kXD-a7-cJw" firstAttribute="trailing" secondItem="dgE-Y1-3mr" secondAttribute="trailing" id="HHj-oi-Hxy"/>
+                            <constraint firstAttribute="bottom" secondItem="9HX-bx-ZU7" secondAttribute="bottom" constant="125" id="vBW-LL-lw5"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="dgE-Y1-3mr"/>
                     </view>
