@@ -52,7 +52,7 @@
                                 <state key="normal" title="Month"/>
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="kXD-a7-cJw">
-                                <rect key="frame" x="0.0" y="147" width="375" height="533"/>
+                                <rect key="frame" x="0.0" y="147" width="375" height="665"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="IJg-wJ-IMg">
@@ -79,10 +79,10 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="kXD-a7-cJw" firstAttribute="top" secondItem="WMI-rd-sby" secondAttribute="top" constant="147" id="2Af-w2-ufs"/>
-                            <constraint firstItem="dgE-Y1-3mr" firstAttribute="bottom" secondItem="kXD-a7-cJw" secondAttribute="bottom" id="7pG-IN-ebw"/>
                             <constraint firstItem="kXD-a7-cJw" firstAttribute="leading" secondItem="dgE-Y1-3mr" secondAttribute="leading" id="E08-nk-p52"/>
                             <constraint firstItem="dgE-Y1-3mr" firstAttribute="trailing" secondItem="9HX-bx-ZU7" secondAttribute="trailing" constant="20" id="FB8-lP-WeE"/>
                             <constraint firstItem="kXD-a7-cJw" firstAttribute="trailing" secondItem="dgE-Y1-3mr" secondAttribute="trailing" id="HHj-oi-Hxy"/>
+                            <constraint firstAttribute="bottom" secondItem="kXD-a7-cJw" secondAttribute="bottom" id="gTg-PK-V2y"/>
                             <constraint firstAttribute="bottom" secondItem="9HX-bx-ZU7" secondAttribute="bottom" constant="125" id="vBW-LL-lw5"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="dgE-Y1-3mr"/>
@@ -98,11 +98,55 @@
                         <outlet property="homeTableView" destination="kXD-a7-cJw" id="ZJS-EY-Ur8"/>
                         <outlet property="monthButton" destination="9HX-bx-ZU7" id="tmi-0Y-5Y9"/>
                         <outlet property="selectionIndicator" destination="Q4j-qX-POR" id="42c-Xm-IOA"/>
+                        <segue destination="9FE-O2-E2h" kind="show" identifier="moveToTimeBlockView" id="98r-V4-OBy"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YgO-hF-ygr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1261.5999999999999" y="-1017.4876847290641"/>
+        </scene>
+        <!--Time Block View Controller2-->
+        <scene sceneID="1he-88-DQ1">
+            <objects>
+                <viewController id="9FE-O2-E2h" customClass="TimeBlockViewController2" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wRN-Vu-MK1">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zKW-yd-bW6">
+                                <rect key="frame" x="0.0" y="88" width="375" height="724"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="0Ue-pv-mT1">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="0Ue-pv-mT1" id="DAY-Zi-v3c">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="zKW-yd-bW6" firstAttribute="top" secondItem="zqq-Gw-iDH" secondAttribute="top" id="909-BV-xoP"/>
+                            <constraint firstItem="zqq-Gw-iDH" firstAttribute="trailing" secondItem="zKW-yd-bW6" secondAttribute="trailing" id="NYb-KQ-Wr4"/>
+                            <constraint firstAttribute="bottom" secondItem="zKW-yd-bW6" secondAttribute="bottom" id="Q3g-po-7gF"/>
+                            <constraint firstItem="zKW-yd-bW6" firstAttribute="leading" secondItem="zqq-Gw-iDH" secondAttribute="leading" id="Qkj-Xk-JYU"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="zqq-Gw-iDH"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="J17-KO-kqZ">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="3Ph-6E-CjH"/>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="timeBlockTableView" destination="zKW-yd-bW6" id="V1a-5e-qDQ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7KC-sx-0na" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2711.1999999999998" y="-1023.3990147783252"/>
         </scene>
         <!--Time Block-->
         <scene sceneID="gLf-lS-UKu">

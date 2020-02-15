@@ -12,7 +12,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 
     @IBOutlet weak var faceImage: UIImageView!
     
-    @IBOutlet weak var selectionIndicator: SelectionIndicator!
+    @IBOutlet weak var selectionIndicator: UIView!
     
     @IBOutlet weak var homeTableView: UITableView!
     
@@ -28,6 +28,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var visibleCell: IndexPath?
     
+    var selectedDate: Date?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -39,6 +41,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         formatter.dateFormat = "MMMM"
         navigationItem.title = formatter.string(from: Date())
         self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 25)!]
+        
         
         faceImage.layer.cornerRadius = 0.5 * faceImage.bounds.width
         faceImage.clipsToBounds = true
@@ -58,6 +61,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         monthButton.configureMonthButton()
         
         determineWeeks()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        formatter.dateFormat = "MMMM"
+        navigationItem.title = formatter.string(from: Date())
+        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 25)!]
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -132,9 +142,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         else if indexPath.row == 1 {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "homeCell", for: indexPath) as! HomeTableViewCell
-            cell.selectionStyle = .none
+            //cell.selectionStyle = .none
             
             cell.personalCollectionContent = weekSectionArray[indexPath.section]
+            cell.homeViewController = self
             
             return cell
         }
@@ -155,6 +166,12 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             scrollToCurrentDay(tableView, cell, indexPath)
         }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        print("check1")
+        
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -319,7 +336,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
                     homeCell.personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
                     homeCell.visibleItem = indexPath
                     
-                    homeCell.growPersonalCell()
+                    homeCell.growPersonalCell(delay: 0.5)
                     
                     self.homeTableView.isUserInteractionEnabled = true
                     self.tableViewAutoScrolled = false
@@ -354,7 +371,16 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         visibleCell = IndexPath(row: 1, section: indexPath.section)
         
         let cell = homeTableView.cellForRow(at: visibleCell!) as! HomeTableViewCell
-        cell.assignVisibleCell()
+        
+        cell.assignVisibleCell {
+            cell.growPersonalCell()
+        }
+    }
+    
+    func moveToTimeBlockView (selectedDate: Date) {
+        
+        self.selectedDate = selectedDate
+        performSegue(withIdentifier: "moveToTimeBlockView", sender: self)
     }
     
 
@@ -363,6 +389,20 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         let item = UIBarButtonItem()
         item.title = ""
         navigationItem.backBarButtonItem = item
+        
+        
+        if segue.identifier == "moveToTimeBlockView" {
+            
+            formatter.dateFormat = "EEEE, MMMM d"
+            navigationItem.title =  formatter.string(from: selectedDate ?? Date())  
+            
+            let timeBlockVC = segue.destination as! TimeBlockViewController2
+            timeBlockVC.currentDate = selectedDate ?? Date()
+            
+            //timeBlockVC.currentDate = selectedDate ?? Date()
+        }
+        
+
     }
 }
 

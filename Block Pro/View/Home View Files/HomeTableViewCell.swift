@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol TimeBlockView {
+    
+    func performSegue ()
+}
+
 class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     @IBOutlet weak var personalCollectionView: UICollectionView!
@@ -22,6 +27,8 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
     }
     
     var visibleItem: IndexPath?
+    
+    var homeViewController: HomeViewController?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -82,18 +89,7 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         
-        if let item = visibleItem {
-            
-            if let cell = personalCollectionView.cellForItem(at: item) as? PersonalCell {
-                
-                cell.cellBackgroundBottomAnchor.constant = 75
-
-                UIView.animate(withDuration: 0.3) {
-
-                    cell.layoutIfNeeded()
-                }
-            }
-        }
+        shrinkPersonalCell()
     }
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
@@ -111,44 +107,20 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
+        homeViewController!.moveToTimeBlockView(selectedDate: personalCollectionContent[indexPath.row])
+        
+        
         print("check")
     }
     
     private func scrollToMostVisibleItem () {
         
-        let visibleItems: [IndexPath] = personalCollectionView.indexPathsForVisibleItems
-        let centeredRect: CGRect = CGRect(x: personalCollectionView.center.x - 10, y: 0, width: 20, height: personalCollectionView.frame.height)
-        var centeredItems: [IndexPath] = []
-        
-        var count = 0
-        
-        for cell in personalCollectionView.visibleCells {
-            
-            let cellFrame: CGRect = CGRect(x: cell.frame.minX - personalCollectionView.contentOffset.x, y: cell.frame.minY, width: cell.frame.width, height: cell.frame.height)
-            
-            if cellFrame.intersects(centeredRect) {
-                
-                centeredItems.append(visibleItems[count])
-            }
-            
-            count += 1
-        }
-        
-        let indexPath: IndexPath = IndexPath(item: centeredItems[0].last!, section: 0)
-        personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-        visibleItem = indexPath
-        
-        let cell = personalCollectionView.cellForItem(at: indexPath) as! PersonalCell
-        
-        cell.cellBackgroundBottomAnchor.constant = 5
-        
-        UIView.animate(withDuration: 0.3) {
-            
-            cell.layoutIfNeeded()
+        assignVisibleCell {
+            self.growPersonalCell()
         }
     }
     
-    func assignVisibleCell () {
+    func assignVisibleCell (completion: @escaping () -> ()) {
         
         let visibleItems: [IndexPath] = personalCollectionView.indexPathsForVisibleItems
         let centeredRect: CGRect = CGRect(x: personalCollectionView.center.x - 10, y: 0, width: 20, height: personalCollectionView.frame.height)
@@ -168,30 +140,39 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
             count += 1
         }
         
-        let indexPath: IndexPath = IndexPath(item: centeredItems[0].last!, section: 0)
-        visibleItem = indexPath
-        
-        let cell = personalCollectionView.cellForItem(at: indexPath) as! PersonalCell
-        
-        cell.cellBackgroundBottomAnchor.constant = 5
-        
-        UIView.animate(withDuration: 0.3) {
+        if centeredItems.count != 0 {
             
-            cell.layoutIfNeeded()
+            let indexPath: IndexPath = IndexPath(item: centeredItems[0].last!, section: 0)
+            personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+            visibleItem = indexPath
         }
+
+        completion()
     }
     
-    func growPersonalCell () {
+    func growPersonalCell (delay: Double = 0) {
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             
             let cell = self.personalCollectionView.cellForItem(at: self.visibleItem!) as! PersonalCell
             
+            cell.cellBackgroundTopAnchor.constant = 5
             cell.cellBackgroundBottomAnchor.constant = 5
+            cell.cellBackgroundLeadingAnchor.constant = 5
+            cell.cellBackgroundTrailingAnchor.constant = 5
+            
+            cell.detailsButtonTopAnchor.constant = 0
+            cell.shareButtonTopAnchor.constant = 0
+            cell.deleteButtonTopAnchor.constant = 0
             
             UIView.animate(withDuration: 0.3) {
                 
                 cell.layoutIfNeeded()
+                
+                cell.detailsButton.alpha = 1
+                cell.shareButton.alpha = 1
+                cell.deleteButton.alpha = 1
+            
             }
         }
     }
@@ -200,15 +181,26 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         
         if visibleItem ?? nil != nil {
             
-            let cell = self.personalCollectionView.cellForItem(at: self.visibleItem!) as! PersonalCell
+            guard let cell = personalCollectionView.cellForItem(at: self.visibleItem!) as? PersonalCell  else { return }
             
+            //let cell = personalCollectionView.cellForItem(at: self.visibleItem!) as! PersonalCell
+            
+            cell.cellBackgroundTopAnchor.constant = 15
             cell.cellBackgroundBottomAnchor.constant = 75
-            
-            print("check2")
+            cell.cellBackgroundLeadingAnchor.constant = 15
+            cell.cellBackgroundTrailingAnchor.constant = 15
+        
+            cell.detailsButtonTopAnchor.constant = -50
+            cell.shareButtonTopAnchor.constant = -50
+            cell.deleteButtonTopAnchor.constant = -50
             
             UIView.animate(withDuration: 0.3) {
                 
                 cell.layoutIfNeeded()
+                
+                cell.detailsButton.alpha = 0
+                cell.shareButton.alpha = 0
+                cell.deleteButton.alpha = 0
             }
         }
     }

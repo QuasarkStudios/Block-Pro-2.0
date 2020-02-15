@@ -59,13 +59,16 @@
 		0D78657F23E4B56B00BD4C4D /* Poppins-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656D23E4B56800BD4C4D /* Poppins-ExtraBoldItalic.ttf */; };
 		0D78658023E4B56B00BD4C4D /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656E23E4B56A00BD4C4D /* Poppins-Thin.ttf */; };
 		0D78658123E4B56B00BD4C4D /* Poppins-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656F23E4B56B00BD4C4D /* Poppins-MediumItalic.ttf */; };
-		0D78658423E4EF8900BD4C4D /* SelectionIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78658323E4EF8900BD4C4D /* SelectionIndicator.swift */; };
 		0D78658723E51C7D00BD4C4D /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78658523E51C7D00BD4C4D /* HomeTableViewCell.swift */; };
 		0D78658823E51C7D00BD4C4D /* HomeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78658623E51C7D00BD4C4D /* HomeTableViewCell.xib */; };
 		0D78658B23E6928000BD4C4D /* PersonalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78658923E6928000BD4C4D /* PersonalCell.swift */; };
 		0D78658C23E6928000BD4C4D /* PersonalCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78658A23E6928000BD4C4D /* PersonalCell.xib */; };
 		0D78658F23E74B6400BD4C4D /* WeekHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78658D23E74B6400BD4C4D /* WeekHeaderCell.swift */; };
 		0D78659023E74B6400BD4C4D /* WeekHeaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78658E23E74B6400BD4C4D /* WeekHeaderCell.xib */; };
+		0D78659923F5BBCE00BD4C4D /* PersonalRealmDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78659823F5BBCE00BD4C4D /* PersonalRealmDatabase.swift */; };
+		0D7865AF23F71E1A00BD4C4D /* TimeBlockViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7865AE23F71E1900BD4C4D /* TimeBlockViewController2.swift */; };
+		0D7865B223F7313200BD4C4D /* TimeBlockCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7865B023F7313200BD4C4D /* TimeBlockCell.swift */; };
+		0D7865B323F7313200BD4C4D /* TimeBlockCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D7865B123F7313200BD4C4D /* TimeBlockCell.xib */; };
 		0D7C6483238DBC1700E68AE8 /* RadialGradients.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7C6482238DBC1700E68AE8 /* RadialGradients.swift */; };
 		0D7CE23E23C43AE7005BB8EE /* CardContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CE23D23C43AE7005BB8EE /* CardContainer.swift */; };
 		0D7CE24023C43AF6005BB8EE /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CE23F23C43AF6005BB8EE /* CardView.swift */; };
@@ -162,13 +165,16 @@
 		0D78656D23E4B56800BD4C4D /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		0D78656E23E4B56A00BD4C4D /* Poppins-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Thin.ttf"; sourceTree = "<group>"; };
 		0D78656F23E4B56B00BD4C4D /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-MediumItalic.ttf"; sourceTree = "<group>"; };
-		0D78658323E4EF8900BD4C4D /* SelectionIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SelectionIndicator.swift; path = "Block Pro/SelectionIndicator.swift"; sourceTree = SOURCE_ROOT; };
 		0D78658523E51C7D00BD4C4D /* HomeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewCell.swift; sourceTree = "<group>"; };
 		0D78658623E51C7D00BD4C4D /* HomeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeTableViewCell.xib; sourceTree = "<group>"; };
 		0D78658923E6928000BD4C4D /* PersonalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalCell.swift; sourceTree = "<group>"; };
 		0D78658A23E6928000BD4C4D /* PersonalCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PersonalCell.xib; sourceTree = "<group>"; };
 		0D78658D23E74B6400BD4C4D /* WeekHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekHeaderCell.swift; sourceTree = "<group>"; };
 		0D78658E23E74B6400BD4C4D /* WeekHeaderCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WeekHeaderCell.xib; sourceTree = "<group>"; };
+		0D78659823F5BBCE00BD4C4D /* PersonalRealmDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRealmDatabase.swift; sourceTree = "<group>"; };
+		0D7865AE23F71E1900BD4C4D /* TimeBlockViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockViewController2.swift; sourceTree = "<group>"; };
+		0D7865B023F7313200BD4C4D /* TimeBlockCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockCell.swift; sourceTree = "<group>"; };
+		0D7865B123F7313200BD4C4D /* TimeBlockCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimeBlockCell.xib; sourceTree = "<group>"; };
 		0D7C6482238DBC1700E68AE8 /* RadialGradients.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadialGradients.swift; sourceTree = "<group>"; };
 		0D7CE23D23C43AE7005BB8EE /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
 		0D7CE23F23C43AF6005BB8EE /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
@@ -260,6 +266,7 @@
 			isa = PBXGroup;
 			children = (
 				0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */,
+				0D7865AE23F71E1900BD4C4D /* TimeBlockViewController2.swift */,
 				0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */,
 				0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */,
 				0D23076022D284F500A12393 /* JTAppleCalendar Files */,
@@ -325,6 +332,7 @@
 				0D93300B22927C9100B6191D /* Model */,
 				0D2CED02228FC75B00CC9180 /* View */,
 				0D2CED01228FC73A00CC9180 /* Controllers */,
+				0D78659A23F5BBD700BD4C4D /* Networking */,
 				0D13AC01232DDBD40025EDC3 /* Assets.xcassets */,
 				0D13AC00232A15F30025EDC3 /* Pomodoro Audio Files */,
 				0D2CECFB228FB55800CC9180 /* Info.plist */,
@@ -349,13 +357,7 @@
 		0D2CED02228FC75B00CC9180 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				0D78658323E4EF8900BD4C4D /* SelectionIndicator.swift */,
-				0D78658523E51C7D00BD4C4D /* HomeTableViewCell.swift */,
-				0D78658623E51C7D00BD4C4D /* HomeTableViewCell.xib */,
-				0D78658D23E74B6400BD4C4D /* WeekHeaderCell.swift */,
-				0D78658E23E74B6400BD4C4D /* WeekHeaderCell.xib */,
-				0D78658923E6928000BD4C4D /* PersonalCell.swift */,
-				0D78658A23E6928000BD4C4D /* PersonalCell.xib */,
+				0D78659723F5B9F600BD4C4D /* Home View Files */,
 				0DA9F83322A84788008BECAE /* Storyboards */,
 				0D7CE24123C6A493005BB8EE /* FreeTime View Files */,
 				0D7CE24223C6A4AC005BB8EE /* Pomodoro View Files */,
@@ -374,6 +376,8 @@
 				0D1128342349A53B0080774C /* SettingsCell */,
 				0D933012229373B000B6191D /* TimeTableViewCell */,
 				0D23076922D29F6900A12393 /* UpcomingCollabViewCell */,
+				0D7865B023F7313200BD4C4D /* TimeBlockCell.swift */,
+				0D7865B123F7313200BD4C4D /* TimeBlockCell.xib */,
 			);
 			path = "Custom Cells";
 			sourceTree = "<group>";
@@ -411,6 +415,27 @@
 				0D78656B23E4B56600BD4C4D /* Poppins-ThinItalic.ttf */,
 			);
 			path = Fonts;
+			sourceTree = "<group>";
+		};
+		0D78659723F5B9F600BD4C4D /* Home View Files */ = {
+			isa = PBXGroup;
+			children = (
+				0D78658523E51C7D00BD4C4D /* HomeTableViewCell.swift */,
+				0D78658623E51C7D00BD4C4D /* HomeTableViewCell.xib */,
+				0D78658D23E74B6400BD4C4D /* WeekHeaderCell.swift */,
+				0D78658E23E74B6400BD4C4D /* WeekHeaderCell.xib */,
+				0D78658923E6928000BD4C4D /* PersonalCell.swift */,
+				0D78658A23E6928000BD4C4D /* PersonalCell.xib */,
+			);
+			path = "Home View Files";
+			sourceTree = "<group>";
+		};
+		0D78659A23F5BBD700BD4C4D /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				0D78659823F5BBCE00BD4C4D /* PersonalRealmDatabase.swift */,
+			);
+			path = Networking;
 			sourceTree = "<group>";
 		};
 		0D7CE24123C6A493005BB8EE /* FreeTime View Files */ = {
@@ -665,6 +690,7 @@
 				0D78659023E74B6400BD4C4D /* WeekHeaderCell.xib in Resources */,
 				0D13ABFF232A15E60025EDC3 /* End Break.wav in Resources */,
 				0D78657C23E4B56B00BD4C4D /* Poppins-Italic.ttf in Resources */,
+				0D7865B323F7313200BD4C4D /* TimeBlockCell.xib in Resources */,
 				0D78658123E4B56B00BD4C4D /* Poppins-MediumItalic.ttf in Resources */,
 				0D78657423E4B56B00BD4C4D /* Poppins-Medium.ttf in Resources */,
 				0DA9F83922A84879008BECAE /* TimeBlock.storyboard in Resources */,
@@ -734,6 +760,7 @@
 				0D41F5BC2311C05B00B4B11E /* CollabFiveMinCell.swift in Sources */,
 				0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */,
 				0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */,
+				0D78659923F5BBCE00BD4C4D /* PersonalRealmDatabase.swift in Sources */,
 				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
 				0D23076F22D3B31D00A12393 /* FriendsViewController.swift in Sources */,
 				0D23076322D299DC00A12393 /* UpcomingCollabViewController.swift in Sources */,
@@ -747,7 +774,6 @@
 				0D41F5C02311EC6A00B4B11E /* CollabFifteenMinCell.swift in Sources */,
 				0D41F5C6231376FB00B4B11E /* CollabThirtyMinAndUpCell.swift in Sources */,
 				0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */,
-				0D78658423E4EF8900BD4C4D /* SelectionIndicator.swift in Sources */,
 				0D23077A22D6CD9900A12393 /* CollabBlockViewController.swift in Sources */,
 				0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */,
 				0D3A9E2222EFF81F0052BCB6 /* AUCollabBlockViewController.swift in Sources */,
@@ -780,12 +806,14 @@
 				0DADDAB22355918A00E79F89 /* TimeTwentyMinCell.swift in Sources */,
 				0DFE5C1C231DF7C10025B4EB /* FriendCell.swift in Sources */,
 				0D41F5C2231203A200B4B11E /* CollabTwentyMinCell.swift in Sources */,
+				0D7865B223F7313200BD4C4D /* TimeBlockCell.swift in Sources */,
 				0D7CE24023C43AF6005BB8EE /* CardView.swift in Sources */,
 				0DADDAAC2355915700E79F89 /* TimeFiveMinCell.swift in Sources */,
 				0DADDAB02355917C00E79F89 /* TimeFifteenMinCell.swift in Sources */,
 				0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */,
 				0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */,
 				0D13AC04232DF0560025EDC3 /* EditPomodoroViewController.swift in Sources */,
+				0D7865AF23F71E1A00BD4C4D /* TimeBlockViewController2.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

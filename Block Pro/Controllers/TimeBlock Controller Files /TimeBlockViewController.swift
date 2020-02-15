@@ -41,6 +41,8 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     let realm = try! Realm() //Initializing a new "Realm"
     
+    let personalRealmDatabase = PersonalRealmDatabase()
+    
     var allBlockDates: Results<TimeBlocksDate>? //Results container used to hold all "TimeBlocksDate" objects from the Realm database
     var currentBlocksDate: Results<TimeBlocksDate>? //Results container that holds only one "TimeBlocksDate" object that matches the current date or user selected date
     var currentDateObject: TimeBlocksDate? //Variable that will contain a "TimeBlocksDate" object that matches the current date or the selected user date
@@ -90,27 +92,29 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
         UINavigationBar.appearance().tintColor = .red
         
-        if viewInitiallyLoaded == false {
-            
-            presentSplashView {
-            
-                self.findTimeBlocks(self.currentDate)
-                self.allBlockDates = self.realm.objects(TimeBlocksDate.self)
-                
-                self.timeTableView.reloadData()
-                self.blockTableView.reloadData()
-                self.scrollToFirstBlock()
-            }
-            
-            viewInitiallyLoaded = true
-        }
+//        if viewInitiallyLoaded == false {
+//
+//            presentSplashView {
+//
+//                self.findTimeBlocks(self.currentDate)
+//                self.allBlockDates = self.realm.objects(TimeBlocksDate.self)
+//
+//                self.timeTableView.reloadData()
+//                self.blockTableView.reloadData()
+//                self.scrollToFirstBlock()
+//            }
+//
+//            viewInitiallyLoaded = true
+//        }
+
+        //else {
+
+        blockArray = personalRealmDatabase.findTimeBlocks(currentDate)
         
-        else {
-            
-            findTimeBlocks(currentDate)
+            //findTimeBlocks(currentDate)
             allBlockDates = realm.objects(TimeBlocksDate.self)
             blockTableView.reloadData()
-        }
+        //}
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -177,55 +181,55 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     //MARK: - Find TimeBlocks Function
 
-    func findTimeBlocks (_ todaysDate: Date) {
-
-        formatter.dateFormat = "yyyy MM dd"
-        let functionDate: String = formatter.string(from: todaysDate)
-        
-        //Filters the Realm database and sets the currentBlocksDate container to one "TimeBlocksDate" object that has a date matching the functionDate
-        currentBlocksDate = realm.objects(TimeBlocksDate.self).filter("timeBlocksDate = %@", functionDate)
-    
-        //If there is 1 "TimeBlocksObject" currently in the "currentBlocksDate" variable
-        if currentBlocksDate?.count ?? 0 != 0 {
-            
-            currentDateObject = currentBlocksDate![0] //Sets the 1 "TimeBlocksObject" retrieived after the filter to "currentDateObject"
-            
-            //If there are any Blocks in the "TimeBlocksObject"
-            if currentDateObject?.timeBlocks.count != 0 {
-                
-                blockData = currentDateObject?.timeBlocks.sorted(byKeyPath: "startHour")
-                blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
-                calculateBlockHeights()
-            }
-            
-            //Used if blockArray was populated with TimeBlocks from a different date and now the user has selected a date with no TimeBlocks
-            else {
-                
-                blockData = nil
-                blockArray.removeAll()
-                rowHeights.removeAll()
-            }
-  
-        }
-
-        //If there is 0 "TimeBlocksObject" in the "currentBlocksDate" variable, then this else statement will create one matching the current selected date
-        else {
-
-            let newDate = TimeBlocksDate()
-            newDate.timeBlocksDate = functionDate
-
-            do {
-                try realm.write {
-
-                    realm.add(newDate)
-                }
-            } catch {
-                print ("Error creating a new date \(error)")
-            }
-
-            findTimeBlocks(todaysDate) //Calls function again now knowing there will be a "TimeBlocksObject" to be assigned to the "currentBlocksDate" variable
-        }
-    }
+//    func findTimeBlocks (_ todaysDate: Date) {
+//
+//        formatter.dateFormat = "yyyy MM dd"
+//        let functionDate: String = formatter.string(from: todaysDate)
+//
+//        //Filters the Realm database and sets the currentBlocksDate container to one "TimeBlocksDate" object that has a date matching the functionDate
+//        currentBlocksDate = realm.objects(TimeBlocksDate.self).filter("timeBlocksDate = %@", functionDate)
+//
+//        //If there is 1 "TimeBlocksObject" currently in the "currentBlocksDate" variable
+//        if currentBlocksDate?.count ?? 0 != 0 {
+//
+//            currentDateObject = currentBlocksDate![0] //Sets the 1 "TimeBlocksObject" retrieived after the filter to "currentDateObject"
+//
+//            //If there are any Blocks in the "TimeBlocksObject"
+//            if currentDateObject?.timeBlocks.count != 0 {
+//
+//                blockData = currentDateObject?.timeBlocks.sorted(byKeyPath: "startHour")
+//                blockArray = organizeBlocks(sortRealmBlocks(), functionTuple)
+//                calculateBlockHeights()
+//            }
+//
+//            //Used if blockArray was populated with TimeBlocks from a different date and now the user has selected a date with no TimeBlocks
+//            else {
+//
+//                blockData = nil
+//                blockArray.removeAll()
+//                rowHeights.removeAll()
+//            }
+//
+//        }
+//
+//        //If there is 0 "TimeBlocksObject" in the "currentBlocksDate" variable, then this else statement will create one matching the current selected date
+//        else {
+//
+//            let newDate = TimeBlocksDate()
+//            newDate.timeBlocksDate = functionDate
+//
+//            do {
+//                try realm.write {
+//
+//                    realm.add(newDate)
+//                }
+//            } catch {
+//                print ("Error creating a new date \(error)")
+//            }
+//
+//            findTimeBlocks(todaysDate) //Calls function again now knowing there will be a "TimeBlocksObject" to be assigned to the "currentBlocksDate" variable
+//        }
+//    }
     
     
     //MARK: - TableView Datasource Methods
@@ -738,7 +742,10 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         calendarView.scrollToDate(currentDate)
         
         calendarView.selectDates([currentDate]) //Selects the new date in the calendar
-        findTimeBlocks(currentDate) //Restarts the process of retreiving the data from Realm with the new date
+        //findTimeBlocks(currentDate) //Restarts the process of retreiving the data from Realm with the new date
+        
+        blockArray = personalRealmDatabase.findTimeBlocks(currentDate)
+        
         blockTableView.reloadData()
         scrollToFirstBlock()
     }
@@ -758,7 +765,10 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
         calendarView.scrollToDate(currentDate)
         
         calendarView.selectDates([currentDate]) //Selects the new date in the calendar
-        findTimeBlocks(currentDate) //Restarts the process of retreiving the data from Realm with the new date
+        //findTimeBlocks(currentDate) //Restarts the process of retreiving the data from Realm with the new date
+        
+        blockArray = personalRealmDatabase.findTimeBlocks(currentDate)
+        
         blockTableView.reloadData()
         scrollToFirstBlock()
     }
@@ -1100,7 +1110,10 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
             
             navigationItem.title = formatter.string(from: currentDate)
             
-            findTimeBlocks(currentDate)
+            //findTimeBlocks(currentDate)
+            
+            blockArray = personalRealmDatabase.findTimeBlocks(currentDate)
+            
             blockTableView.reloadData()
             scrollToFirstBlock()
         }
@@ -1224,7 +1237,10 @@ extension TimeBlockViewController: BlockDeleted {
             }
         
             UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [notificationID]) //Deletes a certain blocks notifcation
-            findTimeBlocks(currentDate)
+            //findTimeBlocks(currentDate)
+        
+        blockArray = personalRealmDatabase.findTimeBlocks(currentDate)
+        
             blockTableView.reloadData()
     }
 }
