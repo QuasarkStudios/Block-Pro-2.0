@@ -20,7 +20,7 @@ class PersonalCell: UICollectionViewCell {
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     
-    @IBOutlet weak var blurView: UIVisualEffectView!
+    @IBOutlet weak var blurView: UIView!
     
     @IBOutlet weak var block1: UIView!
     @IBOutlet weak var block2: UIView!
@@ -54,12 +54,12 @@ class PersonalCell: UICollectionViewCell {
         blurView.layer.cornerRadius = 20
         blurView.clipsToBounds = true
         
-        block1.configureBlocks()
-        block2.configureBlocks()
-        block3.configureBlocks()
-        block4.configureBlocks()
-        block5.configureBlocks()
-        block6.configureBlocks()
+        block1.configureBackgroundBlocks()
+        block2.configureBackgroundBlocks()
+        block3.configureBackgroundBlocks()
+        block4.configureBackgroundBlocks()
+        block5.configureBackgroundBlocks()
+        block6.configureBackgroundBlocks()
         
         //buttonContainer.backgroundColor = UIColor.white.withAlphaComponent(0)
         buttonContainer.clipsToBounds = true
@@ -100,7 +100,7 @@ extension UIView {
         clipsToBounds = false
     }
     
-    func configureBlocks () {
+    func configureBackgroundBlocks () {
         
         if tag == 0 {
             

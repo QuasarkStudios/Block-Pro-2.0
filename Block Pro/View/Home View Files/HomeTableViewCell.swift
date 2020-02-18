@@ -64,20 +64,48 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return personalCollectionContent.count
+        if personalCollectionContent.count < 3 {
+            
+            return personalCollectionContent.count
+        }
+        
+        else {
+            
+            return personalCollectionContent.count + 1
+        }
+        
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "personalCell", for: indexPath) as! PersonalCell
+        if indexPath.row < personalCollectionContent.count {
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "personalCell", for: indexPath) as! PersonalCell
+            cell.isHidden = false
+            
+            formatter.dateFormat = "EEEE"
+            cell.dayLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])//calendar.weekdaySymbols[indexPath.row]
 
-        formatter.dateFormat = "EEEE"
-        cell.dayLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])//calendar.weekdaySymbols[indexPath.row]
-
-        formatter.dateFormat = "MMMM d, yyyy"
-        cell.dateLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])
+            formatter.dateFormat = "MMMM d, yyyy"
+            cell.dateLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])
+            
+            return cell
+        }
         
-        return cell
+        else {
+            
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "personalCell", for: indexPath) as! PersonalCell
+            cell.isHidden = true
+            
+//            formatter.dateFormat = "EEEE"
+//            cell.dayLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])//calendar.weekdaySymbols[indexPath.row]
+//
+//            formatter.dateFormat = "MMMM d, yyyy"
+//            cell.dateLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])
+            
+            return cell
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
@@ -85,6 +113,19 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         let leftInset: CGFloat = (UIScreen.main.bounds.width - 5) / 4
         
         return UIEdgeInsets(top: 10, left: leftInset, bottom: 10, right: 0)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        //scrollView.
+        
+        if scrollView.contentOffset.x > 1300 {
+
+            scrollView.setContentOffset(CGPoint(x: 1265, y: 0), animated: true)
+            
+            //scrollView.contentOffset.x = 1265
+        }
+        
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -97,6 +138,18 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         if decelerate == false {
             
             scrollToMostVisibleItem()
+        }
+        
+        else {
+            
+//            if scrollView.contentOffset.x > 1265 {
+//
+//                UIView.animate(withDuration: 0.2) {
+//                    self.personalCollectionView.contentOffset.x = 1265
+//                }
+//            }
+            
+
         }
     }
     
@@ -117,6 +170,7 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         
         assignVisibleCell {
             self.growPersonalCell()
+            //print(self.personalCollectionView.contentOffset)
         }
     }
     
@@ -142,9 +196,24 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         
         if centeredItems.count != 0 {
             
-            let indexPath: IndexPath = IndexPath(item: centeredItems[0].last!, section: 0)
-            personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-            visibleItem = indexPath
+            var indexPath: IndexPath = IndexPath(item: centeredItems[0].last!, section: 0)
+            
+            if indexPath.row < personalCollectionContent.count {
+                
+                personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+                visibleItem = indexPath
+            }
+            
+            else {
+                
+                //print(personalCollectionView.contentOffset)
+                
+                indexPath = IndexPath(item: indexPath.row - 1, section: 0)
+                personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+                visibleItem = indexPath
+            }
+            
+
         }
 
         completion()
@@ -154,27 +223,34 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             
-            let cell = self.personalCollectionView.cellForItem(at: self.visibleItem!) as! PersonalCell
-            
-            cell.cellBackgroundTopAnchor.constant = 5
-            cell.cellBackgroundBottomAnchor.constant = 5
-            cell.cellBackgroundLeadingAnchor.constant = 5
-            cell.cellBackgroundTrailingAnchor.constant = 5
-            
-            cell.detailsButtonTopAnchor.constant = 0
-            cell.shareButtonTopAnchor.constant = 0
-            cell.deleteButtonTopAnchor.constant = 0
-            
-            UIView.animate(withDuration: 0.3) {
+            if self.visibleItem ?? nil != nil {
                 
-                cell.layoutIfNeeded()
-                
-                cell.detailsButton.alpha = 1
-                cell.shareButton.alpha = 1
-                cell.deleteButton.alpha = 1
-            
+                guard let cell = self.personalCollectionView.cellForItem(at: self.visibleItem!) as? PersonalCell else { return }
+                    
+                    cell.cellBackgroundTopAnchor.constant = 5
+                    cell.cellBackgroundBottomAnchor.constant = 5
+                    cell.cellBackgroundLeadingAnchor.constant = 5
+                    cell.cellBackgroundTrailingAnchor.constant = 5
+                    
+                    cell.detailsButtonTopAnchor.constant = 0
+                    cell.shareButtonTopAnchor.constant = 0
+                    cell.deleteButtonTopAnchor.constant = 0
+                    
+                    UIView.animate(withDuration: 0.3) {
+                        
+                        cell.layoutIfNeeded()
+                        
+                        cell.blurView.alpha = 0.2
+                        
+                        cell.detailsButton.alpha = 1
+                        cell.shareButton.alpha = 1
+                        cell.deleteButton.alpha = 1
+                    
+                    }
+                }
             }
-        }
+            
+
     }
     
     func shrinkPersonalCell () {
@@ -197,6 +273,8 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
             UIView.animate(withDuration: 0.3) {
                 
                 cell.layoutIfNeeded()
+                
+                cell.blurView.alpha = 1
                 
                 cell.detailsButton.alpha = 0
                 cell.shareButton.alpha = 0

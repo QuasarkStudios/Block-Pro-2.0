@@ -14,8 +14,16 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
 
     @IBOutlet weak var timeBlockTableView: UITableView!
     
+    let personalDatabase = PersonalRealmDatabase()
     
-    var currentDate: Date = Date()
+    var currentDateObject: TimeBlocksDate?
+    var currentDate: Date? {
+        didSet {
+            
+            currentDateObject = personalDatabase.findTimeBlocks(currentDate!)
+        }
+    }
+    
     
     let formatter = DateFormatter()
     
@@ -23,15 +31,19 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         super.viewDidLoad()
 
         formatter.dateFormat = "EEEE, MMMM d"
-        navigationItem.title =  formatter.string(from: currentDate)
+        navigationItem.title =  formatter.string(from: currentDate!)
         self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 20)!]
         
         timeBlockTableView.dataSource = self
         timeBlockTableView.delegate = self
-        timeBlockTableView.rowHeight = 1490//2880
+        timeBlockTableView.rowHeight = 2210//1490
         timeBlockTableView.separatorStyle = .none
 
         timeBlockTableView.register(UINib(nibName: "TimeBlockCell", bundle: nil), forCellReuseIdentifier: "timeBlockCell")
+        
+        print(personalDatabase.blockArray as Any)
+        
+        //print(personalDatabase.blockData)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -55,7 +67,20 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
 //        cell.textLabel!.text = "New Day"
         cell.selectionStyle = .none
         
+        cell.personalDatabase = personalDatabase
+        
         return cell
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "moveToAddEditView" {
+            
+            let addEditVC = segue.destination as! AddEditBlockViewController
+            addEditVC.currentDateObject = currentDateObject!
+            addEditVC.currentDate = currentDate!
+        }
         
     }
     

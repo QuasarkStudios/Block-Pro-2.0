@@ -16,6 +16,7 @@
 		0D13ABFF232A15E60025EDC3 /* End Break.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D13ABFE232A15E60025EDC3 /* End Break.wav */; };
 		0D13AC02232DDBD40025EDC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D13AC01232DDBD40025EDC3 /* Assets.xcassets */; };
 		0D13AC04232DF0560025EDC3 /* EditPomodoroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D13AC03232DF0560025EDC3 /* EditPomodoroViewController.swift */; };
+		0D18FFD423F785330083C5AB /* AddEditBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D18FFD323F785330083C5AB /* AddEditBlockViewController.swift */; };
 		0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */; };
 		0D23076322D299DC00A12393 /* UpcomingCollabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23076222D299DC00A12393 /* UpcomingCollabViewController.swift */; };
 		0D23076C22D29FE900A12393 /* UpcomingCollabTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23076A22D29FE900A12393 /* UpcomingCollabTableCell.swift */; };
@@ -41,6 +42,9 @@
 		0D41F5C423124B3700B4B11E /* CollabTwentyFiveMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41F5C323124B3700B4B11E /* CollabTwentyFiveMinCell.swift */; };
 		0D41F5C6231376FB00B4B11E /* CollabThirtyMinAndUpCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41F5C5231376FB00B4B11E /* CollabThirtyMinAndUpCell.swift */; };
 		0D5BEFE723E286DA00B5DCE5 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5BEFE623E286DA00B5DCE5 /* HomeViewController.swift */; };
+		0D77B70723FB9ED200AF60CC /* FullBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D77B70623FB9ED200AF60CC /* FullBlock.swift */; };
+		0D77B70923FB9EED00AF60CC /* HalfBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D77B70823FB9EED00AF60CC /* HalfBlock.swift */; };
+		0D77B70B23FB9EFD00AF60CC /* OneThirdBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D77B70A23FB9EFD00AF60CC /* OneThirdBlock.swift */; };
 		0D78657023E4B56B00BD4C4D /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78655E23E4B55400BD4C4D /* Poppins-Black.ttf */; };
 		0D78657123E4B56B00BD4C4D /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78655F23E4B55600BD4C4D /* Poppins-ExtraBold.ttf */; };
 		0D78657223E4B56B00BD4C4D /* Poppins-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656023E4B55700BD4C4D /* Poppins-BoldItalic.ttf */; };
@@ -69,6 +73,7 @@
 		0D7865AF23F71E1A00BD4C4D /* TimeBlockViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7865AE23F71E1900BD4C4D /* TimeBlockViewController2.swift */; };
 		0D7865B223F7313200BD4C4D /* TimeBlockCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7865B023F7313200BD4C4D /* TimeBlockCell.swift */; };
 		0D7865B323F7313200BD4C4D /* TimeBlockCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D7865B123F7313200BD4C4D /* TimeBlockCell.xib */; };
+		0D7865B523F7709500BD4C4D /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D7865B423F7709500BD4C4D /* Home.storyboard */; };
 		0D7C6483238DBC1700E68AE8 /* RadialGradients.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7C6482238DBC1700E68AE8 /* RadialGradients.swift */; };
 		0D7CE23E23C43AE7005BB8EE /* CardContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CE23D23C43AE7005BB8EE /* CardContainer.swift */; };
 		0D7CE24023C43AF6005BB8EE /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CE23F23C43AF6005BB8EE /* CardView.swift */; };
@@ -120,6 +125,7 @@
 		0D13ABFE232A15E60025EDC3 /* End Break.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "End Break.wav"; sourceTree = "<group>"; };
 		0D13AC01232DDBD40025EDC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0D13AC03232DF0560025EDC3 /* EditPomodoroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditPomodoroViewController.swift; sourceTree = "<group>"; };
+		0D18FFD323F785330083C5AB /* AddEditBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditBlockViewController.swift; sourceTree = "<group>"; };
 		0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Add_Update_BlockViewController.swift; sourceTree = "<group>"; };
 		0D23076222D299DC00A12393 /* UpcomingCollabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingCollabViewController.swift; sourceTree = "<group>"; };
 		0D23076A22D29FE900A12393 /* UpcomingCollabTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingCollabTableCell.swift; sourceTree = "<group>"; };
@@ -147,6 +153,9 @@
 		0D41F5C323124B3700B4B11E /* CollabTwentyFiveMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabTwentyFiveMinCell.swift; sourceTree = "<group>"; };
 		0D41F5C5231376FB00B4B11E /* CollabThirtyMinAndUpCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabThirtyMinAndUpCell.swift; sourceTree = "<group>"; };
 		0D5BEFE623E286DA00B5DCE5 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		0D77B70623FB9ED200AF60CC /* FullBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullBlock.swift; sourceTree = "<group>"; };
+		0D77B70823FB9EED00AF60CC /* HalfBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfBlock.swift; sourceTree = "<group>"; };
+		0D77B70A23FB9EFD00AF60CC /* OneThirdBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneThirdBlock.swift; sourceTree = "<group>"; };
 		0D78655E23E4B55400BD4C4D /* Poppins-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Black.ttf"; sourceTree = "<group>"; };
 		0D78655F23E4B55600BD4C4D /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
 		0D78656023E4B55700BD4C4D /* Poppins-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-BoldItalic.ttf"; sourceTree = "<group>"; };
@@ -175,6 +184,7 @@
 		0D7865AE23F71E1900BD4C4D /* TimeBlockViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockViewController2.swift; sourceTree = "<group>"; };
 		0D7865B023F7313200BD4C4D /* TimeBlockCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockCell.swift; sourceTree = "<group>"; };
 		0D7865B123F7313200BD4C4D /* TimeBlockCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimeBlockCell.xib; sourceTree = "<group>"; };
+		0D7865B423F7709500BD4C4D /* Home.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		0D7C6482238DBC1700E68AE8 /* RadialGradients.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadialGradients.swift; sourceTree = "<group>"; };
 		0D7CE23D23C43AE7005BB8EE /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
 		0D7CE23F23C43AF6005BB8EE /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
@@ -267,8 +277,9 @@
 			children = (
 				0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */,
 				0D7865AE23F71E1900BD4C4D /* TimeBlockViewController2.swift */,
-				0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */,
 				0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */,
+				0D18FFD323F785330083C5AB /* AddEditBlockViewController.swift */,
+				0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */,
 				0D23076022D284F500A12393 /* JTAppleCalendar Files */,
 			);
 			path = "TimeBlock Controller Files ";
@@ -357,6 +368,9 @@
 		0D2CED02228FC75B00CC9180 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0D77B70623FB9ED200AF60CC /* FullBlock.swift */,
+				0D77B70823FB9EED00AF60CC /* HalfBlock.swift */,
+				0D77B70A23FB9EFD00AF60CC /* OneThirdBlock.swift */,
 				0D78659723F5B9F600BD4C4D /* Home View Files */,
 				0DA9F83322A84788008BECAE /* Storyboards */,
 				0D7CE24123C6A493005BB8EE /* FreeTime View Files */,
@@ -373,8 +387,8 @@
 				0D810DFE236C4325005B5583 /* UserSettings Cell */,
 				0DADDAAA2355911C00E79F89 /* TimeBlock Files */,
 				0DADDAA923558D5D00E79F89 /* CollabBlock Files */,
-				0D1128342349A53B0080774C /* SettingsCell */,
 				0D933012229373B000B6191D /* TimeTableViewCell */,
+				0D1128342349A53B0080774C /* SettingsCell */,
 				0D23076922D29F6900A12393 /* UpcomingCollabViewCell */,
 				0D7865B023F7313200BD4C4D /* TimeBlockCell.swift */,
 				0D7865B123F7313200BD4C4D /* TimeBlockCell.xib */,
@@ -511,6 +525,7 @@
 			children = (
 				0D2CECF8228FB55800CC9180 /* LaunchScreen.storyboard */,
 				0D2CECF3228FB55600CC9180 /* Main.storyboard */,
+				0D7865B423F7709500BD4C4D /* Home.storyboard */,
 				0DA9F83422A84833008BECAE /* FreeTime.storyboard */,
 				0DA9F83622A84862008BECAE /* Pomodoro.storyboard */,
 				0DA9F83822A84879008BECAE /* TimeBlock.storyboard */,
@@ -690,6 +705,7 @@
 				0D78659023E74B6400BD4C4D /* WeekHeaderCell.xib in Resources */,
 				0D13ABFF232A15E60025EDC3 /* End Break.wav in Resources */,
 				0D78657C23E4B56B00BD4C4D /* Poppins-Italic.ttf in Resources */,
+				0D7865B523F7709500BD4C4D /* Home.storyboard in Resources */,
 				0D7865B323F7313200BD4C4D /* TimeBlockCell.xib in Resources */,
 				0D78658123E4B56B00BD4C4D /* Poppins-MediumItalic.ttf in Resources */,
 				0D78657423E4B56B00BD4C4D /* Poppins-Medium.ttf in Resources */,
@@ -760,8 +776,10 @@
 				0D41F5BC2311C05B00B4B11E /* CollabFiveMinCell.swift in Sources */,
 				0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */,
 				0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */,
+				0D77B70723FB9ED200AF60CC /* FullBlock.swift in Sources */,
 				0D78659923F5BBCE00BD4C4D /* PersonalRealmDatabase.swift in Sources */,
 				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
+				0D77B70923FB9EED00AF60CC /* HalfBlock.swift in Sources */,
 				0D23076F22D3B31D00A12393 /* FriendsViewController.swift in Sources */,
 				0D23076322D299DC00A12393 /* UpcomingCollabViewController.swift in Sources */,
 				0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */,
@@ -774,6 +792,7 @@
 				0D41F5C02311EC6A00B4B11E /* CollabFifteenMinCell.swift in Sources */,
 				0D41F5C6231376FB00B4B11E /* CollabThirtyMinAndUpCell.swift in Sources */,
 				0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */,
+				0D18FFD423F785330083C5AB /* AddEditBlockViewController.swift in Sources */,
 				0D23077A22D6CD9900A12393 /* CollabBlockViewController.swift in Sources */,
 				0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */,
 				0D3A9E2222EFF81F0052BCB6 /* AUCollabBlockViewController.swift in Sources */,
@@ -805,6 +824,7 @@
 				0D23076C22D29FE900A12393 /* UpcomingCollabTableCell.swift in Sources */,
 				0DADDAB22355918A00E79F89 /* TimeTwentyMinCell.swift in Sources */,
 				0DFE5C1C231DF7C10025B4EB /* FriendCell.swift in Sources */,
+				0D77B70B23FB9EFD00AF60CC /* OneThirdBlock.swift in Sources */,
 				0D41F5C2231203A200B4B11E /* CollabTwentyMinCell.swift in Sources */,
 				0D7865B223F7313200BD4C4D /* TimeBlockCell.swift in Sources */,
 				0D7CE24023C43AF6005BB8EE /* CardView.swift in Sources */,

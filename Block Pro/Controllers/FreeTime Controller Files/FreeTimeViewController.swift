@@ -55,7 +55,7 @@ class FreeTimeViewController: UIViewController {
     @IBOutlet weak var oneHourBottomAnchor: NSLayoutConstraint!
     @IBOutlet weak var oneHourLabelTopAnchor: NSLayoutConstraint!
     
-    let realm = try! Realm()
+    lazy var realm = try! Realm()
     let defaults = UserDefaults.standard
     
     var allCards: Results<Card>?

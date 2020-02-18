@@ -45,7 +45,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
     
     @IBOutlet weak var categoryPicker: UIPickerView!
     
-    let realm = try! Realm() //Initializing a new "Realm"
+    lazy var realm = try! Realm() //Initializing a new "Realm"
     var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
     var currentDateObject: TimeBlocksDate? //Variable that will contain a "TimeBlocksDate" object that matches the current date or the selected user date
@@ -153,11 +153,11 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
             guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
             
                 blockNameTextField.text = bigBlockData.name
-                startTimeTextField.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)
-                endTimeTextField.text = convertTo12Hour(bigBlockData.endHour, bigBlockData.endMinute)
-                
-                selectedStartHour = bigBlockData.startHour; selectedStartMinute = bigBlockData.startMinute; selectedStartPeriod = bigBlockData.startPeriod
-                selectedEndHour = bigBlockData.endHour; selectedEndMinute = bigBlockData.endMinute; selectedEndPeriod = bigBlockData.endPeriod
+//                startTimeTextField.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)
+//                endTimeTextField.text = convertTo12Hour(bigBlockData.endHour, bigBlockData.endMinute)
+//
+//                selectedStartHour = bigBlockData.startHour; selectedStartMinute = bigBlockData.startMinute; selectedStartPeriod = bigBlockData.startPeriod
+//                selectedEndHour = bigBlockData.endHour; selectedEndMinute = bigBlockData.endMinute; selectedEndPeriod = bigBlockData.endPeriod
                 
                 notificationID = bigBlockData.notificationID
                 
@@ -179,9 +179,9 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
                     notificationSwitch.isOn = false
                 }
                 
-                categoryTextField.text = bigBlockData.blockCategory //Setting the block category
+                categoryTextField.text = bigBlockData.category //Setting the block category
                 
-                guard let categoryColor = UIColor(hexString: blockCategoryColors[bigBlockData.blockCategory] ?? "#AAAAAA") else { return }
+                guard let categoryColor = UIColor(hexString: blockCategoryColors[bigBlockData.category] ?? "#AAAAAA") else { return }
                 
                     blockOutline.backgroundColor? = categoryColor
         }
@@ -430,28 +430,28 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
                 //If this TimeBlock is not the one being updated by the user
                 if timeBlocks.blockID != blockID {
                     
-                    let realmBlockStart = calendar.date(bySettingHour: Int(timeBlocks.startHour)!, minute: Int(timeBlocks.startMinute)!, second: 0, of: now)! //Converts "realmBlockStart" from a String to a Date
-                    let realmBlockEnd = calendar.date(bySettingHour: Int(timeBlocks.endHour)!, minute: Int(timeBlocks.endMinute)!, second: 0, of: now)! //Converts "realmBlockEnd" from a String to a Date
-                    let realmBlockRange: ClosedRange = realmBlockStart...realmBlockEnd
-                    
-                    //If the "newBlockStart" is greater than or equal to "realmBlockStart" and less than "realmBlockEnd"
-                    if newBlockStart >= realmBlockStart && newBlockStart < realmBlockEnd {
-                        startTimeValidation = false
-                        break
-                    }
-                    //If the "newBlockEnd" is greater than "realmBlockStart" and less than or equal to "realmBlockEnd"
-                    else if newBlockEnd > realmBlockStart && newBlockEnd <= realmBlockEnd {
-                        endTimeValidation = false
-                        break
-                    }
-                    
-                    //For loop that ensures that no time in a new TimeBlock other than it's start and end time interferes with another TimeBlocks times other than its start and end times
-                    for times in newBlockArray {
-                        
-                        if realmBlockRange.contains(times) {
-                            rangeValidation = false
-                        }
-                    }
+//                    let realmBlockStart = calendar.date(bySettingHour: Int(timeBlocks.startHour)!, minute: Int(timeBlocks.startMinute)!, second: 0, of: now)! //Converts "realmBlockStart" from a String to a Date
+//                    let realmBlockEnd = calendar.date(bySettingHour: Int(timeBlocks.endHour)!, minute: Int(timeBlocks.endMinute)!, second: 0, of: now)! //Converts "realmBlockEnd" from a String to a Date
+//                    let realmBlockRange: ClosedRange = realmBlockStart...realmBlockEnd
+//
+//                    //If the "newBlockStart" is greater than or equal to "realmBlockStart" and less than "realmBlockEnd"
+//                    if newBlockStart >= realmBlockStart && newBlockStart < realmBlockEnd {
+//                        startTimeValidation = false
+//                        break
+//                    }
+//                    //If the "newBlockEnd" is greater than "realmBlockStart" and less than or equal to "realmBlockEnd"
+//                    else if newBlockEnd > realmBlockStart && newBlockEnd <= realmBlockEnd {
+//                        endTimeValidation = false
+//                        break
+//                    }
+//
+//                    //For loop that ensures that no time in a new TimeBlock other than it's start and end time interferes with another TimeBlocks times other than its start and end times
+//                    for times in newBlockArray {
+//
+//                        if realmBlockRange.contains(times) {
+//                            rangeValidation = false
+//                        }
+//                    }
                 }
             }
         }
@@ -673,15 +673,15 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
             
             newBlock.name = blockNameTextField.text!
             
-            newBlock.startHour = selectedStartHour
-            newBlock.startMinute = selectedStartMinute
-            newBlock.startPeriod = selectedStartPeriod
+//            newBlock.startHour = selectedStartHour
+//            newBlock.startMinute = selectedStartMinute
+//            newBlock.startPeriod = selectedStartPeriod
+//            
+//            newBlock.endHour = selectedEndHour
+//            newBlock.endMinute = selectedEndMinute
+//            newBlock.endPeriod = selectedEndPeriod
             
-            newBlock.endHour = selectedEndHour
-            newBlock.endMinute = selectedEndMinute
-            newBlock.endPeriod = selectedEndPeriod
-            
-            newBlock.blockCategory = selectedCategory
+            newBlock.category = selectedCategory
             
             newBlock.notificationID = notificationID
             newBlock.scheduled = scheduled
@@ -707,15 +707,15 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
             
             updatedBlock.name = blockNameTextField.text!
             
-            updatedBlock.startHour = selectedStartHour
-            updatedBlock.startMinute = selectedStartMinute
-            updatedBlock.startPeriod = selectedStartPeriod
+//            updatedBlock.startHour = selectedStartHour
+//            updatedBlock.startMinute = selectedStartMinute
+//            updatedBlock.startPeriod = selectedStartPeriod
+//            
+//            updatedBlock.endHour = selectedEndHour
+//            updatedBlock.endMinute = selectedEndMinute
+//            updatedBlock.endPeriod = selectedEndPeriod
             
-            updatedBlock.endHour = selectedEndHour
-            updatedBlock.endMinute = selectedEndMinute
-            updatedBlock.endPeriod = selectedEndPeriod
-            
-            updatedBlock.blockCategory = categoryTextField.text!
+            updatedBlock.category = categoryTextField.text!
             
             updatedBlock.notificationID = notificationID
             updatedBlock.scheduled = scheduled

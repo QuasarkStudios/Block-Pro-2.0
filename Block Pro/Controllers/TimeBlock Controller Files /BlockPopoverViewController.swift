@@ -38,7 +38,7 @@ class BlockPopoverViewController: UIViewController {
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var exitButton: UIButton!
     
-    let realm = try! Realm()
+    lazy var realm = try! Realm()
     var currentDateObject: TimeBlocksDate?
     
     let timeBlockViewObject = TimeBlockViewController()
@@ -59,7 +59,7 @@ class BlockPopoverViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         
-        configureBigBlock()
+        //configureBigBlock()
     }
     
     //Function responsible for adjusting elements of the bigBlock
@@ -86,42 +86,42 @@ class BlockPopoverViewController: UIViewController {
         deleteButton.clipsToBounds = true
     }
     
-    //Function that retrieves and sets all the data for the bigBlock
-    func configureBigBlock () {
-        
-        guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
-        
-        bigOutlineView.backgroundColor = UIColor(hexString: blockCategoryColors[bigBlockData.blockCategory] ?? "#AAAAAA")
-        bigContainerView.backgroundColor = UIColor.flatWhite()
-        
-        blockName.text = bigBlockData.name
-        blockName.adjustsFontSizeToFitWidth = true
-        
-        blockStartTime.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)
-        blockEndTime.text = convertTo12Hour(bigBlockData.endHour, bigBlockData.endMinute) 
-        
-        blockCategory.text = bigBlockData.blockCategory
-    }
-
-    //Function that converts the 24 hour format of the times from Realm to a 12 hour format
-    func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
-        
-        if funcHour == "0" {
-            return "12" + ":" + funcMinute + " " + "AM"
-        }
-        else if funcHour == "12" {
-            return "12" + ":" + funcMinute + " " + "PM"
-        }
-        else if Int(funcHour)! < 12 {
-            return funcHour + ":" + funcMinute + " " + "AM"
-        }
-        else if Int(funcHour)! > 12 {
-            return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
-        }
-        else {
-            return "Error"
-        }
-    }
+//    //Function that retrieves and sets all the data for the bigBlock
+//    func configureBigBlock () {
+//        
+//        guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
+//
+//        bigOutlineView.backgroundColor = UIColor(hexString: blockCategoryColors[bigBlockData.blockCategory] ?? "#AAAAAA")
+//        bigContainerView.backgroundColor = UIColor.flatWhite()
+//
+//        blockName.text = bigBlockData.name
+//        blockName.adjustsFontSizeToFitWidth = true
+//
+//        blockStartTime.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)
+//        blockEndTime.text = convertTo12Hour(bigBlockData.endHour, bigBlockData.endMinute)
+//
+//        blockCategory.text = bigBlockData.blockCategory
+//    }
+//
+//    //Function that converts the 24 hour format of the times from Realm to a 12 hour format
+//    func convertTo12Hour (_ funcHour: String, _ funcMinute: String) -> String {
+//
+//        if funcHour == "0" {
+//            return "12" + ":" + funcMinute + " " + "AM"
+//        }
+//        else if funcHour == "12" {
+//            return "12" + ":" + funcMinute + " " + "PM"
+//        }
+//        else if Int(funcHour)! < 12 {
+//            return funcHour + ":" + funcMinute + " " + "AM"
+//        }
+//        else if Int(funcHour)! > 12 {
+//            return "\(Int(funcHour)! - 12)" + ":" + funcMinute + " " + "PM"
+//        }
+//        else {
+//            return "Error"
+//        }
+//    }
 
     
     @IBAction func editButton(_ sender: Any) {

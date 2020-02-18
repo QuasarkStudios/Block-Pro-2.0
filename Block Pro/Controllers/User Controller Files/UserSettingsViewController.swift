@@ -739,6 +739,8 @@ class UserSettingsViewController: UIViewController, UITableViewDelegate, UITable
                     }
                 }
                 
+                
+                
                 batch.commit() //Commits all the writes
             }
             

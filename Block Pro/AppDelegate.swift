@@ -23,6 +23,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         print ("realm location:", Realm.Configuration.defaultConfiguration.fileURL!) //Used to locate where our Realm database is
         print("user defaults location:", NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
         
+        //let realm = try! Realm()//
+        
+        migrateRealmModel()
+        
+        
+        
         //Sets the intial view of the tabBar to be the TimeBlock view
         let tabBarController = self.window?.rootViewController as! UITabBarController
         tabBarController.selectedIndex = 2
@@ -110,6 +116,51 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
     }
 
+    func migrateRealmModel () {
+        
+        print("helloooooo")
+        
+        let configuration = Realm.Configuration(
+            
+            schemaVersion: 1,
+            
+            migrationBlock: { (migration, oldSchemaVersion) in
+                
+                if oldSchemaVersion < 1 {
+                    
+                    migration.enumerateObjects(ofType: Block.className()) { (oldObject, newObject) in
+                        
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "h:mm a"
+                        #warning("change the format of the date because it should include the actual date the block was created BAKA")
+                        
+                        let startHour = oldObject!["startHour"] as! String
+                        let startMinute = oldObject!["startMinute"] as! String
+                        let startPeriod = oldObject!["startPeriod"] as! String
+                        let startTime = "\(startHour):\(startMinute) \(startPeriod)"
+                            //startHour + ":" + startMinute + " " + startPeriod
+                        
+                        
+                        let endHour = oldObject!["endHour"] as! String
+                        let endMinute = oldObject!["endMinute"] as! String
+                        let endPeriod = oldObject!["endPeriod"] as! String
+                        let endTime = "\(endHour):\(endMinute) \(endPeriod)"
+                            //endHour + ":" + endMinute + " " + endPeriod
+                        
+                        let blockCategory = oldObject!["blockCategory"] as! String
+                        
+                        newObject!["begins"] = formatter.date(from: startTime)
+                        newObject!["ends"] = formatter.date(from: endTime)
+                        newObject!["category"] = blockCategory
+                    }
+                }
+        })
+        
+        Realm.Configuration.defaultConfiguration = configuration
+        
+        _ = try! Realm()
+    }
+    
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.

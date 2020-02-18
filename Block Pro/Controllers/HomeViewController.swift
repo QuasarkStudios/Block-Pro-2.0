@@ -380,6 +380,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     func moveToTimeBlockView (selectedDate: Date) {
         
         self.selectedDate = selectedDate
+        
+                    print(selectedDate)
+        
         performSegue(withIdentifier: "moveToTimeBlockView", sender: self)
     }
     
@@ -393,11 +396,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         if segue.identifier == "moveToTimeBlockView" {
             
-            formatter.dateFormat = "EEEE, MMMM d"
-            navigationItem.title =  formatter.string(from: selectedDate ?? Date())  
+            
+            
+//            formatter.dateFormat = "EEEE, MMMM d"
+//            navigationItem.title =  formatter.string(from: selectedDate ?? Date())
             
             let timeBlockVC = segue.destination as! TimeBlockViewController2
-            timeBlockVC.currentDate = selectedDate ?? Date()
+            timeBlockVC.currentDate = selectedDate! //?? Date()
+        
             
             //timeBlockVC.currentDate = selectedDate ?? Date()
         }

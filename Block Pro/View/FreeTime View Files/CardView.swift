@@ -26,7 +26,7 @@ class CardView: UIView {
         initializeView ()
     }
     
-    func initializeView () {
+    private func initializeView () {
         
         layer.cornerRadius = 0.075 * bounds.size.width
         layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]

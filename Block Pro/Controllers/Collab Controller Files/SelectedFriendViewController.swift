@@ -813,13 +813,14 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     
     @IBAction func upcomingButton(_ sender: Any) {
         
+        
         getUpcomingCollabs()
         tableViewIndicator = "upcoming"
-        
+
         let date = Date()
         timer = Timer(fireAt: date, interval: 3, target: self, selector: #selector(animateDismissButton), userInfo: nil, repeats: true)
         animateButtonTracker = true
-        
+
         pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:))) //Initialization of the pan gesture
         addPanGesture(view: dismissGestureView)
         
@@ -835,31 +836,35 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
 
         deleteFriendLeadingAnchor.constant = -377
         deleteFriendTrailingAnchor.constant = 423
-        
-        
+
+
         UIView.animate(withDuration: 0.2, animations: {
-            
+
             self.friendView.layoutIfNeeded() //Animating the buttons off the view
-            
+
         }) { (finished: Bool) in
-            
+
             self.tableViewHeightConstraint.constant = self.tableViewPresentedHeight //Setting the new tableViewHeightConstraint
             self.dismissIndicator.isHidden = false
-            
+
             UIView.animate(withDuration: 0.2, animations: {
-            
+
                 self.friendView.layoutIfNeeded() //Animating the tableView onto the screen
                 self.dismissIndicator.frame = self.dismissIndicatorExpanded //Animating the dismissIndicator onto the screen
-                
+
             }, completion: { (finished: Bool) in
-                
+
                 self.tableViewOrigin = self.upcoming_historyTableView.frame.origin
                 self.dismissViewOrigin = self.dismissGestureView.frame.origin
-                
+
                 RunLoop.main.add(self.timer!, forMode: .common)
             })
         }
     }
+    
+    
+    
+    
     
     
     @IBAction func historyButton(_ sender: Any) {
