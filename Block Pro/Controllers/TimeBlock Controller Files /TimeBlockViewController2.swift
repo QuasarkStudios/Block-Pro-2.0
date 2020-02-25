@@ -38,10 +38,11 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         timeBlockTableView.delegate = self
         timeBlockTableView.rowHeight = 2210//1490
         timeBlockTableView.separatorStyle = .none
+        timeBlockTableView.showsVerticalScrollIndicator = false
 
         timeBlockTableView.register(UINib(nibName: "TimeBlockCell", bundle: nil), forCellReuseIdentifier: "timeBlockCell")
         
-        print(personalDatabase.blockArray as Any)
+        //print(personalDatabase.blockArray as Any)
         
         //print(personalDatabase.blockData)
     }

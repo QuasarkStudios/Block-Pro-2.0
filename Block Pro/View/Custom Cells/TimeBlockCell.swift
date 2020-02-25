@@ -69,90 +69,381 @@ class TimeBlockCell: UITableViewCell {
         
     }
     
-    func configureBlocks() {
-        
-        var blockConfiguration: [String : Any] = [:]
-        
+    private func configureBlocks () {
+    
         if personalDatabase?.blockArray != nil {
             
-            for block1 in personalDatabase!.blockArray! {
+            var conflictingBlocks: [[PersonalRealmDatabase.blockTuple]] = []
+            var count: Int = 0
+            
+            for pendingBlock in personalDatabase!.blockArray! {
                 
-                var timeConflicts: Int = 0
+                conflictingBlocks.append([])
                 
-                for block2 in personalDatabase!.blockArray! {
+                for conflictingBlock in personalDatabase!.blockArray! {
                     
-                    if block1 != block2 {
+                    if pendingBlock != conflictingBlock {
+
+                        var currentBlockDate: Date = conflictingBlock.begins
                         
-                        var count: Double = 0
-                        var currentBlockDate: Date = block2.begins
-                        
-                        while currentBlockDate <= block2.ends {
+                        while currentBlockDate <= conflictingBlock.ends {
                             
-                            if currentBlockDate.isBetween(startDate: block1.begins, endDate: block1.ends) {
+                            if currentBlockDate.isBetween(startDate: pendingBlock.begins, endDate: pendingBlock.ends) {
                                 
-                                timeConflicts += 1
+                                conflictingBlocks[count].append(conflictingBlock)
                                 break
                             }
                             
                             else {
                                 
-                                currentBlockDate = currentBlockDate.addingTimeInterval(300 * count)
-                                count += 1
+                                currentBlockDate = currentBlockDate.addingTimeInterval(150)
                             }
                         }
-                        
                     }
-                    
                 }
                 
-                print(timeConflicts)
+                count += 1
+            }
+            
+            var blockConfigurationDict: [String : Any] = ["block": "", "typeOfBlock" : "", "conflictingBlocks" : "", "blockFrame" : "", "position" : ""]
+            var blockConfigurationArray: [[String : Any]] = []
+            
+            
+            count = 0
+            
+            for block in personalDatabase!.blockArray! {
+                
+                if conflictingBlocks[count].count == 0 {
+                    
+                    blockConfigurationDict["block"] = block
+                    blockConfigurationDict["typeOfBlock"] = "fullBlock"
+                    blockConfigurationDict["conflictingBlocks"] = nil
+                    blockConfigurationDict["position"] = "centered"
+                    
+                    blockConfigurationArray.append(blockConfigurationDict)
+                }
+                
+                else if conflictingBlocks[count].count == 1 {
+                    
+                    blockConfigurationDict["block"] = block
+                    blockConfigurationDict["typeOfBlock"] = "halfBlock"
+                    blockConfigurationDict["conflictingBlocks"] = conflictingBlocks[count]
+                    blockConfigurationDict["position"] = ""
+                    
+                    blockConfigurationArray.append(blockConfigurationDict)
+                }
+                
+                else if conflictingBlocks[count].count >= 2 {
+                    
+                    blockConfigurationDict["block"] = block
+                    blockConfigurationDict["typeOfBlock"] = "unknown"
+                    blockConfigurationDict["conflictingBlocks"] = conflictingBlocks[count]
+                    blockConfigurationDict["position"] = ""
+                    
+                    blockConfigurationArray.append(blockConfigurationDict)
+                }
+                
+                count += 1
+            }
+            
+            count = 0
+
+            
+            for configuration in blockConfigurationArray {
+                
+                if configuration["typeOfBlock"] as? String == "fullBlock" {
+                    
+                    count += 1
+                    continue
+                }
+
+                else if configuration["typeOfBlock"] as? String == "halfBlock" {
+                    
+                    blockConfigurationArray[count]["position"] = determineHalfBlockPosition(configuration, blockConfigurationArray, count)
+                }
+                
+                else if configuration["typeOfBlock"] as? String == "unknown" {
+                    
+                    let block = configuration["block"] as! PersonalRealmDatabase.blockTuple
+                    let blockHasTwoConflicting: Bool = confirmOneThirdBlock(block, conflictingBlocks[count], conflictingBlocks)
+                    
+                    if blockHasTwoConflicting == true {
+                        
+                        blockConfigurationArray[count]["typeOfBlock"] = "oneThirdBlock"
+                        blockConfigurationArray[count]["position"] = determineOneThirdBlockPosition(configuration, blockConfigurationArray, count)
+                    }
+                    
+                    else {
+                        
+                        blockConfigurationArray[count]["typeOfBlock"] = "halfBlock"
+                        blockConfigurationArray[count]["position"] = determineHalfBlockPosition(configuration, blockConfigurationArray, count)
+                    }
+                }
+                
+                
+                
+                count += 1
+            }
+            
+            count = 0
+            
+            for configuration in blockConfigurationArray {
+                
+                if configuration["typeOfBlock"] as? String == "halfBlock" {
+                    
+                    let conflictingBlocks = configuration["conflictingBlocks"] as? [PersonalRealmDatabase.blockTuple]
+                    var firstConflictingBlock: Int?
+                    var secondConflictingBlock: Int?
+                    
+                    if conflictingBlocks!.count > 1 {
+                        
+                        firstConflictingBlock = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![0]}))!
+                        secondConflictingBlock = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![1]}))!
+                    }
+                    
+                    else {
+                        
+                        firstConflictingBlock = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![0]}))!
+                    }
+                    
+                    if blockConfigurationArray[firstConflictingBlock!]["typeOfBlock"] as? String == "oneThirdBlock" {
+                        
+                        blockConfigurationArray[count]["typeOfBlock"] = "oneThirdBlock"
+                    }
+                    
+                    else if secondConflictingBlock != nil {
+                        
+                        if blockConfigurationArray[secondConflictingBlock!]["typeOfBlock"] as? String == "oneThirdBlock" {
+                            
+                            blockConfigurationArray[count]["typeOfBlock"] = "oneThirdBlock"
+                        }
+                    }
+                }
+                
+                count += 1
+            }
+            
+            for configuration in blockConfigurationArray {
+                
+                let block = configuration["block"] as! PersonalRealmDatabase.blockTuple
+                let typeOfBlock = configuration["typeOfBlock"] as! String
+                let position = configuration["position"] as! String
                 
                 formatter.dateFormat = "HH"
-                let startHour: Double = Double(formatter.string(from: block1.begins))!
-                let totalHours: Double = Double(formatter.string(from: block1.ends))! - Double(formatter.string(from: block1.begins))!
-                
+                let startHour: Double = Double(formatter.string(from: block.begins))!
+                let totalHours: Double = Double(formatter.string(from: block.ends))! - Double(formatter.string(from: block.begins))!
+
                 formatter.dateFormat = "mm"
-                let startMinutes: Double = Double(formatter.string(from: block1.begins))!
-                let totalMinutes: Double = Double(formatter.string(from: block1.ends))! - Double(formatter.string(from: block1.begins))!
-                
-                let blockYCoordinate: CGFloat = CGFloat(((startHour * 90) + (startMinutes * 1.5)) + 50)
+                let startMinutes: Double = Double(formatter.string(from: block.begins))!
+                let totalMinutes: Double = Double(formatter.string(from: block.ends))! - Double(formatter.string(from: block.begins))!
+
+                let blockYCoord: CGFloat = CGFloat(((startHour * 90) + (startMinutes * 1.5)) + 50)
                 let blockHeight: CGFloat = CGFloat(((totalHours * 90) + (totalMinutes * 1.5)))
                 let blockWidth = (UIScreen.main.bounds.width - 75) - 7.5
                 
-                
-                //print(hour, minute)
-                
-                //blockRects[count] = CGRect(x: <#T##CGFloat#>, y: <#T##CGFloat#>, width: <#T##CGFloat#>, height: <#T##CGFloat#>)
-                
-                let testView = FullBlock()
-                testView.frame = CGRect(x: 77.5, y: blockYCoordinate, width: blockWidth, height: blockHeight)
-                print("frame: ", testView.frame)
-                
-                testView.block = block1
-                
-                //testView.backgroundColor = UIColor(hexString: "5065A0", withAlpha: 0.80)
-                
-//                testView.font = UIFont(name: "Poppins-SemiBold", size: 17)
-//                testView.text = block1.name
-//                testView.textColor = .white
-                
-//                testView.layer.cornerRadius = 12
-//                testView.clipsToBounds = true
-                
-                contentView.addSubview(testView)
-                
+                switch typeOfBlock {
+                    
+                case "fullBlock":
+                    
+                    let fullBlock = FullBlock()
+                    fullBlock.frame = CGRect(x: 77.5, y: blockYCoord, width: blockWidth, height: blockHeight)
+                    fullBlock.block = block
 
+                    contentView.addSubview(fullBlock)
+                 
+                case "halfBlock":
+                    
+                    let halfBlock = HalfBlock()
+                    
+                    if position == "left" {
+
+                        halfBlock.frame = CGRect(x: 77.5, y: blockYCoord, width: (blockWidth / 2) - 10, height: blockHeight)
+                    }
+
+                    else if position == "right" {
+
+                        halfBlock.frame = CGRect(x: (blockWidth / 2) + (77.5 + 10), y: blockYCoord, width: (blockWidth / 2) - 10, height: blockHeight)
+                    }
+                    
+                    halfBlock.block = block
+                    contentView.addSubview(halfBlock)
+                    
+                case "oneThirdBlock":
+                    
+                    let oneThirdBlock = OneThirdBlock()
+                    
+                    if position == "left" {
+                        
+                        oneThirdBlock.frame = CGRect(x: 77.5, y: blockYCoord, width: (blockWidth / 3) - 10, height: blockHeight)
+                    }
+                    
+                    else if position == "middle" {
+                        
+                        oneThirdBlock.frame = CGRect(x: (UIScreen.main.bounds.width / 2) - 18.75, y: blockYCoord, width: (blockWidth / 3), height: blockHeight)
+                    }
+                    
+                    else if position == "right" {
+                        
+                        oneThirdBlock.frame = CGRect(x: (UIScreen.main.bounds.width - (blockWidth / 3)) - 7.5, y: blockYCoord, width: (blockWidth / 3), height: blockHeight)
+                    }
+                    
+                    oneThirdBlock.block = block
+                    contentView.addSubview(oneThirdBlock)
+                    
+                default:
+                    break
+                }
             }
             
+            
         }
-
+    
     }
+    
+    private func determineHalfBlockPosition (_ configuration: [String : Any], _ blockConfigurationArray: [[String : Any]], _ count: Int) -> String {
+        
+        let conflictingBlock = configuration["conflictingBlocks"] as? [PersonalRealmDatabase.blockTuple] //The block that conflicts with this current block
+        let conflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlock![0]}))!
+        
+        if count < conflictingBlockIndex {
+            
+            return "left"
+        }
+        
+        else {
+            
+            if blockConfigurationArray[conflictingBlockIndex]["position"] as? String == "left" {
+                
+                return "right"
+            }
+            
+            else {
+                
+                return "left"
+            }
+            
+            
+        }
+    }
+    
+    private func confirmOneThirdBlock (_ block: PersonalRealmDatabase.blockTuple, _ blocksConflictingBlocks: [PersonalRealmDatabase.blockTuple], _ allConflictingBlocks: [[PersonalRealmDatabase.blockTuple]]) -> Bool {
+        
+            var blockHasTwoConflicting: Bool = false
+            
+            for conflictingBlock in blocksConflictingBlocks {
+
+                let conflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlock}))!
+
+                let secondConflictingBlocks = allConflictingBlocks[conflictingBlockIndex]
+
+                for secondConflictingBlock in secondConflictingBlocks {
+
+                    if secondConflictingBlock != block {
+
+                        var currentBlockDate: Date = secondConflictingBlock.begins
+
+                        while currentBlockDate <= secondConflictingBlock.ends {
+
+                            if currentBlockDate.isBetween(startDate: block.begins, endDate: block.ends) {
+
+                                blockHasTwoConflicting = true
+                                break
+                            }
+
+                            else {
+
+                                currentBlockDate = currentBlockDate.addingTimeInterval(150)
+                            }
+                        }
+                    }
+                    
+                    if blockHasTwoConflicting == true {
+                        break
+                    }
+                }
+                
+                if blockHasTwoConflicting == true {
+                    break
+                }
+            }
+            
+        return blockHasTwoConflicting
+        
+    }
+    
+    private func determineOneThirdBlockPosition ( _ configuration:  [String : Any],  _ blockConfigurationArray: [[String : Any]], _ count: Int) -> String {
+        
+        let conflictingBlocks = configuration["conflictingBlocks"] as? [PersonalRealmDatabase.blockTuple]
+        let firstConflictingBlock: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![0]}))!
+        let secondConflictingBlock: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![1]}))!
+        
+        if count < firstConflictingBlock && count < secondConflictingBlock {
+            
+            //blockConfigurationArray[count]["position"] = "left"
+            return "left"
+        }
+        
+        else if count > firstConflictingBlock && count < secondConflictingBlock {
+            
+            if blockConfigurationArray[firstConflictingBlock]["position"] as? String != "middle" {
+                
+                return "middle"
+            }
+            
+            else {
+                
+                if blockConfigurationArray[firstConflictingBlock]["position"] as? String == "left" {
+                    
+                    //blockConfigurationArray[count]["position"] = "right"
+                    return "left"
+                }
+                
+                else {
+                    
+                    //blockConfigurationArray[count]["position"] = "left"
+                    return "right"
+                }
+            }
+        }
+        
+        else {
+            
+            if blockConfigurationArray[firstConflictingBlock]["position"] as? String == "left" {
+                
+                //blockConfigurationArray[count]["position"] = "right"
+                return "right"
+            }
+            
+            else {
+                
+                //blockConfigurationArray[count]["position"] = "left"
+                return "left"
+            }
+        }
+    }
+    
+    
+
     
 }
 
 extension Date {
     
     func isBetween (startDate: Date, endDate: Date) -> Bool {
+        
+        if self > startDate && self < endDate {
+            
+            return true
+        }
+        
+        else {
+            return false
+        }
+        
+        
+        
+        
+        return (startDate ... endDate).contains(self)
         
         return (min(startDate, endDate) ... max(startDate, endDate)).contains(self)
     }

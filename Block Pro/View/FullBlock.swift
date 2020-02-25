@@ -29,7 +29,6 @@ class FullBlock: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
     }
     
     convenience init () {
@@ -67,8 +66,6 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 3//3.75
             clipsToBounds = true
-            
-            print("5 min block")
         
         //10 mins
         case 15.0:
@@ -171,7 +168,7 @@ class FullBlock: UIView {
             addSubview(timeLabel)
         
         //50 & 55 min block
-        case 75...82.5:
+        case 75, 82.5:
             
             layer.cornerRadius = 11
             clipsToBounds = true

@@ -161,9 +161,6 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         homeViewController!.moveToTimeBlockView(selectedDate: personalCollectionContent[indexPath.row])
-        
-        
-        print("check")
     }
     
     private func scrollToMostVisibleItem () {
