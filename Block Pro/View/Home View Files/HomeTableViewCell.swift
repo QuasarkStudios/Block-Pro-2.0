@@ -90,6 +90,15 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
             formatter.dateFormat = "MMMM d, yyyy"
             cell.dateLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])
             
+////            cell.visualEffectView.effect = nil
+////            cell.visualEffectView.isHidden = false
+//            
+//            cell.animator.addAnimations {
+////                cell.visualEffectView.effect = UIBlurEffect(style: .extraLight)
+//            }
+//            
+//            cell.animator.fractionComplete = 0.3
+            
             return cell
         }
         
@@ -232,12 +241,12 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
                     cell.detailsButtonTopAnchor.constant = 0
                     cell.shareButtonTopAnchor.constant = 0
                     cell.deleteButtonTopAnchor.constant = 0
-                    
+                
                     UIView.animate(withDuration: 0.3) {
                         
                         cell.layoutIfNeeded()
                         
-                        cell.blurView.alpha = 0.2
+                        cell.blurView.alpha = 0.5
                         
                         cell.detailsButton.alpha = 1
                         cell.shareButton.alpha = 1
@@ -267,7 +276,7 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
             cell.shareButtonTopAnchor.constant = -50
             cell.deleteButtonTopAnchor.constant = -50
             
-            UIView.animate(withDuration: 0.3) {
+            UIView.animate(withDuration: 0.3, animations: {
                 
                 cell.layoutIfNeeded()
                 
@@ -276,7 +285,13 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
                 cell.detailsButton.alpha = 0
                 cell.shareButton.alpha = 0
                 cell.deleteButton.alpha = 0
+                
+            }) { (finished: Bool) in
+                
+                //cell.visualEffectView.effect = nil
+                //cell.animator.fractionComplete = 0
             }
+            
         }
     }
 }

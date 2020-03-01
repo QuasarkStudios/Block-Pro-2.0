@@ -42,22 +42,25 @@ class OneThirdBlock: UIView {
         nameLabel.text = block?.name
         nameLabel.textColor = .white//ContrastColorOf(UIColor(hexString: categoryColors[block?.category ?? "Other"] ?? "#AAAAAA")!, returnFlat: false)
         nameLabel.addCharacterSpacing(kernValue: 1.69)
+        nameLabel.textAlignment = .center
+        
+        //nameLabel.adjustsFontSizeToFitWidth = true
         
         switch frame.height {
         
         //5 mins
         case 7.5:
             
-            layer.cornerRadius = 3//3.75
+            layer.cornerRadius = 3
             clipsToBounds = true
         
         //10 mins
         case 15.0:
             
-            layer.cornerRadius = 6//7.5
+            layer.cornerRadius = 6
             clipsToBounds = true
             
-            nameLabel.frame = CGRect(x: 10, y: 0, width: frame.width - 10, height: 15)
+            nameLabel.frame = CGRect(x: 5, y: 0, width: frame.width - 10, height: 15)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 13)
             
             addSubview(nameLabel)
@@ -65,10 +68,10 @@ class OneThirdBlock: UIView {
         //15 mins
         case 22.5:
             
-            layer.cornerRadius = 9//11.25
+            layer.cornerRadius = 9
             clipsToBounds = true
             
-            nameLabel.frame = CGRect(x: 10, y: 0, width: frame.width - 10, height: 22.5)
+            nameLabel.frame = CGRect(x: 5, y: 0, width: frame.width - 10, height: 22.5)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
             
             addSubview(nameLabel)
@@ -79,7 +82,7 @@ class OneThirdBlock: UIView {
             layer.cornerRadius = 11
             clipsToBounds = true
             
-            nameLabel.frame = CGRect(x: 10, y: 0, width: frame.width - 10, height: 30)
+            nameLabel.frame = CGRect(x: 5, y: 0, width: frame.width - 10, height: 30)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 17)
 
             addSubview(nameLabel)
@@ -90,7 +93,7 @@ class OneThirdBlock: UIView {
             layer.cornerRadius = 12
             clipsToBounds = true
             
-            nameLabel.frame = CGRect(x: 10, y: 0, width: frame.width - 10, height: 37.5)
+            nameLabel.frame = CGRect(x: 5, y: 0, width: frame.width - 10, height: 37.5)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
 
             addSubview(nameLabel)
@@ -101,7 +104,7 @@ class OneThirdBlock: UIView {
             layer.cornerRadius = 11
             clipsToBounds = true
             
-            nameLabel.frame = CGRect(x: 10, y: 0, width: frame.width - 10, height: 45)
+            nameLabel.frame = CGRect(x: 5, y: 0, width: frame.width - 10, height: 45)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
 
             addSubview(nameLabel)
@@ -112,57 +115,69 @@ class OneThirdBlock: UIView {
             layer.cornerRadius = 11
             clipsToBounds = true
             
-            nameLabel.frame = CGRect(x: 10, y: 0, width: frame.width - 10, height: 52.5)
+            nameLabel.frame = CGRect(x: 5, y: 0, width: frame.width - 10, height: 45)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
             
             addSubview(nameLabel)
             
-        //40 mins
-        case 60:
-            
-            layer.cornerRadius = 11
-            clipsToBounds = true
-            
-            nameLabel.frame = CGRect(x: 10, y: 5, width: frame.width - 10, height: 25)
-            nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
-            
-            addSubview(nameLabel)
-
-
-        //45 mins
-        case 67.5:
-            
-            layer.cornerRadius = 11
-            clipsToBounds = true
-            
-            nameLabel.frame = CGRect(x: 10, y: 5, width: frame.width - 10, height: 28.75)
-            nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
-            
-            addSubview(nameLabel)
-
-        
-        //50 & 55 min block
-        case 75, 82.5:
-            
-            layer.cornerRadius = 11
-            clipsToBounds = true
-            
-            nameLabel.frame = CGRect(x: 10, y: 5, width: frame.width - 10, height: 35)
-            nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
-            
-            addSubview(nameLabel)
-
-            
-        //1 hour block
         default:
             
             layer.cornerRadius = 11
             clipsToBounds = true
-            
-            nameLabel.frame = CGRect(x: 10, y: 5, width: frame.width - 10, height: 35)
-            nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
-            
+
+            nameLabel.frame = CGRect(x: 5, y: 5, width: frame.width - 10, height: 37.5)
+            nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
+
             addSubview(nameLabel)
+            
+            
+            
+//        //40 mins
+//        case 60:
+//
+//            layer.cornerRadius = 11
+//            clipsToBounds = true
+//
+//            nameLabel.frame = CGRect(x: 5, y: 5, width: frame.width - 10, height: 37.5)
+//            nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
+//
+//            addSubview(nameLabel)
+//
+
+//        //45 mins
+//        case 67.5:
+//
+//            layer.cornerRadius = 11
+//            clipsToBounds = true
+//
+//            nameLabel.frame = CGRect(x: 5, y: 5, width: frame.width - 10, height: 37.5)
+//            nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
+//
+//            addSubview(nameLabel)
+//
+//
+//        //50 & 55 min block
+//        case 75, 82.5:
+//
+//            layer.cornerRadius = 11
+//            clipsToBounds = true
+//
+//            nameLabel.frame = CGRect(x: 5, y: 5, width: frame.width - 10, height: 37.5)
+//            nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
+//
+//            addSubview(nameLabel)
+//
+//
+//        //1 hour block
+//        default:
+//
+//            layer.cornerRadius = 11
+//            clipsToBounds = true
+//
+//            nameLabel.frame = CGRect(x: 5, y: 5, width: frame.width - 10, height: 37.5)
+//            nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
+//
+//            addSubview(nameLabel)
 
         }
     }

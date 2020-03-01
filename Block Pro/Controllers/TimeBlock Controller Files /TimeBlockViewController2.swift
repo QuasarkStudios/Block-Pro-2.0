@@ -13,6 +13,7 @@ import ChameleonFramework
 class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var timeBlockTableView: UITableView!
+    @IBOutlet weak var gradientView: UIView!
     
     let personalDatabase = PersonalRealmDatabase()
     
@@ -26,6 +27,7 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
     
     
     let formatter = DateFormatter()
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,9 +44,13 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
 
         timeBlockTableView.register(UINib(nibName: "TimeBlockCell", bundle: nil), forCellReuseIdentifier: "timeBlockCell")
         
-        //print(personalDatabase.blockArray as Any)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-        //print(personalDatabase.blockData)
+        
+        applyGradientFade()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -72,6 +78,21 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         
         return cell
         
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        //print("selected row")
+    }
+    
+    private func applyGradientFade () {
+        
+        let gradientFade = CAGradientLayer()
+        gradientFade.frame = gradientView.bounds
+        gradientFade.colors = [UIColor.white.cgColor, UIColor.white.withAlphaComponent(0.75).cgColor, UIColor.clear.cgColor]
+        gradientFade.locations = [0.25, 0.5, 0.9]
+        
+        gradientView.layer.mask = gradientFade
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

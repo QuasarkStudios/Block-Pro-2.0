@@ -20,6 +20,8 @@ class PersonalCell: UICollectionViewCell {
     @IBOutlet weak var dayLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     
+    
+    @IBOutlet weak var visualEffectView: UIVisualEffectView!
     @IBOutlet weak var blurView: UIView!
     
     @IBOutlet weak var block1: UIView!
@@ -40,6 +42,7 @@ class PersonalCell: UICollectionViewCell {
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var deleteButtonTopAnchor: NSLayoutConstraint!
     
+    let animator = UIViewPropertyAnimator(duration: 0, curve: .linear, animations: nil)
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -51,8 +54,8 @@ class PersonalCell: UICollectionViewCell {
         
         cellBackground.drawCellShadow()
         
-        blurView.layer.cornerRadius = 20
-        blurView.clipsToBounds = true
+//        blurView.layer.cornerRadius = 20
+//        blurView.clipsToBounds = true
         
         block1.configureBackgroundBlocks()
         block2.configureBackgroundBlocks()
@@ -81,6 +84,25 @@ class PersonalCell: UICollectionViewCell {
         deleteButton.drawButtonShadow()
         
         dateLabel.backgroundColor = UIColor.white.withAlphaComponent(0)
+        
+        addVisualEffect()
+        
+        //visualEffectView.backgroundColor = .clear
+        
+    }
+    
+    private func addVisualEffect () {
+
+        visualEffectView.effect = nil
+        //visualEffectView.isHidden = false
+        
+        animator.addAnimations {
+            self.visualEffectView.effect = UIBlurEffect(style: .extraLight)
+        }
+        
+        animator.fractionComplete = 0.3
+//        animator.stopAnimation(true)
+//        animator.finishAnimation(at: .current)
         
     }
     

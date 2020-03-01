@@ -21,7 +21,7 @@ class TimeBlockCell: UITableViewCell {
     let cellTimes: [String] = ["12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"]
     
 
-    var blockRects: [CGRect] = []
+    var blockButtons: [UIButton] = []
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -223,6 +223,8 @@ class TimeBlockCell: UITableViewCell {
                 count += 1
             }
             
+            count = 0
+            
             for configuration in blockConfigurationArray {
                 
                 let block = configuration["block"] as! PersonalRealmDatabase.blockTuple
@@ -250,6 +252,7 @@ class TimeBlockCell: UITableViewCell {
                     fullBlock.block = block
 
                     contentView.addSubview(fullBlock)
+                    //contentView.addSubview(createButton(buttonFrame: fullBlock.frame, count: count))
                  
                 case "halfBlock":
                     
@@ -266,7 +269,9 @@ class TimeBlockCell: UITableViewCell {
                     }
                     
                     halfBlock.block = block
+                    
                     contentView.addSubview(halfBlock)
+                    //contentView.addSubview(createButton(buttonFrame: halfBlock.frame, count: count))
                     
                 case "oneThirdBlock":
                     
@@ -288,13 +293,16 @@ class TimeBlockCell: UITableViewCell {
                     }
                     
                     oneThirdBlock.block = block
+                    
                     contentView.addSubview(oneThirdBlock)
+                    //contentView.addSubview(createButton(buttonFrame: oneThirdBlock.frame, count: count))
                     
                 default:
                     break
                 }
+                
+                count += 1
             }
-            
             
         }
     
@@ -371,61 +379,167 @@ class TimeBlockCell: UITableViewCell {
         
     }
     
-    private func determineOneThirdBlockPosition ( _ configuration:  [String : Any],  _ blockConfigurationArray: [[String : Any]], _ count: Int) -> String {
+    private func determineOneThirdBlockPosition ( _ configuration: [String : Any], _ blockConfigurationArray: [[String : Any]], _ count: Int) -> String {
         
         let conflictingBlocks = configuration["conflictingBlocks"] as? [PersonalRealmDatabase.blockTuple]
-        let firstConflictingBlock: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![0]}))!
-        let secondConflictingBlock: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![1]}))!
+        let firstConflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![0]}))!
+        let secondConflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![1]}))!
+
+        let currentBlock = configuration["block"] as! PersonalRealmDatabase.blockTuple
+        let firstConflictingBlock = conflictingBlocks![0]
+        let secondConflictingBlock = conflictingBlocks![1]
         
-        if count < firstConflictingBlock && count < secondConflictingBlock {
+        if (currentBlock.begins < firstConflictingBlock.begins) && (currentBlock.begins < secondConflictingBlock.begins) {
             
-            //blockConfigurationArray[count]["position"] = "left"
             return "left"
         }
         
-        else if count > firstConflictingBlock && count < secondConflictingBlock {
+        else if currentBlock.begins > firstConflictingBlock.begins && currentBlock.begins < secondConflictingBlock.begins {
             
-            if blockConfigurationArray[firstConflictingBlock]["position"] as? String != "middle" {
+            //return "middle"
+            
+            let firstConflictingPositon = blockConfigurationArray[firstConflictingBlockIndex]["position"] as? String
+            let secondConflictingPosition = blockConfigurationArray[secondConflictingBlockIndex]["position"] as? String
+            
+            if firstConflictingPositon != "left" && secondConflictingPosition != "left" {
+                
+                return "left"
+            }
+            
+            else if firstConflictingPositon != "middle" && secondConflictingPosition != "middle" {
                 
                 return "middle"
             }
             
             else {
                 
-                if blockConfigurationArray[firstConflictingBlock]["position"] as? String == "left" {
-                    
-                    //blockConfigurationArray[count]["position"] = "right"
-                    return "left"
-                }
+                return "right"
+            }
+        }
+        
+        else if currentBlock.begins > firstConflictingBlock.begins && currentBlock.begins > secondConflictingBlock.begins {
+            
+            let firstConflictingPositon = blockConfigurationArray[firstConflictingBlockIndex]["position"] as? String
+            let secondConflictingPosition = blockConfigurationArray[secondConflictingBlockIndex]["position"] as? String
+            
+            if firstConflictingPositon != "left" && secondConflictingPosition != "left" {
                 
-                else {
-                    
-                    //blockConfigurationArray[count]["position"] = "left"
-                    return "right"
-                }
+                return "left"
+            }
+            
+            else if firstConflictingPositon != "middle" && secondConflictingPosition != "middle" {
+                
+                return "middle"
+            }
+            
+            else {
+                
+                return "right"
             }
         }
         
         else {
             
-            if blockConfigurationArray[firstConflictingBlock]["position"] as? String == "left" {
+            if currentBlock.begins == firstConflictingBlock.begins && currentBlock.begins != secondConflictingBlock.begins {
                 
-                //blockConfigurationArray[count]["position"] = "right"
-                return "right"
+                if count < firstConflictingBlockIndex {
+                    
+                    return "left"
+                }
+                
+                else {
+                    
+                    return "middle"
+                }
+            }
+            
+            else if currentBlock.begins != firstConflictingBlock.begins && currentBlock.begins == secondConflictingBlock.begins {
+                
+                let firstConflictingPositon = blockConfigurationArray[firstConflictingBlockIndex]["position"] as? String
+                let secondConflictingPosition = blockConfigurationArray[secondConflictingBlockIndex]["position"] as? String
+                
+                if count < secondConflictingBlockIndex {
+                    
+                    return "middle"
+                }
+                
+                else {
+                    
+                    if firstConflictingPositon != "left" && secondConflictingPosition != "left" {
+                        
+                        return "left"
+                    }
+                    
+                    else if firstConflictingPositon != "middle" && secondConflictingPosition != "middle" {
+                        
+                        return "middle"
+                    }
+                    
+                    else {
+                        
+                        return "right"
+                    }
+                }
+                
             }
             
             else {
                 
-                //blockConfigurationArray[count]["position"] = "left"
-                return "left"
+                if count < firstConflictingBlockIndex && count < secondConflictingBlockIndex {
+                    
+                    return "left"
+                }
+                
+                else if count > firstConflictingBlockIndex && count < secondConflictingBlockIndex {
+                    
+                    return "middle"
+                }
+                
+                else {
+                    
+                    let firstConflictingPositon = blockConfigurationArray[firstConflictingBlockIndex]["position"] as? String
+                    let secondConflictingPosition = blockConfigurationArray[secondConflictingBlockIndex]["position"] as? String
+                    
+                    if firstConflictingPositon != "left" && secondConflictingPosition != "left" {
+                        
+                        return "left"
+                    }
+                    
+                    else if firstConflictingPositon != "middle" && secondConflictingPosition != "middle" {
+                        
+                        return "middle"
+                    }
+                    
+                    else {
+                        
+                        return "right"
+                    }
+                }
             }
         }
     }
     
+    private func createButton (buttonFrame: CGRect, count: Int) -> UIButton {
+        
+        let blockButton = UIButton()
+        blockButton.frame = buttonFrame
+        blockButton.backgroundColor = UIColor.gray.withAlphaComponent(0.25)
+        blockButton.tag = count
+        blockButton.addTarget(self, action: #selector(buttonPressed(sender:)), for: .touchUpInside)
+        
+        blockButtons.append(blockButton)
+        return blockButton
+    }
     
-
-    
+    @objc func buttonPressed (sender: UIButton) {
+        
+        print("hello")
+        
+        print(sender.tag)
+    }
 }
+
+
 
 extension Date {
     

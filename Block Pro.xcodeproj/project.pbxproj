@@ -45,6 +45,7 @@
 		0D77B70723FB9ED200AF60CC /* FullBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D77B70623FB9ED200AF60CC /* FullBlock.swift */; };
 		0D77B70923FB9EED00AF60CC /* HalfBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D77B70823FB9EED00AF60CC /* HalfBlock.swift */; };
 		0D77B70B23FB9EFD00AF60CC /* OneThirdBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D77B70A23FB9EFD00AF60CC /* OneThirdBlock.swift */; };
+		0D77B70F240C221B00AF60CC /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D77B70E240C221B00AF60CC /* VisualEffectView.swift */; };
 		0D78657023E4B56B00BD4C4D /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78655E23E4B55400BD4C4D /* Poppins-Black.ttf */; };
 		0D78657123E4B56B00BD4C4D /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78655F23E4B55600BD4C4D /* Poppins-ExtraBold.ttf */; };
 		0D78657223E4B56B00BD4C4D /* Poppins-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656023E4B55700BD4C4D /* Poppins-BoldItalic.ttf */; };
@@ -156,6 +157,7 @@
 		0D77B70623FB9ED200AF60CC /* FullBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullBlock.swift; sourceTree = "<group>"; };
 		0D77B70823FB9EED00AF60CC /* HalfBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfBlock.swift; sourceTree = "<group>"; };
 		0D77B70A23FB9EFD00AF60CC /* OneThirdBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneThirdBlock.swift; sourceTree = "<group>"; };
+		0D77B70E240C221B00AF60CC /* VisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
 		0D78655E23E4B55400BD4C4D /* Poppins-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Black.ttf"; sourceTree = "<group>"; };
 		0D78655F23E4B55600BD4C4D /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
 		0D78656023E4B55700BD4C4D /* Poppins-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-BoldItalic.ttf"; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 		0D2CED02228FC75B00CC9180 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				0D77B70E240C221B00AF60CC /* VisualEffectView.swift */,
 				0D77B70623FB9ED200AF60CC /* FullBlock.swift */,
 				0D77B70823FB9EED00AF60CC /* HalfBlock.swift */,
 				0D77B70A23FB9EFD00AF60CC /* OneThirdBlock.swift */,
@@ -820,6 +823,7 @@
 				0D41F5C423124B3700B4B11E /* CollabTwentyFiveMinCell.swift in Sources */,
 				0D5BEFE723E286DA00B5DCE5 /* HomeViewController.swift in Sources */,
 				0DADDAB6235591C200E79F89 /* TimeThirtyMinAndUpCell.swift in Sources */,
+				0D77B70F240C221B00AF60CC /* VisualEffectView.swift in Sources */,
 				0D035329235D634E00BB79B4 /* FreeTimeViewController.swift in Sources */,
 				0D23076C22D29FE900A12393 /* UpcomingCollabTableCell.swift in Sources */,
 				0DADDAB22355918A00E79F89 /* TimeTwentyMinCell.swift in Sources */,

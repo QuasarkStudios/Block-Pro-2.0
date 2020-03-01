@@ -38,13 +38,23 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gjE-oi-0eH">
+                                <rect key="frame" x="0.0" y="88" width="375" height="25"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="kfL-9F-uUa"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="zKW-yd-bW6" firstAttribute="top" secondItem="zqq-Gw-iDH" secondAttribute="top" id="909-BV-xoP"/>
                             <constraint firstItem="zqq-Gw-iDH" firstAttribute="trailing" secondItem="zKW-yd-bW6" secondAttribute="trailing" id="NYb-KQ-Wr4"/>
                             <constraint firstAttribute="bottom" secondItem="zKW-yd-bW6" secondAttribute="bottom" id="Q3g-po-7gF"/>
                             <constraint firstItem="zKW-yd-bW6" firstAttribute="leading" secondItem="zqq-Gw-iDH" secondAttribute="leading" id="Qkj-Xk-JYU"/>
+                            <constraint firstItem="zKW-yd-bW6" firstAttribute="top" secondItem="zqq-Gw-iDH" secondAttribute="top" id="WA8-n1-giv"/>
+                            <constraint firstItem="gjE-oi-0eH" firstAttribute="leading" secondItem="zqq-Gw-iDH" secondAttribute="leading" id="fiv-zB-zPS"/>
+                            <constraint firstItem="zqq-Gw-iDH" firstAttribute="trailing" secondItem="gjE-oi-0eH" secondAttribute="trailing" id="gpo-g5-1oK"/>
+                            <constraint firstItem="gjE-oi-0eH" firstAttribute="top" secondItem="zqq-Gw-iDH" secondAttribute="top" id="oUt-w1-F8E"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="zqq-Gw-iDH"/>
                     </view>
@@ -56,6 +66,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="gradientView" destination="gjE-oi-0eH" id="qU1-98-fJx"/>
                         <outlet property="timeBlockTableView" destination="zKW-yd-bW6" id="V1a-5e-qDQ"/>
                     </connections>
                 </viewController>
