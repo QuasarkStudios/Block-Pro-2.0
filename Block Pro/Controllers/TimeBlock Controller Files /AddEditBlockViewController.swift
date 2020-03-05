@@ -9,14 +9,23 @@
 import UIKit
 import RealmSwift
 
-class AddEditBlockViewController: UIViewController, UITextFieldDelegate {
+protocol ReloadData {
+    
+    func reloadData ()
+    
+    func nilSelectedBlock ()
+}
+
+class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
 
     @IBOutlet weak var navigationBar: UINavigationBar!
     @IBOutlet weak var addEditButton: UIBarButtonItem!
     
     
-    @IBOutlet weak var blockView: UIView!
-    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var blockView: BigBlock!
+    
+    @IBOutlet weak var detailsTableView: UITableView!
+    
     
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var categoryTextField: UITextField!
@@ -26,19 +35,58 @@ class AddEditBlockViewController: UIViewController, UITextFieldDelegate {
     var timePicker: UIDatePicker = UIDatePicker()
     var timePickerBackground: UIView = UIView()
     
-    lazy var realm = try! Realm()
+    //lazy var realm = try! Realm()
+    var personalDatabase: PersonalRealmDatabase?
     var currentDateObject: TimeBlocksDate?
     
     let formatter = DateFormatter()
     
     var currentDate: Date?
     
-    var blockName: String = ""
-    var blockCategory: String = ""
-    var blockBegins: Date? //HH:mm - 24 hour format; h:mm a - 12 hour format
-    var blockEnds: Date?
+    var selectedBlock: PersonalRealmDatabase.blockTuple?
     
-    var tag: String = ""
+    var reloadDataDelegate: ReloadData?
+    
+    var blockName: String? {
+        didSet {
+            
+            if validateTextEntered(blockName!) == true {
+                
+                blockView.nameLabel.text = blockName
+            }
+            
+            else {
+                
+                blockView.nameLabel.text = "Block Name"
+            }
+            
+            
+        }
+    }
+    
+    var blockCategory: String? {
+        didSet {
+            //categoryTextField.text = blockCategory
+        }
+    }
+    
+    var blockBegins: Date? {
+        didSet {
+            
+            formatter.dateFormat = "h:mm a"
+            //beginsTextField.text = formatter.string(from: blockBegins!)
+        }
+    } //HH:mm - 24 hour format; h:mm a - 12 hour format
+    
+    var blockEnds: Date? {
+        didSet {
+            
+            formatter.dateFormat = "h:mm a"
+            //endsTextField.text = formatter.string(from: blockEnds!)
+        }
+    }
+    
+    var tag: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,198 +98,404 @@ class AddEditBlockViewController: UIViewController, UITextFieldDelegate {
         
         navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 18)!]
 
-        blockView.backgroundColor = UIColor.flatBlue().withAlphaComponent(0.85)
-        blockView.layer.cornerRadius = 10
+        detailsTableView.dataSource = self
+        detailsTableView.delegate = self
         
-        timeLabel.addCharacterSpacing(kernValue: 1.38)
+        detailsTableView.rowHeight = 80
+        detailsTableView.separatorStyle = .none
         
-        nameTextField.delegate = self
-        categoryTextField.delegate = self
-        beginsTextField.delegate = self
-        endsTextField.delegate = self
+        detailsTableView.register(UINib(nibName: "BlockNameSettingCell", bundle: nil), forCellReuseIdentifier: "blockNameSettingCell")
         
-        nameTextField.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.3)
+        detailsTableView.register(UINib(nibName: "BlockOtherSettingCell", bundle: nil), forCellReuseIdentifier: "blockOtherSettingCell")
         
-        categoryTextField.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.3)
-        categoryTextField.inputView = UIView()
+        detailsTableView.register(UINib(nibName: "BlockTimePickerCell", bundle: nil), forCellReuseIdentifier: "blockTimePickerCell")
         
-        beginsTextField.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.3)
-        beginsTextField.inputView = UIView()
+        detailsTableView.register(UINib(nibName: "BlockCategoryPickerCell", bundle: nil), forCellReuseIdentifier: "blockCategoryPickerCell")
         
-        endsTextField.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.3)
-        endsTextField.inputView = UIView()
-        
-        timePicker.datePickerMode = .time
-        timePicker.minuteInterval = 5
-        timePicker.addTarget(self, action: #selector(timeSelected(timePicker:)), for: .allEvents)
         //timeSelected(timePicker: timePicker)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
+        
+        guard let block = selectedBlock else { return }
+
+            configureEditView(block)
     }
     
-    func textFieldDidBeginEditing(_ textField: UITextField) {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if textField == nameTextField {
+        return 7
+        
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        switch indexPath.row {
             
-            //guard let picker = timePicker else { return }
+        case 0:
+            
+            return configureNameSettingCell(tableView, indexPath)
+        
+        case 1, 3, 5:
+         
+            return configureOtherSettingsCell(tableView, indexPath)
+            
+        default:
+            
+            return configurePickerCell(tableView, indexPath)
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        switch indexPath.row {
+        
+        case 0, 1, 3, 5:
+         
+            return 80
+            
+        default:
+            
+            if tag == "begins" {
+                
+                if indexPath.row == 2 {
+                    
+                    return 160
+                }
+                
+                else {
+                    
+                    return 0
+                }
+            }
+            
+            else if tag == "ends" {
+                
+                if indexPath.row == 4 {
+                    
+                    return 160
+                }
+                
+                else {
+                    
+                    return 0
+                }
+            }
+            
+            else if tag == "category" {
+                
+                if indexPath.row == 6 {
+                    
+                    return 160
+                }
+                
+                else {
+                    
+                    return 0
+                }
+            }
+            
+            else {
+                
+                return 0
+            }
+        }
+        
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if indexPath.row == 0 {
+            
+            tag = nil
+            
+        }
+        
+        else if indexPath.row == 1 {
+            
+            if tag != "begins" {
+                
+                tag = "begins"
+            }
+            
+            else {
+                
+                tag = nil
+            }
+        }
+
+        else if indexPath.row == 3 {
+            
+            if tag != "ends" {
+                
+                tag = "ends"
+            }
+            
+            else {
+                
+                tag = nil
+            }
+        }
+
+        else if indexPath.row == 5 {
+            
+            if tag != "category" {
+                
+                tag = "category"
+            }
+            
+            else {
+                
+                tag = nil
+            }
+        }
+        
+        tableView.beginUpdates()
+        tableView.endUpdates()
+        
+    }
+    
+    private func configureNameSettingCell (_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "blockNameSettingCell", for: indexPath) as! BlockNameSettingCell
+        cell.selectionStyle = .none
+        
+        cell.textEditsDelegate = self
+        
+        if let block = selectedBlock {
+
+            cell.nameTextField.text = block.name
 
         }
         
-        else if textField == categoryTextField {
-            
-            nameTextField.endEditing(true)
-            
-            
-            
-            presentTimePicker()
-            
-        }
-        
-        else if textField == beginsTextField {
-            
-            nameTextField.endEditing(true)
-            
-            tag = "begins"
-            
-            presentTimePicker()
-        }
-        
-        else if textField == endsTextField {
-            
-            nameTextField.endEditing(true)
-            
-            tag = "ends"
-            
-            presentTimePicker()
-        }
+        return cell
         
     }
     
-//    func textFieldDidEndEditing(_ textField: UITextField) {
-//
-//        if textField == nameTextField {
-//
-//            blockName = textField.text!
-//        }
-//
-//        else if textField == categoryTextField {
-//
-//            blockCategory = textField.text!
-//        }
-//
-//        else if textField == beginsTextField {
-//
-//
-//            blockBegins = textField.text!
-//        }
-//
-//        else {
-//
-//            blockEnds = textField.text!
-//        }
-//    }
-    
-    func presentTimePicker () {
+    private func configureOtherSettingsCell (_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell{
         
-        timePickerBackground.frame = CGRect(x: 0, y: endsTextField.frame.maxY + 25, width: view.frame.width, height: 0)
-        timePickerBackground.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.3)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "blockOtherSettingCell", for: indexPath) as! BlockOtherSettingCell
+        cell.selectionStyle = .none
         
-        timePicker.frame = CGRect(x: 10, y: 0, width: timePickerBackground.frame.width - 10, height: 0)
-        
-        view.addSubview(timePickerBackground)
-        timePickerBackground.addSubview(timePicker)
-        
-        UIView.animate(withDuration: 0.5) {
+        if indexPath.row == 1 {
             
-            self.timePickerBackground.frame = CGRect(x: 0, y: self.endsTextField.frame.maxY + 25, width: self.view.frame.width, height: 200)
-            self.timePicker.frame = CGRect(x: 10, y: 0, width: self.timePickerBackground.frame.width - 10, height: 200)
+            cell.settingLabel.text = "Begins:"
             
+            if let block = selectedBlock {
+                
+                formatter.dateFormat = "h:mm a"
+                cell.settingSelectionLabel.text = formatter.string(from: block.begins)
+            }
+                
+            else {
+                
+                cell.settingSelectionLabel.text = "12:00 PM"
+            }
         }
+        
+        else if indexPath.row == 3 {
+            
+            cell.settingLabel.text = "Ends:"
+            
+            if let block = selectedBlock {
+                
+                formatter.dateFormat = "h:mm a"
+                cell.settingSelectionLabel.text = formatter.string(from: block.ends)
+            }
+            
+            else {
+                
+                cell.settingSelectionLabel.text = "12:05 PM"
+            }
+        }
+        
+        else {
+            
+            cell.settingLabel.text = "Category:"
+            
+            if let block = selectedBlock {
+               
+                cell.settingSelectionLabel.text = block.category
+            }
+            
+            else {
+                
+                cell.settingSelectionLabel.text = "None"
+            }
+        }
+        
+        return cell
+    }
+    
+    private func configurePickerCell (_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell{
+        
+        if indexPath.row == 2 {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "blockTimePickerCell", for: indexPath) as! BlockTimePickerCell
+            cell.currentDate = currentDate
+            cell.timeSelectedDelegate = self
+            
+            return cell
+        }
+        
+        else if indexPath.row == 4 {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "blockTimePickerCell", for: indexPath) as! BlockTimePickerCell
+            cell.currentDate = currentDate
+            cell.timeSelectedDelegate = self
+            
+            return cell
+        }
+        
+        else {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "blockCategoryPickerCell", for: indexPath) as! BlockCategoryPickerCell
+            
+            return cell
+        }
+        
+        
         
     }
     
-    @objc func timeSelected (timePicker: UIDatePicker) {
+    private func configureEditView (_ block: PersonalRealmDatabase.blockTuple) {
         
-        //"MM-dd-yyyy HH:mm"
+        blockView.nameLabel.text = block.name
+
+        formatter.dateFormat = "h:mm a"
+
+        blockView.timeLabel.text = formatter.string(from: block.begins)
+        blockView.timeLabel.text! += "  -  "
+        blockView.timeLabel.text! += formatter.string(from: block.ends)
+
+        blockView.category = block.category
+
+        blockName = block.name
+        blockCategory = block.category
+        blockBegins = block.begins
+        blockEnds = block.ends
         
+//        nameTextField.text = block.name
+//        categoryTextField.text = block.category
+//        beginsTextField.text = formatter.string(from: block.begins)
+//        endsTextField.text = formatter.string(from: block.ends)
         
-        if tag == "begins" {
-            
-            var date: String = ""
-            
-            formatter.dateFormat = "MM-dd-yyyy "
-            date = formatter.string(from: currentDate!)
-            
-            formatter.dateFormat = "HH:mm"
-            date += formatter.string(from: timePicker.date)
-            
-            formatter.dateFormat = "MM-dd-yyyy HH:mm"
-            blockBegins = formatter.date(from: date)
-            
-            formatter.dateFormat = "h:mm a"
-            beginsTextField.text = formatter.string(from: timePicker.date)
-            
-        }
-        
-        else if tag == "ends" {
-            
-            var date: String = ""
-            
-            formatter.dateFormat = "MM-dd-yyyy "
-            date = formatter.string(from: currentDate!)
-            
-            formatter.dateFormat = "HH:mm"
-            date += formatter.string(from: timePicker.date)
-            
-            formatter.dateFormat = "MM-dd-yyyy HH:mm"
-            blockEnds = formatter.date(from: date)
-            
-            formatter.dateFormat = "h:mm a"
-            endsTextField.text = formatter.string(from: timePicker.date)
-        }
     
+        
+    }
+    
+    
+  
+    
+    func validateTextEntered (_ text: String) -> Bool {
+        
+        let textArray = Array(text)
+        var textEntered: Bool = false
+        
+        //For loop that checks to see if "blockNameTextField" isn't empty
+        for char in textArray {
+            
+            if char != " " {
+                textEntered = true
+                break
+            }
+        }
+        
+        return textEntered
     }
     
     @objc func dismissKeyboard () {
         
-        nameTextField.endEditing(true)
-        categoryTextField.endEditing(true)
-        beginsTextField.endEditing(true)
-        endsTextField.endEditing(true)
+        let indexPath: IndexPath = IndexPath(row: 0, section: 0)
+        
+        let cell = detailsTableView.cellForRow(at: indexPath) as! BlockNameSettingCell
+        cell.nameTextField.endEditing(true)
         
     }
     
     
     @IBAction func addEditButton(_ sender: Any) {
         
-        let newBlock = Block()
+        var blockDict: [String : Any] = [:]
         
-        newBlock.name = nameTextField.text!
+        blockDict["name"] = nameTextField.text!
+        blockDict["begins"] = blockBegins!
+        blockDict["ends"] = blockEnds!
+        blockDict["category"] = categoryTextField.text!
+
+        blockDict["notificationID"] = ""
+        blockDict["scheduled"] = false
+        blockDict["minsBefore"] = 0
         
-        newBlock.begins = blockBegins!
-        newBlock.ends = blockEnds!
-        
-        newBlock.category = categoryTextField.text!
-        
-        do {
+        if selectedBlock == nil {
             
-            try realm.write {
-                
-                print("block saved")
-                currentDateObject?.timeBlocks.append(newBlock)
-            }
-        } catch {
-            print("Error adding block \(error)")
+            personalDatabase?.addBlock(blockDict, currentDateObject!)
         }
         
-        dismiss(animated: true, completion: nil)
+        else {
+            
+            blockDict["blockID"] = selectedBlock?.blockID
+            
+            personalDatabase?.updateBlock(blockDict, currentDateObject!)
+        }
+        
+        dismiss(animated: true) {
+            self.reloadDataDelegate?.reloadData()
+        }
+        
+        //dismiss(animated: true, completion: nil)
     }
     
     @IBAction func cancelPressed(_ sender: Any) {
         
-        dismiss(animated: true, completion: nil)
+        dismiss(animated: true) {
+            self.reloadDataDelegate?.nilSelectedBlock()
+        }
     }
+}
+
+extension AddEditBlockViewController: TextEdits {
+    
+    func textBeganEditing() {
+        
+        tag = nil
+        
+        detailsTableView.beginUpdates()
+        detailsTableView.endUpdates()
+    }
+    
+    func textEdited(_ text: String) {
+        
+        blockName = text
+    }
+}
+
+extension AddEditBlockViewController: TimeSelected {
+    
+    func startTimeSelected(_ selectedTime: Date) {
+        
+        formatter.dateFormat = "h:mm a"
+        
+        let indexPath: IndexPath = IndexPath(row: 1, section: 0)
+        
+        let cell = detailsTableView.cellForRow(at: indexPath) as! BlockOtherSettingCell
+        cell.settingSelectionLabel.text = formatter.string(from: selectedTime)
+        
+    }
+    
+    func endTimeSelected(_ selectedTime: Date) {
+        
+        formatter.dateFormat = "h:mm a"
+        
+        let indexPath: IndexPath = IndexPath(row: 3, section: 0)
+        
+        let cell = detailsTableView.cellForRow(at: indexPath) as! BlockOtherSettingCell
+        cell.settingSelectionLabel.text = formatter.string(from: selectedTime)
+    }
+    
+    
+    
 }
 
 extension UILabel {

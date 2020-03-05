@@ -26,7 +26,6 @@ class PersonalRealmDatabase {
     var functionTuple: blockTuple = (blockID: "", notificationID : "", name: "", begins: Date(), ends: Date(), category: "")
 
     var blockArray: [blockTuple]? //= [blockTuple]() //Array that holds all the data for each TimeBlock
-    var blockHeights: [CGRect] = []
     
     func findTimeBlocks (_ todaysDate: Date) -> TimeBlocksDate {
 
@@ -117,6 +116,68 @@ class PersonalRealmDatabase {
         }
 
         return organizedBlocks
+    }
+    
+    func addBlock (_ blockDict: [String : Any], _ currentDate: TimeBlocksDate) {
+        
+        let newBlock = Block()
+        
+        newBlock.name = blockDict["name"] as! String
+
+        newBlock.begins = blockDict["begins"] as? Date
+        newBlock.ends = blockDict["ends"] as? Date
+
+        newBlock.category = blockDict["category"] as! String
+        
+        newBlock.notificationID = blockDict["notificationID"] as! String
+        newBlock.scheduled = blockDict["scheduled"] as! Bool
+        newBlock.minsBefore = blockDict["minsBefore"] as! Int
+        
+        do {
+            
+            try realm.write {
+                
+                currentDate.timeBlocks.append(newBlock)
+                
+                formatter.dateFormat = "yyyy MM dd"
+                let date = formatter.date(from: currentDate.timeBlocksDate)
+                _ = findTimeBlocks(date!)
+            }
+        } catch {
+            print("Error adding block \(error)")
+        }
+    }
+    
+    func updateBlock (_ blockDict: [String : Any], _ currentDate: TimeBlocksDate) {
+        
+        let updatedBlock = Block()
+        
+        updatedBlock.blockID = blockDict["blockID"] as! String
+        updatedBlock.name = blockDict["name"] as! String
+
+        updatedBlock.begins = blockDict["begins"] as? Date
+        updatedBlock.ends = blockDict["ends"] as? Date
+
+        updatedBlock.category = blockDict["category"] as! String
+        
+        updatedBlock.notificationID = blockDict["notificationID"] as! String
+        updatedBlock.scheduled = blockDict["scheduled"] as! Bool
+        updatedBlock.minsBefore = blockDict["minsBefore"] as! Int
+        
+        do {
+            try self.realm.write {
+                
+                realm.add(updatedBlock, update: .modified)
+                
+                formatter.dateFormat = "yyyy MM dd"
+                let date = formatter.date(from: currentDate.timeBlocksDate)
+                _ = findTimeBlocks(date!)
+                
+            }
+        } catch {
+            print ("Error updating block \(error)")
+            
+        }
     }
 
 }

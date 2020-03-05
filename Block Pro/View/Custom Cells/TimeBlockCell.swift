@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol MoveToEditBlockView {
+    
+    func moveToEditView (selectedBlock: PersonalRealmDatabase.blockTuple)
+}
+
 class TimeBlockCell: UITableViewCell {
 
     var personalDatabase: PersonalRealmDatabase? {
@@ -22,10 +27,13 @@ class TimeBlockCell: UITableViewCell {
     
 
     var blockButtons: [UIButton] = []
+    var coorespondingBlocks: [PersonalRealmDatabase.blockTuple] = []
+    
+    
+    var editBlockDelegate: MoveToEditBlockView?
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
         
         configureCellBackground()
     }
@@ -252,7 +260,7 @@ class TimeBlockCell: UITableViewCell {
                     fullBlock.block = block
 
                     contentView.addSubview(fullBlock)
-                    //contentView.addSubview(createButton(buttonFrame: fullBlock.frame, count: count))
+                    contentView.addSubview(createButton(buttonFrame: fullBlock.frame, count: count))
                  
                 case "halfBlock":
                     
@@ -271,7 +279,7 @@ class TimeBlockCell: UITableViewCell {
                     halfBlock.block = block
                     
                     contentView.addSubview(halfBlock)
-                    //contentView.addSubview(createButton(buttonFrame: halfBlock.frame, count: count))
+                    contentView.addSubview(createButton(buttonFrame: halfBlock.frame, count: count))
                     
                 case "oneThirdBlock":
                     
@@ -295,12 +303,13 @@ class TimeBlockCell: UITableViewCell {
                     oneThirdBlock.block = block
                     
                     contentView.addSubview(oneThirdBlock)
-                    //contentView.addSubview(createButton(buttonFrame: oneThirdBlock.frame, count: count))
+                    contentView.addSubview(createButton(buttonFrame: oneThirdBlock.frame, count: count))
                     
                 default:
                     break
                 }
                 
+                coorespondingBlocks.append(block)
                 count += 1
             }
             
@@ -523,7 +532,7 @@ class TimeBlockCell: UITableViewCell {
         
         let blockButton = UIButton()
         blockButton.frame = buttonFrame
-        blockButton.backgroundColor = UIColor.gray.withAlphaComponent(0.25)
+        blockButton.backgroundColor = .clear
         blockButton.tag = count
         blockButton.addTarget(self, action: #selector(buttonPressed(sender:)), for: .touchUpInside)
         
@@ -533,7 +542,9 @@ class TimeBlockCell: UITableViewCell {
     
     @objc func buttonPressed (sender: UIButton) {
         
-        print("hello")
+        editBlockDelegate?.moveToEditView(selectedBlock: coorespondingBlocks[sender.tag])
+        
+        //print(coorespondingBlocks[sender.tag])
         
         print(sender.tag)
     }

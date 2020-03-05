@@ -28,6 +28,7 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
     
     let formatter = DateFormatter()
 
+    var selectedBlock: PersonalRealmDatabase.blockTuple?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,6 +56,8 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
     
     override func viewDidAppear(_ animated: Bool) {
         
+        selectedBlock = nil
+        
 //        UIView.animate(withDuration: 0.5) {
 //
 //            self.timeBlockTableView.contentOffset = CGPoint(x: 0, y: 1000)
@@ -75,6 +78,8 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         cell.selectionStyle = .none
         
         cell.personalDatabase = personalDatabase
+        
+        cell.editBlockDelegate = self
         
         return cell
         
@@ -100,10 +105,56 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         if segue.identifier == "moveToAddEditView" {
             
             let addEditVC = segue.destination as! AddEditBlockViewController
+            addEditVC.personalDatabase = personalDatabase
             addEditVC.currentDateObject = currentDateObject!
             addEditVC.currentDate = currentDate!
+            addEditVC.reloadDataDelegate = self
+            
+            guard let block = selectedBlock else { return }
+            
+                addEditVC.selectedBlock = block
         }
         
     }
     
+}
+
+extension TimeBlockViewController2: MoveToEditBlockView {
+    
+    func moveToEditView (selectedBlock: PersonalRealmDatabase.blockTuple) {
+        
+        self.selectedBlock = selectedBlock
+        performSegue(withIdentifier: "moveToAddEditView", sender: self)
+    }
+}
+
+extension TimeBlockViewController2: ReloadData {
+    
+    func reloadData() {
+        
+        let indexPath: IndexPath = IndexPath(row: 0, section: 0)
+        
+        guard let cell = timeBlockTableView.cellForRow(at: indexPath) as? TimeBlockCell else { return }
+        
+            var count = cell.contentView.subviews.count - 1
+            
+            while count > 47 {
+
+                cell.contentView.subviews[count].removeFromSuperview()
+                count -= 1
+            }
+
+            cell.blockButtons = []
+            cell.coorespondingBlocks = []
+        
+            selectedBlock = nil
+        
+            timeBlockTableView.reloadData()
+        
+    }
+    
+    func nilSelectedBlock () {
+        
+        selectedBlock = nil
+    }
 }
