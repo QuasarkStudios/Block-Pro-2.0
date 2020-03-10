@@ -22,8 +22,8 @@ class PersonalRealmDatabase {
     let formatter = DateFormatter()
 
     //Creation of to pre-define the block tuple's structure and allow for it to be used as a return of a function
-    typealias blockTuple = (blockID: String, notificationID: String, name: String, begins: Date, ends: Date, category: String)
-    var functionTuple: blockTuple = (blockID: "", notificationID : "", name: "", begins: Date(), ends: Date(), category: "")
+    typealias blockTuple = (blockID: String, name: String, begins: Date, ends: Date, category: String, notificationID: String, scheduled: Bool, minsBefore: Double)
+    var functionTuple: blockTuple = (blockID: "", name: "", begins: Date(), ends: Date(), category: "", notificationID: "", scheduled: false, minsBefore: 0)
 
     var blockArray: [blockTuple]? //= [blockTuple]() //Array that holds all the data for each TimeBlock
     
@@ -110,6 +110,8 @@ class PersonalRealmDatabase {
                 blockTuple.category = block.category
                 
                 blockTuple.notificationID = block.notificationID
+                blockTuple.scheduled = block.scheduled
+                blockTuple.minsBefore = block.minsBefore
                 
                 organizedBlocks.append(blockTuple)
             }
@@ -131,7 +133,7 @@ class PersonalRealmDatabase {
         
         newBlock.notificationID = blockDict["notificationID"] as! String
         newBlock.scheduled = blockDict["scheduled"] as! Bool
-        newBlock.minsBefore = blockDict["minsBefore"] as! Int
+        newBlock.minsBefore = blockDict["minsBefore"] as! Double
         
         do {
             
@@ -162,7 +164,7 @@ class PersonalRealmDatabase {
         
         updatedBlock.notificationID = blockDict["notificationID"] as! String
         updatedBlock.scheduled = blockDict["scheduled"] as! Bool
-        updatedBlock.minsBefore = blockDict["minsBefore"] as! Int
+        updatedBlock.minsBefore = blockDict["minsBefore"] as! Double
         
         do {
             try self.realm.write {
@@ -179,5 +181,19 @@ class PersonalRealmDatabase {
             
         }
     }
-
+    
+    func deleteBlock (blockID: String) {
+        
+        guard let deletedBlock = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
+        
+        do {
+            
+            try realm.write {
+                realm.delete(deletedBlock)
+            }
+        } catch {
+            
+            print("Error deleting timeBlock, \(error)")
+        }
+    }
 }

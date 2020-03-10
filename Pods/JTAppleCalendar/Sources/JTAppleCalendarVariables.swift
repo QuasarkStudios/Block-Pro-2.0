@@ -63,7 +63,7 @@ extension JTAppleCalendarView {
     
     var monthInfo: [Month] {
         get { return theData.months }
-        set { theData.months = newValue }
+        set { theData.months = monthInfo }
     }
     
     var numberOfMonths: Int {

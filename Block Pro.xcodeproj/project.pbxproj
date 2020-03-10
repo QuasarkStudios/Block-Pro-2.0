@@ -114,6 +114,13 @@
 		0DD636BF241028EF0026B623 /* BlockTimePickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DD636BD241028EF0026B623 /* BlockTimePickerCell.xib */; };
 		0DD636C224102A1F0026B623 /* BlockCategoryPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636C024102A1F0026B623 /* BlockCategoryPickerCell.swift */; };
 		0DD636C324102A1F0026B623 /* BlockCategoryPickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DD636C124102A1F0026B623 /* BlockCategoryPickerCell.xib */; };
+		0DD636C6241174040026B623 /* BlockNotificationSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636C4241174040026B623 /* BlockNotificationSettingCell.swift */; };
+		0DD636C7241174040026B623 /* BlockNotificationSettingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DD636C5241174040026B623 /* BlockNotificationSettingCell.xib */; };
+		0DD636CA2412F3300026B623 /* ReminderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636C82412F3300026B623 /* ReminderCell.swift */; };
+		0DD636CB2412F3300026B623 /* ReminderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DD636C92412F3300026B623 /* ReminderCell.xib */; };
+		0DD636CE241348520026B623 /* DeleteBlockCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636CC241348520026B623 /* DeleteBlockCell.swift */; };
+		0DD636CF241348520026B623 /* DeleteBlockCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DD636CD241348520026B623 /* DeleteBlockCell.xib */; };
+		0DD636D12414478B0026B623 /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636D02414478B0026B623 /* NotificationScheduler.swift */; };
 		0DDDA64F22D7D61B00B69A4E /* LogIn_RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA64E22D7D61B00B69A4E /* LogIn_RegisterViewController.swift */; };
 		0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA65022DA59BE00B69A4E /* AddFriendViewController.swift */; };
 		0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */; };
@@ -122,7 +129,7 @@
 		0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD7235FDD3A005255A1 /* Cards.swift */; };
 		0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD9235FDD49005255A1 /* Tasks.swift */; };
 		0DFE5C1C231DF7C10025B4EB /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */; };
-		4372A20AE564DF956A6B8E2B /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAEA63AFDD2B59320CA561B /* Pods_Block_Pro.framework */; };
+		35E45CA71D4429C3369F213C /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D7A10FEBB2574AB9D18E44B /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -237,6 +244,13 @@
 		0DD636BD241028EF0026B623 /* BlockTimePickerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockTimePickerCell.xib; sourceTree = "<group>"; };
 		0DD636C024102A1F0026B623 /* BlockCategoryPickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockCategoryPickerCell.swift; sourceTree = "<group>"; };
 		0DD636C124102A1F0026B623 /* BlockCategoryPickerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockCategoryPickerCell.xib; sourceTree = "<group>"; };
+		0DD636C4241174040026B623 /* BlockNotificationSettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockNotificationSettingCell.swift; sourceTree = "<group>"; };
+		0DD636C5241174040026B623 /* BlockNotificationSettingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockNotificationSettingCell.xib; sourceTree = "<group>"; };
+		0DD636C82412F3300026B623 /* ReminderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderCell.swift; sourceTree = "<group>"; };
+		0DD636C92412F3300026B623 /* ReminderCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReminderCell.xib; sourceTree = "<group>"; };
+		0DD636CC241348520026B623 /* DeleteBlockCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteBlockCell.swift; sourceTree = "<group>"; };
+		0DD636CD241348520026B623 /* DeleteBlockCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeleteBlockCell.xib; sourceTree = "<group>"; };
+		0DD636D02414478B0026B623 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		0DDDA64E22D7D61B00B69A4E /* LogIn_RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogIn_RegisterViewController.swift; sourceTree = "<group>"; };
 		0DDDA65022DA59BE00B69A4E /* AddFriendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFriendViewController.swift; sourceTree = "<group>"; };
 		0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSearchResults.swift; sourceTree = "<group>"; };
@@ -245,9 +259,9 @@
 		0DE3CDD7235FDD3A005255A1 /* Cards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cards.swift; sourceTree = "<group>"; };
 		0DE3CDD9235FDD49005255A1 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 		0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
-		3DAEA63AFDD2B59320CA561B /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B36D0DE39D856E2B759B03C1 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
-		CF8DAC1348CBD15B1E399923 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
+		6F93DFCC120B4895C5CFCFB6 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
+		7D7A10FEBB2574AB9D18E44B /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A488F2D6AFC44211E16DA757 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,7 +269,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4372A20AE564DF956A6B8E2B /* Pods_Block_Pro.framework in Frameworks */,
+				35E45CA71D4429C3369F213C /* Pods_Block_Pro.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,7 +358,7 @@
 				0D2CECED228FB55600CC9180 /* Products */,
 				0DBF3E9222B03D7A00E180D2 /* Supporting Files */,
 				C54E61ACB30B0D4CDBD0499A /* Pods */,
-				96C74B27923F1FC7F7C00C44 /* Frameworks */,
+				A96FCECDB067398425952266 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -364,6 +378,7 @@
 				0D2CED02228FC75B00CC9180 /* View */,
 				0D2CED01228FC73A00CC9180 /* Controllers */,
 				0D78659A23F5BBD700BD4C4D /* Networking */,
+				0DD636D2241447940026B623 /* Notification Scheduler */,
 				0D13AC01232DDBD40025EDC3 /* Assets.xcassets */,
 				0D13AC00232A15F30025EDC3 /* Pomodoro Audio Files */,
 				0D2CECFB228FB55800CC9180 /* Info.plist */,
@@ -422,6 +437,12 @@
 				0DD636BD241028EF0026B623 /* BlockTimePickerCell.xib */,
 				0DD636C024102A1F0026B623 /* BlockCategoryPickerCell.swift */,
 				0DD636C124102A1F0026B623 /* BlockCategoryPickerCell.xib */,
+				0DD636C4241174040026B623 /* BlockNotificationSettingCell.swift */,
+				0DD636C5241174040026B623 /* BlockNotificationSettingCell.xib */,
+				0DD636C82412F3300026B623 /* ReminderCell.swift */,
+				0DD636C92412F3300026B623 /* ReminderCell.xib */,
+				0DD636CC241348520026B623 /* DeleteBlockCell.swift */,
+				0DD636CD241348520026B623 /* DeleteBlockCell.xib */,
 			);
 			path = "Custom Cells";
 			sourceTree = "<group>";
@@ -603,6 +624,14 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		0DD636D2241447940026B623 /* Notification Scheduler */ = {
+			isa = PBXGroup;
+			children = (
+				0DD636D02414478B0026B623 /* NotificationScheduler.swift */,
+			);
+			path = "Notification Scheduler";
+			sourceTree = "<group>";
+		};
 		0DDF79C323466ED100BAAD51 /* User Controller Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -629,10 +658,10 @@
 			path = "FreeTime Controller Files";
 			sourceTree = "<group>";
 		};
-		96C74B27923F1FC7F7C00C44 /* Frameworks */ = {
+		A96FCECDB067398425952266 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3DAEA63AFDD2B59320CA561B /* Pods_Block_Pro.framework */,
+				7D7A10FEBB2574AB9D18E44B /* Pods_Block_Pro.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -640,8 +669,8 @@
 		C54E61ACB30B0D4CDBD0499A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				B36D0DE39D856E2B759B03C1 /* Pods-Block Pro.debug.xcconfig */,
-				CF8DAC1348CBD15B1E399923 /* Pods-Block Pro.release.xcconfig */,
+				A488F2D6AFC44211E16DA757 /* Pods-Block Pro.debug.xcconfig */,
+				6F93DFCC120B4895C5CFCFB6 /* Pods-Block Pro.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -653,11 +682,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0D2CECFE228FB55800CC9180 /* Build configuration list for PBXNativeTarget "Block Pro" */;
 			buildPhases = (
-				EC045CBECEE80CA7C2AAB8CD /* [CP] Check Pods Manifest.lock */,
+				C9504132388F0EF6F463554C /* [CP] Check Pods Manifest.lock */,
 				0D2CECE8228FB55600CC9180 /* Sources */,
 				0D2CECE9228FB55600CC9180 /* Frameworks */,
 				0D2CECEA228FB55600CC9180 /* Resources */,
-				30CCE586B370FD95016BE205 /* [CP] Embed Pods Frameworks */,
+				E300D5159E9D8D4CB5E7E1C2 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -709,6 +738,7 @@
 			files = (
 				0D2CECFA228FB55800CC9180 /* LaunchScreen.storyboard in Resources */,
 				0DA9F83D22A848A5008BECAE /* UserSettings.storyboard in Resources */,
+				0DD636CF241348520026B623 /* DeleteBlockCell.xib in Resources */,
 				0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */,
 				0D95C17C2328923000421BE0 /* Timer Running.wav in Resources */,
 				0D1128332349A51B0080774C /* SettingsTableViewCell.xib in Resources */,
@@ -734,6 +764,7 @@
 				0D78657D23E4B56B00BD4C4D /* Poppins-ThinItalic.ttf in Resources */,
 				0D23076D22D29FE900A12393 /* UpcomingCollabTableCell.xib in Resources */,
 				0D78657723E4B56B00BD4C4D /* Poppins-BlackItalic.ttf in Resources */,
+				0DD636CB2412F3300026B623 /* ReminderCell.xib in Resources */,
 				0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */,
 				0D78659023E74B6400BD4C4D /* WeekHeaderCell.xib in Resources */,
 				0D13ABFF232A15E60025EDC3 /* End Break.wav in Resources */,
@@ -751,6 +782,7 @@
 				0D78657323E4B56B00BD4C4D /* Poppins-ExtraLight.ttf in Resources */,
 				0D13ABFB232A15D80025EDC3 /* Start Break.wav in Resources */,
 				0D13AC02232DDBD40025EDC3 /* Assets.xcassets in Resources */,
+				0DD636C7241174040026B623 /* BlockNotificationSettingCell.xib in Resources */,
 				0DADDAB823579D1500E79F89 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -758,24 +790,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		30CCE586B370FD95016BE205 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		EC045CBECEE80CA7C2AAB8CD /* [CP] Check Pods Manifest.lock */ = {
+		C9504132388F0EF6F463554C /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -795,6 +810,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E300D5159E9D8D4CB5E7E1C2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -828,6 +860,7 @@
 				0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */,
 				0D77B711240C316600AF60CC /* BigBlock.swift in Sources */,
 				0D18FFD423F785330083C5AB /* AddEditBlockViewController.swift in Sources */,
+				0DD636CE241348520026B623 /* DeleteBlockCell.swift in Sources */,
 				0D23077A22D6CD9900A12393 /* CollabBlockViewController.swift in Sources */,
 				0D693A30240EB5A900CFDD2F /* BlockNameSettingCell.swift in Sources */,
 				0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */,
@@ -853,10 +886,12 @@
 				0D1128322349A51B0080774C /* SettingsTableViewCell.swift in Sources */,
 				0DADDAAE2355916A00E79F89 /* TimeTenMinCell.swift in Sources */,
 				0D23077622D3DB6D00A12393 /* SelectedFriendViewController.swift in Sources */,
+				0DD636D12414478B0026B623 /* NotificationScheduler.swift in Sources */,
 				0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */,
 				0D41F5C423124B3700B4B11E /* CollabTwentyFiveMinCell.swift in Sources */,
 				0DD636C224102A1F0026B623 /* BlockCategoryPickerCell.swift in Sources */,
 				0D5BEFE723E286DA00B5DCE5 /* HomeViewController.swift in Sources */,
+				0DD636C6241174040026B623 /* BlockNotificationSettingCell.swift in Sources */,
 				0DADDAB6235591C200E79F89 /* TimeThirtyMinAndUpCell.swift in Sources */,
 				0D77B70F240C221B00AF60CC /* VisualEffectView.swift in Sources */,
 				0D035329235D634E00BB79B4 /* FreeTimeViewController.swift in Sources */,
@@ -870,6 +905,7 @@
 				0DADDAAC2355915700E79F89 /* TimeFiveMinCell.swift in Sources */,
 				0DADDAB02355917C00E79F89 /* TimeFifteenMinCell.swift in Sources */,
 				0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */,
+				0DD636CA2412F3300026B623 /* ReminderCell.swift in Sources */,
 				0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */,
 				0D693A34240EC3CB00CFDD2F /* BlockOtherSettingCell.swift in Sources */,
 				0D13AC04232DF0560025EDC3 /* EditPomodoroViewController.swift in Sources */,
@@ -1017,7 +1053,7 @@
 		};
 		0D2CECFF228FB55800CC9180 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B36D0DE39D856E2B759B03C1 /* Pods-Block Pro.debug.xcconfig */;
+			baseConfigurationReference = A488F2D6AFC44211E16DA757 /* Pods-Block Pro.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1044,7 +1080,7 @@
 		};
 		0D2CED00228FB55800CC9180 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CF8DAC1348CBD15B1E399923 /* Pods-Block Pro.release.xcconfig */;
+			baseConfigurationReference = 6F93DFCC120B4895C5CFCFB6 /* Pods-Block Pro.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

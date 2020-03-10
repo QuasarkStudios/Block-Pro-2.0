@@ -51,7 +51,7 @@ class BigBlock: UIView {
         nameLabel.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
         nameLabel.heightAnchor.constraint(equalToConstant: 25).isActive = true
         
-        nameLabel.text = "Block Name"
+        nameLabel.text = "Block"
         nameLabel.textColor = .white
         nameLabel.textAlignment = .left
         nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 17)

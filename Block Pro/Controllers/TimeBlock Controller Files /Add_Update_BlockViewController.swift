@@ -166,7 +166,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
                     self.notificationViewHeightConstraint.constant = 85
                     self.segmentContainerBottomConstraint.constant = 5
                     
-                    notificationTimeSegments.selectedSegmentIndex = bigBlockData.minsBefore
+//                    notificationTimeSegments.selectedSegmentIndex = bigBlockData.minsBefore
                     notificationSwitch.isOn = true
                 }
                     
@@ -685,7 +685,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
             
             newBlock.notificationID = notificationID
             newBlock.scheduled = scheduled
-            newBlock.minsBefore = minsBefore
+            //newBlock.minsBefore = minsBefore
             
             do {
                 try realm.write {
@@ -719,7 +719,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
             
             updatedBlock.notificationID = notificationID
             updatedBlock.scheduled = scheduled
-            updatedBlock.minsBefore = minsBefore
+            //updatedBlock.minsBefore = minsBefore
             
             do {
                 try self.realm.write {

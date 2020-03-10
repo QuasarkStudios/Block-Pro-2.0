@@ -244,7 +244,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     private func scrollToCurrentWeek () {
         
-        homeTableView.isUserInteractionEnabled = false
+        //homeTableView.isUserInteractionEnabled = false
         
         let currentDate: Date = Date()
         formatter.dateFormat = "MMMM d yyyy"
@@ -295,7 +295,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     private func scrollToCurrentDay (_ tableView: UITableView, _ cell: UITableViewCell, _ indexPath: IndexPath) {
-
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             
             let confirmedVisibleCell: Int?
@@ -304,19 +304,25 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             if indexPath.section != self.weekSectionArray.count - 1 {
 
                 confirmedVisibleCell = 1
+                //print("check1")
             }
 
             else {
 
                 confirmedVisibleCell = 2
+                //print("check2")
             }
             
             if tableView.cellForRow(at: indexPath) == tableView.visibleCells[confirmedVisibleCell ?? 1] {
+                
+                //print("check12")
                 
                 let currentDate: Date = Date()
                 self.formatter.dateFormat = "MMMM d yyyy"
                 
                 if let homeCell = cell as? HomeTableViewCell {
+                    
+                    //print("check2")
                     
                     var indexToScrollTo: Int = 0
                     var count: Int = 0

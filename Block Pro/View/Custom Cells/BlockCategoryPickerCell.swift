@@ -8,11 +8,18 @@
 
 import UIKit
 
+protocol CategorySelected {
+    
+    func categorySelected (_ category: String)
+}
+
 class BlockCategoryPickerCell: UITableViewCell, UIPickerViewDataSource, UIPickerViewDelegate {
 
     @IBOutlet weak var categoryPicker: UIPickerView!
     
     let blockCategories: [String] = ["", "Work", "Creativity", "Sleep", "Food/Eat", "Leisure", "Exercise", "Self-Care", "Other"]
+    
+    var categorySelectedDelegate: CategorySelected?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -41,6 +48,11 @@ class BlockCategoryPickerCell: UITableViewCell, UIPickerViewDataSource, UIPicker
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         
         return blockCategories[row]
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        
+        categorySelectedDelegate?.categorySelected(blockCategories[row])
     }
     
 }

@@ -29,7 +29,8 @@ class Block: Object {
     
     @objc dynamic var notificationID: String = ""
     @objc dynamic var scheduled: Bool = false
-    @objc dynamic var minsBefore: Int = 0
+    @objc dynamic var minsBefore: Double = 0; #warning("must be included in migration because type changed from int to double")
+    
     
     var dateForTimeBlock = LinkingObjects(fromType: TimeBlocksDate.self, property: "timeBlocks")
     

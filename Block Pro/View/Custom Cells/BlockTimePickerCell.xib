@@ -17,33 +17,22 @@
                 <rect key="frame" x="0.0" y="0.0" width="375" height="160"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KMa-EE-JcV">
+                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="5" translatesAutoresizingMaskIntoConstraints="NO" id="UIs-h6-XdS">
                         <rect key="frame" x="30" y="5" width="315" height="150"/>
-                        <subviews>
-                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="5" translatesAutoresizingMaskIntoConstraints="NO" id="8rT-9V-LpC">
-                                <rect key="frame" x="0.0" y="0.0" width="315" height="150"/>
-                            </datePicker>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="8rT-9V-LpC" secondAttribute="trailing" id="CI5-Vw-h8Z"/>
-                            <constraint firstAttribute="bottom" secondItem="8rT-9V-LpC" secondAttribute="bottom" id="RIs-Ml-LIB"/>
-                            <constraint firstAttribute="height" constant="150" id="Svi-sT-kd3"/>
-                            <constraint firstItem="8rT-9V-LpC" firstAttribute="top" secondItem="KMa-EE-JcV" secondAttribute="top" id="XJd-l9-3lS"/>
-                            <constraint firstItem="8rT-9V-LpC" firstAttribute="leading" secondItem="KMa-EE-JcV" secondAttribute="leading" id="sdA-DY-gRq"/>
+                            <constraint firstAttribute="height" constant="150" id="Mvu-wl-hwR"/>
                         </constraints>
-                    </view>
+                    </datePicker>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="KMa-EE-JcV" secondAttribute="trailing" constant="30" id="0eS-uF-UU4"/>
-                    <constraint firstItem="KMa-EE-JcV" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="30" id="DEs-uR-xuB"/>
-                    <constraint firstItem="KMa-EE-JcV" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="qwf-7p-4G2"/>
+                    <constraint firstItem="UIs-h6-XdS" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="30" id="7PI-Vp-4BN"/>
+                    <constraint firstItem="UIs-h6-XdS" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="lTA-Gy-QzU"/>
+                    <constraint firstAttribute="trailing" secondItem="UIs-h6-XdS" secondAttribute="trailing" constant="30" id="pwE-jO-RRS"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="timePicker" destination="8rT-9V-LpC" id="vkW-pr-vGd"/>
-                <outlet property="timePickerContainer" destination="KMa-EE-JcV" id="kiD-6f-Fcu"/>
+                <outlet property="timePicker" destination="UIs-h6-XdS" id="Ixs-72-947"/>
             </connections>
             <point key="canvasLocation" x="138.40579710144928" y="150"/>
         </tableViewCell>

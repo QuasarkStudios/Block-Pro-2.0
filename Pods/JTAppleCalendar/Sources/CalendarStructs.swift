@@ -190,7 +190,7 @@ public struct Month {
     
     private func sectionFor(day: Int) -> (externalSection: Int, internalSection: Int) {
         var variableNumber = day
-        let possibleSection = sections.firstIndex {
+        let possibleSection = sections.index {
             let retval = variableNumber + inDates <= $0
             variableNumber -= $0
             return retval

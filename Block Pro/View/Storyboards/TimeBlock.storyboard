@@ -131,16 +131,18 @@
                                     </navigationItem>
                                 </items>
                             </navigationBar>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Z5c-tx-cm2">
-                                <rect key="frame" x="43" y="181" width="290" height="32"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Z5c-tx-cm2">
+                                <rect key="frame" x="42.666666666666657" y="181" width="290" height="32"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="290" id="b1v-uz-nMi"/>
+                                </constraints>
                                 <segments>
                                     <segment title="Details"/>
                                     <segment title="Attachments"/>
                                 </segments>
                             </segmentedControl>
-                            <tableView autoresizesSubviews="NO" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="8Dv-iH-VgI">
-                                <rect key="frame" x="0.0" y="240" width="375" height="518"/>
+                            <tableView autoresizesSubviews="NO" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelectionDuringEditing="YES" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="8Dv-iH-VgI">
+                                <rect key="frame" x="0.0" y="240" width="375" height="484"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" rowHeight="90" id="MOL-Mn-v15">
@@ -159,9 +161,11 @@
                             <constraint firstItem="7w9-l2-Cdt" firstAttribute="top" secondItem="Vtn-7e-spD" secondAttribute="bottom" constant="15" id="1bK-ZW-b7p"/>
                             <constraint firstItem="Vtn-7e-spD" firstAttribute="top" secondItem="UJo-LP-D4a" secondAttribute="top" id="B6R-d1-Q8h"/>
                             <constraint firstItem="8Dv-iH-VgI" firstAttribute="leading" secondItem="UJo-LP-D4a" secondAttribute="leading" id="C71-6L-Jht"/>
+                            <constraint firstItem="Z5c-tx-cm2" firstAttribute="top" secondItem="7w9-l2-Cdt" secondAttribute="bottom" constant="30" id="EEZ-yQ-toQ"/>
                             <constraint firstItem="8Dv-iH-VgI" firstAttribute="trailing" secondItem="UJo-LP-D4a" secondAttribute="trailing" id="Y4l-WP-ahN"/>
-                            <constraint firstAttribute="bottom" secondItem="8Dv-iH-VgI" secondAttribute="bottom" id="mbO-4X-6sD"/>
+                            <constraint firstItem="Z5c-tx-cm2" firstAttribute="centerX" secondItem="uLA-DY-Rb4" secondAttribute="centerX" id="ifY-z5-tNM"/>
                             <constraint firstItem="Vtn-7e-spD" firstAttribute="trailing" secondItem="UJo-LP-D4a" secondAttribute="trailing" id="oQi-JU-gqM"/>
+                            <constraint firstItem="UJo-LP-D4a" firstAttribute="bottom" secondItem="8Dv-iH-VgI" secondAttribute="bottom" id="pEJ-Jq-gpY"/>
                             <constraint firstItem="Vtn-7e-spD" firstAttribute="leading" secondItem="UJo-LP-D4a" secondAttribute="leading" id="v17-8i-dLX"/>
                             <constraint firstItem="8Dv-iH-VgI" firstAttribute="top" secondItem="uLA-DY-Rb4" secondAttribute="top" constant="240" id="wje-dp-FI7"/>
                             <constraint firstItem="7w9-l2-Cdt" firstAttribute="centerX" secondItem="uLA-DY-Rb4" secondAttribute="centerX" id="yGD-w1-Th4"/>
@@ -1438,7 +1442,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fzh-Za-0vE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5812" y="-627"/>
+            <point key="canvasLocation" x="5330" y="-405"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="44z-Nc-0mF">

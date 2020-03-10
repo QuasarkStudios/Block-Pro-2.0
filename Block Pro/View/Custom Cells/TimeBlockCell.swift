@@ -90,7 +90,7 @@ class TimeBlockCell: UITableViewCell {
                 
                 for conflictingBlock in personalDatabase!.blockArray! {
                     
-                    if pendingBlock != conflictingBlock {
+                    if pendingBlock.blockID != conflictingBlock.blockID {
 
                         var currentBlockDate: Date = conflictingBlock.begins
                         
@@ -205,13 +205,13 @@ class TimeBlockCell: UITableViewCell {
                     
                     if conflictingBlocks!.count > 1 {
                         
-                        firstConflictingBlock = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![0]}))!
-                        secondConflictingBlock = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![1]}))!
+                        firstConflictingBlock = (personalDatabase?.blockArray?.firstIndex(where: { $0.blockID == conflictingBlocks![0].blockID}))!
+                        secondConflictingBlock = (personalDatabase?.blockArray?.firstIndex(where: { $0.blockID == conflictingBlocks![1].blockID}))!
                     }
                     
                     else {
                         
-                        firstConflictingBlock = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![0]}))!
+                        firstConflictingBlock = (personalDatabase?.blockArray?.firstIndex(where: { $0.blockID == conflictingBlocks![0].blockID}))!
                     }
                     
                     if blockConfigurationArray[firstConflictingBlock!]["typeOfBlock"] as? String == "oneThirdBlock" {
@@ -320,7 +320,7 @@ class TimeBlockCell: UITableViewCell {
     private func determineHalfBlockPosition (_ configuration: [String : Any], _ blockConfigurationArray: [[String : Any]], _ count: Int) -> String {
         
         let conflictingBlock = configuration["conflictingBlocks"] as? [PersonalRealmDatabase.blockTuple] //The block that conflicts with this current block
-        let conflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlock![0]}))!
+        let conflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0.blockID == conflictingBlock![0].blockID}))!
         
         if count < conflictingBlockIndex {
             
@@ -349,13 +349,13 @@ class TimeBlockCell: UITableViewCell {
             
             for conflictingBlock in blocksConflictingBlocks {
 
-                let conflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlock}))!
+                let conflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0.blockID == conflictingBlock.blockID}))!
 
                 let secondConflictingBlocks = allConflictingBlocks[conflictingBlockIndex]
 
                 for secondConflictingBlock in secondConflictingBlocks {
 
-                    if secondConflictingBlock != block {
+                    if secondConflictingBlock.blockID != block.blockID {
 
                         var currentBlockDate: Date = secondConflictingBlock.begins
 
@@ -391,8 +391,8 @@ class TimeBlockCell: UITableViewCell {
     private func determineOneThirdBlockPosition ( _ configuration: [String : Any], _ blockConfigurationArray: [[String : Any]], _ count: Int) -> String {
         
         let conflictingBlocks = configuration["conflictingBlocks"] as? [PersonalRealmDatabase.blockTuple]
-        let firstConflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![0]}))!
-        let secondConflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0 == conflictingBlocks![1]}))!
+        let firstConflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0.blockID == conflictingBlocks![0].blockID}))!
+        let secondConflictingBlockIndex: Int = (personalDatabase?.blockArray?.firstIndex(where: { $0.blockID == conflictingBlocks![1].blockID}))!
 
         let currentBlock = configuration["block"] as! PersonalRealmDatabase.blockTuple
         let firstConflictingBlock = conflictingBlocks![0]

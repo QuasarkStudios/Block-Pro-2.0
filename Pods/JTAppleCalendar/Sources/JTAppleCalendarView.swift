@@ -163,7 +163,7 @@ open class JTAppleCalendarView: UICollectionView {
     
     var monthMap: [Int: Int] {
         get { return theData.sectionToMonthMap }
-        set { theData.sectionToMonthMap = newValue }
+        set { theData.sectionToMonthMap = monthMap }
     }
 
     var decelerationRateMatchingScrollingMode: CGFloat {

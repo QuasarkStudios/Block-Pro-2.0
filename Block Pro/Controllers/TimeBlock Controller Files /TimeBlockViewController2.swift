@@ -114,10 +114,9 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
             
                 addEditVC.selectedBlock = block
         }
-        
     }
-    
 }
+
 
 extension TimeBlockViewController2: MoveToEditBlockView {
     
@@ -132,10 +131,12 @@ extension TimeBlockViewController2: ReloadData {
     
     func reloadData() {
         
+        _ = personalDatabase.findTimeBlocks(currentDate!)
+        
         let indexPath: IndexPath = IndexPath(row: 0, section: 0)
         
         guard let cell = timeBlockTableView.cellForRow(at: indexPath) as? TimeBlockCell else { return }
-        
+
             var count = cell.contentView.subviews.count - 1
             
             while count > 47 {
@@ -150,7 +151,6 @@ extension TimeBlockViewController2: ReloadData {
             selectedBlock = nil
         
             timeBlockTableView.reloadData()
-        
     }
     
     func nilSelectedBlock () {
