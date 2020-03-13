@@ -84,7 +84,7 @@ class PersonalRealmDatabase {
     
 
     //Function responsible for organizing TimeBlocks and bufferBlocks
-    func organizeBlocks () -> [(blockTuple)]? {
+    private func organizeBlocks () -> [(blockTuple)]? {
 
         var blockTuple = functionTuple //Tuples must be passed by value, not by reference
         var organizedBlocks: [blockTuple] = []// = [functionTuple] //Array of blockTuples going to be returned from the function
@@ -118,6 +118,314 @@ class PersonalRealmDatabase {
         }
 
         return organizedBlocks
+    }
+    
+    func verifyBlock (_ blockID: String?, _ begins: Date, _ ends: Date) -> Bool {
+        
+        var conflictingBlocks: [blockTuple] = []
+        
+        if blockArray != nil {
+            
+            var count: Int = 0
+            
+            //Loop that determines the first conflicting blocks for the block being added/updated
+            for block in blockArray! {
+                
+                //If the block from the blockArray isn't the block being added/updated
+                if block.blockID != blockID ?? "" {
+                    
+                    var currentBlockDate: Date = block.begins //Starting time of the block from the blockArray
+                    
+                    while currentBlockDate <= block.ends {
+                        
+                        //If the block from the "blockArray" conflicts with the block being added/updated
+                        if currentBlockDate.isBetween(startDate: begins, endDate: ends) {
+                            
+                            conflictingBlocks.append(block)
+                            break
+                        }
+                        
+                        else {
+                            
+                           currentBlockDate = currentBlockDate.addingTimeInterval(150) //Incrementing the time by 2 minutes and 30 seconds
+                        }
+                    }
+                }
+                
+                count += 1
+            }
+            
+        }
+        
+        //If the block being added/updated has 2 or less conflicting blocks
+        if conflictingBlocks.count <= 2 {
+            
+            return true
+        }
+        
+        //If the block being added/updated has more than 2 conflicting blocks
+        else {
+            
+            var count: Int = 0
+            
+            var secondConflictingBlocks: [[blockTuple]] = []
+            
+            //Loop that is used to find the blocks that conflict with the conflicting blocks
+            for conflictingBlock in conflictingBlocks {
+                
+                secondConflictingBlocks.append([]) //Adds a new index for each block in the "conflictingBlocks" array
+                
+                for block in blockArray! {
+                    
+                    //If this block isn't the same as the one from the conflicting array and isn't the block being updated
+                    if conflictingBlock.blockID != block.blockID && blockID ?? "" != block.blockID {
+                        
+                        var currentBlockDate: Date = block.begins //Starting time of the block from the blockArray
+                        
+                        while currentBlockDate <= block.ends {
+                            
+                            //If the block from the "blockArray" conflicts with the block from the "conflictingBlocks" array
+                            if currentBlockDate.isBetween(startDate: conflictingBlock.begins, endDate: conflictingBlock.ends) {
+                                
+                                secondConflictingBlocks[count].append(block) //Appending the block at the index that correlates with the block it conflicts with
+                                break
+                            }
+                            
+                            else {
+                                
+                                currentBlockDate = currentBlockDate.addingTimeInterval(150) //Incrementing the time by 2 minutes and 30 seconds
+                            }
+                        }
+                    }
+                    
+                }
+                
+                count += 1
+            }
+            
+            
+            var secondConflictingCount: Int = 0
+            var conflictingArrayCount: Int = 0
+            
+            //Loop that checks if each block in the "secondConflictingArray" actually conflicts with block being added/updated
+            for conflictingArray in secondConflictingBlocks {
+                
+                conflictingArrayCount = conflictingArray.count //Set to the count of the array because the array is accessed from the last index first
+                
+                while conflictingArrayCount > 0 {
+                    
+                    var isBetween: Bool = false
+                    
+                    var currentBlockDate: Date = conflictingArray[conflictingArrayCount - 1].begins //Starting time of the block from the "conflictingArray"
+                    
+                    while currentBlockDate <= conflictingArray[conflictingArrayCount - 1].ends {
+                        
+                        //If the block truly does conflict with the block being added/updated
+                        if currentBlockDate.isBetween(startDate: begins, endDate: ends) {
+                            
+                            isBetween = true
+                            break
+                        }
+                        
+                        else {
+                            
+                            currentBlockDate = currentBlockDate.addingTimeInterval(150)
+                        }
+                    }
+                    
+                    //If the block doesn't conflict with the block being added/updated
+                    if isBetween == false {
+                        
+                        secondConflictingBlocks[secondConflictingCount].remove(at: conflictingArrayCount - 1) //Removing the block that doesn't conflict
+ 
+                    }
+                    
+                    conflictingArrayCount -= 1
+                }
+                
+                secondConflictingCount += 1
+            }
+            
+            
+            secondConflictingCount = 0
+            conflictingArrayCount = 0
+            
+            var thirdConflictingBlocks: [[blockTuple]] = []
+            
+            //Loop that finds the blocks that conflict with the second conflicting blocks
+            for conflictingArray in secondConflictingBlocks {
+                
+                conflictingArrayCount = conflictingArray.count //Set to the count of the array because the array is accessed from the last index first
+                
+                thirdConflictingBlocks.append([]) //Adds a new index for each array in "secondConflictingBlocks"
+                
+                while conflictingArrayCount > 0 {
+
+                    for block in blockArray! {
+                        
+                        //If this block isn't the same as the block from the same index of the "conflictingArray", isn't the block being added/updated, and isn't the block from "secondConflictingArray"
+                        if block.blockID != conflictingBlocks[secondConflictingCount].blockID && block.blockID != blockID ?? "" && block.blockID != conflictingArray[conflictingArrayCount - 1].blockID {
+                            
+                            var currentBlockDate: Date = block.begins //Starting time of the block from the blockArray
+                            
+                            while currentBlockDate <= block.ends {
+                                
+                                if conflictingArrayCount > 0 {
+                                    
+                                    //If this block conflicts with the block from the "secondConflictingArray"
+                                    if currentBlockDate.isBetween(startDate: conflictingArray[conflictingArrayCount - 1].begins, endDate: conflictingArray[conflictingArrayCount - 1].ends) {
+                                        
+                                        thirdConflictingBlocks[secondConflictingCount].append(block)
+                                        break
+                                    }
+                                    
+                                    else {
+                                        
+                                        currentBlockDate = currentBlockDate.addingTimeInterval(150) //Incrementing the time by 2 minutes and 30 seconds
+                                    }
+                                }
+                                
+                                //If the count at the index of the "secondConflictingArray" is 0
+                                else {
+                                    break
+                                }
+                            }
+                        }
+                    }
+                    conflictingArrayCount -= 1
+                }
+                secondConflictingCount += 1
+            }
+
+            
+            var thirdConflictingCount: Int = 0
+            conflictingArrayCount = 0
+            
+            //Loop that checks if each block in the "thirdConflictingArray" actually conflicts with block being added/updated
+            for conflictingArray in thirdConflictingBlocks {
+                
+                conflictingArrayCount = conflictingArray.count //Set to the count of the array because the array is accessed from the last index first
+                
+                while conflictingArrayCount > 0 {
+                    
+                    var isBetween : Bool = false
+                    
+                    var currentBlockDate: Date = conflictingArray[conflictingArrayCount - 1].begins //Starting time of the block from the "conflictingArray"
+                    
+                    while currentBlockDate <= conflictingArray[conflictingArrayCount - 1].ends {
+                        
+                        //If the block truly does conflict with the block being added/updated
+                        if currentBlockDate.isBetween(startDate: begins, endDate: ends) {
+                            
+                            isBetween = true
+                            break
+                        }
+                        
+                        else {
+                            
+                            currentBlockDate = currentBlockDate.addingTimeInterval(150) //Incrementing the time by 2 minutes and 30 seconds
+                        }
+                    }
+                    
+                    //If the block doesn't conflict with the block being added/updated
+                    if isBetween == false {
+                        
+                        thirdConflictingBlocks[thirdConflictingCount].remove(at: conflictingArrayCount - 1) //Removing the block that doesn't conflict
+                    }
+                    
+                    conflictingArrayCount -= 1
+                }
+                
+                thirdConflictingCount += 1
+            }
+
+            
+            
+            var conflictingTimes: [[Date]] = []
+            var conflictingTimeArrayCount: Int = 0
+            
+            //Loop that determines all the conflicting times between the first and second conflicting blocks
+            for conflictingBlock in conflictingBlocks {
+                
+                conflictingTimes.append([])
+                
+                //Loops through the blocks in each array at a certain index of the "secondConflictingBlocks" array
+                for secondConflictingBlock in secondConflictingBlocks[conflictingTimeArrayCount] {
+                    
+                    var currentBlockDate: Date = secondConflictingBlock.begins //Starting time of each "secondConflictingBlock"
+                        
+                    while currentBlockDate <= secondConflictingBlock.ends {
+                        
+                        //If a certain time of the "secondConflictingBlock" conflicts with the original conflicting block
+                        if currentBlockDate.isBetween(startDate: conflictingBlock.begins, endDate: conflictingBlock.ends) {
+                            
+                            conflictingTimes[conflictingTimeArrayCount].append(currentBlockDate) //Adds the conflicting time to the "conflictingTimes" array
+                            
+                            currentBlockDate = currentBlockDate.addingTimeInterval(150) //Incrementing the time by 2 minutes and 30 seconds
+                        }
+                        
+                        else {
+                            
+                            currentBlockDate = currentBlockDate.addingTimeInterval(150) //Incrementing the time by 2 minutes and 30 seconds
+                        }
+                    }
+                }
+                conflictingTimeArrayCount += 1
+            }
+
+            
+            var timeArrayCount: Int = 0
+            
+            conflictingArrayCount = 0
+            
+            //Loop that checks if each block from the "thirdConflictingBlocks" array
+            for conflictingArray in thirdConflictingBlocks {
+                
+                timeArrayCount = conflictingTimes[conflictingArrayCount].count //Set to the count of the array because the array is accessed from the last index first
+                
+                while timeArrayCount > 0 {
+                    
+                    var isBetween: Bool = false
+                    
+                    for block in conflictingArray {
+                        
+                        //If this time conflicts with a block from a certain index of the "thirdConflictingArray"
+                        if conflictingTimes[conflictingArrayCount][timeArrayCount - 1].isBetween(startDate: block.begins, endDate: block.ends) {
+                            
+                            isBetween = true
+                            break
+                        }
+                    }
+                    
+                    //If this time doesn't conflict with a block from a certain index of the "thirdConflictingArray"
+                    if isBetween == false {
+                        
+                        conflictingTimes[conflictingArrayCount].remove(at: timeArrayCount - 1) //Remove this time from the "conflictingTimes" array
+                    }
+                    
+                    timeArrayCount -= 1
+                }
+                
+                conflictingArrayCount += 1
+            }
+            
+            
+            //Loop that checks if the block being added/updated conflicts with any time from the "conflictingTimes" array
+            for times in conflictingTimes {
+
+                for time in times {
+
+                    //If the block conflicts
+                    if time.isBetween(startDate: begins, endDate: ends) {
+                        
+                        return false
+                    }
+                }
+            }
+            
+            return true
+        }
+
     }
     
     func addBlock (_ blockDict: [String : Any], _ currentDate: TimeBlocksDate) {

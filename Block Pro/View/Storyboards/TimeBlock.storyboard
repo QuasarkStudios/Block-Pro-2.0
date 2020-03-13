@@ -59,7 +59,7 @@
                         <viewLayoutGuide key="safeArea" id="zqq-Gw-iDH"/>
                     </view>
                     <navigationItem key="navigationItem" id="J17-KO-kqZ">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="3Ph-6E-CjH">
+                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="add" id="3Ph-6E-CjH">
                             <connections>
                                 <segue destination="V2B-PH-74J" kind="showDetail" identifier="moveToAddEditView" id="tbT-5u-Wv3"/>
                             </connections>
@@ -85,13 +85,13 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7w9-l2-Cdt" customClass="BigBlock" customModule="Block_Pro" customModuleProvider="target">
                                 <rect key="frame" x="42.666666666666657" y="71" width="290" height="80"/>
                                 <subviews>
-                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Work" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OXZ-Bd-A8n">
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Work" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OXZ-Bd-A8n">
                                         <rect key="frame" x="15" y="10" width="260" height="24"/>
                                         <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="17"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="12:00 AM - 1:30 AM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hWR-Xs-9Sd">
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="12:00 AM - 1:30 AM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hWR-Xs-9Sd">
                                         <rect key="frame" x="15" y="49" width="150" height="25"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="150" id="MVI-oo-dYp"/>
@@ -104,37 +104,16 @@
                                 </subviews>
                                 <color key="backgroundColor" red="0.31372549019607843" green="0.396078431372549" blue="0.62745098039215685" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstItem="OXZ-Bd-A8n" firstAttribute="top" secondItem="7w9-l2-Cdt" secondAttribute="top" constant="10" id="DOv-yo-10H"/>
+                                    <constraint firstAttribute="height" constant="80" id="4gw-tg-J9H"/>
                                     <constraint firstItem="hWR-Xs-9Sd" firstAttribute="top" secondItem="OXZ-Bd-A8n" secondAttribute="bottom" constant="15" id="LpG-eb-BbV"/>
-                                    <constraint firstAttribute="trailing" secondItem="OXZ-Bd-A8n" secondAttribute="trailing" constant="15" id="Vag-Vu-gwx"/>
-                                    <constraint firstItem="OXZ-Bd-A8n" firstAttribute="leading" secondItem="7w9-l2-Cdt" secondAttribute="leading" constant="15" id="hK6-tT-eTe"/>
-                                    <constraint firstAttribute="height" constant="80" id="hYT-7B-X2R"/>
-                                    <constraint firstAttribute="width" constant="290" id="lqm-WU-NKJ"/>
-                                    <constraint firstItem="hWR-Xs-9Sd" firstAttribute="leading" secondItem="7w9-l2-Cdt" secondAttribute="leading" constant="15" id="oVA-cn-i3g"/>
+                                    <constraint firstAttribute="width" constant="290" id="asF-dJ-V9b"/>
                                 </constraints>
                             </view>
-                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vtn-7e-spD">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
-                                <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <items>
-                                    <navigationItem title="Add A Block" id="8uS-cm-22w">
-                                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="fgM-MB-lY6">
-                                            <connections>
-                                                <action selector="cancelPressed:" destination="V2B-PH-74J" id="bR5-yE-0xa"/>
-                                            </connections>
-                                        </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="3na-eR-4yt">
-                                            <connections>
-                                                <action selector="addEditButton:" destination="V2B-PH-74J" id="VTW-gR-tfY"/>
-                                            </connections>
-                                        </barButtonItem>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Z5c-tx-cm2">
                                 <rect key="frame" x="42.666666666666657" y="181" width="290" height="32"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="290" id="b1v-uz-nMi"/>
+                                    <constraint firstAttribute="width" constant="290" id="JME-hr-krK"/>
+                                    <constraint firstAttribute="height" constant="31" id="XXa-kX-c13"/>
                                 </constraints>
                                 <segments>
                                     <segment title="Details"/>
@@ -158,31 +137,42 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="7w9-l2-Cdt" firstAttribute="top" secondItem="Vtn-7e-spD" secondAttribute="bottom" constant="15" id="1bK-ZW-b7p"/>
-                            <constraint firstItem="Vtn-7e-spD" firstAttribute="top" secondItem="UJo-LP-D4a" secondAttribute="top" id="B6R-d1-Q8h"/>
+                            <constraint firstItem="Z5c-tx-cm2" firstAttribute="centerX" secondItem="uLA-DY-Rb4" secondAttribute="centerX" id="2rE-iS-ljn"/>
                             <constraint firstItem="8Dv-iH-VgI" firstAttribute="leading" secondItem="UJo-LP-D4a" secondAttribute="leading" id="C71-6L-Jht"/>
-                            <constraint firstItem="Z5c-tx-cm2" firstAttribute="top" secondItem="7w9-l2-Cdt" secondAttribute="bottom" constant="30" id="EEZ-yQ-toQ"/>
+                            <constraint firstItem="Z5c-tx-cm2" firstAttribute="top" secondItem="7w9-l2-Cdt" secondAttribute="bottom" constant="30" id="HHj-sC-KDA"/>
                             <constraint firstItem="8Dv-iH-VgI" firstAttribute="trailing" secondItem="UJo-LP-D4a" secondAttribute="trailing" id="Y4l-WP-ahN"/>
-                            <constraint firstItem="Z5c-tx-cm2" firstAttribute="centerX" secondItem="uLA-DY-Rb4" secondAttribute="centerX" id="ifY-z5-tNM"/>
-                            <constraint firstItem="Vtn-7e-spD" firstAttribute="trailing" secondItem="UJo-LP-D4a" secondAttribute="trailing" id="oQi-JU-gqM"/>
+                            <constraint firstItem="8Dv-iH-VgI" firstAttribute="top" secondItem="Z5c-tx-cm2" secondAttribute="bottom" constant="28" id="gfB-Kg-aFj"/>
+                            <constraint firstItem="7w9-l2-Cdt" firstAttribute="centerX" secondItem="uLA-DY-Rb4" secondAttribute="centerX" id="jJL-dr-PRn"/>
                             <constraint firstItem="UJo-LP-D4a" firstAttribute="bottom" secondItem="8Dv-iH-VgI" secondAttribute="bottom" id="pEJ-Jq-gpY"/>
-                            <constraint firstItem="Vtn-7e-spD" firstAttribute="leading" secondItem="UJo-LP-D4a" secondAttribute="leading" id="v17-8i-dLX"/>
                             <constraint firstItem="8Dv-iH-VgI" firstAttribute="top" secondItem="uLA-DY-Rb4" secondAttribute="top" constant="240" id="wje-dp-FI7"/>
-                            <constraint firstItem="7w9-l2-Cdt" firstAttribute="centerX" secondItem="uLA-DY-Rb4" secondAttribute="centerX" id="yGD-w1-Th4"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="UJo-LP-D4a"/>
                     </view>
                     <navigationItem key="navigationItem" id="CXR-Km-Elc"/>
                     <connections>
-                        <outlet property="addEditButton" destination="3na-eR-4yt" id="LDF-ga-BUg"/>
                         <outlet property="blockView" destination="7w9-l2-Cdt" id="HLR-6X-dxr"/>
                         <outlet property="detailsTableView" destination="8Dv-iH-VgI" id="jxK-Z2-jda"/>
-                        <outlet property="navigationBar" destination="Vtn-7e-spD" id="X9t-gl-LXT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="aIM-KD-tmH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="3836" y="-1023.3990147783252"/>
+        </scene>
+        <!--Title-->
+        <scene sceneID="LId-Ui-C6M">
+            <objects>
+                <viewController id="vBf-1f-irH" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="viA-HC-OBy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="6lC-5Q-dDd"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Title" id="5Cr-X6-DHe"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MKO-AM-hIy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4634" y="-1060"/>
         </scene>
         <!--Time Block-->
         <scene sceneID="gLf-lS-UKu">

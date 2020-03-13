@@ -543,10 +543,8 @@ class TimeBlockCell: UITableViewCell {
     @objc func buttonPressed (sender: UIButton) {
         
         editBlockDelegate?.moveToEditView(selectedBlock: coorespondingBlocks[sender.tag])
-        
-        //print(coorespondingBlocks[sender.tag])
-        
-        print(sender.tag)
+
+
     }
 }
 

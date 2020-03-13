@@ -18,10 +18,6 @@ protocol ReloadData: class {
 }
 
 class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
-
-    @IBOutlet weak var navigationBar: UINavigationBar!
-    @IBOutlet weak var addEditButton: UIBarButtonItem!
-    
     
     @IBOutlet weak var blockView: BigBlock!
     
@@ -112,7 +108,7 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
             
             guard let cell = detailsTableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? BlockTimePickerCell else { return }
             
-            formatter.dateFormat = "HH:mm"
+             //formatter.dateFormat = "HH:mm"
             
 //            cell.timePicker.setDate(formatter.date(from: formatter.string(from: blockBegins!))!, animated: false)
             
@@ -193,13 +189,8 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationBar.shadowImage = UIImage()
-        //self.navigationController?.navigationBar.isTranslucent = true
-        navigationBar.backgroundColor = .clear  //.view.backgroundColor = .clear
+        configureNavBar()
         
-        navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 18)!]
-
         detailsTableView.dataSource = self
         detailsTableView.delegate = self
         
@@ -627,8 +618,51 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         }
     }
     
-    private func configureEditView (_ block: PersonalRealmDatabase.blockTuple) {
+    private func configureNavBar () {
         
+        let navBar = UINavigationBar(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 55))
+        
+        navBar.setBackgroundImage(UIImage(), for: .default)
+        navBar.shadowImage = UIImage()
+        navBar.backgroundColor = .clear  //.view.backgroundColor = .clear
+        
+        navBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 18)!]
+        
+        view.addSubview(navBar)
+        
+        let addButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.add, target: self, action: #selector(addEditBlock))
+        addButton.style = .done
+        
+        let editButton = UIBarButtonItem(title: "Edit", style: .done, target: self, action: #selector(addEditBlock))
+        editButton.style = .done
+        
+        let cancelButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.stop, target: self, action:#selector(cancelPressed))
+        cancelButton.style = .done
+            
+
+        
+        if selectedBlock == nil {
+            
+            let navItem = UINavigationItem(title: "Add A Block")
+            navItem.leftBarButtonItem = cancelButton
+            navItem.rightBarButtonItem = addButton
+            
+            navBar.setItems([navItem], animated: false)
+        }
+        
+        else {
+            
+            let navItem = UINavigationItem(title: "Edit Block")
+            navItem.leftBarButtonItem = cancelButton
+            navItem.rightBarButtonItem = editButton
+            
+            navBar.setItems([navItem], animated: false)
+        }
+        
+    }
+    
+    private func configureEditView (_ block: PersonalRealmDatabase.blockTuple) {
+            
         blockView.nameLabel.text = block.name
 
         formatter.dateFormat = "h:mm a"
@@ -690,13 +724,19 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         }
     }
     
-    @IBAction func addEditButton(_ sender: Any) {
+    @objc private func addEditBlock () {
         
         var blockDict: [String : Any] = [:]
         
         if validateTextEntered(blockName ?? "") != true {
             
             ProgressHUD.showError("Please enter a name for this Block")
+            return
+        }
+        
+        if personalDatabase!.verifyBlock(selectedBlock?.blockID, blockBegins!, blockEnds!) == false {
+            
+            ProgressHUD.showError("Sorry, this Block conflicts with too many others in your schedule")
             return
         }
         
@@ -737,12 +777,13 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         }
     }
     
-    @IBAction func cancelPressed(_ sender: Any) {
+    @objc private func cancelPressed () {
         
         dismiss(animated: true) {
             self.reloadDataDelegate?.nilSelectedBlock()
         }
     }
+
     
     @objc func dismissKeyboard () {
         
