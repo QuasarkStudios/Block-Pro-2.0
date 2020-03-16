@@ -15,7 +15,7 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
     @IBOutlet weak var timeBlockTableView: UITableView!
     @IBOutlet weak var gradientView: UIView!
     
-    let personalDatabase = PersonalRealmDatabase()
+    let personalDatabase = PersonalRealmDatabase.sharedInstance
     
     var currentDateObject: TimeBlocksDate?
     var currentDate: Date? {
@@ -35,7 +35,7 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
 
         formatter.dateFormat = "EEEE, MMMM d"
         navigationItem.title =  formatter.string(from: currentDate!)
-        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 20)!]
+        //self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 20)!]
         
         timeBlockTableView.dataSource = self
         timeBlockTableView.delegate = self
@@ -45,6 +45,7 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
 
         timeBlockTableView.register(UINib(nibName: "TimeBlockCell", bundle: nil), forCellReuseIdentifier: "timeBlockCell")
         
+        createDetailsButton()
     }
     
     override func viewDidLayoutSubviews() {
@@ -52,6 +53,11 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         
         
         applyGradientFade()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 20)!]
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -77,7 +83,7 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
 //        cell.textLabel!.text = "New Day"
         cell.selectionStyle = .none
         
-        cell.personalDatabase = personalDatabase
+        //cell.personalDatabase = personalDatabase
         
         cell.editBlockDelegate = self
         
@@ -100,12 +106,62 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         gradientView.layer.mask = gradientFade
     }
     
+    @objc func detailsButtonPressed () {
+        
+        performSegue(withIdentifier: "moveToDetailsView", sender: self)
+    }
+    
+    private func createDetailsButton () {
+        
+        let detailsButton = UIButton()
+
+        detailsButton.backgroundColor = UIColor.white//.withAlphaComponent(0.95)
+        
+        detailsButton.addTarget(self, action: #selector(detailsButtonPressed), for: .touchDown)
+        
+        view.addSubview(detailsButton)
+        
+        detailsButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        detailsButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
+        detailsButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -110).isActive = true
+        detailsButton.widthAnchor.constraint(equalToConstant: 67.5).isActive = true
+        detailsButton.heightAnchor.constraint(equalToConstant: 67.5).isActive = true
+        
+        detailsButton.layer.cornerRadius = 0.5 * 70
+        //detailsButton.clipsToBounds = true
+        
+        detailsButton.layer.shadowRadius = 2.5
+        detailsButton.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
+        detailsButton.layer.shadowOffset = CGSize(width: 0, height: 1)
+        detailsButton.layer.shadowOpacity = 0.35
+        
+        detailsButton.layer.cornerRadius = 0.5 * 67.5
+        detailsButton.layer.masksToBounds = false
+        detailsButton.clipsToBounds = false
+        
+        detailsButton.layer.borderWidth = 1
+        detailsButton.layer.borderColor = UIColor(hexString: "F2F2F2")?.cgColor
+        
+        let detailsImage = UIImageView(image: UIImage(named: "list"))
+        detailsImage.contentMode = .scaleToFill
+        
+        view.addSubview(detailsImage)
+        
+        detailsImage.translatesAutoresizingMaskIntoConstraints = false
+        
+        detailsImage.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30).isActive = true
+        detailsImage.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -120).isActive = true
+        detailsImage.widthAnchor.constraint(equalToConstant: 45).isActive = true
+        detailsImage.heightAnchor.constraint(equalToConstant: 45).isActive = true
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "moveToAddEditView" {
             
             let addEditVC = segue.destination as! AddEditBlockViewController
-            addEditVC.personalDatabase = personalDatabase
+            //addEditVC.personalDatabase = personalDatabase
             addEditVC.currentDateObject = currentDateObject!
             addEditVC.currentDate = currentDate!
             addEditVC.reloadDataDelegate = self
@@ -113,6 +169,13 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
             guard let block = selectedBlock else { return }
             
                 addEditVC.selectedBlock = block
+        }
+        
+        else if segue.identifier == "moveToDetailsView" {
+
+            let backItem = UIBarButtonItem()
+            backItem.title = ""
+            navigationItem.backBarButtonItem = backItem
         }
     }
 }
@@ -148,9 +211,11 @@ extension TimeBlockViewController2: ReloadData {
             cell.blockButtons = []
             cell.coorespondingBlocks = []
         
+            cell.configureBlocks()
+        
             selectedBlock = nil
         
-            timeBlockTableView.reloadData()
+            //timeBlockTableView.reloadData()
     }
     
     func nilSelectedBlock () {

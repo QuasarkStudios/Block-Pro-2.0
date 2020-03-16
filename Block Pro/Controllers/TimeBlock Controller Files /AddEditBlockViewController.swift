@@ -28,7 +28,7 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
     var timePickerBackground: UIView = UIView()
     
     //lazy var realm = try! Realm()
-    var personalDatabase: PersonalRealmDatabase?
+    var personalDatabase = PersonalRealmDatabase.sharedInstance
     var currentDateObject: TimeBlocksDate?
     
     let notificationScheduler = NotificationScheduler()
@@ -208,8 +208,6 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         detailsTableView.register(UINib(nibName: "BlockNotificationSettingCell", bundle: nil), forCellReuseIdentifier: "blockNotificationCell")
         
         detailsTableView.register(UINib(nibName: "DeleteBlockCell", bundle: nil), forCellReuseIdentifier: "deleteBlockCell")
-        
-        //timeSelected(timePicker: timePicker)
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -702,7 +700,7 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
     
     private func blockDeleted (_ tableView: UITableView, _ indexPath: IndexPath) {
         
-        personalDatabase?.deleteBlock(blockID: selectedBlock!.blockID)
+        personalDatabase.deleteBlock(blockID: selectedBlock!.blockID)
         
         notificationScheduler.removePendingNotification()
         
@@ -719,7 +717,6 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
             self.dismiss(animated: true) {
                 
                 self.reloadDataDelegate?.reloadData()
-                
             }
         }
     }
@@ -734,7 +731,7 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
             return
         }
         
-        if personalDatabase!.verifyBlock(selectedBlock?.blockID, blockBegins!, blockEnds!) == false {
+        if personalDatabase.verifyBlock(selectedBlock?.blockID, blockBegins!, blockEnds!) == false {
             
             ProgressHUD.showError("Sorry, this Block conflicts with too many others in your schedule")
             return
@@ -752,14 +749,14 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         
         if selectedBlock == nil {
             
-            personalDatabase?.addBlock(blockDict, currentDateObject!)
+            personalDatabase.addBlock(blockDict, currentDateObject!)
         }
         
         else {
             
             blockDict["blockID"] = selectedBlock?.blockID
             
-            personalDatabase?.updateBlock(blockDict, currentDateObject!)
+            personalDatabase.updateBlock(blockDict, currentDateObject!)
         }
         
         if notificationSettings["scheduled"] as? Bool ?? false == true {

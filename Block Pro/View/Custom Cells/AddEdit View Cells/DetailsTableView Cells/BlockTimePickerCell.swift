@@ -27,25 +27,6 @@ class BlockTimePickerCell: UITableViewCell {
         didSet {
             
             formatter.dateFormat = "yyyy-MM-dd"
-
-            var minimumDate: String = formatter.string(from: currentDate!)
-            let minimumTime: String = " 00:00:00"
-            minimumDate += minimumTime
-
-            var maximumDate: String = formatter.string(from: currentDate!)
-            let maximumTime: String = " 23:55:00"
-            maximumDate += maximumTime
-            
-            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-            
-//            timePicker.minimumDate = formatter.date(from: minimumDate)
-//            timePicker.maximumDate = formatter.date(from: maximumDate)
-            
-            
-            
-            //print(formatter.date(from: formatter.string(from: currentDate!) + " " + "\(timePicker.date)")!)
-            
-            formatter.dateFormat = "yyyy-MM-dd"
             var timePickerCurrentDate = formatter.string(from: currentDate!)
             
             timePickerCurrentDate += " "
@@ -63,9 +44,7 @@ class BlockTimePickerCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        
-        
+
         timePicker.layer.shadowRadius = 2
         timePicker.layer.shadowColor = /*UIColor.black.cgColor*/UIColor(hexString: "39434A")?.cgColor
         timePicker.layer.shadowOffset = CGSize(width: 0, height: 2)
@@ -74,12 +53,6 @@ class BlockTimePickerCell: UITableViewCell {
         timePicker.layer.cornerRadius = 3
         timePicker.layer.masksToBounds = false
         timePicker.clipsToBounds = false
-
-        
-        
-//        timePicker.datePickerMode = .time
-//        timePicker.minuteInterval = 5
-        
         
         timePicker.addTarget(self, action: #selector(timeSelected(timePicker:)), for: .allEvents)
         timePicker.date = Date()
@@ -101,13 +74,9 @@ class BlockTimePickerCell: UITableViewCell {
         if selectedTime == "begins" {
             
             if formatter.string(from: timePicker.date) == maximumTime {
-
-                //timePicker.date = (formatter.date(from: maximumDate)?.addingTimeInterval(-300))!
                 
                 timePicker.date = formatter.date(from: "23:50")!
             }
-        
-            //timeSelectedDelegate?.startTimeSelected(formatter.date(from: formatter.string(from: timePicker.date))!)
             
             timeSelectedDelegate?.startTimeSelected(timePicker.date)
 
@@ -116,8 +85,6 @@ class BlockTimePickerCell: UITableViewCell {
         else if selectedTime == "ends" {
             
             if formatter.string(from: timePicker.date) == minimumTime {
-                
-                //timePicker.date = (formatter.date(from: minimumDate)?.addingTimeInterval(300))!
                 
                 timePicker.date = formatter.date(from: "00:05")!
             }

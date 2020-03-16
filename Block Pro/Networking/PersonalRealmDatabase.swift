@@ -11,6 +11,8 @@ import RealmSwift
 
 class PersonalRealmDatabase {
 
+    static let sharedInstance = PersonalRealmDatabase()
+    
     let realm = try! Realm()
 
     var allBlockDates: Results<TimeBlocksDate>? //Results container used to hold all "TimeBlocksDate" objects from the Realm database
@@ -26,6 +28,7 @@ class PersonalRealmDatabase {
     var functionTuple: blockTuple = (blockID: "", name: "", begins: Date(), ends: Date(), category: "", notificationID: "", scheduled: false, minsBefore: 0)
 
     var blockArray: [blockTuple]? //= [blockTuple]() //Array that holds all the data for each TimeBlock
+
     
     func findTimeBlocks (_ todaysDate: Date) -> TimeBlocksDate {
 
@@ -45,17 +48,13 @@ class PersonalRealmDatabase {
 
               blockData = currentDateObject?.timeBlocks.sorted(byKeyPath: "begins")
               blockArray = organizeBlocks()
-            
-            //print(blockArray)
-              //calculateBlockHeights()
           }
 
-          //Used if blockArray was populated with TimeBlocks from a different date and now the user has selected a date with no TimeBlocks
+          
           else {
 
             blockData = nil
-            blockArray?.removeAll()
-              //rowHeights.removeAll()
+            blockArray = nil
           }
 
       }
@@ -425,8 +424,8 @@ class PersonalRealmDatabase {
             
             return true
         }
-
     }
+    
     
     func addBlock (_ blockDict: [String : Any], _ currentDate: TimeBlocksDate) {
         
@@ -448,15 +447,13 @@ class PersonalRealmDatabase {
             try realm.write {
                 
                 currentDate.timeBlocks.append(newBlock)
-                
-                formatter.dateFormat = "yyyy MM dd"
-                let date = formatter.date(from: currentDate.timeBlocksDate)
-                _ = findTimeBlocks(date!)
             }
         } catch {
+            
             print("Error adding block \(error)")
         }
     }
+    
     
     func updateBlock (_ blockDict: [String : Any], _ currentDate: TimeBlocksDate) {
         
@@ -478,15 +475,10 @@ class PersonalRealmDatabase {
             try self.realm.write {
                 
                 realm.add(updatedBlock, update: .modified)
-                
-                formatter.dateFormat = "yyyy MM dd"
-                let date = formatter.date(from: currentDate.timeBlocksDate)
-                _ = findTimeBlocks(date!)
-                
             }
         } catch {
-            print ("Error updating block \(error)")
             
+            print ("Error updating block \(error)")
         }
     }
     

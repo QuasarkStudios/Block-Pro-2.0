@@ -41,22 +41,8 @@ class ReminderCell: UICollectionViewCell {
 
     private func configureLabel (_ item: Int) {
         
-        
-        
-//        if cellSelected == true {
-//            
-//            reminderLabel.backgroundColor = UIColor.flatRed()
-//        }
-//        
-//        else {
-//            
-//            reminderLabel.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.5)
-//        }
-        
         reminderLabel.layer.cornerRadius = 5
         reminderLabel.clipsToBounds = true
-        
-        //reminderLabel.adjustsFontSizeToFitWidth = true
         
         switch item {
             
