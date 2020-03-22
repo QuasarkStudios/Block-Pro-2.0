@@ -180,7 +180,7 @@ class ProgressCirclesCell: UITableViewCell {
         
         blockTimeAnimation.fromValue = 0
         blockTimeAnimation.toValue = toValue
-        blockTimeAnimation.duration = 2//0.8 * 2.5
+        blockTimeAnimation.duration = 2
         blockTimeAnimation.fillMode = CAMediaTimingFillMode.forwards
         blockTimeAnimation.isRemovedOnCompletion = false
         
@@ -193,7 +193,7 @@ class ProgressCirclesCell: UITableViewCell {
         
         freeTimeAnimation.fromValue = 0
         freeTimeAnimation.toValue = toValue
-        freeTimeAnimation.duration = 2//0.65 * 2.5
+        freeTimeAnimation.duration = 2
         freeTimeAnimation.fillMode = CAMediaTimingFillMode.forwards
         freeTimeAnimation.isRemovedOnCompletion = false
         
@@ -206,7 +206,7 @@ class ProgressCirclesCell: UITableViewCell {
         
         conflictingTimeAnimation.fromValue = 0
         conflictingTimeAnimation.toValue = toValue
-        conflictingTimeAnimation.duration = 2//0.4 * 2.5
+        conflictingTimeAnimation.duration = 2
         conflictingTimeAnimation.fillMode = CAMediaTimingFillMode.forwards
         conflictingTimeAnimation.isRemovedOnCompletion = false
         
@@ -215,7 +215,7 @@ class ProgressCirclesCell: UITableViewCell {
         conflictingTimeShapeLayer.add(conflictingTimeAnimation, forKey: nil)
     }
     
-    //MARK: - Calc
+    //MARK: - Calc Functions
     
     private func calcBlockedAndFreeTime () {
         
@@ -367,6 +367,13 @@ class ProgressCirclesCell: UITableViewCell {
                 
                 conflictingTime["minutes"] = 0
             }
+        }
+        
+        else {
+            
+            conflictingTimePercentage = 0
+            conflictingTime["hours"] = 0
+            conflictingTime["minutes"] = 0
         }
     }
     
@@ -590,20 +597,19 @@ class ProgressCirclesCell: UITableViewCell {
         
         guard let point = touch?.location(in: contentView) else { return }
         
-        if conflictingTimeShapeLayer.path!.contains(point) {
+            if conflictingTimeShapeLayer.path!.contains(point) {
+                
+                progressLayerTapped(layer: conflictingTimeShapeLayer)
+            }
             
-            progressLayerTapped(layer: conflictingTimeShapeLayer)
+            else if freeTimeShapeLayer.path!.contains(point) {
+                
+                progressLayerTapped(layer: freeTimeShapeLayer)
+            }
             
-        }
-        
-        else if freeTimeShapeLayer.path!.contains(point) {
-            
-            progressLayerTapped(layer: freeTimeShapeLayer)
-        }
-        
-        else if blockTimeShapeLayer.path!.contains(point) {
-            
-            progressLayerTapped(layer: blockTimeShapeLayer)
-        }
+            else if blockTimeShapeLayer.path!.contains(point) {
+                
+                progressLayerTapped(layer: blockTimeShapeLayer)
+            }
     }
 }

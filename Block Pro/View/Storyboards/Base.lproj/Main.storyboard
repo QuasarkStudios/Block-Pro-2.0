@@ -27,16 +27,6 @@
             </objects>
             <point key="canvasLocation" x="-574" y="559"/>
         </scene>
-        <!--TimeBlock-->
-        <scene sceneID="9C9-Me-riI">
-            <objects>
-                <viewControllerPlaceholder storyboardName="TimeBlock" id="5lW-a7-oDz" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="7h3-Kp-Kvm"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jDT-K3-rIo" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-640" y="749"/>
-        </scene>
         <!--UserSettings-->
         <scene sceneID="gTS-6A-1hE">
             <objects>
@@ -65,7 +55,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ktn-b3-RmZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-117" y="641"/>
+            <point key="canvasLocation" x="-184" y="597"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="5SR-Pq-YIE">

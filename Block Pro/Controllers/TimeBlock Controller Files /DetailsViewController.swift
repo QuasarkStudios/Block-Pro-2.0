@@ -13,32 +13,93 @@ class DetailsViewController: UIViewController, UITableViewDataSource, UITableVie
 
     @IBOutlet weak var detailsTableView: UITableView!
     
+    var categoriesCellHeight: CGFloat = 200
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         detailsTableView.dataSource = self
         detailsTableView.delegate = self
         
-        detailsTableView.rowHeight = 400
+        detailsTableView.separatorStyle = .none
+        detailsTableView.showsVerticalScrollIndicator = false
         
         detailsTableView.register(UINib(nibName: "ProgressCirclesCell", bundle: nil), forCellReuseIdentifier: "progressCirclesCell")
+        
+        detailsTableView.register(UINib(nibName: "CategoriesCell", bundle: nil), forCellReuseIdentifier: "categoriesCell")
     }
     
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return 1
+        return 2
         
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "progressCirclesCell", for: indexPath) as! ProgressCirclesCell
+        if indexPath.row == 0 {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "progressCirclesCell", for: indexPath) //as! ProgressCirclesCell
+            
+            cell.selectionStyle = .none
+            
+            return cell
+        }
         
-        cell.selectionStyle = .none
+        else {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "categoriesCell", for: indexPath)
+            
+            cell.selectionStyle = .none
+            
+            return cell
+        }
         
-        return cell
+
     }
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        if indexPath.row == 0 {
+            
+            return 400
+        }
+        
+        else {
+            
+            return categoriesCellHeight
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if indexPath.row == 1 {
+            
+            let cell = tableView.cellForRow(at: indexPath) as! CategoriesCell
+            
+            
+            //If the cell hasn't been animated
+            if categoriesCellHeight == 200 {
+                
+                categoriesCellHeight = 500
+                
+                cell.animateBarTopAnchor(cell.categoryArray, animateUp: false, duration: 0.5)
+            }
+            
+            //If the cell has been animated 
+            else {
+                
+                categoriesCellHeight = 200
+                
+                cell.animateBarTopAnchor(cell.categoryArray, animateUp: true, duration: 0.5)
+            }
+            
+            detailsTableView.beginUpdates()
+            detailsTableView.endUpdates()
+            
+            detailsTableView.scrollToRow(at: indexPath, at: .top, animated: true)
+        }
+    }
     
 }

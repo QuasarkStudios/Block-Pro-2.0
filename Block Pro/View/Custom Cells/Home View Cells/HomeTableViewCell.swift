@@ -15,41 +15,43 @@ protocol TimeBlockView {
 
 class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
+    @IBOutlet weak var weekLabel: UILabel!
+    
     @IBOutlet weak var personalCollectionView: UICollectionView!
+    
+    @IBOutlet weak var pageControl: UIPageControl!
+    
+    var homeViewController: HomeViewController?; #warning("change to a protocol lol")
     
     let formatter = DateFormatter()
     
     var personalCollectionContent: [Date]! {
         didSet {
-
+            
+            configureWeekLabel()
+            
+            pageControl.numberOfPages = personalCollectionContent.count
+            
             personalCollectionView.reloadData()
         }
     }
     
     var visibleItem: IndexPath?
     
-    var homeViewController: HomeViewController?
+    var pageWidth: CGFloat?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
         personalCollectionView.delegate = self
         personalCollectionView.dataSource = self
-
-        let layout = UICollectionViewFlowLayout()
-        //layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        layout.itemSize = CGSize(width: 195, height: 430)
         
-        layout.minimumInteritemSpacing = 15
-        layout.minimumLineSpacing = 15
-        
-        layout.scrollDirection = .horizontal
-        
+        let layout = PersonalCollectionViewFlowLayout()
         personalCollectionView.collectionViewLayout = layout
         
         personalCollectionView.register(UINib(nibName: "PersonalCell", bundle: nil), forCellWithReuseIdentifier: "personalCell")
-        
     }
+    
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
@@ -61,6 +63,7 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         
         return 1
     }
+    
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
@@ -73,9 +76,8 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
             
             return personalCollectionContent.count + 1
         }
-        
-        
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -84,20 +86,10 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "personalCell", for: indexPath) as! PersonalCell
             cell.isHidden = false
             
-            formatter.dateFormat = "EEEE"
+            formatter.dateFormat = "EEEE, MMMM d"
             cell.dayLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])//calendar.weekdaySymbols[indexPath.row]
-
-            formatter.dateFormat = "MMMM d, yyyy"
-            cell.dateLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])
             
-////            cell.visualEffectView.effect = nil
-////            cell.visualEffectView.isHidden = false
-//            
-//            cell.animator.addAnimations {
-////                cell.visualEffectView.effect = UIBlurEffect(style: .extraLight)
-//            }
-//            
-//            cell.animator.fractionComplete = 0.3
+            cell.currentDate = personalCollectionContent[indexPath.row]
             
             return cell
         }
@@ -107,40 +99,36 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "personalCell", for: indexPath) as! PersonalCell
             cell.isHidden = true
             
-//            formatter.dateFormat = "EEEE"
-//            cell.dayLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])//calendar.weekdaySymbols[indexPath.row]
-//
-//            formatter.dateFormat = "MMMM d, yyyy"
-//            cell.dateLabel.text = formatter.string(from: personalCollectionContent[indexPath.row])
-            
             return cell
         }
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         
         let leftInset: CGFloat = (UIScreen.main.bounds.width - 5) / 4
         
-        return UIEdgeInsets(top: 10, left: leftInset, bottom: 10, right: 0)
+        return UIEdgeInsets(top: -40, left: leftInset, bottom: 0, right: 0)
     }
+
+
+    
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        //scrollView.
-        
-        if scrollView.contentOffset.x > 1300 {
+        if scrollView.contentOffset.x > 1335 {
 
-            scrollView.setContentOffset(CGPoint(x: 1265, y: 0), animated: true)
-            
-            //scrollView.contentOffset.x = 1265
+            scrollView.setContentOffset(CGPoint(x: 1335, y: 0), animated: false)
         }
         
     }
+    
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         
         shrinkPersonalCell()
     }
+    
     
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         
@@ -157,8 +145,6 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
 //                    self.personalCollectionView.contentOffset.x = 1265
 //                }
 //            }
-            
-
         }
     }
     
@@ -185,114 +171,156 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         let visibleItems: [IndexPath] = personalCollectionView.indexPathsForVisibleItems
         let centeredRect: CGRect = CGRect(x: personalCollectionView.center.x - 10, y: 0, width: 20, height: personalCollectionView.frame.height)
         var centeredItems: [IndexPath] = []
-        
+
         var count = 0
-        
+
         for cell in personalCollectionView.visibleCells {
-            
+
             let cellFrame: CGRect = CGRect(x: cell.frame.minX - personalCollectionView.contentOffset.x, y: cell.frame.minY, width: cell.frame.width, height: cell.frame.height)
-            
+
             if cellFrame.intersects(centeredRect) {
-                
+
                 centeredItems.append(visibleItems[count])
             }
-            
+
             count += 1
         }
-        
+
         if centeredItems.count != 0 {
-            
+
             var indexPath: IndexPath = IndexPath(item: centeredItems[0].last!, section: 0)
-            
+
             if indexPath.row < personalCollectionContent.count {
-                
+
                 personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
                 visibleItem = indexPath
             }
-            
+
             else {
-                
-                //print(personalCollectionView.contentOffset)
-                
+
                 indexPath = IndexPath(item: indexPath.row - 1, section: 0)
                 personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
                 visibleItem = indexPath
             }
-            
-
         }
-
+        
         completion()
     }
+    
     
     func growPersonalCell (delay: Double = 0) {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            
+
             if self.visibleItem ?? nil != nil {
-                
+
                 guard let cell = self.personalCollectionView.cellForItem(at: self.visibleItem!) as? PersonalCell else { return }
-                    
+
                     cell.cellBackgroundTopAnchor.constant = 5
                     cell.cellBackgroundBottomAnchor.constant = 5
                     cell.cellBackgroundLeadingAnchor.constant = 5
                     cell.cellBackgroundTrailingAnchor.constant = 5
-                    
-                    cell.detailsButtonTopAnchor.constant = 0
-                    cell.shareButtonTopAnchor.constant = 0
-                    cell.deleteButtonTopAnchor.constant = 0
-                
+
                     UIView.animate(withDuration: 0.3) {
+
+                        cell.layoutIfNeeded()
+                    }
+                
+                    cell.detailsButtonTopAnchor.constant = 320
+                    cell.detailsButtonCenterXAnchor.constant = -50
+                
+                    cell.deleteButtonTopAnchor.constant = 320
+                    cell.deleteButtonCenterXAnchor.constant = 50
+                
+                    UIView.animate(withDuration: 0.4) {
                         
                         cell.layoutIfNeeded()
-                        
-                        cell.blurView.alpha = 0.5
-                        
+
                         cell.detailsButton.alpha = 1
                         cell.shareButton.alpha = 1
                         cell.deleteButton.alpha = 1
-                    
                     }
+                
+                
+                    self.pageControl.currentPage = self.visibleItem!.row
                 }
             }
             
 
     }
     
+    
     func shrinkPersonalCell () {
         
         if visibleItem ?? nil != nil {
-            
+
             guard let cell = personalCollectionView.cellForItem(at: self.visibleItem!) as? PersonalCell  else { return }
+
+            cell.detailsButtonTopAnchor.constant = 270
+            cell.detailsButtonCenterXAnchor.constant = 0
             
-            //let cell = personalCollectionView.cellForItem(at: self.visibleItem!) as! PersonalCell
+            cell.deleteButtonTopAnchor.constant = 270
+            cell.deleteButtonCenterXAnchor.constant = 0
             
-            cell.cellBackgroundTopAnchor.constant = 15
-            cell.cellBackgroundBottomAnchor.constant = 75
-            cell.cellBackgroundLeadingAnchor.constant = 15
-            cell.cellBackgroundTrailingAnchor.constant = 15
-        
-            cell.detailsButtonTopAnchor.constant = -50
-            cell.shareButtonTopAnchor.constant = -50
-            cell.deleteButtonTopAnchor.constant = -50
-            
-            UIView.animate(withDuration: 0.3, animations: {
+            UIView.animate(withDuration: 0.2) {
                 
                 cell.layoutIfNeeded()
-                
-                cell.blurView.alpha = 1
-                
+
                 cell.detailsButton.alpha = 0
                 cell.shareButton.alpha = 0
                 cell.deleteButton.alpha = 0
-                
-            }) { (finished: Bool) in
-                
-                //cell.visualEffectView.effect = nil
-                //cell.animator.fractionComplete = 0
             }
-            
+
+            cell.cellBackgroundTopAnchor.constant = 30
+            cell.cellBackgroundBottomAnchor.constant = 75
+            cell.cellBackgroundLeadingAnchor.constant = 15
+            cell.cellBackgroundTrailingAnchor.constant = 15
+
+
+            UIView.animate(withDuration: 0.3) {
+                
+                cell.layoutIfNeeded()
+            }
         }
     }
-}
+    
+    
+    func configureWeekLabel () {
+        
+        formatter.dateFormat = "MMMM d"
+        
+        if personalCollectionContent.count == 1 {
+            
+            
+            weekLabel.text = formatter.string(from: personalCollectionContent.first!)
+        }
+        
+        else {
+            
+            weekLabel.text = formatter.string(from: personalCollectionContent.first!) + "  -  " + formatter.string(from: personalCollectionContent.last!)
+        }
+    }
+    
+    
+    @IBAction func pageControl(_ sender: Any) {
+        
+        pageControl.isUserInteractionEnabled = false
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            
+            self.pageControl.isUserInteractionEnabled = true
+        }
+        
+        let indexPath: IndexPath = IndexPath(item: pageControl.currentPage, section: 0)
+        
+        personalCollectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        
+        guard visibleItem != nil else { return }
 
+            shrinkPersonalCell()
+
+            visibleItem = indexPath
+
+            growPersonalCell()
+    }
+}

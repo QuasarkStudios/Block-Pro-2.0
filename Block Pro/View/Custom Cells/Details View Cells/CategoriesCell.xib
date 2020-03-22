@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-SemiBold.ttf">
+            <string>Poppins-SemiBold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="categoriesCell" rowHeight="500" id="KGk-i7-Jjw" customClass="CategoriesCell" customModule="Block_Pro" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="500"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="500"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Work" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LTC-CZ-Voz">
+                        <rect key="frame" x="20" y="80" width="65" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="25" id="8OS-u6-Mnr"/>
+                            <constraint firstAttribute="width" constant="65" id="M6c-Bp-d9H"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Creativity" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mPh-Tw-VIB">
+                        <rect key="frame" x="20" y="130" width="65" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="25" id="SfL-nH-6xI"/>
+                            <constraint firstAttribute="width" constant="65" id="vjJ-yJ-sw0"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sleep" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZmR-1l-btS">
+                        <rect key="frame" x="20" y="180" width="65" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="65" id="J6k-4e-oho"/>
+                            <constraint firstAttribute="height" constant="25" id="pCX-aL-2P9"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Food" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uMR-z6-HTr">
+                        <rect key="frame" x="20" y="230" width="65" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="65" id="3aj-ne-9T3"/>
+                            <constraint firstAttribute="height" constant="25" id="T7Z-Ay-v4c"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Leisure" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gi9-5d-FLn">
+                        <rect key="frame" x="20" y="280" width="65" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="65" id="4Cw-4M-wLj"/>
+                            <constraint firstAttribute="height" constant="25" id="uQM-Ai-kUv"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Exercise" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pJJ-Xg-cWY">
+                        <rect key="frame" x="20" y="330" width="65" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="65" id="LLW-bd-fbQ"/>
+                            <constraint firstAttribute="height" constant="25" id="dpF-3r-IQF"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Other" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tem-PQ-dNo">
+                        <rect key="frame" x="20" y="430" width="65" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="65" id="S5F-Pn-isZ"/>
+                            <constraint firstAttribute="height" constant="25" id="UGA-uL-Nhc"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Self-Care" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IU3-2z-2kg">
+                        <rect key="frame" x="20" y="380" width="65" height="25"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="25" id="A0X-C8-DBO"/>
+                            <constraint firstAttribute="width" constant="65" id="w3x-he-jqo"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Categories" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gyo-8z-d56">
+                        <rect key="frame" x="5" y="10" width="365" height="40"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="40" id="aZJ-ap-Y9a"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="21"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rcb-1L-ryC" customClass="CategoryTrackBar" customModule="Block_Pro" customModuleProvider="target">
+                        <rect key="frame" x="115" y="85" width="240" height="15"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gg1-h8-e6P" customClass="CategoryProgressBar" customModule="Block_Pro" customModuleProvider="target">
+                                <rect key="frame" x="3" y="2" width="116" height="11"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="116" id="Bsa-qE-u0m"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="Gg1-h8-e6P" secondAttribute="bottom" constant="2" id="URc-u8-jd2"/>
+                            <constraint firstAttribute="height" constant="15" id="Wll-kv-pk1"/>
+                            <constraint firstItem="Gg1-h8-e6P" firstAttribute="leading" secondItem="Rcb-1L-ryC" secondAttribute="leading" constant="3" id="cnT-qG-S70"/>
+                            <constraint firstItem="Gg1-h8-e6P" firstAttribute="top" secondItem="Rcb-1L-ryC" secondAttribute="top" constant="2" id="m2C-Kf-UhT"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4UN-Hf-p9M" customClass="CategoryTrackBar" customModule="Block_Pro" customModuleProvider="target">
+                        <rect key="frame" x="115" y="135" width="240" height="15"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rxS-dx-LB8" customClass="CategoryProgressBar" customModule="Block_Pro" customModuleProvider="target">
+                                <rect key="frame" x="3" y="2" width="116" height="11"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="116" id="rtc-5W-Kbc"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="NWY-AG-Iqf"/>
+                            <constraint firstItem="rxS-dx-LB8" firstAttribute="leading" secondItem="4UN-Hf-p9M" secondAttribute="leading" constant="3" id="gTO-FB-nU7"/>
+                            <constraint firstItem="rxS-dx-LB8" firstAttribute="top" secondItem="4UN-Hf-p9M" secondAttribute="top" constant="2" id="pWT-EH-h6A"/>
+                            <constraint firstAttribute="bottom" secondItem="rxS-dx-LB8" secondAttribute="bottom" constant="2" id="stC-rx-h3B"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dqx-eO-dbk" customClass="CategoryTrackBar" customModule="Block_Pro" customModuleProvider="target">
+                        <rect key="frame" x="115" y="185" width="240" height="15"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EKl-hf-LWY" customClass="CategoryProgressBar" customModule="Block_Pro" customModuleProvider="target">
+                                <rect key="frame" x="3" y="2" width="116" height="11"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="116" id="w44-QT-79O"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="EKl-hf-LWY" secondAttribute="bottom" constant="2" id="LZM-PM-2n0"/>
+                            <constraint firstItem="EKl-hf-LWY" firstAttribute="top" secondItem="Dqx-eO-dbk" secondAttribute="top" constant="2" id="s5X-g8-zfp"/>
+                            <constraint firstAttribute="height" constant="15" id="zFc-qm-nya"/>
+                            <constraint firstItem="EKl-hf-LWY" firstAttribute="leading" secondItem="Dqx-eO-dbk" secondAttribute="leading" constant="3" id="zzA-yb-rCp"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GRZ-r6-bgc" customClass="CategoryTrackBar" customModule="Block_Pro" customModuleProvider="target">
+                        <rect key="frame" x="115" y="235" width="240" height="15"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iQ2-R1-ma3" customClass="CategoryProgressBar" customModule="Block_Pro" customModuleProvider="target">
+                                <rect key="frame" x="3" y="2" width="116" height="11"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="116" id="aPU-2j-2zr"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="2bd-h1-Pj0"/>
+                            <constraint firstItem="iQ2-R1-ma3" firstAttribute="top" secondItem="GRZ-r6-bgc" secondAttribute="top" constant="2" id="Fm7-j1-4rv"/>
+                            <constraint firstAttribute="bottom" secondItem="iQ2-R1-ma3" secondAttribute="bottom" constant="2" id="oU8-x3-BIh"/>
+                            <constraint firstItem="iQ2-R1-ma3" firstAttribute="leading" secondItem="GRZ-r6-bgc" secondAttribute="leading" constant="3" id="vbz-Ep-zbB"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mQp-Vg-W0w" customClass="CategoryTrackBar" customModule="Block_Pro" customModuleProvider="target">
+                        <rect key="frame" x="115" y="285" width="240" height="15"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I98-xl-iG1" customClass="CategoryProgressBar" customModule="Block_Pro" customModuleProvider="target">
+                                <rect key="frame" x="3" y="2" width="116" height="11"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="116" id="2UD-UH-Aeb"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="I98-xl-iG1" firstAttribute="top" secondItem="mQp-Vg-W0w" secondAttribute="top" constant="2" id="FAW-PK-DDq"/>
+                            <constraint firstAttribute="height" constant="15" id="MYT-zt-mtY"/>
+                            <constraint firstAttribute="bottom" secondItem="I98-xl-iG1" secondAttribute="bottom" constant="2" id="WgY-HL-CtB"/>
+                            <constraint firstItem="I98-xl-iG1" firstAttribute="leading" secondItem="mQp-Vg-W0w" secondAttribute="leading" constant="3" id="ZNc-OI-HCb"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vCn-fu-NKU" customClass="CategoryTrackBar" customModule="Block_Pro" customModuleProvider="target">
+                        <rect key="frame" x="115" y="335" width="240" height="15"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7DH-Xz-vSj" customClass="CategoryProgressBar" customModule="Block_Pro" customModuleProvider="target">
+                                <rect key="frame" x="3" y="2" width="116" height="11"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="116" id="f1S-KE-Thu"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="7DH-Xz-vSj" firstAttribute="top" secondItem="vCn-fu-NKU" secondAttribute="top" constant="2" id="aC5-5F-mH8"/>
+                            <constraint firstAttribute="bottom" secondItem="7DH-Xz-vSj" secondAttribute="bottom" constant="2" id="eaM-mP-0o5"/>
+                            <constraint firstAttribute="height" constant="15" id="kXx-6N-WND"/>
+                            <constraint firstItem="7DH-Xz-vSj" firstAttribute="leading" secondItem="vCn-fu-NKU" secondAttribute="leading" constant="3" id="lhK-eT-cKg"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5K6-oC-BVE" customClass="CategoryTrackBar" customModule="Block_Pro" customModuleProvider="target">
+                        <rect key="frame" x="115" y="385" width="240" height="15"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8bU-vt-VBn" customClass="CategoryProgressBar" customModule="Block_Pro" customModuleProvider="target">
+                                <rect key="frame" x="3" y="2" width="116" height="11"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="116" id="AWe-0w-tpa"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="8bU-vt-VBn" firstAttribute="top" secondItem="5K6-oC-BVE" secondAttribute="top" constant="2" id="7E2-ZH-yi0"/>
+                            <constraint firstItem="8bU-vt-VBn" firstAttribute="leading" secondItem="5K6-oC-BVE" secondAttribute="leading" constant="3" id="AJo-rC-ULm"/>
+                            <constraint firstAttribute="height" constant="15" id="H6a-Lg-EeL"/>
+                            <constraint firstAttribute="bottom" secondItem="8bU-vt-VBn" secondAttribute="bottom" constant="2" id="HZH-Vt-qcZ"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aPh-Vz-6pC" customClass="CategoryTrackBar" customModule="Block_Pro" customModuleProvider="target">
+                        <rect key="frame" x="115" y="435" width="240" height="15"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q35-Wy-tfH" customClass="CategoryProgressBar" customModule="Block_Pro" customModuleProvider="target">
+                                <rect key="frame" x="3" y="2" width="116" height="11"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="116" id="eZs-xT-njH"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="separatorColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.28999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="3Nq-1g-tWI"/>
+                            <constraint firstItem="q35-Wy-tfH" firstAttribute="top" secondItem="aPh-Vz-6pC" secondAttribute="top" constant="2" id="7am-4k-dwY"/>
+                            <constraint firstItem="q35-Wy-tfH" firstAttribute="leading" secondItem="aPh-Vz-6pC" secondAttribute="leading" constant="3" id="ApJ-Ae-5Ga"/>
+                            <constraint firstAttribute="bottom" secondItem="q35-Wy-tfH" secondAttribute="bottom" constant="2" id="ndC-Nl-sXX"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="5K6-oC-BVE" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="10p-LO-mVf"/>
+                    <constraint firstItem="ZmR-1l-btS" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="1Id-bB-hw5"/>
+                    <constraint firstItem="IU3-2z-2kg" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="1xr-Qs-lpk"/>
+                    <constraint firstItem="vCn-fu-NKU" firstAttribute="leading" secondItem="pJJ-Xg-cWY" secondAttribute="trailing" constant="30" id="3KW-OI-gjh"/>
+                    <constraint firstAttribute="trailing" secondItem="gyo-8z-d56" secondAttribute="trailing" constant="5" id="68Q-Ul-PJK"/>
+                    <constraint firstItem="gyo-8z-d56" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="7om-kI-ozz"/>
+                    <constraint firstItem="gyo-8z-d56" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="AGH-Dc-Mg6"/>
+                    <constraint firstItem="mQp-Vg-W0w" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="235" id="AHM-mN-Qgs"/>
+                    <constraint firstItem="uMR-z6-HTr" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="BRi-Zi-ZKN"/>
+                    <constraint firstItem="mPh-Tw-VIB" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="80" id="Bq6-Cg-h3n"/>
+                    <constraint firstItem="GRZ-r6-bgc" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="CWQ-Gp-nLR"/>
+                    <constraint firstItem="4UN-Hf-p9M" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="CcD-cQ-WDQ"/>
+                    <constraint firstItem="4UN-Hf-p9M" firstAttribute="leading" secondItem="mPh-Tw-VIB" secondAttribute="trailing" constant="30" id="EBk-lL-ldU"/>
+                    <constraint firstItem="Dqx-eO-dbk" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="135" id="Ig5-Ra-mDT"/>
+                    <constraint firstItem="vCn-fu-NKU" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="285" id="IpS-vV-ROT"/>
+                    <constraint firstItem="GRZ-r6-bgc" firstAttribute="leading" secondItem="uMR-z6-HTr" secondAttribute="trailing" constant="30" id="K32-mH-zwR"/>
+                    <constraint firstItem="5K6-oC-BVE" firstAttribute="leading" secondItem="IU3-2z-2kg" secondAttribute="trailing" constant="30" id="MEn-Zs-6Xf"/>
+                    <constraint firstItem="GRZ-r6-bgc" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="185" id="NZF-a4-pst"/>
+                    <constraint firstItem="Tem-PQ-dNo" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="380" id="QU4-7A-XFw"/>
+                    <constraint firstItem="vCn-fu-NKU" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="RPZ-Gi-w3c"/>
+                    <constraint firstItem="4UN-Hf-p9M" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="85" id="SdT-cR-xMm"/>
+                    <constraint firstItem="Rcb-1L-ryC" firstAttribute="leading" secondItem="LTC-CZ-Voz" secondAttribute="trailing" constant="30" id="TAQ-CR-z96"/>
+                    <constraint firstItem="aPh-Vz-6pC" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="Vb7-NM-cyh"/>
+                    <constraint firstItem="LTC-CZ-Voz" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="30" id="VrZ-4x-jYR"/>
+                    <constraint firstItem="gi9-5d-FLn" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="Zns-g4-3w9"/>
+                    <constraint firstItem="Dqx-eO-dbk" firstAttribute="leading" secondItem="ZmR-1l-btS" secondAttribute="trailing" constant="30" id="ZsO-S7-6Gs"/>
+                    <constraint firstItem="aPh-Vz-6pC" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="385" id="alw-in-c1m"/>
+                    <constraint firstItem="IU3-2z-2kg" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="330" id="cBz-ez-qde"/>
+                    <constraint firstItem="pJJ-Xg-cWY" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="280" id="dCy-Yi-Kyx"/>
+                    <constraint firstItem="gi9-5d-FLn" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="230" id="gQF-Zd-RMo"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="Rcb-1L-ryC" secondAttribute="trailing" id="gpB-LW-7dL"/>
+                    <constraint firstItem="mPh-Tw-VIB" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="lNp-Mz-c0x"/>
+                    <constraint firstItem="LTC-CZ-Voz" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="lUV-hy-4BE"/>
+                    <constraint firstItem="mQp-Vg-W0w" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="noS-Q5-TNU"/>
+                    <constraint firstItem="Tem-PQ-dNo" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="ow2-yL-Ilz"/>
+                    <constraint firstItem="mQp-Vg-W0w" firstAttribute="leading" secondItem="gi9-5d-FLn" secondAttribute="trailing" constant="30" id="pVJ-oV-Nya"/>
+                    <constraint firstItem="ZmR-1l-btS" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="130" id="rgH-cf-5nZ"/>
+                    <constraint firstItem="5K6-oC-BVE" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="335" id="tPd-P4-OX5"/>
+                    <constraint firstItem="Dqx-eO-dbk" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="tcd-LK-xlv"/>
+                    <constraint firstItem="aPh-Vz-6pC" firstAttribute="leading" secondItem="Tem-PQ-dNo" secondAttribute="trailing" constant="30" id="vm7-xj-QA6"/>
+                    <constraint firstItem="pJJ-Xg-cWY" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="wyR-Vl-lkb"/>
+                    <constraint firstItem="uMR-z6-HTr" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="180" id="yAP-Z5-DaJ"/>
+                    <constraint firstItem="Rcb-1L-ryC" firstAttribute="top" secondItem="gyo-8z-d56" secondAttribute="bottom" constant="35" id="zB0-qo-Lxp"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="creativityBarTopAnchor" destination="SdT-cR-xMm" id="wuR-cw-nDx"/>
+                <outlet property="creativityBarWidthConstraint" destination="rtc-5W-Kbc" id="qPK-SN-vW2"/>
+                <outlet property="creativityLabelTopAnchor" destination="Bq6-Cg-h3n" id="FYu-h2-JVC"/>
+                <outlet property="creativityProgressBar" destination="rxS-dx-LB8" id="Klo-gb-sEf"/>
+                <outlet property="exerciseBarTopAnchor" destination="IpS-vV-ROT" id="KlW-Tv-L0X"/>
+                <outlet property="exerciseBarWidthConstraint" destination="f1S-KE-Thu" id="9cs-7C-t9J"/>
+                <outlet property="exerciseLabelTopAnchor" destination="dCy-Yi-Kyx" id="ALY-t7-7L3"/>
+                <outlet property="exerciseProgressBar" destination="7DH-Xz-vSj" id="TgD-6W-McV"/>
+                <outlet property="foodBarTopAnchor" destination="NZF-a4-pst" id="lzW-Pk-fqf"/>
+                <outlet property="foodBarWidthConstraint" destination="aPU-2j-2zr" id="bAP-4a-VZc"/>
+                <outlet property="foodLabelTopAnchor" destination="yAP-Z5-DaJ" id="j0a-bY-tPZ"/>
+                <outlet property="foodProgressBar" destination="iQ2-R1-ma3" id="jUc-FO-5VV"/>
+                <outlet property="leisureBarTopAnchor" destination="AHM-mN-Qgs" id="85D-15-pzy"/>
+                <outlet property="leisureBarWidthConstraint" destination="2UD-UH-Aeb" id="jcf-Do-OOo"/>
+                <outlet property="leisureLabelTopAnchor" destination="gQF-Zd-RMo" id="jjb-d3-ts1"/>
+                <outlet property="leisureProgressBar" destination="I98-xl-iG1" id="uod-Sd-Pri"/>
+                <outlet property="otherBarTopAnchor" destination="alw-in-c1m" id="wYh-Mk-9OA"/>
+                <outlet property="otherBarWidthConstraint" destination="eZs-xT-njH" id="2Kg-pp-yhb"/>
+                <outlet property="otherLabelTopAnchor" destination="QU4-7A-XFw" id="oag-z8-oOi"/>
+                <outlet property="otherProgressBar" destination="q35-Wy-tfH" id="YHs-C9-yxc"/>
+                <outlet property="selfcareBarTopAnchor" destination="tPd-P4-OX5" id="5vU-Jq-M17"/>
+                <outlet property="selfcareBarWidthConstraint" destination="AWe-0w-tpa" id="e0U-dz-CcV"/>
+                <outlet property="selfcareLabelTopAnchor" destination="cBz-ez-qde" id="VTy-pA-vrj"/>
+                <outlet property="selfcareProgressBar" destination="8bU-vt-VBn" id="KyO-iO-ala"/>
+                <outlet property="sleepBarTopAnchor" destination="Ig5-Ra-mDT" id="AIv-RM-yYf"/>
+                <outlet property="sleepBarWidthConstraint" destination="w44-QT-79O" id="4Ic-Pn-uNl"/>
+                <outlet property="sleepLabelTopAnchor" destination="rgH-cf-5nZ" id="7Jd-TB-cga"/>
+                <outlet property="sleepProgressBar" destination="EKl-hf-LWY" id="v1M-py-Wan"/>
+                <outlet property="trackBar" destination="Rcb-1L-ryC" id="8bm-VI-trI"/>
+                <outlet property="workBarTopAnchor" destination="zB0-qo-Lxp" id="OrH-bf-yTE"/>
+                <outlet property="workBarWidthConstraint" destination="Bsa-qE-u0m" id="iqy-Zt-g8R"/>
+                <outlet property="workLabelTopAnchor" destination="VrZ-4x-jYR" id="OgJ-6D-pFu"/>
+                <outlet property="workProgressBar" destination="Gg1-h8-e6P" id="Cf5-ZL-WcP"/>
+            </connections>
+            <point key="canvasLocation" x="18.115942028985508" y="77.008928571428569"/>
+        </tableViewCell>
+    </objects>
+</document>

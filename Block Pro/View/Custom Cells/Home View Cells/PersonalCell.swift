@@ -18,93 +18,73 @@ class PersonalCell: UICollectionViewCell {
     @IBOutlet weak var cellBackgroundTrailingAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var dayLabel: UILabel!
-    @IBOutlet weak var dateLabel: UILabel!
     
-    
-    @IBOutlet weak var visualEffectView: UIVisualEffectView!
-    @IBOutlet weak var blurView: UIView!
-    
-    @IBOutlet weak var block1: UIView!
-    @IBOutlet weak var block2: UIView!
-    @IBOutlet weak var block3: UIView!
-    @IBOutlet weak var block4: UIView!
-    @IBOutlet weak var block5: UIView!
-    @IBOutlet weak var block6: UIView!
-    
-    @IBOutlet weak var buttonContainer: UIView!
+    @IBOutlet weak var shareButton: UIButton!
     
     @IBOutlet weak var detailsButton: UIButton!
     @IBOutlet weak var detailsButtonTopAnchor: NSLayoutConstraint!
-    
-    @IBOutlet weak var shareButton: UIButton!
-    @IBOutlet weak var shareButtonTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var detailsButtonCenterXAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var deleteButton: UIButton!
     @IBOutlet weak var deleteButtonTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var deleteButtonCenterXAnchor: NSLayoutConstraint!
     
-    let animator = UIViewPropertyAnimator(duration: 0, curve: .linear, animations: nil)
+    let personalDatabase = PersonalRealmDatabase.sharedInstance
+    
+    var currentDate: Date? {
+        didSet {
+            
+            _ = personalDatabase.findTimeBlocks(currentDate!)
+            
+            configureBlocks()
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        cellBackgroundTopAnchor.constant = 15
+        cellBackgroundTopAnchor.constant = 30
         cellBackgroundBottomAnchor.constant = 75
         cellBackgroundLeadingAnchor.constant = 15
         cellBackgroundTrailingAnchor.constant = 15
         
         cellBackground.drawCellShadow()
-        
-//        blurView.layer.cornerRadius = 20
-//        blurView.clipsToBounds = true
-        
-        block1.configureBackgroundBlocks()
-        block2.configureBackgroundBlocks()
-        block3.configureBackgroundBlocks()
-        block4.configureBackgroundBlocks()
-        block5.configureBackgroundBlocks()
-        block6.configureBackgroundBlocks()
-        
-        //buttonContainer.backgroundColor = UIColor.white.withAlphaComponent(0)
-        buttonContainer.clipsToBounds = true
-        
+
         detailsButton.alpha = 0
         shareButton.alpha = 0
         deleteButton.alpha = 0
         
-        detailsButtonTopAnchor.constant = -50
-        shareButtonTopAnchor.constant = -50
-        deleteButtonTopAnchor.constant = -50
-        
-        detailsButton.backgroundColor = UIColor.white
+        detailsButton.backgroundColor = .black//UIColor.white
         detailsButton.drawButtonShadow()
         
         shareButton.backgroundColor = UIColor(hexString: "A7BFE8")
         shareButton.drawButtonShadow()
         
         deleteButton.drawButtonShadow()
-        
-        dateLabel.backgroundColor = UIColor.white.withAlphaComponent(0)
-        
-        addVisualEffect()
-        
-        //visualEffectView.backgroundColor = .clear
-        
     }
     
-    private func addVisualEffect () {
-
-        visualEffectView.effect = nil
-        //visualEffectView.isHidden = false
+    private func configureBlocks () {
         
-        animator.addAnimations {
-            self.visualEffectView.effect = UIBlurEffect(style: .extraLight)
+        //print(currentDate)
+        
+        var count: Int = 0
+        
+        if let blockArray = personalDatabase.blockArray {
+            
+            for block in blockArray {
+                
+                //print(block.name)
+                
+                count += 1
+            }
         }
         
-        animator.fractionComplete = 0.3
-//        animator.stopAnimation(true)
-//        animator.finishAnimation(at: .current)
-        
+        //print("\n")
+
     }
+    
+
+    
     
 }
 

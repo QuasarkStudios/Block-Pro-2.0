@@ -73,8 +73,6 @@
 		0D78658823E51C7D00BD4C4D /* HomeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78658623E51C7D00BD4C4D /* HomeTableViewCell.xib */; };
 		0D78658B23E6928000BD4C4D /* PersonalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78658923E6928000BD4C4D /* PersonalCell.swift */; };
 		0D78658C23E6928000BD4C4D /* PersonalCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78658A23E6928000BD4C4D /* PersonalCell.xib */; };
-		0D78658F23E74B6400BD4C4D /* WeekHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78658D23E74B6400BD4C4D /* WeekHeaderCell.swift */; };
-		0D78659023E74B6400BD4C4D /* WeekHeaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78658E23E74B6400BD4C4D /* WeekHeaderCell.xib */; };
 		0D78659923F5BBCE00BD4C4D /* PersonalRealmDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78659823F5BBCE00BD4C4D /* PersonalRealmDatabase.swift */; };
 		0D7865AF23F71E1A00BD4C4D /* TimeBlockViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7865AE23F71E1900BD4C4D /* TimeBlockViewController2.swift */; };
 		0D7865B223F7313200BD4C4D /* TimeBlockCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7865B023F7313200BD4C4D /* TimeBlockCell.swift */; };
@@ -106,10 +104,15 @@
 		0DADDAB42355919800E79F89 /* TimeTwentyFiveMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAB32355919800E79F89 /* TimeTwentyFiveMinCell.swift */; };
 		0DADDAB6235591C200E79F89 /* TimeThirtyMinAndUpCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAB5235591C200E79F89 /* TimeThirtyMinAndUpCell.swift */; };
 		0DADDAB823579D1500E79F89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */; };
+		0DBAB33E242039CC0021FE35 /* CategoriesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBAB33C242039CC0021FE35 /* CategoriesCell.swift */; };
+		0DBAB33F242039CC0021FE35 /* CategoriesCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DBAB33D242039CC0021FE35 /* CategoriesCell.xib */; };
+		0DBAB34124204E8F0021FE35 /* CategoryTrackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBAB34024204E8F0021FE35 /* CategoryTrackBar.swift */; };
+		0DBAB34324204EA00021FE35 /* CategoryProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBAB34224204EA00021FE35 /* CategoryProgressBar.swift */; };
 		0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */; };
 		0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */; };
 		0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA522BB1E7900E180D2 /* DateCell.swift */; };
 		0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */; };
+		0DC119CD24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC119CC24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift */; };
 		0DD636BE241028EF0026B623 /* BlockTimePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636BC241028EF0026B623 /* BlockTimePickerCell.swift */; };
 		0DD636BF241028EF0026B623 /* BlockTimePickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DD636BD241028EF0026B623 /* BlockTimePickerCell.xib */; };
 		0DD636C224102A1F0026B623 /* BlockCategoryPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636C024102A1F0026B623 /* BlockCategoryPickerCell.swift */; };
@@ -204,8 +207,6 @@
 		0D78658623E51C7D00BD4C4D /* HomeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeTableViewCell.xib; sourceTree = "<group>"; };
 		0D78658923E6928000BD4C4D /* PersonalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalCell.swift; sourceTree = "<group>"; };
 		0D78658A23E6928000BD4C4D /* PersonalCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PersonalCell.xib; sourceTree = "<group>"; };
-		0D78658D23E74B6400BD4C4D /* WeekHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekHeaderCell.swift; sourceTree = "<group>"; };
-		0D78658E23E74B6400BD4C4D /* WeekHeaderCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WeekHeaderCell.xib; sourceTree = "<group>"; };
 		0D78659823F5BBCE00BD4C4D /* PersonalRealmDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRealmDatabase.swift; sourceTree = "<group>"; };
 		0D7865AE23F71E1900BD4C4D /* TimeBlockViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockViewController2.swift; sourceTree = "<group>"; };
 		0D7865B023F7313200BD4C4D /* TimeBlockCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlockCell.swift; sourceTree = "<group>"; };
@@ -237,12 +238,17 @@
 		0DADDAB32355919800E79F89 /* TimeTwentyFiveMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTwentyFiveMinCell.swift; sourceTree = "<group>"; };
 		0DADDAB5235591C200E79F89 /* TimeThirtyMinAndUpCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeThirtyMinAndUpCell.swift; sourceTree = "<group>"; };
 		0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		0DBAB33C242039CC0021FE35 /* CategoriesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesCell.swift; sourceTree = "<group>"; };
+		0DBAB33D242039CC0021FE35 /* CategoriesCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoriesCell.xib; sourceTree = "<group>"; };
+		0DBAB34024204E8F0021FE35 /* CategoryTrackBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTrackBar.swift; sourceTree = "<group>"; };
+		0DBAB34224204EA00021FE35 /* CategoryProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryProgressBar.swift; sourceTree = "<group>"; };
 		0DBF3E9322B03DC700E180D2 /* Block Pro-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Block Pro-Bridging-Header.h"; sourceTree = "<group>"; };
 		0DBF3E9422B03DC800E180D2 /* ProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
 		0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
 		0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
 		0DBF3EA522BB1E7900E180D2 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHeader.swift; sourceTree = "<group>"; };
+		0DC119CC24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		0DD636BC241028EF0026B623 /* BlockTimePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockTimePickerCell.swift; sourceTree = "<group>"; };
 		0DD636BD241028EF0026B623 /* BlockTimePickerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockTimePickerCell.xib; sourceTree = "<group>"; };
 		0DD636C024102A1F0026B623 /* BlockCategoryPickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockCategoryPickerCell.swift; sourceTree = "<group>"; };
@@ -315,13 +321,13 @@
 		0D23076122D2851C00A12393 /* TimeBlock Controller Files  */ = {
 			isa = PBXGroup;
 			children = (
+				0D23076022D284F500A12393 /* JTAppleCalendar Files */,
 				0D2CECF1228FB55600CC9180 /* TimeBlockViewController.swift */,
 				0D7865AE23F71E1900BD4C4D /* TimeBlockViewController2.swift */,
 				0D1E0B18229F856000638772 /* Add_Update_BlockViewController.swift */,
 				0D18FFD323F785330083C5AB /* AddEditBlockViewController.swift */,
 				0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */,
 				0DEB9725241C480D004F7422 /* DetailsViewController.swift */,
-				0D23076022D284F500A12393 /* JTAppleCalendar Files */,
 			);
 			path = "TimeBlock Controller Files ";
 			sourceTree = "<group>";
@@ -478,10 +484,9 @@
 			children = (
 				0D78658523E51C7D00BD4C4D /* HomeTableViewCell.swift */,
 				0D78658623E51C7D00BD4C4D /* HomeTableViewCell.xib */,
-				0D78658D23E74B6400BD4C4D /* WeekHeaderCell.swift */,
-				0D78658E23E74B6400BD4C4D /* WeekHeaderCell.xib */,
 				0D78658923E6928000BD4C4D /* PersonalCell.swift */,
 				0D78658A23E6928000BD4C4D /* PersonalCell.xib */,
+				0DC119CC24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift */,
 			);
 			path = "Home View Cells";
 			sourceTree = "<group>";
@@ -695,6 +700,10 @@
 			children = (
 				0DEB972A241CBBB7004F7422 /* ProgressCirclesCell.swift */,
 				0DEB972B241CBBB7004F7422 /* ProgressCirclesCell.xib */,
+				0DBAB33C242039CC0021FE35 /* CategoriesCell.swift */,
+				0DBAB33D242039CC0021FE35 /* CategoriesCell.xib */,
+				0DBAB34024204E8F0021FE35 /* CategoryTrackBar.swift */,
+				0DBAB34224204EA00021FE35 /* CategoryProgressBar.swift */,
 			);
 			path = "Details View Cells";
 			sourceTree = "<group>";
@@ -802,12 +811,12 @@
 				0D78657F23E4B56B00BD4C4D /* Poppins-ExtraBoldItalic.ttf in Resources */,
 				0D95C17A232886C400421BE0 /* Start Timer.wav in Resources */,
 				0D2CED0B2290829300CC9180 /* CustomTimeTableCell.xib in Resources */,
+				0DBAB33F242039CC0021FE35 /* CategoriesCell.xib in Resources */,
 				0D78657D23E4B56B00BD4C4D /* Poppins-ThinItalic.ttf in Resources */,
 				0D23076D22D29FE900A12393 /* UpcomingCollabTableCell.xib in Resources */,
 				0D78657723E4B56B00BD4C4D /* Poppins-BlackItalic.ttf in Resources */,
 				0DD636CB2412F3300026B623 /* ReminderCell.xib in Resources */,
 				0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */,
-				0D78659023E74B6400BD4C4D /* WeekHeaderCell.xib in Resources */,
 				0D13ABFF232A15E60025EDC3 /* End Break.wav in Resources */,
 				0DD636C324102A1F0026B623 /* BlockCategoryPickerCell.xib in Resources */,
 				0D78657C23E4B56B00BD4C4D /* Poppins-Italic.ttf in Resources */,
@@ -880,6 +889,7 @@
 			files = (
 				0D872F7C22E25350001D35B4 /* UserSingleton.swift in Sources */,
 				0DDF79C52346AB9B00BAAD51 /* UserSettingsViewController.swift in Sources */,
+				0DC119CD24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift in Sources */,
 				0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */,
 				0D41F5BC2311C05B00B4B11E /* CollabFiveMinCell.swift in Sources */,
 				0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */,
@@ -898,6 +908,7 @@
 				0D23077822D580CF00A12393 /* NewCollabViewController.swift in Sources */,
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
 				0D7CE23E23C43AE7005BB8EE /* CardContainer.swift in Sources */,
+				0DBAB34324204EA00021FE35 /* CategoryProgressBar.swift in Sources */,
 				0D41F5C02311EC6A00B4B11E /* CollabFifteenMinCell.swift in Sources */,
 				0D41F5C6231376FB00B4B11E /* CollabThirtyMinAndUpCell.swift in Sources */,
 				0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */,
@@ -914,8 +925,8 @@
 				0D3A9E2522F367460052BCB6 /* CollabBlock.swift in Sources */,
 				0D93300822927C7500B6191D /* Block.swift in Sources */,
 				0D41F5BE2311E4F100B4B11E /* CollabTenMinCell.swift in Sources */,
+				0DBAB33E242039CC0021FE35 /* CategoriesCell.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
-				0D78658F23E74B6400BD4C4D /* WeekHeaderCell.swift in Sources */,
 				0D78658723E51C7D00BD4C4D /* HomeTableViewCell.swift in Sources */,
 				0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */,
 				0D7C6483238DBC1700E68AE8 /* RadialGradients.swift in Sources */,
@@ -936,6 +947,7 @@
 				0DD636C224102A1F0026B623 /* BlockCategoryPickerCell.swift in Sources */,
 				0D5BEFE723E286DA00B5DCE5 /* HomeViewController.swift in Sources */,
 				0DD636C6241174040026B623 /* BlockNotificationSettingCell.swift in Sources */,
+				0DBAB34124204E8F0021FE35 /* CategoryTrackBar.swift in Sources */,
 				0DADDAB6235591C200E79F89 /* TimeThirtyMinAndUpCell.swift in Sources */,
 				0D77B70F240C221B00AF60CC /* VisualEffectView.swift in Sources */,
 				0D035329235D634E00BB79B4 /* FreeTimeViewController.swift in Sources */,

@@ -1,102 +1,109 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="dDa-uz-dwL">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-Regular.ttf">
+            <string>Poppins-Regular</string>
+        </array>
+        <array key="Poppins-SemiBold.ttf">
+            <string>Poppins-SemiBold</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--Home View Controller-->
         <scene sceneID="KbH-in-T8a">
             <objects>
                 <viewController id="V1r-b2-a7x" customClass="HomeViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="90P-Kx-rfT">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Nimat's Face" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vbn-Qf-uL7">
-                                <rect key="frame" x="23" y="44" width="55" height="55"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </imageView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0gY-L5-gQ9">
-                                <rect key="frame" x="0.0" y="113" width="187" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="12"/>
-                                <state key="normal" title="Personal">
-                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eVo-O7-3yn">
-                                <rect key="frame" x="183" y="113" width="188" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="Thonburi" family="Thonburi" pointSize="12"/>
-                                <state key="normal" title="Collabs">
-                                    <color key="titleColor" red="0.70588235290000001" green="0.71372549019999998" blue="0.78039215689999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                </state>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rsg-6Y-FbI">
-                                <rect key="frame" x="329" y="706" width="65" height="65"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T8z-AM-GYO">
+                                <rect key="frame" x="23" y="44" width="65" height="65"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Nimat's Face" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vbn-Qf-uL7">
+                                        <rect key="frame" x="0.0" y="0.0" width="65" height="65"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemGrayColor" red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="65" id="5SL-uT-i5d"/>
-                                    <constraint firstAttribute="height" constant="65" id="Hrj-yd-T9V"/>
+                                    <constraint firstItem="vbn-Qf-uL7" firstAttribute="leading" secondItem="T8z-AM-GYO" secondAttribute="leading" id="9fQ-cS-781"/>
+                                    <constraint firstItem="vbn-Qf-uL7" firstAttribute="top" secondItem="T8z-AM-GYO" secondAttribute="top" id="CuW-RS-pzu"/>
+                                    <constraint firstAttribute="height" constant="65" id="Gps-xZ-P5G"/>
+                                    <constraint firstAttribute="bottom" secondItem="vbn-Qf-uL7" secondAttribute="bottom" id="Gqm-MF-4Hg"/>
+                                    <constraint firstAttribute="trailing" secondItem="vbn-Qf-uL7" secondAttribute="trailing" id="bJS-Qu-uRT"/>
+                                    <constraint firstAttribute="width" constant="65" id="bd7-b5-C8k"/>
                                 </constraints>
-                                <state key="normal" title="Month"/>
-                            </button>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hi Nimat" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4bu-tw-S2V">
+                                <rect key="frame" x="23" y="122" width="200" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="ApF-S3-Elt"/>
+                                    <constraint firstAttribute="height" constant="40" id="YjC-Qc-TUu"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="23"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Here's your March Calendar" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LGn-kt-hXm">
+                                <rect key="frame" x="23" y="162" width="200" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="w0g-61-Idq"/>
+                                    <constraint firstAttribute="height" constant="20" id="zeg-Wi-fnM"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="BcB-qR-IAZ">
-                                <rect key="frame" x="0.0" y="147" width="414" height="749"/>
+                                <rect key="frame" x="0.0" y="182" width="375" height="498"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="liv-41-o1d">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                                        <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="liv-41-o1d" id="g4d-CE-CDZ">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WpX-ii-Chl">
-                                <rect key="frame" x="0.0" y="145" width="187.66666666666666" height="1"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.94901960780000005" green="0.14901960780000001" blue="0.074509803920000006" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                            </view>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="n6V-yE-30K">
-                                <rect key="frame" x="0.0" y="146" width="375" height="1"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.91372549020000005" green="0.90588235289999997" blue="0.90588235289999997" alpha="1" colorSpace="calibratedRGB"/>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="mqV-hW-uyA" firstAttribute="trailing" secondItem="rsg-6Y-FbI" secondAttribute="trailing" constant="20" id="A7O-24-bwg"/>
-                            <constraint firstItem="BcB-qR-IAZ" firstAttribute="top" secondItem="90P-Kx-rfT" secondAttribute="top" constant="147" id="Wi2-Br-Fe3"/>
+                            <constraint firstItem="T8z-AM-GYO" firstAttribute="leading" secondItem="90P-Kx-rfT" secondAttribute="leading" constant="23" id="DMZ-VW-ZqQ"/>
+                            <constraint firstItem="BcB-qR-IAZ" firstAttribute="top" secondItem="LGn-kt-hXm" secondAttribute="bottom" id="Mvi-vi-gLG"/>
+                            <constraint firstItem="mqV-hW-uyA" firstAttribute="bottom" secondItem="BcB-qR-IAZ" secondAttribute="bottom" id="PJU-2C-34c"/>
+                            <constraint firstItem="T8z-AM-GYO" firstAttribute="top" secondItem="90P-Kx-rfT" secondAttribute="top" constant="44" id="VDj-IN-1DJ"/>
                             <constraint firstItem="BcB-qR-IAZ" firstAttribute="trailing" secondItem="mqV-hW-uyA" secondAttribute="trailing" id="cfr-CA-ZbP"/>
+                            <constraint firstItem="4bu-tw-S2V" firstAttribute="top" secondItem="T8z-AM-GYO" secondAttribute="bottom" constant="13" id="gQk-Ot-fjR"/>
+                            <constraint firstItem="LGn-kt-hXm" firstAttribute="leading" secondItem="mqV-hW-uyA" secondAttribute="leading" constant="23" id="hj1-Qp-jS6"/>
                             <constraint firstItem="BcB-qR-IAZ" firstAttribute="leading" secondItem="mqV-hW-uyA" secondAttribute="leading" id="mKH-jy-cLU"/>
-                            <constraint firstAttribute="bottom" secondItem="BcB-qR-IAZ" secondAttribute="bottom" id="ooT-9Y-jv8"/>
-                            <constraint firstAttribute="bottom" secondItem="rsg-6Y-FbI" secondAttribute="bottom" constant="125" id="qGY-Gi-Ck3"/>
+                            <constraint firstItem="LGn-kt-hXm" firstAttribute="top" secondItem="4bu-tw-S2V" secondAttribute="bottom" id="mYG-7e-5Gy"/>
+                            <constraint firstItem="4bu-tw-S2V" firstAttribute="leading" secondItem="mqV-hW-uyA" secondAttribute="leading" constant="23" id="yf9-x1-a7F"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="mqV-hW-uyA"/>
                     </view>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" id="TLX-zI-G1C">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="genius" id="jsL-Cq-FxI"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="TLX-zI-G1C"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="faceImage" destination="vbn-Qf-uL7" id="ll6-Qa-aNX"/>
                         <outlet property="homeTableView" destination="BcB-qR-IAZ" id="JeA-X4-5WQ"/>
-                        <outlet property="monthButton" destination="rsg-6Y-FbI" id="f6v-lZ-P6n"/>
-                        <outlet property="selectionIndicator" destination="WpX-ii-Chl" id="8LE-XA-6mf"/>
+                        <outlet property="profileImageContainer" destination="T8z-AM-GYO" id="Kbl-Xn-stL"/>
                         <segue destination="pnR-lP-t4Y" kind="show" identifier="moveToTimeBlockView" id="Nwv-6S-anC"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d6a-oc-kOn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1964" y="-946"/>
+            <point key="canvasLocation" x="1964" y="-946.55172413793105"/>
         </scene>
         <!--TimeBlock-->
         <scene sceneID="gMJ-Pd-CwP">
@@ -116,7 +123,7 @@
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="zMT-ST-lrt">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -131,7 +138,6 @@
     </scenes>
     <resources>
         <image name="Nimat's Face" width="283" height="327"/>
-        <image name="genius" width="30" height="30"/>
         <image name="home" width="30" height="30"/>
     </resources>
 </document>

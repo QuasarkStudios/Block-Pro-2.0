@@ -115,7 +115,7 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         
         let detailsButton = UIButton()
 
-        detailsButton.backgroundColor = UIColor.white//.withAlphaComponent(0.95)
+        detailsButton.backgroundColor = UIColor.white
         
         detailsButton.addTarget(self, action: #selector(detailsButtonPressed), for: .touchDown)
         
@@ -128,7 +128,7 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         detailsButton.widthAnchor.constraint(equalToConstant: 67.5).isActive = true
         detailsButton.heightAnchor.constraint(equalToConstant: 67.5).isActive = true
         
-        detailsButton.layer.cornerRadius = 0.5 * 70
+        detailsButton.layer.cornerRadius = 0.5 * detailsButton.bounds.size.width
         //detailsButton.clipsToBounds = true
         
         detailsButton.layer.shadowRadius = 2.5
