@@ -29,6 +29,7 @@ class PersonalRealmDatabase {
 
     var blockArray: [blockTuple]? //= [blockTuple]() //Array that holds all the data for each TimeBlock
 
+    let categoryColors: [String : String] = ["Work": "#5065A0", "Creativity" : "#FFCC02", "Sleep" : "#745EC4", "Food/Eat" : "#B8C9F2", "Leisure" : "#EFDDB3", "Exercise": "#E84D3C", "Self-Care" : "#1ABC9C", "Other" : "#AAAAAA"]
     
     func findTimeBlocks (_ todaysDate: Date) -> TimeBlocksDate {
 

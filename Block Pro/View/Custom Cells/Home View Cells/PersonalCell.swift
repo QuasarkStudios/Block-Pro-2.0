@@ -19,6 +19,21 @@ class PersonalCell: UICollectionViewCell {
     
     @IBOutlet weak var dayLabel: UILabel!
     
+    @IBOutlet weak var firstBlockBeginsLabel: UILabel!
+    @IBOutlet weak var firstBlock: UIView!
+    @IBOutlet weak var firstBlockName: UILabel!
+    @IBOutlet weak var firstBlockTime: UILabel!
+    
+    @IBOutlet weak var secondBlockBeginsLabel: UILabel!
+    @IBOutlet weak var secondBlock: UIView!
+    @IBOutlet weak var secondBlockName: UILabel!
+    @IBOutlet weak var secondBlockTime: UILabel!
+    
+    @IBOutlet weak var thirdBlockBeginsLabel: UILabel!
+    @IBOutlet weak var thirdBlock: UIView!
+    @IBOutlet weak var thirdBlockName: UILabel!
+    @IBOutlet weak var thirdBlockTime: UILabel!
+    
     @IBOutlet weak var shareButton: UIButton!
     
     @IBOutlet weak var detailsButton: UIButton!
@@ -31,14 +46,18 @@ class PersonalCell: UICollectionViewCell {
     
     let personalDatabase = PersonalRealmDatabase.sharedInstance
     
+    let formatter = DateFormatter()
+    
     var currentDate: Date? {
         didSet {
             
             _ = personalDatabase.findTimeBlocks(currentDate!)
             
-            configureBlocks()
+            calcBlocks(date: currentDate!)
         }
     }
+    
+    let tempLabel = UILabel()
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -61,30 +80,176 @@ class PersonalCell: UICollectionViewCell {
         shareButton.drawButtonShadow()
         
         deleteButton.drawButtonShadow()
+        
+        contentView.addSubview(tempLabel)
     }
     
-    private func configureBlocks () {
+    private func calcBlocks (date: Date) {
         
-        //print(currentDate)
-        
-        var count: Int = 0
+        formatter.dateFormat = "yyyy dd MM"
         
         if let blockArray = personalDatabase.blockArray {
             
-            for block in blockArray {
+            var cellBlocks: [PersonalRealmDatabase.blockTuple] = []
+            
+            if formatter.string(from: Date()) == formatter.string(from: blockArray[0].begins) {
                 
-                //print(block.name)
+                for block in blockArray {
+                    
+                    formatter.dateFormat = "HH:mm"
+                    
+                    let currentTime: Date! = formatter.date(from: formatter.string(from: Date()))
+                    
+                    if formatter.date(from: formatter.string(from: block.ends))! >= currentTime {
+                        
+                        cellBlocks.append(block)
+                    }
+                }
                 
-                count += 1
+                if cellBlocks.count == 0 {
+                    
+                    setLabel(text: "No More TimeBlocks Today")
+                }
             }
+            
+            else {
+                
+                for block in blockArray {
+                        
+                    cellBlocks.append(block)
+                }
+            }
+            
+            configureBlocks(cellBlocks)
         }
         
-        //print("\n")
-
+        else {
+            
+            firstBlockBeginsLabel.isHidden = true
+            firstBlock.isHidden = true
+            
+            secondBlockBeginsLabel.isHidden = true
+            secondBlock.isHidden = true
+            
+            thirdBlockBeginsLabel.isHidden = true
+            thirdBlock.isHidden = true
+            
+            setLabel(text: "Open Schedule")
+        }
     }
     
-
+    private func configureBlocks (_ blocks: [PersonalRealmDatabase.blockTuple]) {
+        
+        var count: Int = 0
+        
+        for block in blocks {
+            
+            formatter.dateFormat = "h:mm a"
+            
+            if count == 0 {
+                
+                firstBlockBeginsLabel.isHidden = false
+                firstBlock.isHidden = false
+                
+                firstBlockBeginsLabel.text = formatter.string(from: block.begins)
+                
+                firstBlock.layer.cornerRadius = 7
+                firstBlock.clipsToBounds = true
+                firstBlock.backgroundColor = UIColor(hexString: personalDatabase.categoryColors[block.category] ?? "#AAAAAA")
+                
+                firstBlockName.text = block.name
+                
+                firstBlockTime.text = formatter.string(from: block.begins)
+                firstBlockTime.text! += "  -  "
+                firstBlockTime.text! += formatter.string(from: block.ends)
+            }
+            
+            else if count == 1 {
+                
+                secondBlockBeginsLabel.isHidden = false
+                secondBlock.isHidden = false
+                
+                secondBlockBeginsLabel.text = formatter.string(from: block.begins)
+                
+                secondBlock.layer.cornerRadius = 7
+                secondBlock.clipsToBounds = true
+                secondBlock.backgroundColor = UIColor(hexString: personalDatabase.categoryColors[block.category] ?? "#AAAAAA")
+                
+                secondBlockName.text = block.name
+                
+                secondBlockTime.text = formatter.string(from: block.begins)
+                secondBlockTime.text! += "  -  "
+                secondBlockTime.text! += formatter.string(from: block.ends)
+            }
+            
+            else if count == 2 {
+               
+                thirdBlockBeginsLabel.isHidden = false
+                thirdBlock.isHidden = false
+                
+                thirdBlockBeginsLabel.text = formatter.string(from: block.begins)
+                
+                thirdBlock.layer.cornerRadius = 7
+                thirdBlock.clipsToBounds = true
+                thirdBlock.backgroundColor = UIColor(hexString: personalDatabase.categoryColors[block.category] ?? "#AAAAAA")
+                
+                thirdBlockName.text = block.name
+                
+                thirdBlockTime.text = formatter.string(from: block.begins)
+                thirdBlockTime.text! += "  -  "
+                thirdBlockTime.text! += formatter.string(from: block.ends)
+            }
+            
+            count += 1
+        }
+        
+        if count == 0 {
+            
+            firstBlockBeginsLabel.isHidden = true
+            firstBlock.isHidden = true
+            
+            secondBlockBeginsLabel.isHidden = true
+            secondBlock.isHidden = true
+            
+            thirdBlockBeginsLabel.isHidden = true
+            thirdBlock.isHidden = true
+        }
+        
+        else if count == 1 {
+            
+            tempLabel.isHidden = true
+            
+            secondBlockBeginsLabel.isHidden = true
+            secondBlock.isHidden = true
+            
+            thirdBlockBeginsLabel.isHidden = true
+            thirdBlock.isHidden = true
+        }
+        
+        else if count == 2 {
+            
+            tempLabel.isHidden = true
+            
+            thirdBlockBeginsLabel.isHidden = true
+            thirdBlock.isHidden = true
+        }
+        
+        else {
+            
+            tempLabel.isHidden = true
+        }
+    }
     
+    private func setLabel (text: String) {
+        
+        tempLabel.isHidden = false
+        
+        tempLabel.frame = CGRect(x: contentView.center.x - 75, y: contentView.center.y - 75, width: 150, height: 150)
+        tempLabel.text = text
+        tempLabel.font = UIFont(name: "Poppins-SemiBold", size: 20)
+        tempLabel.textColor = .black
+        tempLabel.adjustsFontSizeToFitWidth = true
+    }
     
 }
 

@@ -64,11 +64,7 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         
         selectedBlock = nil
         
-//        UIView.animate(withDuration: 0.5) {
-//
-//            self.timeBlockTableView.contentOffset = CGPoint(x: 0, y: 1000)
-//        }
-        
+        autoScrollToBlock()
     }
 
     
@@ -80,20 +76,10 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         let cell = tableView.dequeueReusableCell(withIdentifier: "timeBlockCell", for: indexPath) as! TimeBlockCell
-//        cell.textLabel!.text = "New Day"
         cell.selectionStyle = .none
-        
-        //cell.personalDatabase = personalDatabase
-        
         cell.editBlockDelegate = self
         
         return cell
-        
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        //print("selected row")
     }
     
     private func applyGradientFade () {
@@ -104,6 +90,62 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         gradientFade.locations = [0.25, 0.5, 0.9]
         
         gradientView.layer.mask = gradientFade
+    }
+    
+    private func autoScrollToBlock () {
+        
+        guard let block = determineBlockToScrollTo() else { return }
+        
+            formatter.dateFormat = "HH"
+            let startHour: Double = Double(formatter.string(from: block.begins))!
+            
+            formatter.dateFormat = "mm"
+            let startMinute: Double = Double(formatter.string(from: block.begins))!
+        
+            let blockYCoord: CGFloat = CGFloat(((startHour * 90) + (startMinute * 1.5)) + 30)
+            
+            if (timeBlockTableView.rowHeight - blockYCoord) < timeBlockTableView.frame.height {
+                
+                timeBlockTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .bottom, animated: true)
+            }
+        
+            else {
+                
+                UIView.animate(withDuration: 0.5) {
+
+                    self.timeBlockTableView.contentOffset = CGPoint(x: 0, y: blockYCoord)
+                }
+            }
+    }
+    
+    private func determineBlockToScrollTo () -> PersonalRealmDatabase.blockTuple? {
+        
+        if let blockArray = personalDatabase.blockArray {
+            
+            formatter.dateFormat = "HH:mm"
+            
+            for block in blockArray {
+                
+                let begins: Date = formatter.date(from: formatter.string(from: block.begins))!
+                let ends: Date = formatter.date(from: formatter.string(from: block.ends))!
+                let currentTime: Date = formatter.date(from: formatter.string(from: Date()))!
+                
+                if currentTime < begins || currentTime.isBetween(startDate: begins, endDate: ends) {
+                    
+                    return block
+                }
+                
+                else {
+                    
+                    if block.blockID == blockArray.last?.blockID {
+                        
+                        return blockArray.first
+                    }
+                }
+            }
+        }
+        
+        return nil
     }
     
     @objc func detailsButtonPressed () {

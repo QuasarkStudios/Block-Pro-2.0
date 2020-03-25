@@ -12,6 +12,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBOutlet weak var profileImageContainer: UIView!
     @IBOutlet weak var faceImage: UIImageView!
+    @IBOutlet weak var profileButton: UIButton!
     
     @IBOutlet weak var homeTableView: UITableView!
     
@@ -30,6 +31,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidLoad() {
         super.viewDidLoad()
         
+//        navigationController?.navigationBar.isHidden = false
+//        tabBarController?.tabBar.isHidden = false
+        
+        configureMonthButton()
+        
+        animateEntryToView()
+        
         homeTableView.delegate = self
         homeTableView.dataSource = self
         
@@ -43,7 +51,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         determineWeeks()
         
-        configureMonthButton()
+        
+        
+        profileButton.addTarget(self, action: #selector(profileButtonPressed), for: .touchUpInside)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,12 +62,16 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 //        navigationItem.title = formatter.string(from: Date())
 //        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 25)!]
         
+        ProgressHUD.dismiss()
+        
         configureNavBar()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
         if viewInitiallyLoaded == false {
+            
+            //animateEntryToView()
             
             scrollToCurrentWeek()
             viewInitiallyLoaded = true
@@ -129,6 +143,25 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         scrollToMostVisibleCell()
     }
 
+    private func animateEntryToView () {
+        
+        let animationView = UIView(frame: view.frame)
+        animationView.backgroundColor = UIColor(hexString: "262626")
+        
+        view.addSubview(animationView)
+        
+        UIView.animate(withDuration: 0.25, animations: {
+            
+            animationView.backgroundColor = .clear
+            
+            self.navigationController?.navigationBar.isHidden = false
+            self.tabBarController?.tabBar.isHidden = false
+            
+        }) { (finished: Bool) in
+            
+            animationView.removeFromSuperview()
+        }
+    }
     
     private func configureNavBar () {
         
@@ -136,6 +169,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.navigationController?.navigationBar.shadowImage = UIImage()
         //self.navigationController?.navigationBar.isTranslucent = true
         self.navigationController?.view.backgroundColor = .clear
+        
+        let profileButton: UIButton = UIButton(type: .system)
+        profileButton.frame = CGRect(x: 0, y: 0, width: 79, height: 50)
+        //profileButton.backgroundColor = UIColor.blue.withAlphaComponent(0.4)
+        profileButton.addTarget(self, action: #selector(profileButtonPressed), for: .touchUpInside)
+        
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: profileButton)
         
         let newCollabButton: UIButton = UIButton(type: .system)
         newCollabButton.setImage(UIImage(named: "genius"), for: .normal)
@@ -394,6 +434,11 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.selectedDate = selectedDate
         
         performSegue(withIdentifier: "moveToTimeBlockView", sender: self)
+    }
+    
+    @objc private func profileButtonPressed () {
+        
+        performSegue(withIdentifier: "moveToProfilePopover", sender: self)
     }
     
     @objc private func monthButtonPressed () {

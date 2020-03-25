@@ -34,7 +34,7 @@
                                     <constraint firstAttribute="width" constant="170" id="0kI-Nq-Rky"/>
                                     <constraint firstAttribute="height" constant="55" id="Bcj-9J-aIO"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="15"/>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -70,28 +70,28 @@
                                 <rect key="frame" x="55" y="175" width="130" height="50"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Work" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y5R-6V-fMu">
-                                        <rect key="frame" x="10" y="3" width="110" height="15"/>
+                                        <rect key="frame" x="10" y="5" width="110" height="15"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="15" id="9ip-YQ-huX"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="11"/>
-                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="11:30 AM - 2:00 PM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RnP-Gm-B86">
-                                        <rect key="frame" x="10" y="23" width="110" height="10"/>
+                                        <rect key="frame" x="10" y="25" width="110" height="10"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="10" id="IMO-2Z-YwS"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="9"/>
-                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="10"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="RnP-Gm-B86" firstAttribute="leading" secondItem="DUL-dE-N7B" secondAttribute="leading" constant="10" id="N1L-jx-m4r"/>
-                                    <constraint firstItem="Y5R-6V-fMu" firstAttribute="top" secondItem="DUL-dE-N7B" secondAttribute="top" constant="3" id="W45-9W-pIj"/>
+                                    <constraint firstItem="Y5R-6V-fMu" firstAttribute="top" secondItem="DUL-dE-N7B" secondAttribute="top" constant="5" id="W45-9W-pIj"/>
                                     <constraint firstAttribute="trailing" secondItem="RnP-Gm-B86" secondAttribute="trailing" constant="10" id="Wtt-WL-Wo4"/>
                                     <constraint firstItem="Y5R-6V-fMu" firstAttribute="leading" secondItem="DUL-dE-N7B" secondAttribute="leading" constant="10" id="Yrl-AG-63i"/>
                                     <constraint firstAttribute="trailing" secondItem="Y5R-6V-fMu" secondAttribute="trailing" constant="10" id="ai1-nh-Eue"/>
@@ -102,21 +102,21 @@
                                 <rect key="frame" x="55" y="250" width="130" height="50"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Relax " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v4Y-vN-hAZ">
-                                        <rect key="frame" x="10" y="3" width="110" height="15"/>
+                                        <rect key="frame" x="10" y="5" width="110" height="15"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="15" id="3cl-rs-WHp"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="11"/>
-                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2:30 PM - 4:30 PM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D5H-SL-ptt">
-                                        <rect key="frame" x="10" y="23" width="110" height="10"/>
+                                        <rect key="frame" x="10" y="25" width="110" height="10"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="10" id="pYe-JX-R83"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="10"/>
-                                        <nil key="textColor"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -128,7 +128,7 @@
                                     <constraint firstAttribute="trailing" secondItem="D5H-SL-ptt" secondAttribute="trailing" constant="10" id="HbU-MO-zMw"/>
                                     <constraint firstAttribute="trailing" secondItem="v4Y-vN-hAZ" secondAttribute="trailing" constant="10" id="Qnx-Y6-wos"/>
                                     <constraint firstAttribute="height" constant="50" id="Sj0-8Q-3Jo"/>
-                                    <constraint firstItem="v4Y-vN-hAZ" firstAttribute="top" secondItem="Yro-OU-JhL" secondAttribute="top" constant="3" id="Xe8-AP-jPT"/>
+                                    <constraint firstItem="v4Y-vN-hAZ" firstAttribute="top" secondItem="Yro-OU-JhL" secondAttribute="top" constant="5" id="Xe8-AP-jPT"/>
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="7:30 AM" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FFh-Mf-sge">
@@ -137,7 +137,7 @@
                                     <constraint firstAttribute="height" constant="25" id="DTW-yh-tPP"/>
                                     <constraint firstAttribute="width" constant="60" id="fVN-eh-bpg"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="11"/>
+                                <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="12"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -147,7 +147,7 @@
                                     <constraint firstAttribute="width" constant="60" id="LDN-8c-ipU"/>
                                     <constraint firstAttribute="height" constant="25" id="YRw-xg-sR6"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="11"/>
+                                <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="12"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -157,7 +157,7 @@
                                     <constraint firstAttribute="height" constant="25" id="2aM-tZ-bVO"/>
                                     <constraint firstAttribute="width" constant="60" id="njE-An-Ego"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="11"/>
+                                <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="12"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -165,21 +165,21 @@
                                 <rect key="frame" x="55" y="100" width="130" height="50"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Head to the Gym" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w8w-bo-uAf">
-                                        <rect key="frame" x="10" y="3" width="110" height="15"/>
+                                        <rect key="frame" x="10" y="5" width="110" height="15"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="15" id="FLR-Dy-3NM"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="11"/>
-                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="12"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="7:30 AM - 9:30 AM" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="plf-xq-vwL">
-                                        <rect key="frame" x="10" y="23" width="110" height="10"/>
+                                        <rect key="frame" x="10" y="25" width="110" height="10"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="10" id="e0x-Yt-MKe"/>
                                         </constraints>
-                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="8"/>
-                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="10"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -190,7 +190,7 @@
                                     <constraint firstItem="w8w-bo-uAf" firstAttribute="leading" secondItem="B8R-U2-Foh" secondAttribute="leading" constant="10" id="aA9-Eq-4fA"/>
                                     <constraint firstItem="plf-xq-vwL" firstAttribute="leading" secondItem="B8R-U2-Foh" secondAttribute="leading" constant="10" id="aTH-sm-iht"/>
                                     <constraint firstAttribute="trailing" secondItem="plf-xq-vwL" secondAttribute="trailing" constant="10" id="cuP-Yr-2uO"/>
-                                    <constraint firstItem="w8w-bo-uAf" firstAttribute="top" secondItem="B8R-U2-Foh" secondAttribute="top" constant="3" id="xwo-eX-MFT"/>
+                                    <constraint firstItem="w8w-bo-uAf" firstAttribute="top" secondItem="B8R-U2-Foh" secondAttribute="top" constant="5" id="xwo-eX-MFT"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -246,7 +246,19 @@
                 <outlet property="detailsButton" destination="Qjn-wd-qMK" id="7AF-W1-BI9"/>
                 <outlet property="detailsButtonCenterXAnchor" destination="aF5-cc-7F2" id="vHw-43-gxn"/>
                 <outlet property="detailsButtonTopAnchor" destination="p0q-Yt-Vli" id="Dqa-lZ-mTx"/>
+                <outlet property="firstBlock" destination="B8R-U2-Foh" id="JvM-sr-qM9"/>
+                <outlet property="firstBlockBeginsLabel" destination="FFh-Mf-sge" id="B8c-3z-hF4"/>
+                <outlet property="firstBlockName" destination="w8w-bo-uAf" id="7rV-iw-nUW"/>
+                <outlet property="firstBlockTime" destination="plf-xq-vwL" id="NpC-35-F7t"/>
+                <outlet property="secondBlock" destination="DUL-dE-N7B" id="B7Y-u9-wYa"/>
+                <outlet property="secondBlockBeginsLabel" destination="ACE-at-ieH" id="3uP-Vg-bjN"/>
+                <outlet property="secondBlockName" destination="Y5R-6V-fMu" id="puG-EW-9GE"/>
+                <outlet property="secondBlockTime" destination="RnP-Gm-B86" id="2sY-Gt-2hC"/>
                 <outlet property="shareButton" destination="GcR-gU-22B" id="tf7-BH-r7m"/>
+                <outlet property="thirdBlock" destination="Yro-OU-JhL" id="qoc-mN-U6V"/>
+                <outlet property="thirdBlockBeginsLabel" destination="Hj4-f8-Smx" id="Esd-CN-fLS"/>
+                <outlet property="thirdBlockName" destination="v4Y-vN-hAZ" id="J74-UB-dbk"/>
+                <outlet property="thirdBlockTime" destination="D5H-SL-ptt" id="0cl-K6-mdt"/>
             </connections>
             <point key="canvasLocation" x="181.8840579710145" y="253.45982142857142"/>
         </collectionViewCell>
