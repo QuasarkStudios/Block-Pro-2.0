@@ -9,8 +9,9 @@
 import UIKit
 import Firebase
 import iProgressHUD
+import BEMCheckBox
 
-class LogInViewController: UIViewController, UITextFieldDelegate {
+class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDelegate {
 
     @IBOutlet weak var bpLabel: UILabel!
     
@@ -25,12 +26,20 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var signInButtonWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var signInButtonHeightConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var checkBox: BEMCheckBox!
+    
+    let defaults = UserDefaults.standard
+    
+    //var keepUserSignedIn: Bool?
+    
     var iProgressAttached: Bool = false
     
     var allowProgressAnimation: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //keepUserSignedIn = defaults.value(forKey: "keepUserSignedIn") as? Bool ?? true
         
         bpLabel.layer.cornerRadius = 0.5 * bpLabel.bounds.size.width
         bpLabel.clipsToBounds = true
@@ -41,7 +50,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         emailTextFieldContainer.layer.cornerRadius = 20
         emailTextFieldContainer.clipsToBounds = true
         
-        emailTextFieldContainer.layer.borderWidth = 1
+        emailTextFieldContainer.layer.borderWidth = 2
         emailTextFieldContainer.layer.borderColor = UIColor.black.cgColor
         
         emailTextField.delegate = self
@@ -51,7 +60,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         passwordTextFieldContainer.layer.cornerRadius = 20
         passwordTextFieldContainer.clipsToBounds = true
         
-        passwordTextFieldContainer.layer.borderWidth = 1
+        passwordTextFieldContainer.layer.borderWidth = 2
         passwordTextFieldContainer.layer.borderColor = UIColor.black.cgColor
         
         passwordTextField.delegate = self
@@ -63,6 +72,9 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
+        
+        checkBox.onAnimationType = BEMAnimationType.oneStroke
+        checkBox.offAnimationType = BEMAnimationType.oneStroke
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -70,6 +82,18 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
         navigationController?.navigationBar.isHidden = true
         
         tabBarController?.tabBar.isHidden = true
+        
+        let keepUserSignedIn = defaults.value(forKey: "keepUserSignedIn") as? Bool ?? false
+        
+        if Auth.auth().currentUser != nil && keepUserSignedIn {
+
+            performSegue(withIdentifier: "moveToHomeView", sender: self)
+        }
+        
+        else if keepUserSignedIn {
+            
+            checkBox.on = true
+        }
     }
     
     
@@ -192,46 +216,77 @@ class LogInViewController: UIViewController, UITextFieldDelegate {
     @IBAction func signInButton(_ sender: Any) {
         
         signInButton.isEnabled = false
-        
+
         if !validateTextEntered(emailTextField.text!) {
-            
+
             ProgressHUD.showError("Please enter in your email")
             signInButton.isEnabled = true
         }
-        
+
         else if !validateTextEntered(passwordTextField.text!) {
-            
+
             ProgressHUD.showError("Please enter in your password")
             signInButton.isEnabled = true
         }
-        
+
         else {
-            
+
             allowProgressAnimation = true
             animateSignInButton(shrink: true)
-            
+
             Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
-                
+
                 if error != nil {
-                    
+
                     self.allowProgressAnimation = false
-                    
+
                     self.animateSignInButton(shrink: false)
-                    
+
                     ProgressHUD.showError(error?.localizedDescription)
                     self.signInButton.isEnabled = true
                 }
-                
+
                 else {
-                    
+
                     self.signInButton.isEnabled = true
-                    
+
                     self.userSignedIn()
                 }
             }
         }
     }
     
+    
+    @IBAction func checkBox(_ sender: Any) {
+        
+        if checkBox.on {
+            
+            defaults.setValue(true, forKey: "keepUserSignedIn")
+        }
+        
+        else {
+            
+            defaults.setValue(false, forKey: "keepUserSignedIn")
+        }
+    }
+    
+    
+    @IBAction func keepMeSignedIn(_ sender: Any) {
+        
+        if checkBox.on {
+            
+            checkBox.setOn(false, animated: true)
+            
+            defaults.setValue(false, forKey: "keepUserSignedIn")
+        }
+        
+        else {
+            
+            checkBox.setOn(true, animated: true)
+            
+            defaults.setValue(true, forKey: "keepUserSignedIn")
+        }
+    }
     
     @IBAction func signupButton(_ sender: Any) {
         

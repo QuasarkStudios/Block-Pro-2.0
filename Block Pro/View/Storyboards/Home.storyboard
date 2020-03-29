@@ -36,6 +36,9 @@
                                         <state key="normal" title="Sign Out">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
+                                        <connections>
+                                            <action selector="signOutButton:" destination="dBe-S7-TgC" eventType="touchUpInside" id="SfJ-Bs-9y6"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="leading" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7XD-Se-KQC">
                                         <rect key="frame" x="45" y="175" width="245" height="70"/>
@@ -184,6 +187,7 @@
                         <outlet property="profileImageContainer" destination="qUE-ip-9oH" id="IqM-SI-1N7"/>
                         <outlet property="profileSidebar" destination="LbZ-Kd-vAa" id="Rmg-sl-irS"/>
                         <outlet property="sidebarLeadingAnchor" destination="UcG-ak-ssU" id="Krr-RK-2DY"/>
+                        <outlet property="signOutButton" destination="bMj-Df-iVB" id="hJ2-Jl-BiQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2gy-du-W33" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-Regular.ttf">
+            <string>Poppins-Regular</string>
+        </array>
+        <array key="Poppins-SemiBold.ttf">
+            <string>Poppins-SemiBold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="registrationEmailCell" id="gTV-IL-0wX" customClass="RegistrationEmailCell" customModule="Block_Pro" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="575"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="575"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="What's your E-mail Address?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C1B-MC-FGM">
+                        <rect key="frame" x="10" y="10" width="355" height="50"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="50" id="AKw-nE-gvv"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="16"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bOq-2r-BqM" userLabel="Email Address Container">
+                        <rect key="frame" x="55" y="95" width="265" height="35"/>
+                        <subviews>
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="E-mail Address" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="aQe-4W-l4C" userLabel="Email Address">
+                                <rect key="frame" x="2" y="0.0" width="263" height="34"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="13"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
+                                <connections>
+                                    <action selector="emailTextChanged:" destination="gTV-IL-0wX" eventType="editingChanged" id="PRH-3S-0w0"/>
+                                </connections>
+                            </textField>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TqR-CT-rf7">
+                                <rect key="frame" x="0.0" y="34" width="265" height="1"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="YD3-38-Mbt"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="TqR-CT-rf7" firstAttribute="leading" secondItem="bOq-2r-BqM" secondAttribute="leading" id="7rr-Pv-mwF"/>
+                            <constraint firstAttribute="trailing" secondItem="TqR-CT-rf7" secondAttribute="trailing" id="8N0-gg-aTd"/>
+                            <constraint firstItem="aQe-4W-l4C" firstAttribute="leading" secondItem="bOq-2r-BqM" secondAttribute="leading" constant="2" id="AmD-tc-WbH"/>
+                            <constraint firstAttribute="bottom" secondItem="TqR-CT-rf7" secondAttribute="bottom" id="DFx-NA-nBc"/>
+                            <constraint firstItem="TqR-CT-rf7" firstAttribute="top" secondItem="aQe-4W-l4C" secondAttribute="bottom" id="PQz-TC-fbT"/>
+                            <constraint firstAttribute="trailing" secondItem="aQe-4W-l4C" secondAttribute="trailing" id="R0q-G6-ePp"/>
+                            <constraint firstItem="aQe-4W-l4C" firstAttribute="top" secondItem="bOq-2r-BqM" secondAttribute="top" id="WX1-gN-xj4"/>
+                            <constraint firstAttribute="height" constant="35" id="fBH-qv-Fvw"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enter in your E-mail Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ccm-fN-AoI">
+                        <rect key="frame" x="55" y="132" width="250" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="250" id="c2y-b0-IWx"/>
+                            <constraint firstAttribute="height" constant="20" id="jfa-E5-1GQ"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="12"/>
+                        <color key="textColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6eS-0A-hLP">
+                        <rect key="frame" x="320" y="95" width="55" height="35"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="35" id="NoL-wN-Un2"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="C1B-MC-FGM" secondAttribute="trailing" constant="10" id="07x-9U-uOn"/>
+                <constraint firstAttribute="trailing" secondItem="bOq-2r-BqM" secondAttribute="trailing" constant="55" id="0Dc-UT-zXr"/>
+                <constraint firstItem="C1B-MC-FGM" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="1lC-CE-CQf"/>
+                <constraint firstItem="6eS-0A-hLP" firstAttribute="top" secondItem="C1B-MC-FGM" secondAttribute="bottom" constant="35" id="7RT-TT-twX"/>
+                <constraint firstItem="Ccm-fN-AoI" firstAttribute="top" secondItem="bOq-2r-BqM" secondAttribute="bottom" constant="2" id="8PC-yd-vCZ"/>
+                <constraint firstAttribute="trailing" secondItem="6eS-0A-hLP" secondAttribute="trailing" id="DSt-Eq-xOj"/>
+                <constraint firstItem="6eS-0A-hLP" firstAttribute="leading" secondItem="bOq-2r-BqM" secondAttribute="trailing" id="Dnd-DL-TaC"/>
+                <constraint firstItem="Ccm-fN-AoI" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="55" id="Eez-AG-dZ5"/>
+                <constraint firstItem="bOq-2r-BqM" firstAttribute="top" secondItem="C1B-MC-FGM" secondAttribute="bottom" constant="35" id="Ur6-gG-ixs"/>
+                <constraint firstItem="C1B-MC-FGM" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="10" id="ekL-Mf-Sel"/>
+                <constraint firstItem="bOq-2r-BqM" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="55" id="xOd-6H-rJ7"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <size key="customSize" width="243" height="214"/>
+            <connections>
+                <outlet property="emailErrorLabel" destination="Ccm-fN-AoI" id="MvF-BY-ohD"/>
+                <outlet property="emailTextField" destination="aQe-4W-l4C" id="2aL-ge-8YP"/>
+                <outlet property="emailTitleLabel" destination="C1B-MC-FGM" id="glT-HU-Kdt"/>
+                <outlet property="progressView" destination="6eS-0A-hLP" id="Iki-RX-z2E"/>
+            </connections>
+            <point key="canvasLocation" x="94.927536231884062" y="68.638392857142847"/>
+        </collectionViewCell>
+    </objects>
+</document>

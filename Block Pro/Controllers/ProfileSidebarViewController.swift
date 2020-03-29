@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ProfileSidebarViewController: UIViewController {
 
@@ -15,6 +16,8 @@ class ProfileSidebarViewController: UIViewController {
     
     @IBOutlet weak var profileImageContainer: UIView!
     @IBOutlet weak var profileImage: UIImageView!
+    
+    @IBOutlet weak var signOutButton: UIButton!
     
     @IBOutlet weak var dismissButton: UIButton!
     
@@ -149,9 +152,29 @@ class ProfileSidebarViewController: UIViewController {
         }
     }
     
+    
+    @IBAction func signOutButton(_ sender: Any) {
+        
+        ProgressHUD.show()
+        
+        do {
+            
+            try Auth.auth().signOut()
+            
+            ProgressHUD.showSuccess("Signed Out")
+            //print("user signed out")
+            
+        } catch let signOutError as NSError {
+            
+            ProgressHUD.showError(signOutError.localizedDescription)
+            
+            print(signOutError.localizedDescription)
+        }
+    }
+    
+    
     @IBAction func exitButton(_ sender: Any) {
 
-        
         animateSideBar(toValue: -290) {
             
             self.dismiss(animated: false, completion: nil)

@@ -14,6 +14,7 @@ pod 'ChameleonFramework/Swift', :git => 'https://github.com/ViccAlexander/Chamel
 pod 'JTAppleCalendar'
 pod 'iProgressHUD', '~> 1.1.1' 
 pod 'SwipeCellKit'
+pod 'BEMCheckBox'
 
 
 end

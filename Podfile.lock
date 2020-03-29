@@ -158,6 +158,7 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
+  - BEMCheckBox (1.4.1)
   - BoringSSL-GRPC (0.0.3):
     - BoringSSL-GRPC/Implementation (= 0.0.3)
     - BoringSSL-GRPC/Interface (= 0.0.3)
@@ -285,6 +286,7 @@ PODS:
   - SwipeCellKit (2.7.1)
 
 DEPENDENCIES:
+  - BEMCheckBox
   - ChameleonFramework/Swift (from `https://github.com/ViccAlexander/Chameleon.git`)
   - Firebase/Auth
   - Firebase/Core
@@ -297,6 +299,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - abseil
+    - BEMCheckBox
     - BoringSSL-GRPC
     - Firebase
     - FirebaseAnalytics
@@ -334,6 +337,7 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   abseil: 18063d773f5366ff8736a050fe035a28f635fd27
+  BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
   Firebase: 0490eca762a72e4f1582319539153897f1508dee
@@ -361,6 +365,6 @@ SPEC CHECKSUMS:
   RealmSwift: 9a360fc7bae04fc2e308a34fbd899d5faa2d6b22
   SwipeCellKit: 3972254a826da74609926daf59b08d6c72e619ea
 
-PODFILE CHECKSUM: 63880f620995b61ef81dfcace1147ced3d9207bd
+PODFILE CHECKSUM: 751e650561c58880a4e69bb50b163a5afa53b4b0
 
 COCOAPODS: 1.8.4

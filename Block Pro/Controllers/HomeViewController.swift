@@ -31,9 +31,6 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        navigationController?.navigationBar.isHidden = false
-//        tabBarController?.tabBar.isHidden = false
-        
         configureMonthButton()
         
         animateEntryToView()
@@ -51,9 +48,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         determineWeeks()
         
-        
-        
         profileButton.addTarget(self, action: #selector(profileButtonPressed), for: .touchUpInside)
+        
+        tabBarController?.tabBar.barTintColor = .white
+        //tabBarController?.tabBar.shadowImage = UIImage()
+        tabBarController?.tabBar.isTranslucent = false
+        tabBarController?.tabBar.clipsToBounds = true
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
