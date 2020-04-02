@@ -8,13 +8,16 @@
 
 import Foundation
 
-class UserData {
+class CurrentUser {
     
     var userID: String = ""
     var firstName: String = ""
     var lastName: String = ""
     var username: String = ""
-    var createdOn: String = ""
+    var accountCreated: String = ""
     
-    static let singletonUser = UserData()
+    var profilePictureURL: String?
+    var profilePictureImage: UIImage?
+    
+    static let sharedInstance = CurrentUser()
 }

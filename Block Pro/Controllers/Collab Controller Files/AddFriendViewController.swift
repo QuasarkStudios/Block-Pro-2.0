@@ -18,7 +18,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
     var friendRequestsListener: ListenerRegistration?
     var handle: AuthStateDidChangeListenerHandle?
     
-    let currentUser = UserData.singletonUser
+    let currentUser = CurrentUser.sharedInstance
     
     var resultsObjectArray: [SearchResult] = [SearchResult]() 
     var requestsObjectArray: [FriendRequest] = [FriendRequest]()

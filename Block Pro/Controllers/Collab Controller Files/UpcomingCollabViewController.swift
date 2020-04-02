@@ -23,7 +23,7 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
     var upcomingCollabListener: ListenerRegistration?
     var pendingCollabListener: ListenerRegistration?
 
-    let currentUser = UserData.singletonUser
+    let currentUser = CurrentUser.sharedInstance
     
     let formatter = DateFormatter()
     
@@ -408,15 +408,15 @@ class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITab
                     }
                     else {
                         
-                        let currentUser = UserData.singletonUser
+                        let currentUser = CurrentUser.sharedInstance
                         
                         currentUser.userID = snapshot?.data()!["userID"] as! String
                         currentUser.firstName = snapshot?.data()!["firstName"] as! String
                         currentUser.lastName = snapshot?.data()!["lastName"] as! String
                         currentUser.username = snapshot?.data()!["username"] as! String
-                        currentUser.createdOn = snapshot?.data()!["accountCreated"] as! String
+                        currentUser.accountCreated = snapshot?.data()!["accountCreated"] as! String
                         
-                        print(currentUser.createdOn)
+                        print(currentUser.accountCreated)
                         
                         completion()
                         

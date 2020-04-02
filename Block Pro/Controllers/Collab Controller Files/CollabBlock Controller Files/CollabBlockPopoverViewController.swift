@@ -40,7 +40,7 @@ class CollabBlockPopoverViewController: UIViewController {
     
     let db = Firestore.firestore()
     var listener: ListenerRegistration?
-    let currentUser = UserData.singletonUser
+    let currentUser = CurrentUser.sharedInstance
     
     var updateCollabBlockDelegate: UpdateCollabBlock?
     var deleteCollabBlockDelegate: DeleteCollabBlock?

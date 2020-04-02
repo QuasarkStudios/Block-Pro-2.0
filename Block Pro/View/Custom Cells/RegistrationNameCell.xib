@@ -35,12 +35,12 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="m80-BV-o4l" userLabel="First Name Container">
-                        <rect key="frame" x="55" y="65" width="265" height="35"/>
+                        <rect key="frame" x="55" y="70" width="265" height="35"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="First Name" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="V3i-3I-zLg">
                                 <rect key="frame" x="2" y="0.0" width="263" height="34"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="13"/>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                 <connections>
                                     <action selector="firstNameTextChanged:" destination="ZoO-Tb-3UR" eventType="editingChanged" id="Ct6-kz-yLl"/>
@@ -66,7 +66,7 @@
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enter in your first name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tpS-Ru-oFu">
-                        <rect key="frame" x="55" y="102" width="265" height="20"/>
+                        <rect key="frame" x="55" y="107" width="265" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="biN-yo-31V"/>
                         </constraints>
@@ -75,12 +75,12 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zfr-PV-Pig" userLabel="Last Name Container">
-                        <rect key="frame" x="55" y="135" width="265" height="35"/>
+                        <rect key="frame" x="55" y="140" width="265" height="35"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Last Name" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="VhI-29-fFN">
                                 <rect key="frame" x="2" y="0.0" width="263" height="34"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="13"/>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                 <connections>
                                     <action selector="lastNameTextChanged:" destination="ZoO-Tb-3UR" eventType="editingChanged" id="jWj-VC-oAY"/>
@@ -106,7 +106,7 @@
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enter in your last name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Wum-BK-ep0">
-                        <rect key="frame" x="55" y="172" width="265" height="20"/>
+                        <rect key="frame" x="55" y="177" width="265" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="20" id="1Mb-S6-NXW"/>
                         </constraints>
@@ -117,7 +117,7 @@
                 </subviews>
                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 <constraints>
-                    <constraint firstItem="m80-BV-o4l" firstAttribute="top" secondItem="hiL-6E-iW5" secondAttribute="bottom" constant="25" id="8T0-jp-vyD"/>
+                    <constraint firstItem="m80-BV-o4l" firstAttribute="top" secondItem="hiL-6E-iW5" secondAttribute="bottom" constant="30" id="8T0-jp-vyD"/>
                     <constraint firstItem="m80-BV-o4l" firstAttribute="leading" secondItem="yH1-D5-soO" secondAttribute="leading" constant="55" id="EQx-Jf-5vo"/>
                     <constraint firstAttribute="trailing" secondItem="hiL-6E-iW5" secondAttribute="trailing" constant="10" id="FOU-SN-oug"/>
                     <constraint firstItem="Wum-BK-ep0" firstAttribute="top" secondItem="Zfr-PV-Pig" secondAttribute="bottom" constant="2" id="Hg2-8h-5DQ"/>

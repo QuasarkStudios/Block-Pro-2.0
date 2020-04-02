@@ -41,7 +41,7 @@ class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
     
     lazy var db = Firestore.firestore()
     
-    let currentUser = UserData.singletonUser
+    let currentUser = CurrentUser.sharedInstance
     
     //Variables used to verify if acceptable input has been provided by the user for those fields during registration
     var firstNameVerified: Bool?

@@ -50,7 +50,7 @@ class AUCollabBlockViewController: UIViewController, UITextFieldDelegate, UIPick
     @IBOutlet weak var categoryPicker: UIPickerView!
     
     let db = Firestore.firestore()
-    let currentUser = UserData.singletonUser
+    let currentUser = CurrentUser.sharedInstance
     
     var blockObjectArray: [CollabBlock] = [CollabBlock]()
     var validCollabBlock : [String : Bool] = ["startTimeValidation": true, "endTimeValidation" : true, "rangeValidation" : true]

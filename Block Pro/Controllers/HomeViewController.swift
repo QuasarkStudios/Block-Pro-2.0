@@ -7,14 +7,18 @@
 //
 
 import UIKit
+import iProgressHUD
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    @IBOutlet weak var profileImageContainer: UIView!
-    @IBOutlet weak var faceImage: UIImageView!
+    @IBOutlet weak var profilePicContainer: UIView!
+    @IBOutlet weak var profilePicImageView: UIImageView!
+    @IBOutlet weak var profilePicBlurView: UIView!
     @IBOutlet weak var profileButton: UIButton!
     
     @IBOutlet weak var homeTableView: UITableView!
+    
+    let currentUser = CurrentUser.sharedInstance
     
     var viewInitiallyLoaded: Bool = false
     
@@ -63,9 +67,15 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
 //        navigationItem.title = formatter.string(from: Date())
 //        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 25)!]
         
-        ProgressHUD.dismiss()
-        
         configureNavBar()
+        
+        if currentUser.profilePictureURL != nil && currentUser.profilePictureImage == nil {
+            
+            setProfilePicture()
+        }
+        
+        
+        ProgressHUD.dismiss()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -194,22 +204,75 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: newCollabButton), UIBarButtonItem(customView: collab_personalButton)]
         
-        profileImageContainer.layer.shadowRadius = 2.5
-        profileImageContainer.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
-        profileImageContainer.layer.shadowOffset = CGSize(width: 0, height: 0)
-        profileImageContainer.layer.shadowOpacity = 0.75
+        profilePicContainer.layer.shadowRadius = 2.5
+        profilePicContainer.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
+        profilePicContainer.layer.shadowOffset = CGSize(width: 0, height: 0)
+        profilePicContainer.layer.shadowOpacity = 0.75
         
-        profileImageContainer.layer.borderWidth = 1
-        profileImageContainer.layer.borderColor = UIColor(hexString: "F4F4F4", withAlpha: 0.05)?.cgColor
+        profilePicContainer.layer.borderWidth = 1
+        profilePicContainer.layer.borderColor = UIColor(hexString: "F4F4F4", withAlpha: 0.05)?.cgColor
         
-        profileImageContainer.layer.cornerRadius = 0.5 * profileImageContainer.bounds.width
-        profileImageContainer.layer.masksToBounds = false
-        profileImageContainer.clipsToBounds = false
+        profilePicContainer.layer.cornerRadius = 0.5 * profilePicContainer.bounds.width
+        profilePicContainer.layer.masksToBounds = false
+        profilePicContainer.clipsToBounds = false
         
-        faceImage.layer.cornerRadius = 0.5 * faceImage.bounds.width
-        faceImage.layer.masksToBounds = false
-        faceImage.clipsToBounds = true
+        profilePicImageView.layer.cornerRadius = 0.5 * profilePicImageView.bounds.width
+        profilePicImageView.layer.masksToBounds = false
+        profilePicImageView.clipsToBounds = true
         
+        profilePicBlurView.layer.cornerRadius = 0.5 * profilePicImageView.bounds.width
+        profilePicBlurView.clipsToBounds = true
+        profilePicBlurView.alpha = 0
+    }
+    
+    private func setProfilePicture () {
+        
+        let firebaseStorage = FirebaseStorage()
+        
+        animateProfilePic(true)
+        
+        firebaseStorage.retrieveProfilePicFromStorage(profilePicURL: currentUser.profilePictureURL!) {
+            
+            self.animateProfilePic(false)
+            
+            UIView.transition(with: self.profilePicContainer, duration: 0.3, options: .curveLinear, animations: {
+                
+                self.profilePicImageView.image = self.currentUser.profilePictureImage
+                
+            }, completion: nil)
+        }
+    }
+    
+    private func animateProfilePic (_ animate: Bool) {
+        
+        if animate {
+            
+            profilePicBlurView.alpha = 0.3
+            
+            let iProgress = iProgressHUD()
+            iProgress.isShowModal = false
+            iProgress.isShowCaption = false
+            iProgress.isTouchDismiss = false
+            iProgress.boxColor = .clear
+            
+            iProgress.indicatorSize = 100
+            
+            iProgress.attachProgress(toView: profilePicContainer)
+            
+            profilePicContainer.updateIndicator(style: .circleStrokeSpin)
+            
+            profilePicContainer.showProgress()
+        }
+        
+        else {
+            
+            profilePicContainer.dismissProgress()
+            
+            UIView.animate(withDuration: 0.15) {
+                
+                self.profilePicBlurView.alpha = 0
+            }
+        }
     }
     
     private func configureMonthButton () {
@@ -321,7 +384,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             
             let indexPath: IndexPath = IndexPath(row: 0, section: sectionToScrollTo ?? 0)
-            self.visibleCell = IndexPath(row: 1, section: indexPath.section)
+            self.visibleCell = IndexPath(row: 0, section: indexPath.section)
             
             if indexPath.section == 0 {
                 
@@ -460,6 +523,36 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             timeBlockVC.currentDate = selectedDate!
         }
         
+        else if segue.identifier == "moveToProfilePopover" {
+            
+            let sidebarVC = segue.destination as! ProfileSidebarViewController
+            sidebarVC.moveToProfileDelegate = self
+            
+        }
+        
+        else if segue.identifier == "moveToProfileView" {
+            
+            let profileVC = segue.destination as! ProfileViewController
+            profileVC.profileViewDelegate = self
+        }
+    }
+}
 
+extension HomeViewController: MoveToProfile {
+    
+    func moveToProfileView () {
+        
+        dismiss(animated: false) {
+            
+            self.performSegue(withIdentifier: "moveToProfileView", sender: self)
+        }
+    }
+}
+
+extension HomeViewController: ProfileView {
+    
+    func profilePicChanged (_ image: UIImage) {
+        
+        profilePicImageView.image = image
     }
 }

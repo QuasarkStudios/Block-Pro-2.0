@@ -8,6 +8,9 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
+        <array key="Poppins-Medium.ttf">
+            <string>Poppins-Medium</string>
+        </array>
         <array key="Poppins-Regular.ttf">
             <string>Poppins-Regular</string>
         </array>
@@ -49,6 +52,9 @@
                                         <state key="normal" title="Profile">
                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
+                                        <connections>
+                                            <action selector="profileButton:" destination="dBe-S7-TgC" eventType="touchUpInside" id="PAv-Y1-eWI"/>
+                                        </connections>
                                     </button>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DpA-tI-ZS4">
                                         <rect key="frame" x="45" y="250" width="245" height="1"/>
@@ -113,7 +119,7 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qUE-ip-9oH">
                                         <rect key="frame" x="35" y="50" width="67" height="67"/>
                                         <subviews>
-                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Nimat's Face" translatesAutoresizingMaskIntoConstraints="NO" id="Hbh-l4-v8s">
+                                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ProfilePic2" translatesAutoresizingMaskIntoConstraints="NO" id="Hbh-l4-v8s">
                                                 <rect key="frame" x="0.0" y="0.0" width="67" height="67"/>
                                             </imageView>
                                         </subviews>
@@ -194,6 +200,52 @@
             </objects>
             <point key="canvasLocation" x="1964" y="-1655.1724137931035"/>
         </scene>
+        <!--Profile View Controller-->
+        <scene sceneID="TiG-Zp-tIE">
+            <objects>
+                <viewController hidesBottomBarWhenPushed="YES" id="eeR-FJ-fyZ" customClass="ProfileViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="MJZ-VU-qm7">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ea8-dh-Iaa">
+                                <rect key="frame" x="112" y="363" width="151" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="xdm-2M-qpq"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="15"/>
+                                <state key="normal" title="Add a Profile Picture">
+                                    <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ProfilePic2" translatesAutoresizingMaskIntoConstraints="NO" id="4Hf-yN-D6u">
+                                <rect key="frame" x="87.666666666666686" y="138" width="200" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="5Ou-dg-BvC"/>
+                                    <constraint firstAttribute="height" constant="200" id="p8D-qn-Lzq"/>
+                                </constraints>
+                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="4Hf-yN-D6u" firstAttribute="top" secondItem="Ena-La-tjJ" secondAttribute="top" constant="50" id="5IH-28-ZDk"/>
+                            <constraint firstItem="Ea8-dh-Iaa" firstAttribute="centerX" secondItem="MJZ-VU-qm7" secondAttribute="centerX" id="WqI-EE-nng"/>
+                            <constraint firstItem="4Hf-yN-D6u" firstAttribute="centerX" secondItem="MJZ-VU-qm7" secondAttribute="centerX" id="tcL-Pl-bMv"/>
+                            <constraint firstItem="Ea8-dh-Iaa" firstAttribute="top" secondItem="4Hf-yN-D6u" secondAttribute="bottom" constant="25" id="xu1-Ac-D4W"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Ena-La-tjJ"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="GYI-6w-hZs"/>
+                    <connections>
+                        <outlet property="addProfilePictureButton" destination="Ea8-dh-Iaa" id="jxY-ke-djg"/>
+                        <outlet property="profileImage" destination="4Hf-yN-D6u" id="em2-1G-vK7"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KYH-mE-RIt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3086" y="-1346"/>
+        </scene>
         <!--Home View Controller-->
         <scene sceneID="KbH-in-T8a">
             <objects>
@@ -205,9 +257,13 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T8z-AM-GYO">
                                 <rect key="frame" x="23" y="44" width="67" height="67"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Nimat's Face" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vbn-Qf-uL7">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ProfilePic2" adjustsImageSizeForAccessibilityContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vbn-Qf-uL7">
                                         <rect key="frame" x="0.0" y="0.0" width="67" height="67"/>
                                     </imageView>
+                                    <view alpha="0.20000000000000001" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ik1-s4-GjH">
+                                        <rect key="frame" x="0.0" y="0.0" width="67" height="67"/>
+                                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </view>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6cj-9U-2Y4">
                                         <rect key="frame" x="0.0" y="0.0" width="67" height="67"/>
                                     </button>
@@ -216,14 +272,18 @@
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="6cj-9U-2Y4" secondAttribute="trailing" id="4Mw-w4-Bi6"/>
                                     <constraint firstItem="vbn-Qf-uL7" firstAttribute="leading" secondItem="T8z-AM-GYO" secondAttribute="leading" id="9fQ-cS-781"/>
+                                    <constraint firstItem="Ik1-s4-GjH" firstAttribute="top" secondItem="T8z-AM-GYO" secondAttribute="top" id="BqI-NT-4e3"/>
                                     <constraint firstItem="vbn-Qf-uL7" firstAttribute="top" secondItem="T8z-AM-GYO" secondAttribute="top" id="CuW-RS-pzu"/>
                                     <constraint firstAttribute="height" constant="67" id="Gps-xZ-P5G"/>
                                     <constraint firstAttribute="bottom" secondItem="vbn-Qf-uL7" secondAttribute="bottom" id="Gqm-MF-4Hg"/>
                                     <constraint firstAttribute="bottom" secondItem="6cj-9U-2Y4" secondAttribute="bottom" id="KcM-hS-c7g"/>
                                     <constraint firstItem="6cj-9U-2Y4" firstAttribute="top" secondItem="T8z-AM-GYO" secondAttribute="top" id="PQ2-XY-Anp"/>
+                                    <constraint firstItem="Ik1-s4-GjH" firstAttribute="leading" secondItem="T8z-AM-GYO" secondAttribute="leading" id="QwF-CT-I5y"/>
+                                    <constraint firstAttribute="trailing" secondItem="Ik1-s4-GjH" secondAttribute="trailing" id="WFd-dk-Jwa"/>
                                     <constraint firstAttribute="trailing" secondItem="vbn-Qf-uL7" secondAttribute="trailing" id="bJS-Qu-uRT"/>
                                     <constraint firstAttribute="width" constant="67" id="bd7-b5-C8k"/>
                                     <constraint firstItem="6cj-9U-2Y4" firstAttribute="leading" secondItem="T8z-AM-GYO" secondAttribute="leading" id="hnw-yS-vnh"/>
+                                    <constraint firstAttribute="bottom" secondItem="Ik1-s4-GjH" secondAttribute="bottom" id="uLp-XT-ArE"/>
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hi Nimat" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4bu-tw-S2V">
@@ -280,12 +340,14 @@
                     <navigationItem key="navigationItem" id="TLX-zI-G1C"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="faceImage" destination="vbn-Qf-uL7" id="ll6-Qa-aNX"/>
                         <outlet property="homeTableView" destination="BcB-qR-IAZ" id="JeA-X4-5WQ"/>
                         <outlet property="profileButton" destination="6cj-9U-2Y4" id="d1b-gp-MzE"/>
-                        <outlet property="profileImageContainer" destination="T8z-AM-GYO" id="Kbl-Xn-stL"/>
+                        <outlet property="profilePicBlurView" destination="Ik1-s4-GjH" id="des-Vn-GRW"/>
+                        <outlet property="profilePicContainer" destination="T8z-AM-GYO" id="Ezu-AN-hJv"/>
+                        <outlet property="profilePicImageView" destination="vbn-Qf-uL7" id="Kby-f7-rU0"/>
                         <segue destination="pnR-lP-t4Y" kind="show" identifier="moveToTimeBlockView" id="Nwv-6S-anC"/>
                         <segue destination="dBe-S7-TgC" kind="presentation" identifier="moveToProfilePopover" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="eix-pD-5eO"/>
+                        <segue destination="eeR-FJ-fyZ" kind="show" identifier="moveToProfileView" id="7Ov-KM-AbH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d6a-oc-kOn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -324,7 +386,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Nimat's Face" width="283" height="327"/>
+        <image name="ProfilePic2" width="400" height="400"/>
         <image name="home" width="30" height="30"/>
     </resources>
 </document>

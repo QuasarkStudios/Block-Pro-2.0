@@ -73,7 +73,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     
     let formatter = DateFormatter()
     
-    let currentUser = UserData.singletonUser
+    let currentUser = CurrentUser.sharedInstance
     
     var selectedFriend: Friend?
     

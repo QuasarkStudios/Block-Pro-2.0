@@ -15,10 +15,8 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
 
     @IBOutlet weak var bpLabel: UILabel!
     
-    @IBOutlet weak var emailTextFieldContainer: UIView!
     @IBOutlet weak var emailTextField: UITextField!
     
-    @IBOutlet weak var passwordTextFieldContainer: UIView!
     @IBOutlet weak var passwordTextField: UITextField!
     
     @IBOutlet weak var signInButton: UIButton!
@@ -30,7 +28,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
     
     let defaults = UserDefaults.standard
     
-    //var keepUserSignedIn: Bool?
+    let userAuth = UserAuthentication()
     
     var iProgressAttached: Bool = false
     
@@ -39,33 +37,15 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //keepUserSignedIn = defaults.value(forKey: "keepUserSignedIn") as? Bool ?? true
-        
         bpLabel.layer.cornerRadius = 0.5 * bpLabel.bounds.size.width
         bpLabel.clipsToBounds = true
         
         bpLabel.layer.borderWidth = 3
         bpLabel.layer.borderColor = UIColor.black.cgColor
         
-        emailTextFieldContainer.layer.cornerRadius = 20
-        emailTextFieldContainer.clipsToBounds = true
-        
-        emailTextFieldContainer.layer.borderWidth = 2
-        emailTextFieldContainer.layer.borderColor = UIColor.black.cgColor
-        
         emailTextField.delegate = self
         
-        emailTextField.borderStyle = .none
-        
-        passwordTextFieldContainer.layer.cornerRadius = 20
-        passwordTextFieldContainer.clipsToBounds = true
-        
-        passwordTextFieldContainer.layer.borderWidth = 2
-        passwordTextFieldContainer.layer.borderColor = UIColor.black.cgColor
-        
         passwordTextField.delegate = self
-        
-        passwordTextField.borderStyle = .none
         
         signInButton.layer.cornerRadius = 22.5
         signInButton.clipsToBounds = true
@@ -85,9 +65,9 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
         
         let keepUserSignedIn = defaults.value(forKey: "keepUserSignedIn") as? Bool ?? false
         
-        if Auth.auth().currentUser != nil && keepUserSignedIn {
-
-            performSegue(withIdentifier: "moveToHomeView", sender: self)
+        if let currentUser = Auth.auth().currentUser, keepUserSignedIn {
+            
+            automaticallySignInUser(user: currentUser)
         }
         
         else if keepUserSignedIn {
@@ -121,7 +101,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
     }
     
     
-    private func attachProgressAnimation () {
+    private func attachProgressAnimation (view: UIView, completion: (() -> Void)? = nil) {
         
         let iProgress: iProgressHUD = iProgressHUD()
         
@@ -132,9 +112,59 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
         
         iProgress.indicatorSize = 100
         
-        iProgress.attachProgress(toView: signInButton)
+        iProgress.attachProgress(toView: view)
         
-        signInButton.updateIndicator(style: .ballClipRotate)
+        view.updateIndicator(style: .ballClipRotate)
+        
+        completion?()
+    }
+    
+    
+    private func addSplashScreen () {
+        
+        var splashView: UIView {
+            
+            let view = UIView(frame: self.view.frame)
+            view.backgroundColor = UIColor(hexString: "262626")
+            return view
+        }
+        
+        view.addSubview(splashView)
+        
+        var bpLabel: UILabel {
+            
+            let label = UILabel()
+            
+            label.frame.size = CGSize(width: 150, height: 150)
+            label.center = view.center
+            
+            label.font = UIFont(name: "HelveticaNeue-Bold", size: 50)
+            label.numberOfLines = 2
+            label.text = "BP"
+            label.textAlignment = .center
+            label.textColor = .white
+            return label
+        }
+        
+        view.addSubview(bpLabel)
+        
+//        var progressView: UIView {
+//
+//            let view = UIView()
+//            view.frame.size = CGSize(width: 55, height: 55)
+//            view.center = CGPoint(x: self.view.center.x, y: self.view.center.x + 75)
+//            view.backgroundColor = .systemPink
+//
+//            return view
+//        }
+//
+//        view.addSubview(progressView)
+        
+        attachProgressAnimation(view: self.view) {
+            
+            self.view.showProgress()
+        }
+        
     }
     
     
@@ -158,7 +188,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
                 
                 if !self.iProgressAttached && self.allowProgressAnimation {
                     
-                    self.attachProgressAnimation()
+                    self.attachProgressAnimation(view: self.signInButton)
                     self.signInButton.showProgress()
                     
                     self.iProgressAttached = true
@@ -213,6 +243,18 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
         }
     }
     
+    private func automaticallySignInUser (user: User) {
+        
+        addSplashScreen()
+        
+        userAuth.retrieveSignedInUser(user) { (error) in
+            
+            self.view.dismissProgress()
+            
+            self.performSegue(withIdentifier: "moveToHomeView", sender: self)
+        }
+    }
+    
     @IBAction func signInButton(_ sender: Any) {
         
         signInButton.isEnabled = false
@@ -234,23 +276,23 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
             allowProgressAnimation = true
             animateSignInButton(shrink: true)
 
-            Auth.auth().signIn(withEmail: emailTextField.text!, password: passwordTextField.text!) { (user, error) in
-
+            userAuth.logInUser(email: emailTextField.text!, password: passwordTextField.text!) { [weak self] (error) in
+                
                 if error != nil {
+                    
+                    self?.allowProgressAnimation = false
 
-                    self.allowProgressAnimation = false
-
-                    self.animateSignInButton(shrink: false)
+                    self?.animateSignInButton(shrink: false)
 
                     ProgressHUD.showError(error?.localizedDescription)
-                    self.signInButton.isEnabled = true
+                    self?.signInButton.isEnabled = true
                 }
-
+                
                 else {
+                    
+                    self?.signInButton.isEnabled = true
 
-                    self.signInButton.isEnabled = true
-
-                    self.userSignedIn()
+                    self?.userSignedIn()
                 }
             }
         }

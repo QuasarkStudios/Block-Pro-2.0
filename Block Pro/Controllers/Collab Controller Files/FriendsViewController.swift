@@ -18,7 +18,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
     var pendingFriendsListener: ListenerRegistration?
     var friendsListener: ListenerRegistration?
     
-    let currentUser = UserData.singletonUser
+    let currentUser = CurrentUser.sharedInstance
     
     var pendingObjectArray: [PendingFriend] = [PendingFriend]()
     var friendObjectArray: [Friend] = [Friend]()

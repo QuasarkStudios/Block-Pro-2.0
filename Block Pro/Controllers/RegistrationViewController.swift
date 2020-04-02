@@ -29,13 +29,13 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
     @IBOutlet weak var startButton: UIButton!
     
     @IBOutlet weak var registrationCollectionView: UICollectionView!
-    @IBOutlet weak var collectionViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var collectionViewTopAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var backToSignInButton: UIButton!
     
-    lazy var db = Firestore.firestore()
+    let userAuth = UserAuthentication()
     
-    var newUserInfo: [String : String] = [:]
+    var newUser = NewUser()
     
     var selectedIndex: Int = 0
     
@@ -60,12 +60,17 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         view.addGestureRecognizer(tap)
+    
     }
+    
+    
+    //MARK: - Registration CollectionView Datasource Methods
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return 5
+        return 4
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
@@ -80,15 +85,6 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
         
         else if indexPath.row == 1 {
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "registrationEmailCell", for: indexPath) as! RegistrationEmailCell
-
-            cell.emailEnteredDelegate = self
-            
-            return cell
-        }
-        
-        else if indexPath.row == 2 {
-            
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "registrationUsernameCell", for: indexPath) as! RegistrationUsernameCell
             
             cell.usernameEnteredDelegate = self
@@ -96,11 +92,11 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
             return cell
         }
         
-        else if indexPath.row == 3 {
+        else if indexPath.row == 2 {
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "registrationPasswordCell", for: indexPath) as! RegistrationPasswordCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "registrationAccountCreationCell", for: indexPath) as! RegistrationAccountCreationCell
             
-            cell.passwordEnteredDelegate = self
+            cell.accountLogInInfoEnteredDelegate = self
             
             return cell
         }
@@ -109,24 +105,19 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "registrationProfilePicCell", for: indexPath) as! RegistrationProfilePicCell
             
+            cell.addProfilePictureDelegate = self
+            
             return cell
         }
     }
+    
+    
+    //MARK: - Configuring the Registration CollectionView
     
     private func configureCollectionView () {
         
         registrationCollectionView.dataSource = self
         registrationCollectionView.delegate = self
-        
-        registrationCollectionView.register(UINib(nibName: "RegistrationNameCell", bundle: nil), forCellWithReuseIdentifier: "registrationNameCell")
-        
-        registrationCollectionView.register(UINib(nibName: "RegistrationEmailCell", bundle: nil), forCellWithReuseIdentifier: "registrationEmailCell")
-        
-        registrationCollectionView.register(UINib(nibName: "RegistrationUsernameCell", bundle: nil), forCellWithReuseIdentifier: "registrationUsernameCell")
-        
-        registrationCollectionView.register(UINib(nibName: "RegistrationPasswordCell", bundle: nil), forCellWithReuseIdentifier: "registrationPasswordCell")
-        
-        registrationCollectionView.register(UINib(nibName: "RegistrationProfilePicCell", bundle: nil), forCellWithReuseIdentifier: "registrationProfilePicCell")
         
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: view.frame.width, height: 575)
@@ -137,15 +128,25 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
         registrationCollectionView.collectionViewLayout = layout
         
         registrationCollectionView.isPagingEnabled = true
-        
         registrationCollectionView.showsHorizontalScrollIndicator = false
-        
         registrationCollectionView.isScrollEnabled = false
         
         registrationCollectionView.backgroundColor = .clear
         
-        collectionViewHeightConstraint.constant = 0
+        collectionViewTopAnchor.constant = self.view.frame.height
+        
+        registrationCollectionView.register(UINib(nibName: "RegistrationNameCell", bundle: nil), forCellWithReuseIdentifier: "registrationNameCell")
+        registrationCollectionView.register(UINib(nibName: "RegistrationUsernameCell", bundle: nil), forCellWithReuseIdentifier: "registrationUsernameCell")
+        registrationCollectionView.register(UINib(nibName: "RegistrationAccountCreationCell", bundle: nil), forCellWithReuseIdentifier: "registrationAccountCreationCell")
+        registrationCollectionView.register(UINib(nibName: "RegistrationProfilePicCell", bundle: nil), forCellWithReuseIdentifier: "registrationProfilePicCell")
     }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        
+        nextButton.isEnabled = true
+    }
+    
+    //MARK: - Configuring the Progress Bars
     
     private func configureProgressBars () {
         
@@ -166,255 +167,90 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
         progressBarWidthConstraint.constant = 0
     }
     
-    private func validateText (_ text: String) -> Bool {
-        
-        let letters = CharacterSet.letters
-        let numbers = CharacterSet.decimalDigits
-        
-        for char in text.unicodeScalars {
-            
-            if letters.contains(char) || numbers.contains(char) {
-                
-                return true
-            }
-        }
-        
-        return false
-    }
+    
+    //MARK: - Validation of User Entries
     
     private func validateEntries () {
         
         if selectedIndex == 0 {
             
-            if validateText(newUserInfo["firstName"] ?? "") && validateText(newUserInfo["lastName"] ?? "") {
+            validateName { (validated) in
                 
-                moveToNextRow()
-            }
-            
-            else {
-                
-                let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as! RegistrationNameCell
-                
-                if !validateText(newUserInfo["firstName"] ?? "") {
+                if validated {
                     
-                    cell.firstNameErrorLabel.isHidden = false
+                    self.moveToNextRow()
                 }
                 
-                if !validateText(newUserInfo["lastName"] ?? "") {
+                else {
                     
-                    cell.lastNameErrorLabel.isHidden = false
+                    self.nextButton.isEnabled = true
                 }
             }
         }
         
         else if selectedIndex == 1 {
             
-            if validateText(newUserInfo["email"] ?? "") {
+            validateUsername { (validated) in
                 
-                let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as! RegistrationEmailCell
-                
-                cell.emailErrorLabel.text = "Verifying..."
-                cell.emailErrorLabel.textColor = .black
-                cell.emailErrorLabel.isHidden = false
-                
-                cell.progressView.showProgress()
-                
-                Auth.auth().fetchSignInMethods(forEmail: newUserInfo["email"] ?? "") { (email, error) in
+                if validated {
                     
-                    if error != nil {
-                        
-                        cell.emailErrorLabel.textColor = .systemRed
-                        cell.emailErrorLabel.text = error?.localizedDescription
-                        
-                        cell.progressView.dismissProgress()
-                    }
-                    
-                    else {
-                        
-                        if email != nil {
-                            
-                            cell.emailErrorLabel.textColor = .systemRed
-                            cell.emailErrorLabel.text = "Sorry, but this email is already being used"
-                            
-                            cell.progressView.dismissProgress()
-                        }
-                            
-                        else {
-                            
-                            cell.progressView.dismissProgress()
-                            
-                            cell.emailErrorLabel.isHidden = true
-                            
-                            self.moveToNextRow()
-                        }
-                    }
+                    self.moveToNextRow()
                 }
-            }
-            
-            else {
                 
-                let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as! RegistrationEmailCell
-                
-                cell.emailErrorLabel.textColor = .systemRed
-                cell.emailErrorLabel.text = "Please enter in your E-mail Address"
-                cell.emailErrorLabel.isHidden = false
+                else {
+                    
+                    self.nextButton.isEnabled = true
+                }
             }
         }
         
         else if selectedIndex == 2 {
             
-            if validateText(newUserInfo["username"] ?? "") {
+            //Validation of a the user's account info and the creation of their account
+            validateAccountInfoAndCreateUser { (validated, userID) in
                 
-                let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as! RegistrationUsernameCell
-                
-                cell.usernameErrorLabel.text = "Verifying..."
-                cell.usernameErrorLabel.textColor = .black
-                cell.usernameErrorLabel.isHidden = false
-                
-                cell.progressView.showProgress()
-                
-                db.collection("Users").whereField("username", isEqualTo: newUserInfo["username"] ?? "").getDocuments { (snapshot, error) in
+                if let userID = userID, validated {
                     
-                    if error != nil {
+                    self.createNewUser(userID: userID) {
                         
-                        ProgressHUD.showError(error?.localizedDescription)
-                        
-                        cell.progressView.dismissProgress()
+                        self.moveToNextRow()
                     }
-                    
-                    else {
-                        
-                        if snapshot?.isEmpty == false {
-                            
-                            cell.usernameErrorLabel.textColor = .systemRed
-                            cell.usernameErrorLabel.text = "Sorry, but this username is already being used"
-                            
-                            cell.progressView.dismissProgress()
-                        }
-                        
-                        else {
-                            
-                            cell.progressView.dismissProgress()
-                            
-                            cell.usernameErrorLabel.isHidden = true
-                            
-                            self.moveToNextRow()
-                        }
-                    }
-                }
-            }
-            
-            else {
-                
-                let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as! RegistrationUsernameCell
-                
-                cell.usernameErrorLabel.textColor = .systemRed
-                cell.usernameErrorLabel.text = "Please enter in a username"
-                cell.usernameErrorLabel.isHidden = false
-            }
-        }
-        
-        else if selectedIndex == 3 {
-            
-            if validateText(newUserInfo["password"] ?? "") && validateText(newUserInfo["passwordRentry"] ?? "") {
-                
-                if newUserInfo["password"] ?? "" == newUserInfo["passwordRentry"] ?? "" {
-                    
-                    let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 3, section: 0)) as! RegistrationPasswordCell
-                    
-                    cell.passwordRentryErrorLabel.text = "Verifying..."
-                    cell.passwordRentryErrorLabel.textColor = .black
-                    cell.passwordRentryErrorLabel.isHidden = false
-                    
-                    cell.progressView.showProgress()
-                    
-                    Auth.auth().createUser(withEmail: newUserInfo["email"]!, password: newUserInfo["password"]!) { (authResult, error) in
-
-                        if error != nil {
-
-                            cell.passwordRentryErrorLabel.textColor = .systemRed
-                            cell.passwordRentryErrorLabel.text = error?.localizedDescription
-
-                            cell.progressView.dismissProgress()
-                        }
-
-                        else {
-
-                            guard let userID = authResult?.user.uid else {
-
-                                ProgressHUD.showError("Sorry, something went wrong while making your account. Please try again!")
-
-                                cell.progressView.dismissProgress()
-
-                                return
-                            }
-
-                            self.createNewUser(userID: userID) {
-
-                                //cell.progressView.dismissProgress()
-
-                                self.moveToNextRow()
-                            }
-                        }
-                    }
-                    
-                    moveToNextRow()
                 }
                 
                 else {
                     
-                    let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 3, section: 0)) as! RegistrationPasswordCell
-                    
-                    cell.passwordRentryErrorLabel.textColor = .systemRed
-                    cell.passwordRentryErrorLabel.text = "Sorry, but your passwords don't match"
-                    cell.passwordRentryErrorLabel.isHidden = false
-                }
-            }
-            
-            else {
-                
-                let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 3, section: 0)) as! RegistrationPasswordCell
-                
-                if !validateText(newUserInfo["password"] ?? "") {
-                    
-                    cell.passwordErrorLabel.textColor = .systemRed
-                    cell.passwordErrorLabel.text = "Please enter your password"
-                    cell.passwordErrorLabel.isHidden = false
-                }
-                
-                if !validateText(newUserInfo["passwordRentry"] ?? "") {
-                    
-                    cell.passwordRentryErrorLabel.textColor = .systemRed
-                    cell.passwordRentryErrorLabel.text = "Please re-enter your password"
-                    cell.passwordRentryErrorLabel.isHidden = false
+                    self.nextButton.isEnabled = true
                 }
             }
         }
+    }
+
+    
+    //MARK: - Saving New User to Database
+    
+    private func createNewUser (userID: String, completion: @escaping (() -> Void)) {
         
-        nextButton.isEnabled = true
+        userAuth.createNewUser(userID: userID, newUser: newUser) {
+            
+            completion()
+        }
     }
     
-    private func createNewUser (userID: String, completion: (() -> Void)) {
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM d, yyyy"
-        
-        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUserInfo["firstName"]!, "lastName" : newUserInfo["lastName"]!, "username" : newUserInfo["username"]!, "accountCreated" : formatter.string(from: Date())] )
-        
-        completion()
-    }
+    
+    //MARK: - CollectionView Navigation Functions
     
     private func moveToNextRow () {
         
         selectedIndex += 1
         
-        progressBarWidthConstraint.constant = ((trackBar.frame.width - 6) / 4) * CGFloat(selectedIndex)
+        progressBarWidthConstraint.constant = ((trackBar.frame.width - 6) / 3) * CGFloat(selectedIndex)
         
         UIView.animate(withDuration: 0.5, animations: {
             
             self.view.layoutIfNeeded()
             
-            if self.selectedIndex == 4 {
+            //If the user has completed the registration process
+            if self.selectedIndex == 3 {
                 
                 self.prevButton.alpha = 0
                 self.nextButton.alpha = 0
@@ -431,11 +267,12 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
         registrationCollectionView.scrollToItem(at: IndexPath(item: selectedIndex, section: 0), at: .centeredHorizontally, animated: true)
     }
     
+    
     private func moveToPreviousRow () {
         
         selectedIndex -= 1
         
-        progressBarWidthConstraint.constant = ((trackBar.frame.width - 6) / 4) * CGFloat(selectedIndex)
+        progressBarWidthConstraint.constant = ((trackBar.frame.width - 6) / 3) * CGFloat(selectedIndex)
         
         UIView.animate(withDuration: 0.5, animations: {
             
@@ -452,13 +289,16 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
         registrationCollectionView.scrollToItem(at: IndexPath(item: selectedIndex, section: 0), at: .centeredHorizontally, animated: true)
     }
     
+    
+    //MARK: - Buttons
+    
     @IBAction func startButton(_ sender: Any) {
         
         gifViewLeadingAnchor.constant = 125
         gifViewTrailingAnchor.constant = 125
         gifViewHeightConstraint.constant = 75
         
-        collectionViewHeightConstraint.constant = 575
+        collectionViewTopAnchor.constant = 125 // set to a value that will work on all phones later
         
         UIView.animate(withDuration: 0.5, animations: {
             
@@ -501,8 +341,6 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
         validateEntries()
         
         dismissKeyboard()
-        
-        print(newUserInfo)
     }
     
     
@@ -517,24 +355,19 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
     }
 }
 
+
+//MARK: - Registration View Extensions
+
 extension RegistrationViewController: NameEntered {
     
     func firstNameEntered (firstName: String) {
         
-        newUserInfo["firstName"] = firstName
+        newUser.firstName = firstName
     }
     
     func lastNameEntered (lastName: String) {
         
-        newUserInfo["lastName"] = lastName
-    }
-}
-
-extension RegistrationViewController: EmailEntered {
-    
-    func emailEntered(email: String) {
-        
-        newUserInfo["email"] = email
+        newUser.lastName = lastName
     }
 }
 
@@ -542,20 +375,79 @@ extension RegistrationViewController: UsernameEntered {
     
     func usernameEntered(username: String) {
         
-        newUserInfo["username"] = username
+        newUser.username = username
     }
 }
 
-extension RegistrationViewController: PasswordEntered {
+extension RegistrationViewController: AccountLogInInfoEntered {
+    
+    func emailEntered (email: String) {
+        
+        newUser.email = email
+    }
     
     func passwordEntered(password: String) {
         
-        newUserInfo["password"] = password
+        newUser.password = password
     }
     
-    func passwordRentryEntered(passwordRentry: String) {
+    func passwordReentryEntered(passwordReentry: String) {
         
-        newUserInfo["passwordRentry"] = passwordRentry
+        newUser.passwordReentry = passwordReentry
     }
 }
 
+extension RegistrationViewController: AddProfilePicture, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func skipButtonPressed() {
+        
+        performSegue(withIdentifier: "moveToHomeView", sender: self)
+    }
+    
+    
+    func presentImagePickerController () {
+        
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        var selectedImageFromPicker: UIImage?
+        
+        //If the user edited the picture
+        if let editedImage = info[.editedImage] {
+            
+            selectedImageFromPicker = editedImage as? UIImage
+        }
+        
+        //If the user selected an unedited picture
+        else if let originalImage = info[.originalImage] {
+            
+            selectedImageFromPicker = originalImage as? UIImage
+        }
+        
+        if let selectedImage = selectedImageFromPicker {
+            
+            let firebaseStorage = FirebaseStorage()
+            firebaseStorage.saveProfilePictureToStorage(selectedImage)
+            
+            let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 4, section: 0)) as! RegistrationProfilePicCell
+            cell.profileImage.image = selectedImage
+            cell.skipButton.setTitle("Finish", for: .normal)
+            
+        }
+
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        
+        dismiss(animated: true, completion: nil)
+    }
+}

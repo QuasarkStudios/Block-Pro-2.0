@@ -57,7 +57,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var db = Firestore.firestore()
 
-    let currentUser = UserData.singletonUser
+    let currentUser = CurrentUser.sharedInstance
     
     var collabID: String = ""
     var collabName: String = ""

@@ -35,12 +35,12 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kti-Ef-X15" userLabel="Username Container">
-                        <rect key="frame" x="55" y="65" width="265" height="35"/>
+                        <rect key="frame" x="55" y="70" width="265" height="35"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="MGq-mz-i7Q">
                                 <rect key="frame" x="2" y="0.0" width="263" height="34"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="13"/>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" enablesReturnKeyAutomatically="YES"/>
                                 <connections>
                                     <action selector="usernameTextChanged:" destination="gTV-IL-0wX" eventType="editingChanged" id="kkr-sn-bqB"/>
@@ -67,7 +67,7 @@
                         </constraints>
                     </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please enter in a username" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Aki-sM-82T">
-                        <rect key="frame" x="55" y="102" width="265" height="20"/>
+                        <rect key="frame" x="55" y="107" width="265" height="20"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20" id="CJx-i6-0Iy"/>
                             <constraint firstAttribute="height" constant="20" id="w0X-P8-4Tk"/>
@@ -91,7 +91,7 @@
                 <constraint firstItem="myv-Kf-Ocm" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="6C5-X8-pjQ"/>
                 <constraint firstAttribute="trailing" secondItem="kti-Ef-X15" secondAttribute="trailing" constant="55" id="6HK-Te-kdl"/>
                 <constraint firstAttribute="trailing" secondItem="Aki-sM-82T" secondAttribute="trailing" constant="55" id="7MB-xS-gCT"/>
-                <constraint firstItem="kti-Ef-X15" firstAttribute="top" secondItem="myv-Kf-Ocm" secondAttribute="bottom" constant="25" id="ThX-LS-us0"/>
+                <constraint firstItem="kti-Ef-X15" firstAttribute="top" secondItem="myv-Kf-Ocm" secondAttribute="bottom" constant="30" id="ThX-LS-us0"/>
                 <constraint firstAttribute="trailing" secondItem="myv-Kf-Ocm" secondAttribute="trailing" constant="10" id="am3-2P-uf6"/>
                 <constraint firstItem="4n1-Qi-dQf" firstAttribute="leading" secondItem="kti-Ef-X15" secondAttribute="trailing" id="bPg-VR-xHM"/>
                 <constraint firstAttribute="trailing" secondItem="4n1-Qi-dQf" secondAttribute="trailing" id="bjk-Nl-gSO"/>

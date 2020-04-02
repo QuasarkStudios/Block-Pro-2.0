@@ -9,6 +9,11 @@
 import UIKit
 import Firebase
 
+protocol MoveToProfile: AnyObject {
+    
+    func moveToProfileView ()
+}
+
 class ProfileSidebarViewController: UIViewController {
 
     @IBOutlet weak var profileSidebar: UIView!
@@ -21,7 +26,11 @@ class ProfileSidebarViewController: UIViewController {
     
     @IBOutlet weak var dismissButton: UIButton!
     
+    let currentUser = CurrentUser.sharedInstance
+    
     var viewInitiallyLoaded: Bool = false
+    
+    weak var moveToProfileDelegate: MoveToProfile?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +42,18 @@ class ProfileSidebarViewController: UIViewController {
         let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
         
         dismissButton.addGestureRecognizer(pan)
+        
+        //If the profile picture hasn't finished downloading from Firebase
+        if currentUser.profilePictureURL != nil && currentUser.profilePictureImage == nil {
+            
+            //Adds an observor watching for when the profile pic finishes loading
+            NotificationCenter.default.addObserver(self, selector: #selector(profilePicLoaded), name: .didDownloadProfilePic, object: nil)
+        }
+        
+        else if let profilePic = currentUser.profilePictureImage {
+            
+            profileImage.image = profilePic
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -42,15 +63,18 @@ class ProfileSidebarViewController: UIViewController {
             animateSideBar(toValue: -10) {
                 
                 UIView.animate(withDuration: 0.4) {
-                    
+
                     self.profileImageContainer.alpha = 1
                 }
             }
             
             viewInitiallyLoaded = true
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
         
-
+        NotificationCenter.default.removeObserver(self, name: .didDownloadProfilePic, object: nil)
     }
     
     private func configureSideBar () {
@@ -93,6 +117,13 @@ class ProfileSidebarViewController: UIViewController {
             
                 completion()
         }
+    }
+    
+    @objc private func profilePicLoaded () {
+        
+        guard let profilePic = currentUser.profilePictureImage else { return }
+        
+            profileImage.image = profilePic
     }
     
     @objc private func handlePan (sender: UIPanGestureRecognizer) {
@@ -149,6 +180,14 @@ class ProfileSidebarViewController: UIViewController {
         animateSideBar(toValue: -290) {
             
             self.dismiss(animated: false, completion: nil)
+        }
+    }
+    
+    @IBAction func profileButton(_ sender: Any) {
+        
+        animateSideBar(toValue: -290) {
+            
+            self.moveToProfileDelegate?.moveToProfileView()
         }
     }
     

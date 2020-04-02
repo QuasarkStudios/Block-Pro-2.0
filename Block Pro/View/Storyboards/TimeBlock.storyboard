@@ -1197,7 +1197,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wyQ-TA-n0F" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="636" y="813.54679802955673"/>
+            <point key="canvasLocation" x="1526" y="896"/>
         </scene>
         <!--Add Update Block View Controller-->
         <scene sceneID="c8Y-oU-nDU">
@@ -1448,7 +1448,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fzh-Za-0vE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2710" y="922"/>
+            <point key="canvasLocation" x="2711" y="896"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="44z-Nc-0mF">
