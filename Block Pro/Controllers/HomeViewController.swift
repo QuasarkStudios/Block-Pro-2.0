@@ -16,24 +16,32 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var profilePicBlurView: UIView!
     @IBOutlet weak var profileButton: UIButton!
     
+    @IBOutlet weak var monthLabel: UILabel!
+    
     @IBOutlet weak var homeTableView: UITableView!
     
     let currentUser = CurrentUser.sharedInstance
+    
+    var viewTracker: String = ""
     
     var viewInitiallyLoaded: Bool = false
     
     let formatter = DateFormatter()
     
-    var weekSectionArray: [[Date]] = [[]]
+    var weekSectionArray: [[Date]]?
     
     var tableViewAutoScrolled: Bool = false
     
     var visibleCell: IndexPath?
     
+    var currentDate: Date = Date()
+    
     var selectedDate: Date?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        viewTracker = "personal"
         
         configureMonthButton()
         
@@ -50,7 +58,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         homeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: "homeCell")
         
-        determineWeeks()
+        homeTableView.register(UINib(nibName: "HomeCollabTableViewCell", bundle: nil), forCellReuseIdentifier: "homeCollabTableViewCell")
+        
+        configureCalendar(currentDate)
         
         profileButton.addTarget(self, action: #selector(profileButtonPressed), for: .touchUpInside)
         
@@ -91,29 +101,65 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func numberOfSections(in tableView: UITableView) -> Int {
          
-        return weekSectionArray.count
+        if viewTracker == "personal" {
+           
+            return weekSectionArray?.count ?? 0
+        }
+        
+        else {
+            
+            return 1
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return 1
+        if viewTracker == "personal" {
+            
+            return 1
+        }
+        
+        else {
+            
+            return 1
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     
-        return homeTableView.frame.height
+        if viewTracker == "personal" {
+            
+            return homeTableView.frame.height
+        }
+        
+        else {
+            
+            return 300
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "homeCell", for: indexPath) as! HomeTableViewCell
-        cell.selectionStyle = .none
+        if viewTracker == "personal" {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "homeCell", for: indexPath) as! HomeTableViewCell
+            cell.selectionStyle = .none
+            
+            cell.personalCollectionContent = weekSectionArray?[indexPath.section]
+            
+            cell.homeViewController = self
+            
+            return cell
+        }
         
-        cell.personalCollectionContent = weekSectionArray[indexPath.section]
-        
-        cell.homeViewController = self
-        
-        return cell
+        else {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "homeCollabTableViewCell", for: indexPath) as! HomeCollabTableViewCell
+            
+            //cell.backgroundColor = .blue
+            
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -125,10 +171,15 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
         
+        return false
+    }
+    
+    func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
         
     }
+
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         
@@ -153,7 +204,13 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         scrollToMostVisibleCell()
     }
+    
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        
+        scrollToMostVisibleCell()
+    }
 
+    
     private func animateEntryToView () {
         
         let animationView = UIView(frame: view.frame)
@@ -191,10 +248,12 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         let newCollabButton: UIButton = UIButton(type: .system)
         newCollabButton.setImage(UIImage(named: "genius"), for: .normal)
         newCollabButton.frame = CGRect(x: 0, y: 0, width: 34, height: 34)
+        newCollabButton.addTarget(self, action: #selector(createCollab), for: .touchUpInside)
         
         let collab_personalButton: UIButton = UIButton(type: .system)
         collab_personalButton.frame = CGRect(x: 0, y: 0, width: 65, height: 25)
         collab_personalButton.backgroundColor = UIColor(hexString: "ECECEC", withAlpha: 0.70)
+        collab_personalButton.addTarget(self, action: #selector(updateView), for: .touchUpInside)
         
         collab_personalButton.layer.cornerRadius = 14
         collab_personalButton.clipsToBounds = true
@@ -318,12 +377,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         monthImage.heightAnchor.constraint(equalToConstant: 45).isActive = true
     }
     
-    private func determineWeeks () {
+    private func configureCalendar (_ date: Date) {
+        
+        weekSectionArray?.removeAll()
+        weekSectionArray = [[]]
         
         formatter.dateFormat = "M/d"
         
         let calendar = Calendar.current
-        let date = Date()
         
         let interval = calendar.dateInterval(of: .month, for: date)
         
@@ -338,16 +399,19 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             let currentDate: Date = calendar.date(byAdding: .day, value: loopCount, to: startOfMonth)!
             
-            weekSectionArray[weekCount].append(currentDate)//(formatter.string(from: currentDate))
+            weekSectionArray?[weekCount].append(currentDate)//(formatter.string(from: currentDate))
             
             if (calendar.component(.weekday, from: currentDate) == 7) && (loopCount + 1 != days) {
                 
                 weekCount += 1
-                weekSectionArray.append([])
+                weekSectionArray?.append([])
             }
             
             loopCount += 1
         }
+        
+        formatter.dateFormat = "MMMM"
+        monthLabel.text = formatter.string(from: date)
     }
     
     private func scrollToCurrentWeek () {
@@ -361,43 +425,46 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
          
         var count: Int = 0
         
-        for dates in weekSectionArray {
+        if weekSectionArray?.count ?? 0 > 0 {
             
-            for date in dates {
+            for dates in weekSectionArray! {
+                
+                for date in dates {
 
-                if formatter.string(from: date) == formatter.string(from: currentDate) {
+                    if formatter.string(from: date) == formatter.string(from: currentDate) {
 
-                    sectionToScrollTo = count
+                        sectionToScrollTo = count
 
+                        break
+                    }
+                }
+                
+                if sectionToScrollTo != nil {
+                    
                     break
                 }
-            }
-            
-            if sectionToScrollTo != nil {
                 
-                break
+                count += 1
             }
-            
-            count += 1
-        }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-            
-            let indexPath: IndexPath = IndexPath(row: 0, section: sectionToScrollTo ?? 0)
-            self.visibleCell = IndexPath(row: 0, section: indexPath.section)
-            
-            if indexPath.section == 0 {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                 
-                let cell = self.homeTableView.cellForRow(at: self.visibleCell!)
+                let indexPath: IndexPath = IndexPath(row: 0, section: sectionToScrollTo ?? 0)
+                self.visibleCell = IndexPath(row: 0, section: indexPath.section)
                 
-                self.scrollToCurrentDay(self.homeTableView, cell!, self.visibleCell!)
-            }
-            
-            else {
+                if indexPath.section == 0 {
+                    
+                    let cell = self.homeTableView.cellForRow(at: self.visibleCell!)
+                    
+                    self.scrollToCurrentDay(self.homeTableView, cell!, self.visibleCell!)
+                }
                 
-                self.homeTableView.scrollToRow(at: indexPath, at: .top, animated: true)
-                
-                self.tableViewAutoScrolled = true
+                else {
+                    
+                    self.homeTableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                    
+                    self.tableViewAutoScrolled = true
+                }
             }
         }
     }
@@ -463,33 +530,36 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     private func scrollToMostVisibleCell () {
         
-        let visibleRows: [IndexPath] = homeTableView.indexPathsForVisibleRows!
-        let topHalfRect: CGRect = CGRect(x: 0, y: navigationItem.accessibilityFrame.height, width: view.frame.width, height: (view.center.y - navigationItem.accessibilityFrame.height))
-        var topHalfCells: [IndexPath] = []
+        if viewTracker == "personal" {
+            
+            let visibleRows: [IndexPath] = homeTableView.indexPathsForVisibleRows!
+            let topHalfRect: CGRect = CGRect(x: 0, y: navigationItem.accessibilityFrame.height, width: view.frame.width, height: (view.center.y - navigationItem.accessibilityFrame.height))
+            var topHalfCells: [IndexPath] = []
 
-        var count = 0
+            var count = 0
 
-        for cell in homeTableView.visibleCells {
+            for cell in homeTableView.visibleCells {
 
-            let cellFrame: CGRect = CGRect(x: cell.frame.minX, y: cell.frame.minY - homeTableView.contentOffset.y, width: cell.frame.width, height: cell.frame.height)
+                let cellFrame: CGRect = CGRect(x: cell.frame.minX, y: cell.frame.minY - homeTableView.contentOffset.y, width: cell.frame.width, height: cell.frame.height)
 
-            if cellFrame.intersects(topHalfRect) {
+                if cellFrame.intersects(topHalfRect) {
 
-                topHalfCells.append(visibleRows[count])
+                    topHalfCells.append(visibleRows[count])
+                }
+
+                count += 1
             }
 
-            count += 1
-        }
+            let indexPath: IndexPath = IndexPath(row: 0, section: topHalfCells[0][0])
+            homeTableView.scrollToRow(at: indexPath, at: .top, animated: true)
 
-        let indexPath: IndexPath = IndexPath(row: 0, section: topHalfCells[0][0])
-        homeTableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            visibleCell = IndexPath(row: 0, section: indexPath.section)
 
-        visibleCell = IndexPath(row: 0, section: indexPath.section)
+            let cell = homeTableView.cellForRow(at: visibleCell!) as! HomeTableViewCell
 
-        let cell = homeTableView.cellForRow(at: visibleCell!) as! HomeTableViewCell
-
-        cell.assignVisibleCell {
-            cell.growPersonalCell()
+            cell.assignVisibleCell {
+                cell.growPersonalCell()
+            }
         }
     }
     
@@ -505,10 +575,63 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         performSegue(withIdentifier: "moveToProfilePopover", sender: self)
     }
     
+    @objc private func updateView () {
+        
+        if viewTracker == "personal" {
+            
+            viewTracker = "collab"
+        }
+        
+        else {
+            
+            viewTracker = "personal"
+        }
+        
+        homeTableView.reloadData()
+    }
+    
+    @objc private func createCollab () {
+        
+        performSegue(withIdentifier: "moveToCreateACollabView", sender: self)
+    }
+    
     @objc private func monthButtonPressed () {
         
-        
+        print("move to calendar view")
     }
+    
+    @IBAction func previousMonth(_ sender: Any) {
+        
+        let calendar = Calendar.current
+        currentDate = calendar.date(byAdding: .month, value: -1, to: currentDate)!
+        
+        configureCalendar(currentDate)
+        
+        if let cell = visibleCell as? HomeTableViewCell{
+            
+            cell.shrinkPersonalCell()
+        }
+        
+        homeTableView.reloadData()
+        homeTableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+    }
+    
+    @IBAction func nextMonth(_ sender: Any) {
+        
+        let calendar = Calendar.current
+        currentDate = calendar.date(byAdding: .month, value: 1, to: currentDate)!
+        
+        configureCalendar(currentDate)
+        
+        if let cell = visibleCell as? HomeTableViewCell{
+            
+            cell.shrinkPersonalCell()
+        }
+        
+        homeTableView.reloadData()
+        homeTableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+    }
+    
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -534,6 +657,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             let profileVC = segue.destination as! ProfileViewController
             profileVC.profileViewDelegate = self
+        }
+        
+        else if segue.identifier == "moveToCreateACollabView" {
+    
         }
     }
 }

@@ -16,7 +16,6 @@ class InfoViewController: UIViewController {
     @IBOutlet weak var infoTextView: UITextView!
     @IBOutlet weak var textViewHeightConstraint: NSLayoutConstraint!
     
-    
     @IBOutlet weak var exitButton: UIButton!
     
     var selectedInfo: String = ""

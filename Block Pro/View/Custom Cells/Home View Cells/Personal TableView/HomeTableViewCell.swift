@@ -111,7 +111,10 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         return UIEdgeInsets(top: -40, left: leftInset, bottom: 0, right: 0)
     }
 
-
+//    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+//
+//        shrinkPersonalCell(animate: false)
+//    }
     
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -250,7 +253,7 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
     }
     
     
-    func shrinkPersonalCell () {
+    func shrinkPersonalCell (/*animate: Bool = true*/) {
         
         if visibleItem ?? nil != nil {
 
@@ -262,7 +265,7 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
             cell.deleteButtonTopAnchor.constant = 270
             cell.deleteButtonCenterXAnchor.constant = 0
             
-            UIView.animate(withDuration: 0.2) {
+            UIView.animate(withDuration: 0.2/*animate == true ? 0.2 : 0*/) {
                 
                 cell.layoutIfNeeded()
 
@@ -277,7 +280,7 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
             cell.cellBackgroundTrailingAnchor.constant = 15
 
 
-            UIView.animate(withDuration: 0.3) {
+            UIView.animate(withDuration: 0.3/*animate == true ? 0.3 : 0*/) {
                 
                 cell.layoutIfNeeded()
             }

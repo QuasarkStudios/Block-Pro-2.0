@@ -15,6 +15,10 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
 
     @IBOutlet weak var bpLabel: UILabel!
     
+    @IBOutlet weak var skipAnimationView: UIView!
+    @IBOutlet weak var skipViewWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var skipViewHeightConstraint: NSLayoutConstraint!
+    
     @IBOutlet weak var emailTextField: UITextField!
     
     @IBOutlet weak var passwordTextField: UITextField!
@@ -221,6 +225,21 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
         }
     }
     
+    private func animateSignInSkipped (completion: @escaping (() -> Void)) {
+        
+        skipViewWidthConstraint.constant = 2000
+        skipViewHeightConstraint.constant = 2000
+        
+        UIView.animate(withDuration: 0.75, animations: {
+            
+            self.view.layoutIfNeeded()
+            
+        }) { (finished: Bool) in
+            
+            completion()
+        }
+    }
+    
     private func userSignedIn () {
         
         signInButton.dismissProgress()
@@ -337,7 +356,10 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
     
     @IBAction func skipButton(_ sender: Any) {
         
-        performSegue(withIdentifier: "moveToHomeView", sender: self)
+        animateSignInSkipped {
+            
+            self.performSegue(withIdentifier: "moveToHomeView", sender: self)
+        }
     }
     
     @objc private func dismissKeyboard () {

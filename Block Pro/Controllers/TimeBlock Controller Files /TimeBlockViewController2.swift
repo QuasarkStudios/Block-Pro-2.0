@@ -208,6 +208,11 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
             addEditVC.currentDate = currentDate!
             addEditVC.reloadDataDelegate = self
             
+//            if #available(iOS 13.0, *) {
+//
+//                addEditVC.modalPresentationStyle = .fullScreen
+//            }
+            
             guard let block = selectedBlock else { return }
             
                 addEditVC.selectedBlock = block

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-SemiBold.ttf">
+            <string>Poppins-SemiBold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="collabObjectiveCell" id="KGk-i7-Jjw" customClass="CollabObjectiveCell" customModule="Block_Pro" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="110"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="110"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Objective" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BIh-3Y-jux">
+                        <rect key="frame" x="5" y="0.0" width="200" height="29"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="200" id="9pC-zq-tHp"/>
+                            <constraint firstAttribute="height" constant="29" id="j9z-Ip-ZOl"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="15"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OJi-OA-F7V">
+                        <rect key="frame" x="0.0" y="29" width="375" height="70"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Enter Here" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="5cd-qe-zo7">
+                                <rect key="frame" x="5" y="0.0" width="365" height="70"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="textColor" systemColor="placeholderTextColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="5cd-qe-zo7" firstAttribute="leading" secondItem="OJi-OA-F7V" secondAttribute="leading" constant="5" id="UNZ-JE-KO2"/>
+                            <constraint firstAttribute="trailing" secondItem="5cd-qe-zo7" secondAttribute="trailing" constant="5" id="bfx-LX-UHu"/>
+                            <constraint firstItem="5cd-qe-zo7" firstAttribute="top" secondItem="OJi-OA-F7V" secondAttribute="top" id="bxy-sl-Wws"/>
+                            <constraint firstAttribute="bottom" secondItem="5cd-qe-zo7" secondAttribute="bottom" id="yow-7i-2o0"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="BIh-3Y-jux" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="4lw-9s-k4R"/>
+                    <constraint firstItem="BIh-3Y-jux" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="6Yc-U1-B2W"/>
+                    <constraint firstItem="OJi-OA-F7V" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="AuW-2e-0KT"/>
+                    <constraint firstItem="OJi-OA-F7V" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottomMargin" id="MUB-Bf-oit"/>
+                    <constraint firstAttribute="trailing" secondItem="OJi-OA-F7V" secondAttribute="trailing" id="OOB-et-mel"/>
+                    <constraint firstItem="OJi-OA-F7V" firstAttribute="top" secondItem="BIh-3Y-jux" secondAttribute="bottom" id="TAz-6h-LLu"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="objectiveTextView" destination="5cd-qe-zo7" id="ocB-Bv-j0K"/>
+                <outlet property="textViewContainer" destination="OJi-OA-F7V" id="qiw-cc-JI8"/>
+            </connections>
+            <point key="canvasLocation" x="138.40579710144928" y="150.66964285714286"/>
+        </tableViewCell>
+    </objects>
+</document>

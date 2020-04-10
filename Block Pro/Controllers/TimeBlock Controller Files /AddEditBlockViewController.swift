@@ -215,6 +215,12 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
     
         if #available(iOS 13.0, *) {
             isModalInPresentation = true
+            
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+//
+//                self.modalPresentationStyle = .fullScreen
+//                //self.present(self, animated: true, completion: nil)
+//            }
         }
         
         guard let block = selectedBlock else { return }
