@@ -1097,12 +1097,12 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
 
         if cellState.isSelected == true {
             
-            cell.selectedView.isHidden = false
-            cell.selectedView.alpha = 0.45
+            cell.singleSelectionView.isHidden = false
+            cell.singleSelectionView.alpha = 0.45
             
             //Responsible for cell selection animation
             UIView.animate(withDuration: 0.05) {
-                cell.selectedView.layer.cornerRadius = 0.5 * cell.selectedView.bounds.size.width
+                cell.singleSelectionView.layer.cornerRadius = 0.5 * cell.singleSelectionView.bounds.size.width
             }
             
             currentDate = cellState.date //Sets the currentDate of the view to the date of the selected cell
@@ -1120,8 +1120,8 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
 
         else {
             
-            cell.selectedView.isHidden = true
-            cell.selectedView.layer.cornerRadius = 0.0
+            cell.singleSelectionView.isHidden = true
+            cell.singleSelectionView.layer.cornerRadius = 0.0
         }
     }
     

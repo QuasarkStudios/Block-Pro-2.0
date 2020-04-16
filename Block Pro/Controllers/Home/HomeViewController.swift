@@ -16,6 +16,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var profilePicBlurView: UIView!
     @IBOutlet weak var profileButton: UIButton!
     
+    @IBOutlet weak var userNameLabel: UILabel!
+    
     @IBOutlet weak var monthLabel: UILabel!
     
     @IBOutlet weak var homeTableView: UITableView!
@@ -69,6 +71,27 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         tabBarController?.tabBar.isTranslucent = false
         tabBarController?.tabBar.clipsToBounds = true
         
+        if currentUser.userSignedIn {
+            
+            userNameLabel.text = "Hey \(currentUser.firstName)"
+            
+            let firebaseCollab = FirebaseCollab.sharedInstance
+            
+            firebaseCollab.retrieveUsersFriends()
+        }
+        
+        else {
+            
+            formatter.dateFormat = "MMMM"
+            userNameLabel.text =  "Here's your \(formatter.string(from: currentDate)) calendar"
+            userNameLabel.adjustsFontSizeToFitWidth = true
+        }
+        
+        if currentUser.profilePictureURL != nil && currentUser.profilePictureImage == nil {
+            
+            setProfilePicture()
+        }
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,13 +102,27 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         configureNavBar()
         
-        if currentUser.profilePictureURL != nil && currentUser.profilePictureImage == nil {
-            
-            setProfilePicture()
-        }
+//        if currentUser.userSignedIn {
+//
+//            userNameLabel.text = "Hey \(currentUser.firstName)"
+//
+//
+//        }
+//
+//        else {
+//
+//            formatter.dateFormat = "MMMM"
+//            userNameLabel.text =  "Here's your \(formatter.string(from: currentDate)) calendar"
+//            userNameLabel.adjustsFontSizeToFitWidth = true
+//        }
+//
+//        if currentUser.profilePictureURL != nil && currentUser.profilePictureImage == nil {
+//
+//            setProfilePicture()
+//        }
         
         
-        ProgressHUD.dismiss()
+        //ProgressHUD.dismiss()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -290,7 +327,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         animateProfilePic(true)
         
-        firebaseStorage.retrieveProfilePicFromStorage(profilePicURL: currentUser.profilePictureURL!) {
+        firebaseStorage.retrieveCurrentUsersProfilePicFromStorage(profilePicURL: currentUser.profilePictureURL!) {
             
             self.animateProfilePic(false)
             
@@ -587,7 +624,19 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             viewTracker = "personal"
         }
         
-        homeTableView.reloadData()
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+            
+            self.homeTableView.alpha = 0
+            
+        }) { (finished: Bool) in
+            
+            self.homeTableView.reloadData()
+            
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+                
+                self.homeTableView.alpha = 1
+            })
+        }
     }
     
     @objc private func createCollab () {
@@ -607,9 +656,16 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         configureCalendar(currentDate)
         
-        if let cell = visibleCell as? HomeTableViewCell{
+        formatter.dateFormat = "MMMM"
+        userNameLabel.text =  "Here's your \(formatter.string(from: currentDate)) calendar"
+        userNameLabel.adjustsFontSizeToFitWidth = true
+        
+        if visibleCell ?? nil != nil {
             
-            cell.shrinkPersonalCell()
+            if let cell = homeTableView.cellForRow(at: visibleCell!) as? HomeTableViewCell {
+            
+                cell.shrinkPersonalCell()
+            }
         }
         
         homeTableView.reloadData()
@@ -623,9 +679,16 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         configureCalendar(currentDate)
         
-        if let cell = visibleCell as? HomeTableViewCell{
+        formatter.dateFormat = "MMMM"
+        userNameLabel.text = "Here's your \(formatter.string(from: currentDate)) calendar"
+        userNameLabel.adjustsFontSizeToFitWidth = true
+        
+        if visibleCell ?? nil != nil {
             
-            cell.shrinkPersonalCell()
+            if let cell = homeTableView.cellForRow(at: visibleCell!) as? HomeTableViewCell {
+                
+                cell.shrinkPersonalCell()
+            }
         }
         
         homeTableView.reloadData()

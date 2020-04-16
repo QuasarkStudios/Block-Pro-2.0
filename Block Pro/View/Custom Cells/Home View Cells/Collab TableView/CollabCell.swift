@@ -123,13 +123,13 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
     private func configureProfilePics () {
         
         imageContainer1.configureProfilePicContainer()
-        imageView1.configureImageView(profileImage: UIImage(named: "ProfilePic-1")!)
+        imageView1.configureProfileImageView(profileImage: UIImage(named: "ProfilePic-1")!)
         
         imageContainer2.configureProfilePicContainer()
-        imageView2.configureImageView(profileImage: UIImage(named: "ProfilePic-2")!)
+        imageView2.configureProfileImageView(profileImage: UIImage(named: "ProfilePic-2")!)
         
         imageContainer3.configureProfilePicContainer()
-        imageView3.configureImageView(profileImage: UIImage(named: "ProfilePic-3")!)
+        imageView3.configureProfileImageView(profileImage: UIImage(named: "ProfilePic-3")!)
         
         imageContainer4.configureProfilePicContainer(clip: true)
         extraMembersLabel.text = "+3"
@@ -329,30 +329,30 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
 
 extension UIView {
     
-    func configureProfilePicContainer (clip: Bool = false) {
-        
-        layer.shadowRadius = 2.5
-        layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
-        layer.shadowOffset = CGSize(width: 0, height: 0)
-        layer.shadowOpacity = 0.75
-        
-        layer.borderWidth = 1
-        layer.borderColor = UIColor(hexString: "F4F4F4", withAlpha: 0.05)?.cgColor
-        
-        layer.cornerRadius = 0.5 * self.bounds.width
-        layer.masksToBounds = false
-        clipsToBounds = clip
-    }
+//    func configureProfilePicContainer (clip: Bool = false) {
+//
+//        layer.shadowRadius = 2.5
+//        layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
+//        layer.shadowOffset = CGSize(width: 0, height: 0)
+//        layer.shadowOpacity = 0.75
+//
+//        layer.borderWidth = 1
+//        layer.borderColor = UIColor(hexString: "F4F4F4", withAlpha: 0.05)?.cgColor
+//
+//        layer.cornerRadius = 0.5 * self.bounds.width
+//        layer.masksToBounds = false
+//        clipsToBounds = clip
+//    }
 }
 
 extension UIImageView {
     
-    func configureImageView (profileImage: UIImage) {
-        
-        image = profileImage
-        
-        layer.cornerRadius = 0.5 * self.bounds.width
-        layer.masksToBounds = false
-        clipsToBounds = true
-    }
+//    func configureProfileImageView (profileImage: UIImage) {
+//
+//        image = profileImage
+//
+//        layer.cornerRadius = 0.5 * self.bounds.width
+//        layer.masksToBounds = false
+//        clipsToBounds = true
+//    }
 }

@@ -10,6 +10,8 @@ import Foundation
 
 class CurrentUser {
     
+    var userSignedIn: Bool = false
+    
     var userID: String = ""
     var firstName: String = ""
     var lastName: String = ""

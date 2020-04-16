@@ -12,16 +12,18 @@ import FirebaseStorage
 
 class FirebaseStorage {
     
+    let profilePicturesRef = Storage.storage().reference().child("profilePictures")
+    
     func saveProfilePictureToStorage (_ profilePicture: UIImage) {
         
         //let profilePicName = UUID().uuidString
         let profilePicData = UIImage.pngData(profilePicture)()
         
-        let profilePicturesRef = Storage.storage().reference().child("profilePictures").child("\(Auth.auth().currentUser!.uid).png")//.child("\(profilePicName).png")
+        //.child("\(profilePicName).png")
         
         if let data = profilePicData {
             
-            profilePicturesRef.putData(data, metadata: nil) { (metadata, error) in
+            profilePicturesRef.child("\(Auth.auth().currentUser!.uid).png").putData(data, metadata: nil) { (metadata, error) in
                 
                 if error != nil {
                     
@@ -30,7 +32,7 @@ class FirebaseStorage {
                 
                 else {
                     
-                    profilePicturesRef.downloadURL { (url, error) in
+                    self.profilePicturesRef.child("\(Auth.auth().currentUser!.uid).png").downloadURL { (url, error) in
                         
                         if error != nil {
                             
@@ -64,7 +66,7 @@ class FirebaseStorage {
         db.collection("Users").document(Auth.auth().currentUser!.uid).setData(["profilePicture": profilePicURL], merge: true)
     }
     
-    func retrieveProfilePicFromStorage (profilePicURL: String, completion: @escaping (() -> Void)) {
+    func retrieveCurrentUsersProfilePicFromStorage (profilePicURL: String, completion: @escaping (() -> Void)) {
         
         let url = NSURL(string: profilePicURL)
         
@@ -87,6 +89,40 @@ class FirebaseStorage {
                 }
             }
         }.resume()
+    }
+    
+    func retrieveFriendsProfilePicFromStorage (friend: Friend, completion: @escaping ((_ profilePic: UIImage?) -> Void)) {
+        
+        profilePicturesRef.child("\(friend.friendID).png").getData(maxSize: 3 * 1048576) { (data, error) in
+            
+            if error == nil {
+                
+                if let imageData = data {
+                    
+                    completion(UIImage(data: imageData))
+                }
+                
+
+            }
+        }
+        
+//        let url = NSURL(string: profilePicURL)
+//
+//        URLSession.shared.dataTask(with: url! as URL) { (data, response, error) in
+//
+//            if error != nil {
+//
+//                completion(nil)
+//            }
+//
+//            else {
+//
+//                DispatchQueue.main.async {
+//
+//                    completion(UIImage(data: data!))
+//                }
+//            }
+//        }.resume()
     }
 }
 

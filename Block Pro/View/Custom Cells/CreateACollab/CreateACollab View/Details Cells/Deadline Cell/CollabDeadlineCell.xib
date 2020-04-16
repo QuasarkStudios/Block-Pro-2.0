@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-SemiBold.ttf">
+            <string>Poppins-SemiBold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="collabDeadlineCell" id="KGk-i7-Jjw" customClass="CollabDeadlineCell" customModule="Block_Pro" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="295" height="70"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="295" height="70"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Deadline" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NAC-Wv-djI">
+                        <rect key="frame" x="5" y="0.0" width="200" height="29"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="200" id="tZB-t5-UTS"/>
+                            <constraint firstAttribute="height" constant="29" id="zaz-We-KHm"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="15"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rcT-H9-rrH">
+                        <rect key="frame" x="0.0" y="29" width="295" height="41"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ouk-JO-e6K">
+                                <rect key="frame" x="0.0" y="0.0" width="150" height="41"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xRn-xJ-Yha">
+                                        <rect key="frame" x="0.0" y="0.0" width="150" height="41"/>
+                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="13"/>
+                                        <state key="normal" title="April 7th, 7:00 PM">
+                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="calendarButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="waf-0G-e7h"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="linkColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstItem="xRn-xJ-Yha" firstAttribute="leading" secondItem="ouk-JO-e6K" secondAttribute="leading" id="6F6-wp-NTy"/>
+                                    <constraint firstAttribute="trailing" secondItem="xRn-xJ-Yha" secondAttribute="trailing" id="BYn-eg-fbb"/>
+                                    <constraint firstItem="xRn-xJ-Yha" firstAttribute="top" secondItem="ouk-JO-e6K" secondAttribute="top" id="TG9-Wb-HpO"/>
+                                    <constraint firstAttribute="width" constant="150" id="V1K-2h-jlx"/>
+                                    <constraint firstAttribute="bottom" secondItem="xRn-xJ-Yha" secondAttribute="bottom" id="yN2-d3-VYw"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4hk-VM-SCN">
+                                <rect key="frame" x="150" y="0.0" width="145" height="41"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lNk-Ft-Z0F" customClass="BEMCheckBox">
+                                        <rect key="frame" x="25" y="10.5" width="20" height="20"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="20" id="8yu-Mx-Sh8"/>
+                                            <constraint firstAttribute="width" constant="20" id="k8B-MA-qPk"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="tintColor">
+                                                <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="lineWidth">
+                                                <real key="value" value="2"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="onFillColor">
+                                                <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="onCheckColor">
+                                                <color key="value" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="onTintColor">
+                                                <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="checkBox:" destination="KGk-i7-Jjw" eventType="valueChanged" id="jeG-Q0-AOb"/>
+                                        </connections>
+                                    </view>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4O9-7A-8VF">
+                                        <rect key="frame" x="55" y="0.0" width="85" height="41"/>
+                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="13"/>
+                                        <state key="normal" title="No Deadline">
+                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="noDeadlineButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="unF-3K-GRt"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemGreenColor" red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="4O9-7A-8VF" secondAttribute="trailing" constant="5" id="8bZ-ft-uDz"/>
+                                    <constraint firstAttribute="bottom" secondItem="4O9-7A-8VF" secondAttribute="bottom" id="DFn-RN-z1l"/>
+                                    <constraint firstItem="lNk-Ft-Z0F" firstAttribute="leading" secondItem="4hk-VM-SCN" secondAttribute="leading" constant="25" id="iBG-zz-tp7"/>
+                                    <constraint firstItem="4O9-7A-8VF" firstAttribute="leading" secondItem="lNk-Ft-Z0F" secondAttribute="trailing" constant="10" id="mhg-Xb-04J"/>
+                                    <constraint firstItem="4O9-7A-8VF" firstAttribute="top" secondItem="4hk-VM-SCN" secondAttribute="top" id="vEq-CG-jG4"/>
+                                    <constraint firstItem="lNk-Ft-Z0F" firstAttribute="centerY" secondItem="4hk-VM-SCN" secondAttribute="centerY" id="xj2-JL-hYo"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="ouk-JO-e6K" secondAttribute="bottom" id="Pcw-xO-Br5"/>
+                            <constraint firstItem="ouk-JO-e6K" firstAttribute="top" secondItem="rcT-H9-rrH" secondAttribute="top" id="RDS-8h-ehB"/>
+                            <constraint firstItem="4hk-VM-SCN" firstAttribute="leading" secondItem="ouk-JO-e6K" secondAttribute="trailing" id="g3S-Ep-rN6"/>
+                            <constraint firstAttribute="bottom" secondItem="4hk-VM-SCN" secondAttribute="bottom" id="oGN-hr-gvC"/>
+                            <constraint firstItem="4hk-VM-SCN" firstAttribute="top" secondItem="rcT-H9-rrH" secondAttribute="top" id="pEj-Kl-Mdi"/>
+                            <constraint firstItem="ouk-JO-e6K" firstAttribute="leading" secondItem="rcT-H9-rrH" secondAttribute="leading" id="vyf-LX-Cr1"/>
+                            <constraint firstAttribute="trailing" secondItem="4hk-VM-SCN" secondAttribute="trailing" id="x01-QU-coz"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="rcT-H9-rrH" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="7ho-4Q-65j"/>
+                    <constraint firstAttribute="bottom" secondItem="rcT-H9-rrH" secondAttribute="bottom" id="GGa-ca-ynr"/>
+                    <constraint firstItem="NAC-Wv-djI" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="PZO-7k-l8d"/>
+                    <constraint firstItem="NAC-Wv-djI" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="S0D-uB-ikD"/>
+                    <constraint firstItem="rcT-H9-rrH" firstAttribute="top" secondItem="NAC-Wv-djI" secondAttribute="bottom" id="ke1-kd-wPo"/>
+                    <constraint firstAttribute="trailing" secondItem="rcT-H9-rrH" secondAttribute="trailing" id="mAk-Yg-CMi"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="calendarButton" destination="xRn-xJ-Yha" id="4UJ-Sc-pWk"/>
+                <outlet property="calendarButtonContainer" destination="ouk-JO-e6K" id="olU-IR-83H"/>
+                <outlet property="calendarContainerWidthConstraint" destination="V1K-2h-jlx" id="gJ2-qv-wIX"/>
+                <outlet property="checkBox" destination="lNk-Ft-Z0F" id="zAG-ga-vtT"/>
+                <outlet property="checkBoxContainer" destination="4hk-VM-SCN" id="d0W-vt-whW"/>
+                <outlet property="deadlineContainer" destination="rcT-H9-rrH" id="Kt3-8f-cr0"/>
+                <outlet property="noDeadlineButton" destination="4O9-7A-8VF" id="6Tx-iA-s1P"/>
+            </connections>
+            <point key="canvasLocation" x="-325.36231884057975" y="126.89732142857142"/>
+        </tableViewCell>
+    </objects>
+</document>

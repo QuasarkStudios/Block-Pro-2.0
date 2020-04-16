@@ -15,7 +15,13 @@ class DateCell: JTAppleCell {
     
     @IBOutlet weak var dotView: UIView!
     
-    @IBOutlet weak var selectedView: UIView!
+    @IBOutlet weak var singleSelectionView: UIView!
+    
+    @IBOutlet weak var rangeSelectionView: UIView!
+    @IBOutlet weak var rangeViewLeadingAnchor: NSLayoutConstraint!
+    @IBOutlet weak var rangeViewTrailingAnchor: NSLayoutConstraint!
+    
+    
     @IBOutlet weak var selectedViewWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var selectedViewHeightConstraint: NSLayoutConstraint!
 }

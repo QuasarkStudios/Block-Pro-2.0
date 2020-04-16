@@ -8,11 +8,17 @@
 
 import UIKit
 
+protocol CollabNameEntered: AnyObject {
+    
+    func nameEntered (_ name: String)
+}
+
 class CollabNameCell: UITableViewCell, UITextFieldDelegate {
 
-    
     @IBOutlet weak var textFieldContainer: UIView!
     @IBOutlet weak var collabNameTextField: UITextField!
+    
+    weak var collabNameEnteredDelegate: CollabNameEntered?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -28,7 +34,6 @@ class CollabNameCell: UITableViewCell, UITextFieldDelegate {
     
     private func configureTextField () {
         
-        textFieldContainer.backgroundColor = .clear
         textFieldContainer.layer.borderWidth = 1
         textFieldContainer.layer.borderColor = UIColor(hexString: "D8D8D8")?.cgColor
         
@@ -48,5 +53,10 @@ class CollabNameCell: UITableViewCell, UITextFieldDelegate {
         
         textField.resignFirstResponder()
         return true
+    }
+    
+    @IBAction func textChanged(_ sender: Any) {
+        
+        collabNameEnteredDelegate?.nameEntered(collabNameTextField.text!)
     }
 }

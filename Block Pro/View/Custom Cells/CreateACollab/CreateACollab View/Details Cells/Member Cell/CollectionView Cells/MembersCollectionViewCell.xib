@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-SemiBold.ttf">
+            <string>Poppins-SemiBold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="membersCollectionViewCell" id="gTV-IL-0wX" customClass="MembersCollectionViewCell" customModule="Block_Pro" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="95" height="35"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="95" height="35"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9j9-IH-MED">
+                        <rect key="frame" x="10" y="7.5" width="20" height="20"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="a4y-jr-2RK">
+                                <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="a4y-jr-2RK" firstAttribute="leading" secondItem="9j9-IH-MED" secondAttribute="leading" id="2NZ-EE-WQN"/>
+                            <constraint firstAttribute="height" constant="20" id="3fk-b9-hEU"/>
+                            <constraint firstAttribute="width" constant="20" id="IkI-gu-iAM"/>
+                            <constraint firstAttribute="trailing" secondItem="a4y-jr-2RK" secondAttribute="trailing" id="ayc-Vw-ORn"/>
+                            <constraint firstAttribute="bottom" secondItem="a4y-jr-2RK" secondAttribute="bottom" id="g5G-np-rck"/>
+                            <constraint firstItem="a4y-jr-2RK" firstAttribute="top" secondItem="9j9-IH-MED" secondAttribute="top" id="rAC-bb-9NK"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rzb-eP-otQ">
+                        <rect key="frame" x="38" y="7.5" width="49" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="M4j-Br-s1X"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="13"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="rzb-eP-otQ" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="FWv-cx-iC7"/>
+                <constraint firstItem="9j9-IH-MED" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="IVb-eZ-ceB"/>
+                <constraint firstAttribute="trailing" secondItem="rzb-eP-otQ" secondAttribute="trailing" constant="8" id="cmp-ox-Od3"/>
+                <constraint firstItem="rzb-eP-otQ" firstAttribute="leading" secondItem="9j9-IH-MED" secondAttribute="trailing" constant="8" id="eRP-X0-BNm"/>
+                <constraint firstItem="9j9-IH-MED" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="uV6-zp-kfK"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <connections>
+                <outlet property="memberNameLabel" destination="rzb-eP-otQ" id="0I5-xL-8Nf"/>
+                <outlet property="profilePicContainer" destination="9j9-IH-MED" id="6hZ-zD-PC6"/>
+                <outlet property="profilePicImageView" destination="a4y-jr-2RK" id="cUr-ru-jEJ"/>
+            </connections>
+            <point key="canvasLocation" x="139.85507246376812" y="148.32589285714286"/>
+        </collectionViewCell>
+    </objects>
+</document>

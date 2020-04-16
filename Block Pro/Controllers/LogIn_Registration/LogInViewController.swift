@@ -320,33 +320,14 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
     
     @IBAction func checkBox(_ sender: Any) {
         
-        if checkBox.on {
-            
-            defaults.setValue(true, forKey: "keepUserSignedIn")
-        }
-        
-        else {
-            
-            defaults.setValue(false, forKey: "keepUserSignedIn")
-        }
+        defaults.setValue(checkBox.on, forKey: "keepUserSignedIn")
     }
     
     
     @IBAction func keepMeSignedIn(_ sender: Any) {
         
-        if checkBox.on {
-            
-            checkBox.setOn(false, animated: true)
-            
-            defaults.setValue(false, forKey: "keepUserSignedIn")
-        }
-        
-        else {
-            
-            checkBox.setOn(true, animated: true)
-            
-            defaults.setValue(true, forKey: "keepUserSignedIn")
-        }
+        checkBox.setOn(!checkBox.on, animated: true)
+        defaults.setValue(checkBox.on, forKey: "keepUserSignedIn")
     }
     
     @IBAction func signupButton(_ sender: Any) {

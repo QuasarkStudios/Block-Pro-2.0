@@ -8,10 +8,17 @@
 
 import UIKit
 
+protocol CollabObjectiveEntered: AnyObject {
+    
+    func objectiveEntered (_ objective: String)
+}
+
 class CollabObjectiveCell: UITableViewCell, UITextViewDelegate {
 
     @IBOutlet weak var textViewContainer: UIView!
     @IBOutlet weak var objectiveTextView: UITextView!
+    
+    weak var collabObjectiveEnteredDelegate: CollabObjectiveEntered?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -27,11 +34,10 @@ class CollabObjectiveCell: UITableViewCell, UITextViewDelegate {
     
     private func configureTextView () {
         
-        textViewContainer.backgroundColor = .clear
         textViewContainer.layer.borderWidth = 1
         textViewContainer.layer.borderColor = UIColor(hexString: "D8D8D8")?.cgColor
         
-        textViewContainer.layer.cornerRadius = 13
+        textViewContainer.layer.cornerRadius = 10
         textViewContainer.clipsToBounds = true
         
         if #available(iOS 13.0, *) {
@@ -48,6 +54,11 @@ class CollabObjectiveCell: UITableViewCell, UITextViewDelegate {
             textView.text = ""
             textView.textColor = .black
         }
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        
+        collabObjectiveEnteredDelegate?.objectiveEntered(textView.text!)
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -72,5 +83,7 @@ class CollabObjectiveCell: UITableViewCell, UITextViewDelegate {
         textView.resignFirstResponder()
         return true
     }
+    
+    
     
 }

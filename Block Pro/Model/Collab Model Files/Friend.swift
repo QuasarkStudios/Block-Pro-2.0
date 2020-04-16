@@ -14,4 +14,6 @@ class Friend {
     var firstName: String = ""
     var lastName: String = ""
     var username: String = ""
+    
+    var profilePictureImage: UIImage?
 }

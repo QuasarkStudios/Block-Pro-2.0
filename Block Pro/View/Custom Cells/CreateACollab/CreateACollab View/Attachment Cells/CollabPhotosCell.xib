@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-SemiBold.ttf">
+            <string>Poppins-SemiBold</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="collabPhotosCell" id="KGk-i7-Jjw" customClass="CollabPhotosCell" customModule="Block_Pro" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="295" height="80"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="295" height="80"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Photos" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mqm-gO-1Gs">
+                        <rect key="frame" x="5" y="0.0" width="200" height="29"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="200" id="TfV-vu-Bcq"/>
+                            <constraint firstAttribute="height" constant="29" id="xl7-il-JRj"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="15"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="49C-6o-4mN">
+                        <rect key="frame" x="0.0" y="29" width="295" height="51"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="attach" translatesAutoresizingMaskIntoConstraints="NO" id="8Oo-UX-dd4">
+                                <rect key="frame" x="20" y="13" width="25" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="4fe-3b-jL1"/>
+                                    <constraint firstAttribute="width" constant="25" id="l1f-8V-TnI"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Attach Photos" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hjT-76-JD8">
+                                <rect key="frame" x="55" y="13" width="230" height="25"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="25" id="Ty1-2q-yfP"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="14"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1rm-zo-KGH">
+                                <rect key="frame" x="0.0" y="0.0" width="295" height="51"/>
+                                <connections>
+                                    <action selector="attachPhotosButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="6fr-Al-KBk"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="1rm-zo-KGH" secondAttribute="trailing" id="0zs-B6-8fa"/>
+                            <constraint firstItem="1rm-zo-KGH" firstAttribute="top" secondItem="49C-6o-4mN" secondAttribute="top" id="4G7-36-76A"/>
+                            <constraint firstItem="8Oo-UX-dd4" firstAttribute="centerY" secondItem="49C-6o-4mN" secondAttribute="centerY" id="KIb-LJ-gAP"/>
+                            <constraint firstItem="hjT-76-JD8" firstAttribute="leading" secondItem="8Oo-UX-dd4" secondAttribute="trailing" constant="10" id="SJF-37-Kj1"/>
+                            <constraint firstAttribute="bottom" secondItem="1rm-zo-KGH" secondAttribute="bottom" id="Tgv-Uv-2Mh"/>
+                            <constraint firstItem="8Oo-UX-dd4" firstAttribute="leading" secondItem="49C-6o-4mN" secondAttribute="leading" constant="20" id="aTl-Ie-otZ"/>
+                            <constraint firstAttribute="trailing" secondItem="hjT-76-JD8" secondAttribute="trailing" constant="10" id="fNF-hi-msh"/>
+                            <constraint firstItem="hjT-76-JD8" firstAttribute="centerY" secondItem="49C-6o-4mN" secondAttribute="centerY" id="hVD-7Q-1pU"/>
+                            <constraint firstItem="1rm-zo-KGH" firstAttribute="leading" secondItem="49C-6o-4mN" secondAttribute="leading" id="kjB-cF-lSk"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="49C-6o-4mN" firstAttribute="top" secondItem="Mqm-gO-1Gs" secondAttribute="bottom" id="Ayj-Nd-717"/>
+                    <constraint firstItem="49C-6o-4mN" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="BOZ-Ea-eTY"/>
+                    <constraint firstItem="Mqm-gO-1Gs" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="CrA-Sn-Ewd"/>
+                    <constraint firstAttribute="bottom" secondItem="49C-6o-4mN" secondAttribute="bottom" id="Kkg-DW-JmZ"/>
+                    <constraint firstItem="Mqm-gO-1Gs" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="iyQ-6B-tA8"/>
+                    <constraint firstAttribute="trailing" secondItem="49C-6o-4mN" secondAttribute="trailing" id="w6f-cK-Vxm"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <point key="canvasLocation" x="139" y="138"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="attach" width="30" height="30"/>
+    </resources>
+</document>

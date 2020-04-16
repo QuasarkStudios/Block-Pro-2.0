@@ -52,6 +52,8 @@ class UserAuthentication {
                     
                     let currentUser = CurrentUser.sharedInstance
                     
+                    currentUser.userSignedIn = true
+                    
                     currentUser.userID = snapshot?["userID"] as! String
                     currentUser.firstName = snapshot?["firstName"] as! String
                     currentUser.lastName = snapshot?["lastName"] as! String

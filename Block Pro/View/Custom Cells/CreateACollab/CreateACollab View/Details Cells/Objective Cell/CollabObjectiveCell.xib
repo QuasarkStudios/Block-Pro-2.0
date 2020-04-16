@@ -33,10 +33,10 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OJi-OA-F7V">
-                        <rect key="frame" x="0.0" y="29" width="375" height="70"/>
+                        <rect key="frame" x="0.0" y="29" width="375" height="81"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Enter Here" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="5cd-qe-zo7">
-                                <rect key="frame" x="5" y="0.0" width="365" height="70"/>
+                                <rect key="frame" x="5" y="0.0" width="365" height="81"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <color key="textColor" systemColor="placeholderTextColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="14"/>
@@ -46,19 +46,19 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="5cd-qe-zo7" firstAttribute="leading" secondItem="OJi-OA-F7V" secondAttribute="leading" constant="5" id="UNZ-JE-KO2"/>
-                            <constraint firstAttribute="trailing" secondItem="5cd-qe-zo7" secondAttribute="trailing" constant="5" id="bfx-LX-UHu"/>
                             <constraint firstItem="5cd-qe-zo7" firstAttribute="top" secondItem="OJi-OA-F7V" secondAttribute="top" id="bxy-sl-Wws"/>
+                            <constraint firstAttribute="trailing" secondItem="5cd-qe-zo7" secondAttribute="trailing" constant="5" id="xeP-Eb-hK1"/>
                             <constraint firstAttribute="bottom" secondItem="5cd-qe-zo7" secondAttribute="bottom" id="yow-7i-2o0"/>
                         </constraints>
                     </view>
                 </subviews>
                 <constraints>
+                    <constraint firstAttribute="trailing" secondItem="OJi-OA-F7V" secondAttribute="trailing" id="33e-gd-C4y"/>
                     <constraint firstItem="BIh-3Y-jux" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="4lw-9s-k4R"/>
                     <constraint firstItem="BIh-3Y-jux" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="6Yc-U1-B2W"/>
                     <constraint firstItem="OJi-OA-F7V" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="AuW-2e-0KT"/>
-                    <constraint firstItem="OJi-OA-F7V" firstAttribute="bottom" secondItem="H2p-sc-9uM" secondAttribute="bottomMargin" id="MUB-Bf-oit"/>
-                    <constraint firstAttribute="trailing" secondItem="OJi-OA-F7V" secondAttribute="trailing" id="OOB-et-mel"/>
                     <constraint firstItem="OJi-OA-F7V" firstAttribute="top" secondItem="BIh-3Y-jux" secondAttribute="bottom" id="TAz-6h-LLu"/>
+                    <constraint firstAttribute="bottom" secondItem="OJi-OA-F7V" secondAttribute="bottom" id="e6k-cQ-ms5"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
