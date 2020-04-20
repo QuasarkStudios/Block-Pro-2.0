@@ -1,14 +1,14 @@
 //
-//  PersonalCollectionView.swift
+//  TimeSelectorCollectionViewFlowLayout.swift
 //  Block Pro
 //
-//  Created by Nimat Azeez on 3/20/20.
+//  Created by Nimat Azeez on 4/16/20.
 //  Copyright © 2020 Nimat Azeez. All rights reserved.
 //
 
-import UIKit
+import Foundation
 
-class PersonalCollectionViewFlowLayout: UICollectionViewFlowLayout{
+class TimeSelectorCollectionViewFlowLayout: UICollectionViewFlowLayout {
     
     var pageWidth: CGFloat {
         
@@ -18,9 +18,9 @@ class PersonalCollectionViewFlowLayout: UICollectionViewFlowLayout{
     override func prepare() {
         super.prepare()
         
-        self.itemSize = CGSize(width: 205, height: 455)
-        self.minimumInteritemSpacing = 15
-        self.minimumLineSpacing = 15
+        self.itemSize = CGSize(width: 4, height: 50)
+        self.minimumLineSpacing = 8
+        self.minimumInteritemSpacing = 5
         self.scrollDirection = .horizontal
     }
     
@@ -39,14 +39,40 @@ class PersonalCollectionViewFlowLayout: UICollectionViewFlowLayout{
         
         if pannedLessThanAPage && flicked {
             
-            contentOffset.x = nextPage * pageWidth
-       }
+            contentOffset.x = (nextPage * pageWidth) + adjustContentOffset()
+        }
         
         else {
-
-            contentOffset.x = round(rawPageValue) * pageWidth
+            
+            contentOffset.x = (round(rawPageValue) * pageWidth) + adjustContentOffset()
         }
         
         return contentOffset
+    }
+    
+    private func minMaxContentOffset () {
+        
+        
+    }
+    
+    private func adjustContentOffset () -> CGFloat {
+        
+        //iPhone 11 Pro Max, iPhone 11, and iPhone 8 Plus
+        if UIScreen.main.bounds.width == 414.0 {
+
+            return 2
+        }
+
+        //iPhone 11 Pro and iPhone 8
+        else if UIScreen.main.bounds.width == 375.0 {
+
+            return -3
+        }
+
+        //iPhone SE
+        else {
+
+            return 1
+        }
     }
 }

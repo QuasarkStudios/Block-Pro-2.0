@@ -16,6 +16,7 @@ pod 'JTAppleCalendar'
 pod 'iProgressHUD', '~> 1.1.1' 
 pod 'SwipeCellKit'
 pod 'BEMCheckBox'
+pod 'SVProgressHUD'
 
 
 end

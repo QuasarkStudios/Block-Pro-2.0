@@ -12,6 +12,8 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
 
     @IBOutlet weak var navBar: UINavigationBar!
     
+    
+    
     @IBOutlet weak var segmentContainer: UIView!
     @IBOutlet weak var segmentBackground: UIView!
     @IBOutlet weak var selectedSegmentIndicator: UIView!
@@ -112,15 +114,24 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
                 if newCollab.dates["deadline"] == nil {
                     
-                    formatter.dateFormat = "MMMM dd,"
-                    let buttonTitle: String = formatter.string(from: Date()) + " 9:00 PM"
+                    let presetDeadline = Calendar.current.date(byAdding: .day, value: 1, to: Date())
                     
-                    cell.calendarButton.setTitle(buttonTitle, for: .normal)
-                }
-                
-                else {
+                    if let date = presetDeadline {
+                        
+                        let suffix = date.daySuffix()
+                        var dateString: String = ""
+
+                        formatter.dateFormat = "MMMM d"
+                        dateString = formatter.string(from: date)
+                        dateString += "\(suffix), 5:00 PM"
+
+                        cell.calendarButton.setTitle(dateString, for: .normal)
+                    }
                     
-                    
+                    else {
+                        
+                        cell.calendarButton.setTitle("Set Here", for: .normal)
+                    }
                 }
                 
                 return cell
@@ -215,7 +226,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         detailsButtonWidthConstraint.constant = segmentContainer.frame.width / 2
         detailsButton.layer.cornerRadius = 10
-        detailsButton.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
+        detailsButton.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner] 
         detailsButton.clipsToBounds = true
         
         attachmentButtonWidthConstraint.constant = segmentContainer.frame.width / 2
@@ -248,6 +259,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
     private func addTapGesture () {
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
     }
     
@@ -277,6 +289,23 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
             if let member = selectedMember {
                 
                 memberProfileVC.selectedFriend = member
+            }
+        }
+        
+        else if segue.identifier == "moveToCalendarView" {
+            
+            let datesVC = segue.destination as! CollabDatesViewController
+            datesVC.collabDatesSelectedDelegate = self
+            
+            if newCollab.dates["startTime"] != nil {
+                
+                datesVC.selectedStartTime["startDate"] = newCollab.dates["startTime"]
+                datesVC.selectedStartTime["startTime"] = newCollab.dates["startTime"]
+                
+                datesVC.selectedDeadline["deadlineDate"] = newCollab.dates["deadline"]
+                datesVC.selectedDeadline["deadlineTime"] = newCollab.dates["deadline"]
+                
+                ProgressHUD.show()
             }
         }
     }
@@ -380,6 +409,12 @@ extension CreateCollabViewController: AddMembers {
 
         performSegue(withIdentifier: "moveToAddMembersView", sender: self)
     }
+    
+    func performSegueToProfileView (member: Friend) {
+
+        selectedMember = member
+        performSegue(withIdentifier: "moveToMemberProfileView", sender: self)
+    }
 }
 
 extension CreateCollabViewController: MembersAdded {
@@ -402,12 +437,6 @@ extension CreateCollabViewController: MembersAdded {
         cell.membersCollectionView.reloadData()
         
         newCollab.members = members
-    }
-    
-    func performSegueToProfileView (member: Friend) {
-        
-        selectedMember = member
-        performSegue(withIdentifier: "moveToMemberProfileView", sender: self)
     }
 }
 
@@ -445,5 +474,26 @@ extension CreateCollabViewController: DeadlineCell {
     func moveToCalendarView () {
         
         performSegue(withIdentifier: "moveToCalendarView", sender: self)
+    }
+}
+
+extension CreateCollabViewController: CollabDatesSelected {
+    
+    func datesSelected(startTime: Date, deadline: Date) {
+        
+        newCollab.dates = ["startTime" : startTime, "deadline" : deadline]
+        
+        var deadlineButtonTitle: String
+        
+        formatter.dateFormat = "MMMM dd"
+        deadlineButtonTitle = formatter.string(from: deadline)
+        
+        deadlineButtonTitle += deadline.daySuffix()
+        
+        formatter.dateFormat = "h:mm a"
+        deadlineButtonTitle += ", \(formatter.string(from: deadline))"
+        
+        let cell = details_attachmentsTableView.cellForRow(at: IndexPath(item: 6, section: 0)) as! CollabDeadlineCell
+        cell.calendarButton.setTitle(deadlineButtonTitle, for: .normal)
     }
 }

@@ -31,10 +31,4 @@ class MembersCollectionViewCell: UICollectionViewCell {
         
         profilePicContainer.configureProfilePicContainer()
     }
-
-    @IBAction func deleteButton(_ sender: Any) {
-        
-        print("check")
-    }
-    
 }

@@ -540,27 +540,3 @@ class TimeBlockCell: UITableViewCell {
 
     }
 }
-
-
-
-extension Date {
-    
-    func isBetween (startDate: Date, endDate: Date) -> Bool {
-        
-        if self > startDate && self < endDate {
-            
-            return true
-        }
-        
-        else {
-            return false
-        }
-        
-        
-        
-        
-        return (startDate ... endDate).contains(self)
-        
-        return (min(startDate, endDate) ... max(startDate, endDate)).contains(self)
-    }
-}

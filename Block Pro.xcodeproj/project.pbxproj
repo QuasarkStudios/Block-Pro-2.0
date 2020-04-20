@@ -119,7 +119,7 @@
 		0D78684624451A0D00A92DD1 /* MembersCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78684424451A0D00A92DD1 /* MembersCollectionViewCell.xib */; };
 		0D78684C2446844400A92DD1 /* MemberProfileViewControlller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78684B2446844400A92DD1 /* MemberProfileViewControlller.swift */; };
 		0D78684E2446920200A92DD1 /* NavBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78684D2446920200A92DD1 /* NavBar+Extension.swift */; };
-		0D78685B2446BBF700A92DD1 /* CollabCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78685A2446BBF700A92DD1 /* CollabCalendarViewController.swift */; };
+		0D78685B2446BBF700A92DD1 /* CollabDatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78685A2446BBF700A92DD1 /* CollabDatesViewController.swift */; };
 		0D7C6483238DBC1700E68AE8 /* RadialGradients.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7C6482238DBC1700E68AE8 /* RadialGradients.swift */; };
 		0D7CD51B2432FCBE00BE1BE6 /* NewUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CD51A2432FCBE00BE1BE6 /* NewUser.swift */; };
 		0D7CD51D2433067A00BE1BE6 /* Firebase+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CD51C2433067A00BE1BE6 /* Firebase+Auth.swift */; };
@@ -134,6 +134,7 @@
 		0D93300822927C7500B6191D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300722927C7500B6191D /* Block.swift */; };
 		0D95C17A232886C400421BE0 /* Start Timer.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D95C179232886C400421BE0 /* Start Timer.wav */; };
 		0D95C17C2328923000421BE0 /* Timer Running.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D95C17B2328923000421BE0 /* Timer Running.wav */; };
+		0DA7FFA324482D9200A42817 /* BarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA7FFA224482D9200A42817 /* BarCell.swift */; };
 		0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83422A84833008BECAE /* FreeTime.storyboard */; };
 		0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83622A84862008BECAE /* Pomodoro.storyboard */; };
 		0DA9F83922A84879008BECAE /* TimeBlock.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83822A84879008BECAE /* TimeBlock.storyboard */; };
@@ -148,6 +149,7 @@
 		0DADDAB42355919800E79F89 /* TimeTwentyFiveMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAB32355919800E79F89 /* TimeTwentyFiveMinCell.swift */; };
 		0DADDAB6235591C200E79F89 /* TimeThirtyMinAndUpCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAB5235591C200E79F89 /* TimeThirtyMinAndUpCell.swift */; };
 		0DADDAB823579D1500E79F89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */; };
+		0DB29FB42448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB29FB32448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift */; };
 		0DBAB33E242039CC0021FE35 /* CategoriesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBAB33C242039CC0021FE35 /* CategoriesCell.swift */; };
 		0DBAB33F242039CC0021FE35 /* CategoriesCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DBAB33D242039CC0021FE35 /* CategoriesCell.xib */; };
 		0DBAB34124204E8F0021FE35 /* CategoryTrackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBAB34024204E8F0021FE35 /* CategoryTrackBar.swift */; };
@@ -157,6 +159,7 @@
 		0DBF3EA622BB1E7900E180D2 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA522BB1E7900E180D2 /* DateCell.swift */; };
 		0DBF3EAA22BD3F3200E180D2 /* DateHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */; };
 		0DC119CD24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC119CC24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift */; };
+		0DCBA949244817D500B2CC4D /* CollabDatesViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DCBA948244817D500B2CC4D /* CollabDatesViewController+Extension.swift */; };
 		0DD636BE241028EF0026B623 /* BlockTimePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636BC241028EF0026B623 /* BlockTimePickerCell.swift */; };
 		0DD636BF241028EF0026B623 /* BlockTimePickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DD636BD241028EF0026B623 /* BlockTimePickerCell.xib */; };
 		0DD636C224102A1F0026B623 /* BlockCategoryPickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636C024102A1F0026B623 /* BlockCategoryPickerCell.swift */; };
@@ -178,13 +181,14 @@
 		0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */; };
 		0DDF79C52346AB9B00BAAD51 /* UserSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF79C42346AB9B00BAAD51 /* UserSettingsViewController.swift */; };
 		0DDF79C72346CE0500BAAD51 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF79C62346CE0500BAAD51 /* ProfileCell.swift */; };
+		0DE31E15244BA97800DE6EE3 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */; };
 		0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD7235FDD3A005255A1 /* Cards.swift */; };
 		0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD9235FDD49005255A1 /* Tasks.swift */; };
 		0DEB9726241C480D004F7422 /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEB9725241C480D004F7422 /* DetailsViewController.swift */; };
 		0DEB972C241CBBB7004F7422 /* ProgressCirclesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEB972A241CBBB7004F7422 /* ProgressCirclesCell.swift */; };
 		0DEB972D241CBBB7004F7422 /* ProgressCirclesCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DEB972B241CBBB7004F7422 /* ProgressCirclesCell.xib */; };
 		0DFE5C1C231DF7C10025B4EB /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */; };
-		9EF9E81404A66B880DE1AEFC /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6ABA0889491FDCD75032AD75 /* Pods_Block_Pro.framework */; };
+		31813B49AE5B60C3CD3C0525 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 785F1CBD833DE56AD8355452 /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -302,7 +306,7 @@
 		0D78684424451A0D00A92DD1 /* MembersCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MembersCollectionViewCell.xib; sourceTree = "<group>"; };
 		0D78684B2446844400A92DD1 /* MemberProfileViewControlller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberProfileViewControlller.swift; sourceTree = "<group>"; };
 		0D78684D2446920200A92DD1 /* NavBar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NavBar+Extension.swift"; sourceTree = "<group>"; };
-		0D78685A2446BBF700A92DD1 /* CollabCalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabCalendarViewController.swift; sourceTree = "<group>"; };
+		0D78685A2446BBF700A92DD1 /* CollabDatesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabDatesViewController.swift; sourceTree = "<group>"; };
 		0D7C6482238DBC1700E68AE8 /* RadialGradients.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadialGradients.swift; sourceTree = "<group>"; };
 		0D7CD51A2432FCBE00BE1BE6 /* NewUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewUser.swift; sourceTree = "<group>"; };
 		0D7CD51C2433067A00BE1BE6 /* Firebase+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Firebase+Auth.swift"; sourceTree = "<group>"; };
@@ -317,6 +321,7 @@
 		0D93300722927C7500B6191D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
 		0D95C179232886C400421BE0 /* Start Timer.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Start Timer.wav"; sourceTree = "<group>"; };
 		0D95C17B2328923000421BE0 /* Timer Running.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Timer Running.wav"; sourceTree = "<group>"; };
+		0DA7FFA224482D9200A42817 /* BarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarCell.swift; sourceTree = "<group>"; };
 		0DA9F83422A84833008BECAE /* FreeTime.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FreeTime.storyboard; sourceTree = "<group>"; };
 		0DA9F83622A84862008BECAE /* Pomodoro.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Pomodoro.storyboard; sourceTree = "<group>"; };
 		0DA9F83822A84879008BECAE /* TimeBlock.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TimeBlock.storyboard; sourceTree = "<group>"; };
@@ -331,6 +336,7 @@
 		0DADDAB32355919800E79F89 /* TimeTwentyFiveMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTwentyFiveMinCell.swift; sourceTree = "<group>"; };
 		0DADDAB5235591C200E79F89 /* TimeThirtyMinAndUpCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeThirtyMinAndUpCell.swift; sourceTree = "<group>"; };
 		0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		0DB29FB32448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectorCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		0DBAB33C242039CC0021FE35 /* CategoriesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesCell.swift; sourceTree = "<group>"; };
 		0DBAB33D242039CC0021FE35 /* CategoriesCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoriesCell.xib; sourceTree = "<group>"; };
 		0DBAB34024204E8F0021FE35 /* CategoryTrackBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTrackBar.swift; sourceTree = "<group>"; };
@@ -342,6 +348,7 @@
 		0DBF3EA522BB1E7900E180D2 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		0DBF3EA922BD3F3200E180D2 /* DateHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateHeader.swift; sourceTree = "<group>"; };
 		0DC119CC24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
+		0DCBA948244817D500B2CC4D /* CollabDatesViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabDatesViewController+Extension.swift"; sourceTree = "<group>"; };
 		0DD636BC241028EF0026B623 /* BlockTimePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockTimePickerCell.swift; sourceTree = "<group>"; };
 		0DD636BD241028EF0026B623 /* BlockTimePickerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockTimePickerCell.xib; sourceTree = "<group>"; };
 		0DD636C024102A1F0026B623 /* BlockCategoryPickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockCategoryPickerCell.swift; sourceTree = "<group>"; };
@@ -363,15 +370,16 @@
 		0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendSearchResults.swift; sourceTree = "<group>"; };
 		0DDF79C42346AB9B00BAAD51 /* UserSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsViewController.swift; sourceTree = "<group>"; };
 		0DDF79C62346CE0500BAAD51 /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
+		0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		0DE3CDD7235FDD3A005255A1 /* Cards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cards.swift; sourceTree = "<group>"; };
 		0DE3CDD9235FDD49005255A1 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 		0DEB9725241C480D004F7422 /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		0DEB972A241CBBB7004F7422 /* ProgressCirclesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCirclesCell.swift; sourceTree = "<group>"; };
 		0DEB972B241CBBB7004F7422 /* ProgressCirclesCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProgressCirclesCell.xib; sourceTree = "<group>"; };
 		0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
-		6ABA0889491FDCD75032AD75 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6D3640CC91CE1AFB603F0E96 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
-		AFA6D37CD25F46BFFA89F698 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
+		20276B77BF3DDCBCBBF35723 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
+		785F1CBD833DE56AD8355452 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B30DF7452232319A3755747 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -379,7 +387,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9EF9E81404A66B880DE1AEFC /* Pods_Block_Pro.framework in Frameworks */,
+				31813B49AE5B60C3CD3C0525 /* Pods_Block_Pro.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -404,7 +412,9 @@
 				0D0C8D7C243FBBC500EB51F7 /* CreateCollabViewController.swift */,
 				0D02C2402443744600D255D7 /* AddMembersViewController.swift */,
 				0D78684B2446844400A92DD1 /* MemberProfileViewControlller.swift */,
-				0D78685A2446BBF700A92DD1 /* CollabCalendarViewController.swift */,
+				0D78685A2446BBF700A92DD1 /* CollabDatesViewController.swift */,
+				0DCBA948244817D500B2CC4D /* CollabDatesViewController+Extension.swift */,
+				0DB29FB32448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift */,
 			);
 			path = "Create A Collab View Files";
 			sourceTree = "<group>";
@@ -542,7 +552,7 @@
 				0D2CECED228FB55600CC9180 /* Products */,
 				0DBF3E9222B03D7A00E180D2 /* Supporting Files */,
 				C54E61ACB30B0D4CDBD0499A /* Pods */,
-				47CDA46C57751D1090F15721 /* Frameworks */,
+				AB0FB9F63AB7CC12B38A3BE7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -602,6 +612,7 @@
 		0D2CED0722907B0E00CC9180 /* Custom Cells */ = {
 			isa = PBXGroup;
 			children = (
+				0DA7FFA224482D9200A42817 /* BarCell.swift */,
 				0D0C8D822440F82A00EB51F7 /* CreateACollab */,
 				0D810DFF236C4339005B5583 /* FriendCell */,
 				0D810DFE236C4325005B5583 /* UserSettings Cell */,
@@ -931,6 +942,7 @@
 				0DD9D88F24437DC2006AA8AB /* View+Extension.swift */,
 				0DD9D89224437F4E006AA8AB /* ImageView+Extension.swift */,
 				0D78684D2446920200A92DD1 /* NavBar+Extension.swift */,
+				0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1015,10 +1027,10 @@
 			path = "Details View Cells";
 			sourceTree = "<group>";
 		};
-		47CDA46C57751D1090F15721 /* Frameworks */ = {
+		AB0FB9F63AB7CC12B38A3BE7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6ABA0889491FDCD75032AD75 /* Pods_Block_Pro.framework */,
+				785F1CBD833DE56AD8355452 /* Pods_Block_Pro.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1026,8 +1038,8 @@
 		C54E61ACB30B0D4CDBD0499A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				6D3640CC91CE1AFB603F0E96 /* Pods-Block Pro.debug.xcconfig */,
-				AFA6D37CD25F46BFFA89F698 /* Pods-Block Pro.release.xcconfig */,
+				20276B77BF3DDCBCBBF35723 /* Pods-Block Pro.debug.xcconfig */,
+				8B30DF7452232319A3755747 /* Pods-Block Pro.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1039,11 +1051,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0D2CECFE228FB55800CC9180 /* Build configuration list for PBXNativeTarget "Block Pro" */;
 			buildPhases = (
-				76A49FB36FB4A8CEBFAC01FF /* [CP] Check Pods Manifest.lock */,
+				5941079F9D3232028A69CBD2 /* [CP] Check Pods Manifest.lock */,
 				0D2CECE8228FB55600CC9180 /* Sources */,
 				0D2CECE9228FB55600CC9180 /* Frameworks */,
 				0D2CECEA228FB55600CC9180 /* Resources */,
-				8CFB122DDE655A312D14CAE4 /* [CP] Embed Pods Frameworks */,
+				F7EB8400C95513CDDDCA1EDD /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1165,7 +1177,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		76A49FB36FB4A8CEBFAC01FF /* [CP] Check Pods Manifest.lock */ = {
+		5941079F9D3232028A69CBD2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1187,7 +1199,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8CFB122DDE655A312D14CAE4 /* [CP] Embed Pods Frameworks */ = {
+		F7EB8400C95513CDDDCA1EDD /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1235,10 +1247,12 @@
 				0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */,
 				0D112836234C2BF00080774C /* InfoViewController.swift in Sources */,
 				0DADDAB42355919800E79F89 /* TimeTwentyFiveMinCell.swift in Sources */,
+				0DB29FB42448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift in Sources */,
 				0D0C8D7D243FBBC500EB51F7 /* CreateCollabViewController.swift in Sources */,
 				0D872F7822DEE925001D35B4 /* PendingFriend.swift in Sources */,
 				0D23077822D580CF00A12393 /* NewCollabViewController.swift in Sources */,
 				0D2CECF2228FB55600CC9180 /* TimeBlockViewController.swift in Sources */,
+				0DA7FFA324482D9200A42817 /* BarCell.swift in Sources */,
 				0D7CE23E23C43AE7005BB8EE /* CardContainer.swift in Sources */,
 				0DBAB34324204EA00021FE35 /* CategoryProgressBar.swift in Sources */,
 				0D41F5C02311EC6A00B4B11E /* CollabFifteenMinCell.swift in Sources */,
@@ -1247,7 +1261,7 @@
 				0D4173A924304EF7006076A5 /* RegistrationProfilePicCell.swift in Sources */,
 				0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */,
 				0D0C8D802440F82000EB51F7 /* CollabNameCell.swift in Sources */,
-				0D78685B2446BBF700A92DD1 /* CollabCalendarViewController.swift in Sources */,
+				0D78685B2446BBF700A92DD1 /* CollabDatesViewController.swift in Sources */,
 				0D77B711240C316600AF60CC /* BigBlock.swift in Sources */,
 				0D18FFD423F785330083C5AB /* AddEditBlockViewController.swift in Sources */,
 				0DD636CE241348520026B623 /* DeleteBlockCell.swift in Sources */,
@@ -1284,9 +1298,11 @@
 				0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */,
 				0DDF79C72346CE0500BAAD51 /* ProfileCell.swift in Sources */,
 				0D153CE82433CD2C00741B67 /* Firebase+Storage.swift in Sources */,
+				0DE31E15244BA97800DE6EE3 /* Date+Extension.swift in Sources */,
 				0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */,
 				0D0C8D8A244116F700EB51F7 /* CollabMembersCell.swift in Sources */,
 				0D1128322349A51B0080774C /* SettingsTableViewCell.swift in Sources */,
+				0DCBA949244817D500B2CC4D /* CollabDatesViewController+Extension.swift in Sources */,
 				0D76F844243652CF00A52386 /* RegistrationValidationMethods.swift in Sources */,
 				0D0ECF3B243E5B0E00D947F4 /* previous_nextButton.swift in Sources */,
 				0D78684E2446920200A92DD1 /* NavBar+Extension.swift in Sources */,
@@ -1465,7 +1481,7 @@
 		};
 		0D2CECFF228FB55800CC9180 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6D3640CC91CE1AFB603F0E96 /* Pods-Block Pro.debug.xcconfig */;
+			baseConfigurationReference = 20276B77BF3DDCBCBBF35723 /* Pods-Block Pro.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1493,7 +1509,7 @@
 		};
 		0D2CED00228FB55800CC9180 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AFA6D37CD25F46BFFA89F698 /* Pods-Block Pro.release.xcconfig */;
+			baseConfigurationReference = 8B30DF7452232319A3755747 /* Pods-Block Pro.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
