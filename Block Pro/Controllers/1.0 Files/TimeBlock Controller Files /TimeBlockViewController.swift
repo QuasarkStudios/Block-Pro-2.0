@@ -1087,8 +1087,8 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
             
             cell.dateLabel.font = UIFont(name: "HelveticaNeue", size: 14)
             
-            cell.selectedViewWidthConstraint.constant = 24
-            cell.selectedViewHeightConstraint.constant = 24
+//            cell.selectedViewWidthConstraint.constant = 24
+//            cell.selectedViewHeightConstraint.constant = 24
         }
     }
     
@@ -1182,26 +1182,26 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
     }
     
     //Function that tells the delegate that the JTAppleCalendar is about to display a header
-    func calendar(_ calendar: JTAppleCalendarView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTAppleCollectionReusableView {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM yyyy"
-
-        let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "DateHeader", for: indexPath) as! DateHeader
-        header.monthLabel.text = formatter.string(from: range.start)
-        
-        var gradientLayer: CAGradientLayer!
-        
-        gradientLayer = CAGradientLayer()
-        gradientLayer.frame = CGRect(x: 0, y: 0, width: 450, height: 50)
-        gradientLayer.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
-        
-        header.layer.addSublayer(gradientLayer)
-        
-        header.bringSubviewToFront(header.monthLabel)
-        header.bringSubviewToFront(header.dayStackView)
-        
-        return header
-    }
+//    func calendar(_ calendar: JTAppleCalendarView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTAppleCollectionReusableView {
+//        let formatter = DateFormatter()
+//        formatter.dateFormat = "MMMM yyyy"
+//
+//        let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: "DateHeader", for: indexPath) as! DateHeader
+//        header.monthLabel.text = formatter.string(from: range.start)
+//        
+//        var gradientLayer: CAGradientLayer!
+//        
+//        gradientLayer = CAGradientLayer()
+//        gradientLayer.frame = CGRect(x: 0, y: 0, width: 450, height: 50)
+//        gradientLayer.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
+//        
+//        header.layer.addSublayer(gradientLayer)
+//        
+//        header.bringSubviewToFront(header.monthLabel)
+//        header.bringSubviewToFront(header.dayStackView)
+//        
+//        return header
+//    }
 
     //Function that is called to retrieve the size to be used for the month headers
     func calendarSizeForMonths(_ calendar: JTAppleCalendarView?) -> MonthSize? {

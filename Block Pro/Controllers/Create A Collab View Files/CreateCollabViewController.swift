@@ -7,12 +7,11 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class CreateCollabViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var navBar: UINavigationBar!
-    
-    
     
     @IBOutlet weak var segmentContainer: UIView!
     @IBOutlet weak var segmentBackground: UIView!
@@ -46,6 +45,8 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         configureTableView()
         
         addTapGesture()
+        
+        fetchCollabData()
         
         if #available(iOS 13.0, *) {
             isModalInPresentation = true
@@ -112,27 +113,26 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 cell.selectionStyle = .none
                 cell.deadlineCellDelegate = self
                 
-                if newCollab.dates["deadline"] == nil {
+                if let deadline = newCollab.dates["deadline"] {
                     
-                    let presetDeadline = Calendar.current.date(byAdding: .day, value: 1, to: Date())
-                    
-                    if let date = presetDeadline {
-                        
-                        let suffix = date.daySuffix()
-                        var dateString: String = ""
+                    let suffix = deadline.daySuffix()
+                    var dateString: String = ""
 
-                        formatter.dateFormat = "MMMM d"
-                        dateString = formatter.string(from: date)
-                        dateString += "\(suffix), 5:00 PM"
-
-                        cell.calendarButton.setTitle(dateString, for: .normal)
-                    }
+                    formatter.dateFormat = "MMM d"
+                    dateString = formatter.string(from: deadline)
+                    dateString += "\(suffix), "
                     
-                    else {
-                        
-                        cell.calendarButton.setTitle("Set Here", for: .normal)
-                    }
+                    formatter.dateFormat = "h:mm a"
+                    dateString += formatter.string(from: deadline)
+                    
+                    cell.calendarButton.setTitle(dateString, for: .normal)
                 }
+                
+                else {
+                    
+                    cell.calendarButton.setTitle("Set Here", for: .normal)
+                }
+                
                 
                 return cell
             }
@@ -256,6 +256,25 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         details_attachmentsTableView.register(UINib(nibName: "CollabPhotosCell", bundle: nil), forCellReuseIdentifier: "collabPhotosCell")
     }
     
+    private func fetchCollabData () {
+        
+        let currentDate = Date()
+        
+        formatter.dateFormat = "MMMM dd yyyy"
+        let startDate: String = formatter.string(from: currentDate)
+        let deadlineDate: String = formatter.string(from: Calendar.current.date(byAdding: .day, value: 1, to: currentDate)!)
+        
+        formatter.dateFormat = "HH:mm"
+        let startTime: String = "00:00"
+        let deadlineTime: String = "17:00"
+        
+        formatter.dateFormat = "MMMM dd yyyy HH:mm"
+        let starts: Date = formatter.date(from: startDate + " " + startTime)!
+        let deadline: Date = formatter.date(from: deadlineDate + " " + deadlineTime)!
+
+        newCollab.dates = ["startTime" : starts, "deadline" : deadline]
+    }
+    
     private func addTapGesture () {
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -294,18 +313,20 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         else if segue.identifier == "moveToCalendarView" {
             
-            let datesVC = segue.destination as! CollabDatesViewController
+            let datesVC = segue.destination as! CollabDates2ViewController
             datesVC.collabDatesSelectedDelegate = self
-            
-            if newCollab.dates["startTime"] != nil {
+
+            if let starts = newCollab.dates["startTime"], let deadline = newCollab.dates["deadline"] {
+
+                SVProgressHUD.show()
                 
-                datesVC.selectedStartTime["startDate"] = newCollab.dates["startTime"]
-                datesVC.selectedStartTime["startTime"] = newCollab.dates["startTime"]
-                
-                datesVC.selectedDeadline["deadlineDate"] = newCollab.dates["deadline"]
-                datesVC.selectedDeadline["deadlineTime"] = newCollab.dates["deadline"]
-                
-                ProgressHUD.show()
+                formatter.dateFormat = "MMMM dd yyyy"
+                datesVC.selectedStartTime["startDate"] = formatter.date(from: formatter.string(from: starts))
+                datesVC.selectedDeadline["deadlineDate"] = formatter.date(from: formatter.string(from: deadline))
+
+                formatter.dateFormat = "HH:mm"
+                datesVC.selectedStartTime["startTime"] = formatter.date(from: formatter.string(from: starts))
+                datesVC.selectedDeadline["deadlineTime"] = formatter.date(from: formatter.string(from: deadline))
             }
         }
     }
@@ -485,7 +506,7 @@ extension CreateCollabViewController: CollabDatesSelected {
         
         var deadlineButtonTitle: String
         
-        formatter.dateFormat = "MMMM dd"
+        formatter.dateFormat = "MMMM d"
         deadlineButtonTitle = formatter.string(from: deadline)
         
         deadlineButtonTitle += deadline.daySuffix()

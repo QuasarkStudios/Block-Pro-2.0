@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-Medium.ttf">
+            <string>Poppins-Medium</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="dateCell" id="gTV-IL-0wX" customClass="DateCell" customModule="Block_Pro" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SZD-IE-D3b">
+                        <rect key="frame" x="0.0" y="4" width="50" height="42"/>
+                        <color key="backgroundColor" red="0.84705882352941175" green="0.84705882352941175" blue="0.84705882352941175" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="42" id="Zh9-gB-vMX"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="t7n-oD-0Od">
+                        <rect key="frame" x="7.5" y="7.5" width="35" height="35"/>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="35" id="C7X-aD-l6u"/>
+                            <constraint firstAttribute="height" constant="35" id="PnJ-4Q-mu4"/>
+                        </constraints>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="15" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fwH-VV-MKL">
+                        <rect key="frame" x="7.5" y="7.5" width="35" height="35"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="35" id="AM9-BO-5dr"/>
+                            <constraint firstAttribute="width" constant="35" id="NwN-4J-Q6R"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" name="Poppins-Medium" family="Poppins" pointSize="19"/>
+                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="SZD-IE-D3b" secondAttribute="trailing" id="3fa-3h-qbC"/>
+                <constraint firstItem="t7n-oD-0Od" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="FrX-N5-4jb"/>
+                <constraint firstItem="fwH-VV-MKL" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="G0j-XY-h11"/>
+                <constraint firstItem="SZD-IE-D3b" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="LaM-jH-ICt"/>
+                <constraint firstItem="fwH-VV-MKL" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="X5v-cP-hZc"/>
+                <constraint firstItem="t7n-oD-0Od" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="iZI-ru-epE"/>
+                <constraint firstItem="SZD-IE-D3b" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="m5y-I0-LMo"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <connections>
+                <outlet property="dateLabel" destination="fwH-VV-MKL" id="PuH-qt-AjK"/>
+                <outlet property="rangeSelectionView" destination="SZD-IE-D3b" id="6or-Wn-H3d"/>
+                <outlet property="rangeViewLeadingAnchor" destination="LaM-jH-ICt" id="O5I-mZ-mLW"/>
+                <outlet property="rangeViewTrailingAnchor" destination="3fa-3h-qbC" id="sbq-NY-nkW"/>
+                <outlet property="singleSelectionView" destination="t7n-oD-0Od" id="bTJ-VF-v4w"/>
+            </connections>
+            <point key="canvasLocation" x="137.68115942028987" y="153.34821428571428"/>
+        </collectionViewCell>
+    </objects>
+</document>

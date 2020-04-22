@@ -436,7 +436,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             let currentDate: Date = calendar.date(byAdding: .day, value: loopCount, to: startOfMonth)!
             
-            weekSectionArray?[weekCount].append(currentDate)//(formatter.string(from: currentDate))
+            weekSectionArray?[weekCount].append(currentDate)
             
             if (calendar.component(.weekday, from: currentDate) == 7) && (loopCount + 1 != days) {
                 

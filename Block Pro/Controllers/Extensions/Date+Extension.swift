@@ -46,4 +46,32 @@ extension Date {
         
         return (min(startDate, endDate) ... max(startDate, endDate)).contains(self)
     }
+    
+    func determineNumberOfWeeks () -> Int {
+        
+        let calendar = Calendar.current
+        
+        let interval = calendar.dateInterval(of: .month, for: self)
+        
+        let days = calendar.dateComponents([.day], from: interval!.start, to: interval!.end).day!
+        
+        let startOfMonth = interval!.start
+        
+        var loopCount: Int = 0
+        var weekCount: Int = 0
+        
+        while loopCount < days {
+            
+            let currentDate: Date = calendar.date(byAdding: .day, value: loopCount, to: startOfMonth)!
+            
+            if (calendar.component(.weekday, from: currentDate) == 7) && (loopCount + 1 != days) {
+                
+                weekCount += 1
+            }
+            
+            loopCount += 1
+        }
+        
+        return weekCount
+    }
 }

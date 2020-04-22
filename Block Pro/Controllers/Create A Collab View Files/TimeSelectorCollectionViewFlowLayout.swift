@@ -50,12 +50,8 @@ class TimeSelectorCollectionViewFlowLayout: UICollectionViewFlowLayout {
         return contentOffset
     }
     
-    private func minMaxContentOffset () {
-        
-        
-    }
-    
-    private func adjustContentOffset () -> CGFloat {
+    //Needed to adjust the content offset of the Time Selector Collection View; look to remove in the future
+    func adjustContentOffset () -> CGFloat {
         
         //iPhone 11 Pro Max, iPhone 11, and iPhone 8 Plus
         if UIScreen.main.bounds.width == 414.0 {
