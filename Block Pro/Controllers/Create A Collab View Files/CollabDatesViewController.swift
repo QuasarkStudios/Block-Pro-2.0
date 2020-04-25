@@ -14,7 +14,7 @@ protocol CollabDatesSelected: AnyObject {
     func datesSelected (startTime: Date, deadline: Date)
 }
 
-class CollabDates2ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class CollabDatesViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var navBar: UINavigationBar!
     @IBOutlet weak var datesTableView: UITableView!
@@ -271,7 +271,7 @@ class CollabDates2ViewController: UIViewController, UITableViewDataSource, UITab
     
 }
 
-extension CollabDates2ViewController: CalendarCellProtocol {
+extension CollabDatesViewController: CalendarCellProtocol {
     
     func datesSelected(startDate: Date?, deadlineDate: Date?) {
         
@@ -306,7 +306,7 @@ extension CollabDates2ViewController: CalendarCellProtocol {
     }
 }
 
-extension CollabDates2ViewController: TimeSelectorCellProtocol {
+extension CollabDatesViewController: TimeSelectorCellProtocol {
     
     func startTimeSelected(time: Date) {
         
@@ -327,7 +327,7 @@ extension CollabDates2ViewController: TimeSelectorCellProtocol {
     }
 }
 
-extension CollabDates2ViewController: SegmentCellProtocol {
+extension CollabDatesViewController: SegmentCellProtocol {
     
     func selectedSegment(start: Bool) {
         

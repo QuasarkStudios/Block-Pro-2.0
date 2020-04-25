@@ -114,9 +114,8 @@
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6oG-qy-ucj">
                                         <rect key="frame" x="189" y="0.0" width="40" height="40"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wOd-GJ-rdz">
-                                                <rect key="frame" x="0.0" y="0.0" width="42" height="40"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wOd-GJ-rdz">
+                                                <rect key="frame" x="0.0" y="0.0" width="38" height="40"/>
                                                 <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -127,12 +126,16 @@
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <constraints>
+                                            <constraint firstItem="wOd-GJ-rdz" firstAttribute="top" secondItem="6oG-qy-ucj" secondAttribute="top" id="2IP-zX-lfT"/>
                                             <constraint firstAttribute="bottom" secondItem="iHB-Cr-X9Z" secondAttribute="bottom" id="73F-SR-3g2"/>
                                             <constraint firstAttribute="trailing" secondItem="iHB-Cr-X9Z" secondAttribute="trailing" id="96f-Rv-8He"/>
+                                            <constraint firstAttribute="bottom" secondItem="wOd-GJ-rdz" secondAttribute="bottom" id="H44-aI-rbP"/>
+                                            <constraint firstAttribute="trailing" secondItem="wOd-GJ-rdz" secondAttribute="trailing" constant="2" id="aeV-Ae-hne"/>
                                             <constraint firstAttribute="width" constant="40" id="ndV-sF-YWC"/>
                                             <constraint firstAttribute="height" constant="40" id="ts0-OC-yRV"/>
                                             <constraint firstItem="iHB-Cr-X9Z" firstAttribute="top" secondItem="6oG-qy-ucj" secondAttribute="top" id="vAi-Ir-CvR"/>
                                             <constraint firstItem="iHB-Cr-X9Z" firstAttribute="leading" secondItem="6oG-qy-ucj" secondAttribute="leading" id="vIo-RF-YHG"/>
+                                            <constraint firstItem="wOd-GJ-rdz" firstAttribute="leading" secondItem="6oG-qy-ucj" secondAttribute="leading" id="wqW-8F-DgL"/>
                                         </constraints>
                                     </view>
                                 </subviews>

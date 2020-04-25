@@ -9,6 +9,11 @@
 import UIKit
 import SVProgressHUD
 
+protocol CollabCreated: AnyObject {
+    
+    func reloadData ()
+}
+
 class CreateCollabViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var navBar: UINavigationBar!
@@ -27,6 +32,8 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
     
     @IBOutlet weak var details_attachmentsTableView: UITableView!
     
+    let firebaseCollab = FirebaseCollab()
+    
     let formatter = DateFormatter()
     
     var viewIntiallyLoaded: Bool = false
@@ -36,6 +43,11 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
     var newCollab = NewCollab()
     
     var selectedMember: Friend?
+    var selectedPhoto: UIImage?
+    
+    var photosCellCollectionViewPresent: Bool = false
+    
+    weak var collabCreatedDelegate: CollabCreated?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -151,6 +163,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "collabPhotosCell", for: indexPath) as! CollabPhotosCell
                 cell.selectionStyle = .none
+                cell.collabPhotosCellDelegate = self
                 return cell
             }
         }
@@ -195,7 +208,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
             case 0:
                 
-                return 80
+                return photosCellCollectionViewPresent ? 210 : 80
                 
             default:
                 
@@ -282,6 +295,36 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         view.addGestureRecognizer(tap)
     }
     
+    func validateTextEntered (_ text: String) -> Bool {
+        
+        let textArray = Array(text)
+        var textEntered: Bool = false
+        
+        for char in textArray {
+            
+            if char != " " {
+                textEntered = true
+                break
+            }
+        }
+        
+        return textEntered
+    }
+    
+    private func createCollab () {
+        
+        SVProgressHUD.show()
+        
+        firebaseCollab.createCollab(collabInfo: newCollab) {
+            
+            self.collabCreatedDelegate?.reloadData()
+            
+            SVProgressHUD.dismiss()
+            
+            self.dismiss(animated: true, completion: nil)
+        }
+    }
+    
     @objc private func dismissKeyboard () {
         
         view.endEditing(true)
@@ -313,7 +356,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         else if segue.identifier == "moveToCalendarView" {
             
-            let datesVC = segue.destination as! CollabDates2ViewController
+            let datesVC = segue.destination as! CollabDatesViewController
             datesVC.collabDatesSelectedDelegate = self
 
             if let starts = newCollab.dates["startTime"], let deadline = newCollab.dates["deadline"] {
@@ -329,6 +372,13 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 datesVC.selectedDeadline["deadlineTime"] = formatter.date(from: formatter.string(from: deadline))
             }
         }
+        
+        else if segue.identifier == "moveToSelectedPhotoView" {
+            
+            let selectedPhotoVC = segue.destination as! SelectedPhotoViewController
+            selectedPhotoVC.selectedPhoto = selectedPhoto
+            selectedPhotoVC.photoEditedDelegate = self
+        }
     }
     
     @IBAction func exitButton(_ sender: Any) {
@@ -339,7 +389,16 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
     
     @IBAction func doneButton(_ sender: Any) {
         
-        dismiss(animated: true, completion: nil)
+        if validateTextEntered(newCollab.name) {
+            
+            createCollab ()
+        }
+        
+        else {
+            
+            SVProgressHUD.showError(withStatus: "Please enter a name for this Collab")
+        }
+        
     }
     
     @IBAction func detailsButtonPressed(_ sender: Any) {
@@ -469,7 +528,7 @@ extension CreateCollabViewController: RemoveMemberFromCollab {
         
         for members in newCollab.members {
             
-            if member.friendID == members.friendID {
+            if member.userID == members.userID {
                 
                 newCollab.members.remove(at: count)
                 break
@@ -478,7 +537,7 @@ extension CreateCollabViewController: RemoveMemberFromCollab {
             count += 1
         }
         
-        let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 4, section: 0)) as! CollabMembersCell
+        guard let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? CollabMembersCell else { return }
         
         cell.members = newCollab.members
         cell.membersCollectionView.reloadData()
@@ -516,5 +575,142 @@ extension CreateCollabViewController: CollabDatesSelected {
         
         let cell = details_attachmentsTableView.cellForRow(at: IndexPath(item: 6, section: 0)) as! CollabDeadlineCell
         cell.calendarButton.setTitle(deadlineButtonTitle, for: .normal)
+    }
+}
+
+extension CreateCollabViewController: CollabPhotosCellProtocol, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func attachPhotosButtonPressed () {
+        
+        let photoAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        photoAlert.view.tintColor = .black
+
+        let takePhotoAction = UIAlertAction(title: "Take Photo", style: .default) { (takePhoto) in
+
+            let imagePicker = UIImagePickerController()
+            imagePicker.navigationBar.configureNavBar()
+            imagePicker.delegate = self
+            imagePicker.sourceType = .camera
+            imagePicker.allowsEditing = true
+            
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+
+        let chooseFromLibraryAction = UIAlertAction(title: "Choose From Library", style: .default) { (chooseFromLibrary) in
+
+            let imagePicker = UIImagePickerController()
+            imagePicker.delegate = self
+            imagePicker.sourceType = .photoLibrary
+            imagePicker.allowsEditing = true
+            
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+
+        photoAlert.addAction(takePhotoAction)
+        photoAlert.addAction(chooseFromLibraryAction)
+        photoAlert.addAction(cancelAction)
+
+        present(photoAlert, animated: true)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        var selectedImageFromPicker: UIImage?
+        
+        if let editedImage = info[.editedImage] {
+            
+            selectedImageFromPicker = editedImage as? UIImage
+        }
+        
+        else if let originalImage = info[.originalImage] {
+            
+            selectedImageFromPicker = originalImage as? UIImage
+        }
+        
+        if let selectedImage = selectedImageFromPicker {
+            
+            newCollab.photos.append(selectedImage)
+            
+            guard let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CollabPhotosCell else { return }
+
+                photosCellCollectionViewPresent = true
+                details_attachmentsTableView.reloadData()
+ 
+                cell.reconfigureAttachmentContainer(collectionViewPresent: true)
+            
+                cell.selectedPhotos.append(selectedImage)
+                cell.photosCollectionView.reloadData()
+        }
+        
+        else {
+            
+            SVProgressHUD.showError(withStatus: "Sorry, something went wrong selecting this photo")
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func addedPhotoSelected (photo: UIImage) {
+        
+        selectedPhoto = photo
+        
+        performSegue(withIdentifier: "moveToSelectedPhotoView", sender: self)
+    }
+}
+
+extension CreateCollabViewController: PhotoEdited {
+    
+    func photoChanged (changedPhoto: UIImage) {
+        
+        var count = 0
+        
+        for photo in newCollab.photos {
+            
+            if photo == selectedPhoto {
+                
+                newCollab.photos[count] = changedPhoto
+                selectedPhoto = nil
+                break
+            }
+            
+            count += 1
+        }
+        
+        guard let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CollabPhotosCell else { return }
+        
+        cell.selectedPhotos = newCollab.photos
+        cell.photosCollectionView.reloadData()
+    }
+    
+    func photoDeleted (deletedPhoto: UIImage) {
+        
+        var count = 0
+        
+        for photo in newCollab.photos {
+            
+            if photo == deletedPhoto {
+                
+                newCollab.photos.remove(at: count)
+                selectedPhoto = nil
+                break
+            }
+            
+            count += 1
+        }
+        
+        guard let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CollabPhotosCell else { return }
+        
+        cell.selectedPhotos = newCollab.photos
+        cell.photosCollectionView.reloadData()
+        
+        if newCollab.photos.count == 0 {
+            
+            cell.reconfigureAttachmentContainer(collectionViewPresent: false)
+            
+            photosCellCollectionViewPresent = false
+            details_attachmentsTableView.reloadData()
+        }
     }
 }

@@ -35,21 +35,7 @@ class CollabMembersCell: UITableViewCell, UICollectionViewDataSource, UICollecti
         super.awakeFromNib()
        
         configureButton()
-        
-        membersCollectionView.dataSource = self
-        membersCollectionView.delegate = self
-        
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 95, height: 35)
-        layout.minimumInteritemSpacing = 10
-        layout.minimumLineSpacing = 10
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        layout.scrollDirection = .horizontal
-        
-        membersCollectionView.collectionViewLayout = layout
-        membersCollectionView.showsHorizontalScrollIndicator = false
-        
-        membersCollectionView.register(UINib(nibName: "MembersCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "membersCollectionViewCell")
+        configureCollectionView()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -115,6 +101,24 @@ class CollabMembersCell: UITableViewCell, UICollectionViewDataSource, UICollecti
                    
             addIconLeadingAnchor.constant = 20
         }
+    }
+    
+    private func configureCollectionView () {
+        
+        membersCollectionView.dataSource = self
+        membersCollectionView.delegate = self
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 95, height: 35)
+        layout.minimumInteritemSpacing = 10
+        layout.minimumLineSpacing = 10
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        layout.scrollDirection = .horizontal
+        
+        membersCollectionView.collectionViewLayout = layout
+        membersCollectionView.showsHorizontalScrollIndicator = false
+        
+        membersCollectionView.register(UINib(nibName: "MembersCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "membersCollectionViewCell")
     }
     
     @IBAction func addMembersButton(_ sender: Any) {

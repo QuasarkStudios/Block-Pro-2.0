@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol CellSelected: AnyObject {
+    
+    func cellSelected ()
+}
+
 class CollabCell: UICollectionViewCell, UITextFieldDelegate {
 
     @IBOutlet weak var cellBackground: UIView!
@@ -45,18 +50,28 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
     @IBOutlet weak var progressBar: UIView!
     @IBOutlet weak var progressBarTrailingAnchor: NSLayoutConstraint!
     
+    var firebaseCollab = FirebaseCollab.sharedInstance
+    var collab: Collab? {
+        didSet {
+            
+            configureCell()
+        }
+    }
+    
     var reminderSelected: Bool = false
     var addMemberSelected: Bool = false
     var seeAdditionalMembersSelected: Bool = false
     var sendSelected = false
     var cellSelected: Bool = false
     
+    weak var cellSelectedDelegate: CellSelected?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        configureCell()
+        //configureCell()
     }
-
+    
     private func configureCell () {
         
         cellBackground.backgroundColor = .white
@@ -72,7 +87,9 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
         cellBackground.layer.cornerRadius = 20
         cellBackground.layer.masksToBounds = false
         
-        setDeadlineText()
+        collabName.text = collab?.name
+        
+        setDeadlineText(deadline: (collab?.dates["deadline"])!)
         
         configureProfilePics()
         
@@ -96,7 +113,9 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
         configureProgressBars()
     }
     
-    private func setDeadlineText () {
+    private func setDeadlineText (deadline: Date) {
+        
+        let formatter = DateFormatter()
         
         let semiBoldText = [NSAttributedString.Key.font : UIFont(name: "Poppins-SemiBold", size: 14)]
         let standardText = [NSAttributedString.Key.font : UIFont(name: "Poppins-Regular", size: 12)]
@@ -104,10 +123,19 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
         
         var deadlineText: NSAttributedString!
         
-        deadlineText = NSAttributedString(string: "Next Deadline: ", attributes: semiBoldText)
+        deadlineText = NSAttributedString(string: "Next Deadline: ", attributes: semiBoldText as [NSAttributedString.Key : Any])
         attributedString.append(deadlineText)
         
-        deadlineText = NSAttributedString(string: "April 4th, 7:00 PM", attributes: standardText)
+        formatter.dateFormat = "MMMM d"
+        deadlineText = NSAttributedString(string: formatter.string(from: deadline), attributes: standardText as [NSAttributedString.Key : Any])
+        attributedString.append(deadlineText)
+        
+        let daySuffix = deadline.daySuffix()
+        deadlineText = NSAttributedString(string: daySuffix, attributes: standardText as [NSAttributedString.Key : Any])
+        attributedString.append(deadlineText)
+        
+        formatter.dateFormat = "h:mm a"
+        deadlineText = NSAttributedString(string: ", \(formatter.string(from: deadline))", attributes: standardText as [NSAttributedString.Key : Any])
         attributedString.append(deadlineText)
         
         deadlineLabel.attributedText = attributedString
@@ -122,19 +150,178 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
     
     private func configureProfilePics () {
         
-        imageContainer1.configureProfilePicContainer()
-        imageView1.configureProfileImageView(profileImage: UIImage(named: "ProfilePic-1")!)
+        var profilePics: [UIImage?] = []
         
-        imageContainer2.configureProfilePicContainer()
-        imageView2.configureProfileImageView(profileImage: UIImage(named: "ProfilePic-2")!)
+        if let collabMembers = collab?.members, collabMembers.count > 0 {
+            
+            for member in collabMembers {
+                
+                for friend in firebaseCollab.friends {
+                    
+                    if member.userID == friend.userID {
+                        
+                        //profilePics.insert(friend.profilePictureImage, at: profilePics.count)
+                        profilePics.append(friend.profilePictureImage)
+                        break
+                    }
+                }
+                
+                if profilePics.last == nil {
+                    
+                    //profilePics.insert(UIImage(named: "DefaultProfilePic"), at: profilePics.count)
+                    profilePics.append(UIImage(named: "DefaultProfilePic"))
+                }
+            }
+        }
         
-        imageContainer3.configureProfilePicContainer()
-        imageView3.configureProfileImageView(profileImage: UIImage(named: "ProfilePic-3")!)
+        else {
+            
+            imageContainer1.isHidden = true
+            imageContainer2.isHidden = true
+            imageContainer3.isHidden = true
+            imageContainer4.isHidden = true
+            
+            return
+        }
         
-        imageContainer4.configureProfilePicContainer(clip: true)
-        extraMembersLabel.text = "+3"
-        extraMembersLabel.textColor = .white
-        extraMembersLabel.backgroundColor = .black
+        var count: Int = 0
+        
+        while count < 6 {
+            
+            if count == 0 {
+                
+                imageContainer1.alpha = 1
+                imageContainer1.configureProfilePicContainer()
+                imageView1.configureProfileImageView(profileImage: profilePics[count])
+            }
+            
+            else if count == 1 {
+                
+                if count < profilePics.count {
+                    
+                    imageContainer2.alpha = 1
+                    imageContainer2.configureProfilePicContainer()
+                    imageView2.configureProfileImageView(profileImage: profilePics[count])
+                }
+                
+                else {
+                    
+                    imageContainer2.alpha = 0
+                }
+            }
+            
+            else if count == 2 {
+                
+                if count < profilePics.count {
+                    
+                    imageContainer3.alpha = 1
+                    imageContainer3.configureProfilePicContainer()
+                    imageView3.configureProfileImageView(profileImage: profilePics[count])
+                }
+                
+                else {
+                    
+                    imageContainer3.alpha = 0
+                }
+            }
+            
+            else if count == 3 {
+                
+                if count < profilePics.count {
+                    
+                    if profilePics.count == 4 {
+                        
+                        imageContainer4.alpha = 1
+                        imageContainer4.configureProfilePicContainer()
+                        imageView4.configureProfileImageView(profileImage: profilePics[count])
+                    }
+                    
+                    else if profilePics.count == 5 {
+                        
+                        imageContainer4.alpha = 1
+                        imageContainer4.configureProfilePicContainer(clip: true)
+                        imageContainer4.backgroundColor = .black
+                        extraMembersLabel.text = "+2"
+                        extraMembersLabel.textColor = .white
+                        
+                        break
+                    }
+                }
+                
+                else {
+                    
+                    imageContainer4.alpha = 0
+                }
+            }
+            
+            count += 1
+        }
+        
+//        if let collab = collab {
+//
+//            if collab.members.count > 0 {
+//
+//                var count: Int = 0
+//
+//                while count <= 5 {
+//
+//                    if count == 0 && count < collab.members.count {
+//
+//                        imageContainer1.configureProfilePicContainer()
+//
+//                        for friend in firebaseCollab.friends {
+//
+//                            if friend.userID == collab.members[count].userID {
+//
+//                                imageView1.configureProfileImageView(profileImage: friend.profilePictureImage)
+//                            }
+//
+//                            else {
+//
+//                            }
+//                        }
+//                    }
+//
+//
+//                    if count == 1 && count < collab.members.count {
+//
+//                        imageContainer2.configureProfilePicContainer()
+//
+//                        for friend in firebaseCollab.friends {
+//
+//                            if friend.userID == collab.members[count].userID {
+//
+//                                imageView2.configureProfileImageView(profileImage: friend.profilePictureImage)
+//                            }
+//
+//                            else {
+//
+//
+//                            }
+//                        }
+//                    }
+//
+//                    count += 1
+//                }
+//            }
+//        }
+        
+        
+        
+        
+//        imageContainer1.configureProfilePicContainer()
+//        imageView1.configureProfileImageView(profileImage: UIImage(named: "ProfilePic-1")!)
+        
+//        imageContainer2.configureProfilePicContainer()
+//        imageView2.configureProfileImageView(profileImage: UIImage(named: "ProfilePic-2")!)
+        
+//        imageContainer3.configureProfilePicContainer()
+//        imageView3.configureProfileImageView(profileImage: UIImage(named: "ProfilePic-3")!)
+//
+//        imageContainer4.configureProfilePicContainer(clip: true)
+//        extraMembersLabel.text = "+3"
+//        extraMembersLabel.textColor = .white
+//        extraMembersLabel.backgroundColor = .black
         //imageView4.configureImageView(profileImage: UIImage(named: "ProfilePic-4")!)
         //extraMembersLabel.isHidden = true
     }
@@ -324,6 +511,11 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
             
             sendSelected = false
         }
+            
+        else {
+            
+            cellSelectedDelegate?.cellSelected()
+         }
     }
 }
 

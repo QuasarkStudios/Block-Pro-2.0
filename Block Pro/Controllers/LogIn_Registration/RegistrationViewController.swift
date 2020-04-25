@@ -436,10 +436,17 @@ extension RegistrationViewController: AddProfilePicture, UIImagePickerController
             let firebaseStorage = FirebaseStorage()
             firebaseStorage.saveProfilePictureToStorage(selectedImage)
             
-            let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 4, section: 0)) as! RegistrationProfilePicCell
-            cell.profileImage.image = selectedImage
-            cell.skipButton.setTitle("Finish", for: .normal)
+            if let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 3, section: 0)) as? RegistrationProfilePicCell {
+                
+                cell.profileImage.image = selectedImage
+                cell.skipButton.setTitle("Finish", for: .normal)
+            }
             
+            else {
+                
+                dismiss(animated: true, completion: nil)
+                ProgressHUD.showError("Sorry, something went wrong saving your profile picture")
+            }
         }
 
         dismiss(animated: true, completion: nil)

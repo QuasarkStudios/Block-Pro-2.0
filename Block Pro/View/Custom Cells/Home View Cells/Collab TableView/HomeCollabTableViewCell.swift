@@ -8,9 +8,23 @@
 
 import UIKit
 
+protocol CollabSelected: AnyObject {
+    
+    func performSegueToCollab (collab: Collab)
+}
+
 class HomeCollabTableViewCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
     
     @IBOutlet weak var collabCollectionView: UICollectionView!
+    
+    var collab: Collab? {
+        didSet {
+            
+            collabCollectionView.reloadData()
+        }
+    }
+    
+    weak var collabSelectedDelegate: CollabSelected?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -42,8 +56,21 @@ class HomeCollabTableViewCell: UITableViewCell, UICollectionViewDataSource, UICo
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collabCell", for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collabCell", for: indexPath) as! CollabCell
+        cell.collab = collab
+        cell.cellSelectedDelegate = self
         
         return cell
+    }
+}
+
+extension HomeCollabTableViewCell: CellSelected {
+    
+    func cellSelected() {
+        
+        if let selectedCollab = collab {
+            
+            collabSelectedDelegate?.performSegueToCollab(collab: selectedCollab)
+        }
     }
 }

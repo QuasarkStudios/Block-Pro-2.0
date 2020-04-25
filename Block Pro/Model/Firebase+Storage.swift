@@ -12,6 +12,7 @@ import FirebaseStorage
 
 class FirebaseStorage {
     
+    let collabStorageRef = Storage.storage().reference().child("Collabs")
     let profilePicturesRef = Storage.storage().reference().child("profilePictures")
     
     func saveProfilePictureToStorage (_ profilePicture: UIImage) {
@@ -93,7 +94,7 @@ class FirebaseStorage {
     
     func retrieveFriendsProfilePicFromStorage (friend: Friend, completion: @escaping ((_ profilePic: UIImage?) -> Void)) {
         
-        profilePicturesRef.child("\(friend.friendID).png").getData(maxSize: 3 * 1048576) { (data, error) in
+        profilePicturesRef.child("\(friend.userID).png").getData(maxSize: 3 * 1048576) { (data, error) in
             
             if error == nil {
                 
@@ -123,6 +124,45 @@ class FirebaseStorage {
 //                }
 //            }
 //        }.resume()
+    }
+    
+    func saveNewCollabPhotosToStorage (collabID: String, collabPhoto: [String : Any])  {
+        
+        let photoData = UIImage.pngData(collabPhoto["photo"] as! UIImage)()
+        
+        if let data = photoData {
+            
+            collabStorageRef.child(collabID).child("photos").child("\(collabPhoto["photoID"]!)).png").putData(data, metadata: nil) { (metadata, error) in
+                
+                if error != nil {
+                    
+                    print(error as Any)
+                }
+            }
+        }
+    }
+    
+    func retrieveCollabPhotosFromStoage (collabID: String, completion: @escaping ((_ photos: [UIImage]) -> Void)) {
+        
+        collabStorageRef.child(collabID).child("photos").getData(maxSize: 3 * 1048576) { (data, error) in
+            
+            if error != nil {
+                
+                
+            }
+            
+            else {
+                
+                if let photoData = data {
+                    
+//                    let photos: [UIImage] =
+                    
+                    print(photoData)
+                    
+//                    completion(photos)
+                }
+            }
+        }
     }
 }
 

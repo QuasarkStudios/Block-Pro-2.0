@@ -38,6 +38,7 @@ class UpcomingCollabTableCell: UITableViewCell {
         gradientLayer.colors = [UIColor(hexString: "#e35d5b")?.cgColor as Any, UIColor(hexString: "#e53935")?.cgColor as Any]
         gradientLayer.locations = [0.0, 0.7]
         
+        
         collabContainer.layer.addSublayer(gradientLayer)
         
         collabContainer.bringSubviewToFront(collabWithLabel)

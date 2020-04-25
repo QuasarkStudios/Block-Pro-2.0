@@ -96,10 +96,10 @@
             </objects>
             <point key="canvasLocation" x="-757" y="-125"/>
         </scene>
-        <!--Collab Dates2 View Controller-->
+        <!--Collab Dates View Controller-->
         <scene sceneID="hGk-tG-xub">
             <objects>
-                <viewController id="9q4-II-GJ8" customClass="CollabDates2ViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="9q4-II-GJ8" customClass="CollabDatesViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3qA-0n-blG">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -148,7 +148,93 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0n1-TV-ARm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-834" y="632"/>
+            <point key="canvasLocation" x="-1767" y="682"/>
+        </scene>
+        <!--Selected Photo View Controller-->
+        <scene sceneID="UUk-fl-Woa">
+            <objects>
+                <viewController id="fcF-GM-Vyk" customClass="SelectedPhotoViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="65R-qN-nN0">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mvS-h9-zAv">
+                                <rect key="frame" x="67.666666666666671" y="484" width="90.000000000000014" height="45"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="TRD-t0-pE6"/>
+                                    <constraint firstAttribute="width" constant="90" id="UKs-Uq-3p6"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="15"/>
+                                <state key="normal" title="Change">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="changeButton:" destination="fcF-GM-Vyk" eventType="touchUpInside" id="kDp-gn-H8P"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vpt-s7-7lk">
+                                <rect key="frame" x="217.66666666666663" y="484" width="90" height="45"/>
+                                <color key="backgroundColor" systemColor="systemRedColor" red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="E0K-GG-vxp"/>
+                                    <constraint firstAttribute="width" constant="90" id="Nnu-KC-ROo"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="15"/>
+                                <state key="normal" title="Delete">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="deleteButton:" destination="fcF-GM-Vyk" eventType="touchUpInside" id="d2M-Zu-sSA"/>
+                                </connections>
+                            </button>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pKb-OM-soD">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="kbl-n8-pFw"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem id="E4a-wq-Q5m">
+                                        <barButtonItem key="leftBarButtonItem" systemItem="stop" id="Naj-mu-IbL">
+                                            <connections>
+                                                <action selector="cancelBButton:" destination="fcF-GM-Vyk" id="ICj-Jc-mUo"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="jsv-Et-m6B">
+                                <rect key="frame" x="0.0" y="54" width="375" height="400"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="400" id="p6O-ru-Luv"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="pKb-OM-soD" firstAttribute="leading" secondItem="MuA-xq-XIo" secondAttribute="leading" id="3LL-qq-XG5"/>
+                            <constraint firstItem="mvS-h9-zAv" firstAttribute="centerX" secondItem="65R-qN-nN0" secondAttribute="centerX" constant="-75" id="6pK-Xd-OS8"/>
+                            <constraint firstItem="jsv-Et-m6B" firstAttribute="top" secondItem="pKb-OM-soD" secondAttribute="bottom" constant="10" id="FOh-VR-ACI"/>
+                            <constraint firstItem="jsv-Et-m6B" firstAttribute="leading" secondItem="MuA-xq-XIo" secondAttribute="leading" id="GgJ-6k-G7f"/>
+                            <constraint firstItem="pKb-OM-soD" firstAttribute="top" secondItem="MuA-xq-XIo" secondAttribute="top" id="Kdt-dg-uJd"/>
+                            <constraint firstItem="vpt-s7-7lk" firstAttribute="top" secondItem="jsv-Et-m6B" secondAttribute="bottom" constant="30" id="LRL-jO-ffc"/>
+                            <constraint firstItem="mvS-h9-zAv" firstAttribute="top" secondItem="jsv-Et-m6B" secondAttribute="bottom" constant="30" id="Q4I-zx-ZcF"/>
+                            <constraint firstItem="pKb-OM-soD" firstAttribute="trailing" secondItem="MuA-xq-XIo" secondAttribute="trailing" id="sPb-NY-mZv"/>
+                            <constraint firstItem="jsv-Et-m6B" firstAttribute="trailing" secondItem="MuA-xq-XIo" secondAttribute="trailing" id="ytd-kb-uE1"/>
+                            <constraint firstItem="vpt-s7-7lk" firstAttribute="centerX" secondItem="65R-qN-nN0" secondAttribute="centerX" constant="75" id="zMa-Tt-WgC"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="MuA-xq-XIo"/>
+                    </view>
+                    <connections>
+                        <outlet property="changeButton" destination="mvS-h9-zAv" id="gDX-Tr-Bzg"/>
+                        <outlet property="deleteButton" destination="vpt-s7-7lk" id="tOA-eB-4it"/>
+                        <outlet property="navBar" destination="pKb-OM-soD" id="eAy-Nu-08b"/>
+                        <outlet property="selectedPhotoImageView" destination="jsv-Et-m6B" id="Fkb-wl-z88"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nq1-Fm-YaO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-759.20000000000005" y="680.54187192118229"/>
         </scene>
         <!--Member Profile View Controller-->
         <scene sceneID="Jsw-CU-odo">
@@ -391,6 +477,7 @@
                         <segue destination="aWh-Qt-A1S" kind="showDetail" identifier="moveToAddMembersView" id="J6N-dw-hz1"/>
                         <segue destination="Aib-ri-8Um" kind="showDetail" identifier="moveToMemberProfileView" id="8N5-xD-jrZ"/>
                         <segue destination="9q4-II-GJ8" kind="showDetail" identifier="moveToCalendarView" id="qck-wp-ll5"/>
+                        <segue destination="fcF-GM-Vyk" kind="showDetail" identifier="moveToSelectedPhotoView" id="kRl-Yf-eOL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RJi-lx-3XP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -160,7 +160,7 @@ class AddFriendViewController: UIViewController, UITableViewDelegate, UITableVie
                     
                 for friend in friends {
                     
-                    if friend.friendID == resultsObjectArray[indexPath.row].userID {
+                    if friend.userID == resultsObjectArray[indexPath.row].userID {
                         friendAdded = true
                         break
                     }

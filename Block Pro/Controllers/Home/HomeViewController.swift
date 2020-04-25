@@ -24,6 +24,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     let currentUser = CurrentUser.sharedInstance
     
+    var collab_personalButton = UIButton(type: .system)
+    
     var viewTracker: String = ""
     
     var viewInitiallyLoaded: Bool = false
@@ -39,6 +41,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     var currentDate: Date = Date()
     
     var selectedDate: Date?
+    
+    let firebaseCollab = FirebaseCollab.sharedInstance
+    
+    var selectedCollab: Collab?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,46 +96,21 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         if currentUser.profilePictureURL != nil && currentUser.profilePictureImage == nil {
             
             setProfilePicture()
+            
+            retrieveCollabs()
         }
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
-//        formatter.dateFormat = "MMMM"
-//        navigationItem.title = formatter.string(from: Date())
-//        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 25)!]
-        
         configureNavBar()
-        
-//        if currentUser.userSignedIn {
-//
-//            userNameLabel.text = "Hey \(currentUser.firstName)"
-//
-//
-//        }
-//
-//        else {
-//
-//            formatter.dateFormat = "MMMM"
-//            userNameLabel.text =  "Here's your \(formatter.string(from: currentDate)) calendar"
-//            userNameLabel.adjustsFontSizeToFitWidth = true
-//        }
-//
-//        if currentUser.profilePictureURL != nil && currentUser.profilePictureImage == nil {
-//
-//            setProfilePicture()
-//        }
-        
-        
-        //ProgressHUD.dismiss()
+    
     }
     
     override func viewDidAppear(_ animated: Bool) {
         
         if viewInitiallyLoaded == false {
-            
-            //animateEntryToView()
             
             scrollToCurrentWeek()
             viewInitiallyLoaded = true
@@ -158,7 +139,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         else {
             
-            return 1
+            return firebaseCollab.collabs.count
         }
     }
     
@@ -192,8 +173,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         else {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "homeCollabTableViewCell", for: indexPath) as! HomeCollabTableViewCell
+            cell.selectionStyle = .none
             
-            //cell.backgroundColor = .blue
+            cell.collab = firebaseCollab.collabs[indexPath.row]
+            cell.collabSelectedDelegate = self
             
             return cell
         }
@@ -287,7 +270,6 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         newCollabButton.frame = CGRect(x: 0, y: 0, width: 34, height: 34)
         newCollabButton.addTarget(self, action: #selector(createCollab), for: .touchUpInside)
         
-        let collab_personalButton: UIButton = UIButton(type: .system)
         collab_personalButton.frame = CGRect(x: 0, y: 0, width: 65, height: 25)
         collab_personalButton.backgroundColor = UIColor(hexString: "ECECEC", withAlpha: 0.70)
         collab_personalButton.addTarget(self, action: #selector(updateView), for: .touchUpInside)
@@ -600,6 +582,11 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    private func retrieveCollabs () {
+        
+        firebaseCollab.retrieveCollabs()
+    }
+    
     func moveToTimeBlockView (selectedDate: Date) {
         
         self.selectedDate = selectedDate
@@ -617,11 +604,17 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         if viewTracker == "personal" {
             
             viewTracker = "collab"
+            homeTableView.isPagingEnabled = false
+            collab_personalButton.setTitle("Personal", for: .normal)
+            collab_personalButton.titleLabel?.font = UIFont(name: "Poppins-Regular", size: 12)
         }
         
         else {
             
             viewTracker = "personal"
+            homeTableView.isPagingEnabled = true
+            collab_personalButton.setTitle("Collab", for: .normal)
+            collab_personalButton.titleLabel?.font = UIFont(name: "Poppins-Regular", size: 13)
         }
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
@@ -631,6 +624,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }) { (finished: Bool) in
             
             self.homeTableView.reloadData()
+            self.homeTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
                 
@@ -724,6 +718,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         else if segue.identifier == "moveToCreateACollabView" {
     
+            let createCollabVC = segue.destination as! CreateCollabViewController
+            createCollabVC.collabCreatedDelegate = self
+        }
+        
+        else if segue.identifier == "moveToCollabView" {
+            
+            let collabVC = segue.destination as! CollabViewController
+            collabVC.collab = selectedCollab
         }
     }
 }
@@ -744,5 +746,28 @@ extension HomeViewController: ProfileView {
     func profilePicChanged (_ image: UIImage) {
         
         profilePicImageView.image = image
+    }
+}
+
+extension HomeViewController: CollabCreated {
+    
+    func reloadData() {
+        
+        retrieveCollabs()
+        
+        viewTracker = "personal"
+        
+        updateView()
+    }
+
+}
+
+extension HomeViewController: CollabSelected {
+    
+    func performSegueToCollab(collab: Collab) {
+        
+        selectedCollab = collab
+        
+        performSegue(withIdentifier: "moveToCollabView", sender: self)
     }
 }

@@ -376,6 +376,7 @@
                         <segue destination="dBe-S7-TgC" kind="presentation" identifier="moveToProfilePopover" modalPresentationStyle="overFullScreen" modalTransitionStyle="crossDissolve" id="eix-pD-5eO"/>
                         <segue destination="eeR-FJ-fyZ" kind="show" identifier="moveToProfileView" id="7Ov-KM-AbH"/>
                         <segue destination="j5j-Tr-HID" kind="showDetail" identifier="moveToCreateACollabView" id="scb-cp-bIP"/>
+                        <segue destination="1bj-4J-3aW" kind="show" identifier="moveToCollabView" id="cMF-od-Kb2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d6a-oc-kOn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -390,7 +391,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OPK-5o-KJ3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1963" y="-499"/>
+            <point key="canvasLocation" x="1691" y="-522"/>
         </scene>
         <!--CreateACollab-->
         <scene sceneID="IEU-rZ-Ft5">
@@ -398,7 +399,17 @@
                 <viewControllerPlaceholder storyboardName="CreateACollab" id="j5j-Tr-HID" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0ft-Pt-pI0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1964" y="-391"/>
+            <point key="canvasLocation" x="1982" y="-522"/>
+        </scene>
+        <!--Collab2-->
+        <scene sceneID="JXE-Ca-hAK">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Collab2" id="1bj-4J-3aW" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="RiX-XD-CnN"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CE3-vR-P9G" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2246" y="-522"/>
         </scene>
         <!--Home-->
         <scene sceneID="2uB-wX-0i1">

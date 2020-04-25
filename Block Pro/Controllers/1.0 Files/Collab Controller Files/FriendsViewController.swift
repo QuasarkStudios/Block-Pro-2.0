@@ -364,7 +364,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
                        
                         let friend = Friend()
                         
-                        friend.friendID = document.data()["friendID"] as! String
+                        friend.userID = document.data()["friendID"] as! String
                         friend.firstName = document.data()["firstName"] as! String
                         friend.lastName = document.data()["lastName"] as! String
                         friend.username = document.data()["username"] as! String
@@ -436,7 +436,7 @@ class FriendsViewController: UIViewController, UITableViewDelegate, UITableViewD
 }
 
 
-extension FriendsViewController: CollabView {
+extension FriendsViewController: CollabViewDeprecated {
     
     func performSegue (_ collabID: String, _ collabName: String, _ collabDate: String) {
         

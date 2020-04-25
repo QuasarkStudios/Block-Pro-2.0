@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 
 //Protocol neccasary to move user to Collab Blocks view
-protocol CollabView {
+protocol CollabViewDeprecated {
     
     func performSegue (_ collabID: String, _ collabName: String, _ collabDate: String)
 }
@@ -84,7 +84,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     var tableViewPresentedHeight: CGFloat! //Variable that holds the height constant for the tableView when it is presented
     var tableViewIndicator: String = "" //Variable used to track which tableView is being present and what data should be populated into the tableView
     
-    var collabBlocksDelegate: CollabView? //Delegate used to move to the CollabViewController
+    var collabBlocksDelegate: CollabViewDeprecated? //Delegate used to move to the CollabViewController
     var reconfigureCellDelegate: ReconfigureCell? //Delegate used to reconfigure the initialLabel of the selected friend
     
     var gradientLayer: CAGradientLayer!
@@ -432,7 +432,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         formatter.dateFormat = "MMMM dd, yyyy"
         
         //Database query to retrieve all the Upcoming Collabs with the selected friend
-        db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
+        db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.userID).getDocuments { (snapshot, error) in
             
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
@@ -480,7 +480,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         formatter.dateFormat = "MMMM dd, yyyy"
         
         //Database query to retrieve all the Historic Collabs with the selected friend
-        db.collection("Users").document(currentUser.userID).collection("CollabHistory").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
+        db.collection("Users").document(currentUser.userID).collection("CollabHistory").whereField("with.userID", isEqualTo: selectedFriend!.userID).getDocuments { (snapshot, error) in
             
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
@@ -569,10 +569,10 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
     func deleteFriend (_ selectedFriendName: String) {
         
         //Deleting the selected friend from the current users friend list
-        self.db.collection("Users").document(currentUser.userID).collection("Friends").document(selectedFriend!.friendID).delete()
+        self.db.collection("Users").document(currentUser.userID).collection("Friends").document(selectedFriend!.userID).delete()
 
         //Deleting all pending collabs with this selected friend
-        self.db.collection("Users").document(currentUser.userID).collection("PendingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
+        self.db.collection("Users").document(currentUser.userID).collection("PendingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.userID).getDocuments { (snapshot, error) in
             
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
@@ -596,7 +596,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }
 
         //Deleting all upcoming collabs with the selected friend
-        self.db.collection("Users").document(self.currentUser.userID).collection("UpcomingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
+        self.db.collection("Users").document(self.currentUser.userID).collection("UpcomingCollabs").whereField("with.userID", isEqualTo: selectedFriend!.userID).getDocuments { (snapshot, error) in
             
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)
@@ -620,7 +620,7 @@ class SelectedFriendViewController: UIViewController, UITableViewDelegate, UITab
         }
 
         //Deleting all historic collabs with this selected friend from collab history
-        self.db.collection("Users").document(self.currentUser.userID).collection("CollabHistory").whereField("with.userID", isEqualTo: selectedFriend!.friendID).getDocuments { (snapshot, error) in
+        self.db.collection("Users").document(self.currentUser.userID).collection("CollabHistory").whereField("with.userID", isEqualTo: selectedFriend!.userID).getDocuments { (snapshot, error) in
             
             if error != nil {
                 ProgressHUD.showError(error?.localizedDescription)

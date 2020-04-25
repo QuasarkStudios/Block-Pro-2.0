@@ -1,19 +1,20 @@
 //
-//  Friend.swift
+//  Member.swift
 //  Block Pro
 //
-//  Created by Nimat Azeez on 7/17/19.
-//  Copyright © 2019 Nimat Azeez. All rights reserved.
+//  Created by Nimat Azeez on 4/23/20.
+//  Copyright © 2020 Nimat Azeez. All rights reserved.
 //
 
 import Foundation
 
-class Friend {
+struct Member {
     
     var userID: String = ""
     var firstName: String = ""
     var lastName: String = ""
     var username: String = ""
+    var role: String = ""
     
     var profilePictureImage: UIImage?
 }

@@ -225,7 +225,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         
         guard selectedFriend != nil else { return cell }
         
-            if friendObjectArray[indexPath.row].friendID == selectedFriend?.friendID {
+            if friendObjectArray[indexPath.row].userID == selectedFriend?.userID {
                 cell.accessoryType = .checkmark
                 selectedCell = cell
             }
@@ -310,7 +310,7 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
                         
                         let friend = Friend()
                         
-                        friend.friendID = document.data()["friendID"] as! String
+                        friend.userID = document.data()["friendID"] as! String
                         friend.firstName = document.data()["firstName"] as! String
                         friend.lastName = document.data()["lastName"] as! String
                         friend.username = document.data()["username"] as! String
@@ -334,17 +334,17 @@ class NewCollabViewController: UIViewController, UITableViewDelegate, UITableVie
         let collabData: [String : String] = ["collabID" : collabID, "collabName" : collabNameTextField.text!, "collabDate" : dateTextField.text!]
         
         let collabCreator: [String : String] = ["userID" : currentUser.userID, "firstName" : currentUser.firstName, "lastName" : currentUser.lastName, "username" : currentUser.username, "role" : "Creator"]
-        let collaborator: [String : String] = ["userID" : selectedFriend!.friendID, "firstName" : selectedFriend!.firstName, "lastName" : selectedFriend!.lastName, "username" : selectedFriend!.username, "role" : "Collaborator"]
+        let collaborator: [String : String] = ["userID" : selectedFriend!.userID, "firstName" : selectedFriend!.firstName, "lastName" : selectedFriend!.lastName, "username" : selectedFriend!.username, "role" : "Collaborator"]
         
         let creatorData: [String : Any] = ["collabID" : collabID, "collabName" : collabNameTextField.text!, "with" : collaborator, "collabDate" : dateTextField.text!]
         let collaboratorData: [String : Any] = ["collabID" : collabID, "collabName" : collabNameTextField.text!, "with" : collabCreator, "collabDate" : dateTextField.text!]
         
         db.collection("Collaborations").document(collabID).setData(collabData)
         db.collection("Collaborations").document(collabID).collection("Participants").document(currentUser.userID).setData(collabCreator)
-        db.collection("Collaborations").document(collabID).collection("Participants").document(selectedFriend!.friendID).setData(collaborator)
+        db.collection("Collaborations").document(collabID).collection("Participants").document(selectedFriend!.userID).setData(collaborator)
         
         db.collection("Users").document(currentUser.userID).collection("UpcomingCollabs").document(collabID).setData(creatorData)
-        db.collection("Users").document(selectedFriend!.friendID).collection("PendingCollabs").document(collabID).setData(collaboratorData)
+        db.collection("Users").document(selectedFriend!.userID).collection("PendingCollabs").document(collabID).setData(collaboratorData)
     }
     
     

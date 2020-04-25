@@ -69,7 +69,7 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
                 
                 for member in addedMembers {
                     
-                    if friends[indexPath.row / 2].friendID == member.friendID {
+                    if friends[indexPath.row / 2].userID == member.userID {
                         
                         cell.addedIndicator.isHidden = false
                         

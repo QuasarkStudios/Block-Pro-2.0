@@ -50,19 +50,27 @@ class UserAuthentication {
                 
                 else {
                     
-                    let currentUser = CurrentUser.sharedInstance
+                    if snapshot?.exists == true {
+                        
+                        let currentUser = CurrentUser.sharedInstance
+                        
+                        currentUser.userSignedIn = true
+                        
+                        currentUser.userID = snapshot?["userID"] as! String
+                        currentUser.firstName = snapshot?["firstName"] as! String
+                        currentUser.lastName = snapshot?["lastName"] as! String
+                        currentUser.username = snapshot?["username"] as! String
+                        currentUser.accountCreated = snapshot?["accountCreated"] as! String
+                        
+                        currentUser.profilePictureURL = snapshot?["profilePicture"] as? String
+                        
+                        completion(nil)
+                    }
                     
-                    currentUser.userSignedIn = true
-                    
-                    currentUser.userID = snapshot?["userID"] as! String
-                    currentUser.firstName = snapshot?["firstName"] as! String
-                    currentUser.lastName = snapshot?["lastName"] as! String
-                    currentUser.username = snapshot?["username"] as! String
-                    currentUser.accountCreated = snapshot?["accountCreated"] as! String
-                    
-                    currentUser.profilePictureURL = snapshot?["profilePicture"] as? String
-                    
-                    completion(nil)
+                    else {
+                        
+                        completion (nil)
+                    }
                 }
             }
         }
