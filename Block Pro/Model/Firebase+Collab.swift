@@ -19,8 +19,11 @@ class FirebaseCollab {
     lazy var userRef = db.collection("Users").document(currentUser.userID)
     var friendListener: ListenerRegistration?
 
+    var messageListener: ListenerRegistration?
+    
     var friends: [Friend] = []
     var collabs: [Collab] = []
+    //var collabRequests: [CollabRequest] = []
     
     static let sharedInstance = FirebaseCollab()
     
@@ -32,6 +35,7 @@ class FirebaseCollab {
         let photoIDs: [String] = Array(repeating: UUID().uuidString, count: collabInfo.photos.count)
         
         let collabData: [String : Any] = ["collabID" : collabID, "collabName" : collabInfo.name, "collabObjective" : collabInfo.objective, "startTime" : collabInfo.dates["startTime"]!, "deadline" : collabInfo.dates["deadline"]!, "reminders" : "will be set up later", "photos" : photoIDs]
+        let memberCollabData: [String : Any] = ["collabID" : collabID, "collabName" : collabInfo.name, "collabObjective" : collabInfo.objective, "startTime" : collabInfo.dates["startTime"]!, "deadline" : collabInfo.dates["deadline"]!, "reminders" : "will be set up later"]
         
         batch.setData(collabData, forDocument: db.collection("Collaborations").document(collabID))
         
@@ -51,6 +55,7 @@ class FirebaseCollab {
             batch.setData(memberToBeAdded, forDocument: db.collection("Collaborations").document(collabID).collection("Members").document(member.userID))
             memberArray.append(memberToBeAdded)
             
+            //The person who created the collab
             if member.userID == collabInfo.members.last?.userID {
                 
                 memberToBeAdded["userID"] = currentUser.userID
@@ -66,7 +71,7 @@ class FirebaseCollab {
         
         for member in collabInfo.members {
             
-            batch.setData(collabData, forDocument: db.collection("Users").document(member.userID).collection("CollabRequests").document(collabID))
+            batch.setData(memberCollabData, forDocument: db.collection("Users").document(member.userID).collection("CollabRequests").document(collabID))
             
             for addedMember in memberArray {
                 
@@ -77,7 +82,10 @@ class FirebaseCollab {
             }
         }
         
-        batch.setData(collabData, forDocument: db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID))
+        //Sets the leader collab data
+        batch.setData(memberCollabData, forDocument: db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID))
+        
+        
         
         for addedMember in memberArray {
             
@@ -141,7 +149,7 @@ class FirebaseCollab {
                         collab.collabID = document.data()["collabID"] as! String
                         collab.name = document.data()["collabName"] as! String
                         collab.objective = document.data()["collabObjective"] as! String
-                        collab.photoIDs = document.data()["photos"] as! [String]
+//                        collab.photoIDs = document.data()["photos"] as! [String]
                         
                         let startTime = document.data()["startTime"] as! Timestamp
                         collab.dates["startTime"] = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))
@@ -180,6 +188,149 @@ class FirebaseCollab {
                         }
                     }
                 }
+            }
+        }
+    }
+    
+    func retrieveCollabRequests (completion: @escaping ((_ requests: [CollabRequest]) -> Void)) {
+        
+        userRef.collection("CollabRequests").getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+            
+            else {
+                
+                if snapshot?.isEmpty == false {
+                    
+                    var collabRequests: [CollabRequest] = []
+                    
+                    for document in snapshot!.documents {
+                        
+                        var collabRequest = CollabRequest()
+                        
+                        collabRequest.collabID = document.data()["collabID"] as! String
+                        collabRequest.name = document.data()["collabName"] as! String
+                        collabRequest.objective = document.data()["collabObjective"] as! String
+                        
+                        let startTime = document.data()["startTime"] as! Timestamp
+                        collabRequest.dates["startTime"] = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))
+                        
+                        let deadline = document.data()["deadline"] as! Timestamp
+                        collabRequest.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
+                        
+                        collabRequests.append(collabRequest)
+                    }
+                    
+                    completion(collabRequests)
+                }
+            }
+        }
+    }
+    
+    func acceptCollabRequest (collab: CollabRequest, completion: @escaping (() -> Void)) {
+        
+        let batch = db.batch()
+        
+        let memberCollabData: [String : Any] = ["collabID" : collab.collabID, "collabName" : collab.name, "collabObjective" : collab.objective, "startTime" : collab.dates["startTime"]!, "deadline" : collab.dates["deadline"]!, "reminders" : "will be set up later"]
+        
+        batch.setData(memberCollabData, forDocument: userRef.collection("Collabs").document(collab.collabID))
+        
+        batch.deleteDocument(userRef.collection("CollabRequests").document(collab.collabID))
+        
+        batch.commit { (error) in
+
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+            
+            else {
+                
+                completion()
+            }
+        }
+        
+        userRef.collection("CollabRequests").document(collab.collabID).collection("Members").getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+            
+            else {
+                
+                if snapshot?.isEmpty != true {
+                    
+                    for document in snapshot!.documents {
+                        
+                        let memberID = document.data()["userID"] as! String
+                        
+                        self.userRef.collection("CollabRequests").document(collab.collabID).collection("Members").document(memberID).delete()
+                    }
+                }
+            }
+        }
+    }
+    
+    func retrieveMessages (collabID: String, completion: @escaping ((_ messages: [Message], _ error: Error?) -> Void)) {
+        
+        messageListener = db.collection("Collaborations").document(collabID).collection("Messages").addSnapshotListener { (snapshot, error) in
+            
+            if error != nil {
+                
+                completion([], error)
+            }
+            
+            else {
+                
+                if snapshot?.isEmpty != true {
+                    
+                    var messages: [Message] = []
+                    
+                    for document in snapshot!.documents {
+                        
+                        var message = Message()
+                        message.sender = document.data()["sender"] as! String
+                        message.message = document.data()["message"] as! String
+                        
+                        let timestamp = document.data()["timestamp"] as! Timestamp
+                        message.timestamp = Date(timeIntervalSince1970: TimeInterval(timestamp.seconds))
+                        
+                        //messages.insert(message, at: 0)
+                        
+                        messages.append(message)
+                    }
+                    
+                    messages = messages.sorted(by: { $0.timestamp < $1.timestamp })
+                    
+                    completion(messages, nil)
+                }
+                
+                else {
+                    
+                    completion([], nil)
+                }
+            }
+        }
+    }
+    
+    func sendMessage (collabID: String, _ message: Message, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        let message: [String : Any] = ["sender" : message.sender, "message" : message.message, "timestamp" : message.timestamp as Any]
+        
+        db.collection("Collaborations").document(collabID).collection("Messages").addDocument(data: message) { (error) in
+            
+            if error != nil {
+                
+                completion(error)
+            }
+            
+            else {
+                
+                completion(nil)
             }
         }
     }

@@ -10,9 +10,9 @@ import Foundation
 
 extension UIView {
     
-    func configureProfilePicContainer (clip: Bool = false) {
+    func configureProfilePicContainer (clip: Bool = false, shadowRadius: CGFloat = 2.5) {
         
-        layer.shadowRadius = 2.5
+        layer.shadowRadius = shadowRadius
         layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
         layer.shadowOffset = CGSize(width: 0, height: 0)
         layer.shadowOpacity = 0.75

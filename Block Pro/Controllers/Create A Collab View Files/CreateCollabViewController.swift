@@ -295,22 +295,6 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         view.addGestureRecognizer(tap)
     }
     
-    func validateTextEntered (_ text: String) -> Bool {
-        
-        let textArray = Array(text)
-        var textEntered: Bool = false
-        
-        for char in textArray {
-            
-            if char != " " {
-                textEntered = true
-                break
-            }
-        }
-        
-        return textEntered
-    }
-    
     private func createCollab () {
         
         SVProgressHUD.show()
@@ -389,15 +373,25 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
     
     @IBAction func doneButton(_ sender: Any) {
         
-        if validateTextEntered(newCollab.name) {
+        if newCollab.name.leniantValidationOfTextEntered() {
             
-            createCollab ()
+            createCollab()
         }
         
         else {
             
-            SVProgressHUD.showError(withStatus: "Please enter a name for this Collab")
+           SVProgressHUD.showError(withStatus: "Please enter a name for this Collab")
         }
+        
+//        if validateTextEntered(newCollab.name) {
+//
+//            createCollab ()
+//        }
+//
+//        else {
+//
+//            SVProgressHUD.showError(withStatus: "Please enter a name for this Collab")
+//        }
         
     }
     

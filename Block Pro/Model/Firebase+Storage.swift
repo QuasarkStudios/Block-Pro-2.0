@@ -75,6 +75,7 @@ class FirebaseStorage {
             
             if error != nil {
                 
+                print(error?.localizedDescription)
             }
             
             else {

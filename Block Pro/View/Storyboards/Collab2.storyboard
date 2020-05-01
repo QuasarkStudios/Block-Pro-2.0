@@ -66,7 +66,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="80" id="rU6-fB-pnW"/>
                                 </constraints>
-                                <mutableString key="text">Get ready for meeting with Jeff, Dave, and Emily by first preping all the required documents and then by organizing the flow of the meeting. Get ready for meeting with Jeff, Dave, and Emily by first preping all the required documents and then by organizing the flow of the meeting. Get ready for meeting with Jeff, Dave, and Emily by first preping all the required documents and then by organizing the flow of the meeting. Get ready for meeting with Jeff, Dave, and Emily by first preping all the required documents and then by organizing the flow of the meeting.</mutableString>
+                                <string key="text">Get ready for meeting with Jeff, Dave, and Emily by first preping all the required documents and then by organizing the flow of the meeting. Get ready for meeting with Jeff, Dave, and Emily by first preping all the required documents and then by organizing the flow of the meeting. Get ready for meeting with Jeff, Dave, and Emily by first preping all the required documents and then by organizing the flow of the meeting. Get ready for meeting with Jeff, Dave, and Emily by first preping all the required documents and then by organizing the flow of the meeting.</string>
                                 <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="12"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -124,9 +124,19 @@
                                             <constraint firstAttribute="height" constant="40" id="RBY-8P-I3h"/>
                                         </constraints>
                                     </stackView>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="f4w-dU-jPH">
-                                        <rect key="frame" x="0.0" y="76" width="375" height="421"/>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="f4w-dU-jPH">
+                                        <rect key="frame" x="0.0" y="76" width="375" height="351"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="seperatorCell" id="f3S-BV-LOk">
+                                                <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="f3S-BV-LOk" id="fru-vS-3p6">
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </tableViewCellContentView>
+                                            </tableViewCell>
+                                        </prototypes>
                                     </tableView>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemGrayColor" red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -135,7 +145,6 @@
                                     <constraint firstItem="SxD-fv-Kwv" firstAttribute="top" secondItem="L16-tO-Zej" secondAttribute="bottom" constant="10" id="5lY-gk-FrB"/>
                                     <constraint firstItem="f4w-dU-jPH" firstAttribute="top" secondItem="bGG-ri-43a" secondAttribute="bottom" id="5oZ-uf-cHj"/>
                                     <constraint firstItem="bGG-ri-43a" firstAttribute="top" secondItem="F3v-ht-Pr1" secondAttribute="top" id="BeD-Zg-mSz"/>
-                                    <constraint firstAttribute="bottom" secondItem="f4w-dU-jPH" secondAttribute="bottom" id="FoA-0y-YU9"/>
                                     <constraint firstAttribute="trailing" secondItem="f4w-dU-jPH" secondAttribute="trailing" id="MTp-kI-xvO"/>
                                     <constraint firstItem="f4w-dU-jPH" firstAttribute="leading" secondItem="F3v-ht-Pr1" secondAttribute="leading" id="N5a-IR-o6y"/>
                                     <constraint firstAttribute="trailing" secondItem="bGG-ri-43a" secondAttribute="trailing" id="Svn-GT-zlg"/>
@@ -144,6 +153,7 @@
                                     <constraint firstItem="f4w-dU-jPH" firstAttribute="top" secondItem="SxD-fv-Kwv" secondAttribute="bottom" constant="10" id="hYF-KG-E70"/>
                                     <constraint firstItem="L16-tO-Zej" firstAttribute="top" secondItem="F3v-ht-Pr1" secondAttribute="top" constant="10" id="knJ-lw-NLB"/>
                                     <constraint firstItem="L16-tO-Zej" firstAttribute="centerX" secondItem="F3v-ht-Pr1" secondAttribute="centerX" id="t08-CN-LOO"/>
+                                    <constraint firstAttribute="bottom" secondItem="f4w-dU-jPH" secondAttribute="bottom" constant="70" id="zMs-Cm-fJS"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -175,11 +185,14 @@
                         <outlet property="collabNavigationContainer" destination="F3v-ht-Pr1" id="vgV-av-RSh"/>
                         <outlet property="collabNavigationContainerTopAnchor" destination="VzX-X4-Aee" id="t51-ZJ-hkq"/>
                         <outlet property="collabObjective" destination="Gr5-dc-Fi9" id="dWu-if-SFu"/>
+                        <outlet property="collabTableView" destination="f4w-dU-jPH" id="Hm8-rD-xk1"/>
                         <outlet property="editCollabButton" destination="jRA-0Y-Qlz" id="bBs-ZD-LYT"/>
                         <outlet property="messagesButton" destination="CTA-bc-GAL" id="bgv-w9-gQY"/>
                         <outlet property="panGestureIndicator" destination="L16-tO-Zej" id="xlf-ek-i4W"/>
                         <outlet property="panGestureView" destination="bGG-ri-43a" id="DaC-hW-Muu"/>
                         <outlet property="progressButton" destination="NoK-oV-hij" id="2AM-H8-o5E"/>
+                        <outlet property="tableViewBottomAnchor" destination="zMs-Cm-fJS" id="k38-TJ-5gX"/>
+                        <outlet property="tableViewTopAnchor" destination="hYF-KG-E70" id="t63-eF-ery"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uV2-mK-fUT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
