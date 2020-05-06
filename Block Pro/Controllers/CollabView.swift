@@ -34,8 +34,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var tableViewTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var tableViewBottomAnchor: NSLayoutConstraint!
     
-    let messageViewContainer = UIView()
-    let textViewContainer = UIView()
+    let messageInputAccesoryView = InputAccesoryView()
+    let textViewContainer = MessageTextViewContainer()
     let messageTextView = UITextView()
     let sendButton = UIButton(type: .system)
     
@@ -54,8 +54,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     var gestureViewPanGesture: UIPanGestureRecognizer?
     var stackViewPanGesture: UIPanGestureRecognizer?
-    
-//    var messages: [String] = ["According to all known laws of aviation,there is no way a bee should be able to fly. Its wings are too small to get its fat little body off the ground. The bee, of course,",  "flies anyway because bees don't care what humans think is impossible. Yellow, black. Yellow, black. Yellow, black. Yellow, black. Ooh, black and yellow. Lets shake it up a little. Barry!",  "Breakfast is ready! Ooming! Hang on a second. Hello? Barry Adam? Oan you believe this is happening? I can't. I'll pick you up. Looking sharp. Use the stairs. Your father paid good money for those. Sorry. I'm excited.", "hello, this is a test"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,7 +92,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     override var inputAccessoryView: UIView? {
         get {
-            return messageViewContainer
+            return messageInputAccesoryView
         }
     }
 
@@ -184,15 +182,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     private func configureNavBar () {
         
-        //navigationItem.hidesBackButton = true
-        
-//        leftBarButtonItem = UIButton(type: .system)
-//        leftBarButtonItem.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-//        leftBarButtonItem.setImage(UIImage(named: "icons8-back-30"), for: .normal)
-//        leftBarButtonItem.addTarget(self, action: #selector(backButtonPressed), for: .touchUpInside)
-//        
-//        navigationItem.backBarButtonItem = UIBarButtonItem(customView: leftBarButtonItem)
-        
         rightBarButtonItem1 = UIButton(type: .system)
         rightBarButtonItem1.frame = CGRect(x: 0, y: 0, width: 34, height: 34)
         rightBarButtonItem1.setImage(UIImage(named: "UserGroup"), for: .normal)
@@ -219,9 +208,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabNavigationContainer.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
         collabNavigationContainer.layer.shadowOffset = CGSize(width: 0, height: 0)
         collabNavigationContainer.layer.shadowOpacity = 0.35
-        
-//        collabNavigationContainer.layer.borderWidth = 1
-//        collabNavigationContainer.layer.borderColor = UIColor(hexString: "D8D8D8")?.cgColor
         
         collabNavigationContainer.layer.cornerRadius = 25
         collabNavigationContainer.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -256,7 +242,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingPresented), name: UIResponder.keyboardWillShowNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingDismissed), name: UIResponder.keyboardWillHideNotification, object: nil)
-
     }
     
     private func removeKeyboardObservor () {
@@ -379,7 +364,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     internal func expandView () {
         
         collabNavigationContainerTopAnchor.constant = 0
-        tableViewTopAnchor.constant = 30
+        tableViewTopAnchor.constant = setTableViewTopAnchor()//30
  
         title = selectedTab
         
@@ -406,6 +391,26 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         removeGestureRecognizers()
     }
     
+    private func setTableViewTopAnchor () -> CGFloat {
+        
+        //iPhone 11 Pro Max & iPhone 11
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+            
+            return 30
+        }
+            
+        //iPhone 11 Pro
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+            
+            return 30
+        }
+        
+        else {
+            
+            return 0
+        }
+    }
+    
     @objc private func dismissKeyboard () {
         
         messageTextView.resignFirstResponder()
@@ -421,6 +426,17 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         title = ""
         
         reconfigureGestureRecognizers()
+
+        tableViewTopAnchor.constant = 10
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
+
+           self.view.layoutIfNeeded()
+
+           self.panGestureIndicator.alpha = 1
+           self.buttonStackView.alpha = 1
+           
+        })
         
         if selectedTab == "Messages" {
 
@@ -441,18 +457,14 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     constraint.constant = 34
                 }
             }
+            
+            messageInputAccesoryView.size = messageInputAccesoryView.configureSize()
+            
+            if messages?.count ?? 0 > 0 {
+                
+                collabTableView.scrollToRow(at: IndexPath(row: (messages!.count * 2) - 1, section: 0), at: .top, animated: true)
+            }
         }
-
-        tableViewTopAnchor.constant = 10
-        
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.75, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
-
-           self.view.layoutIfNeeded()
-
-           self.panGestureIndicator.alpha = 1
-           self.buttonStackView.alpha = 1
-           
-        })
     }
     
     @objc private func usersButtonPressed () {
@@ -478,9 +490,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
             
-            self.messageViewContainer.alpha = 0
+            self.messageInputAccesoryView.alpha = 0
             
         }) { (finished: Bool) in
+            
+            self.messageInputAccesoryView.isHidden = true
             
             self.tableViewBottomAnchor.constant = 0
             
@@ -501,9 +515,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
                             
-            self.messageViewContainer.alpha = 0
+            self.messageInputAccesoryView.alpha = 0
             
         }) { (finished: Bool) in
+            
+            self.messageInputAccesoryView.isHidden = true
             
             self.tableViewBottomAnchor.constant = 0
             
@@ -522,7 +538,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         blocksButton.setTitleColor(.lightGray, for: .normal)
         progressButton.setTitleColor(.lightGray, for: .normal)
         
-        tableViewBottomAnchor.constant = 70
+        tableViewBottomAnchor.constant = messageInputAccesoryView.configureSize().height
         
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
             
@@ -534,12 +550,13 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             self.collabTableView.reloadData()
             
-            let row = self.messages?.count ?? 0 > 0 ? self.messages!.count - 1 : 0
+            let row = self.messages?.count ?? 0 > 0 ? (self.messages!.count * 2) - 1 : 0
             self.collabTableView.scrollToRow(at: IndexPath(row: row, section: 0), at: .top, animated: false)
             
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
 
-                self.messageViewContainer.alpha = 1
+                self.messageInputAccesoryView.isHidden = false
+                self.messageInputAccesoryView.alpha = 1
                 
                 self.collabTableView.alpha = 1
             })

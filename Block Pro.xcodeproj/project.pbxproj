@@ -95,6 +95,7 @@
 		0D70F91B2428730F00407E4A /* ProfileSidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D70F91A2428730F00407E4A /* ProfileSidebarViewController.swift */; };
 		0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */; };
 		0D70F91F2429BF0800407E4A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D70F91E2429BF0800407E4A /* LogInViewController.swift */; };
+		0D7271252460DE1B0033C196 /* MessageTextViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7271242460DE1B0033C196 /* MessageTextViewContainer.swift */; };
 		0D72D2492453FB6E00C11D5F /* Collab2.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D72D2482453FB6E00C11D5F /* Collab2.storyboard */; };
 		0D72D24B2453FE7B00C11D5F /* CollabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D72D24A2453FE7B00C11D5F /* CollabView.swift */; };
 		0D72D24D2456932800C11D5F /* CollabView+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D72D24C2456932800C11D5F /* CollabView+Messages.swift */; };
@@ -105,6 +106,7 @@
 		0D77B70923FB9EED00AF60CC /* HalfBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D77B70823FB9EED00AF60CC /* HalfBlock.swift */; };
 		0D77B70B23FB9EFD00AF60CC /* OneThirdBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D77B70A23FB9EFD00AF60CC /* OneThirdBlock.swift */; };
 		0D77B711240C316600AF60CC /* BigBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D77B710240C316600AF60CC /* BigBlock.swift */; };
+		0D7862F3245FF65B003189AE /* InputAccesoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7862F2245FF65B003189AE /* InputAccesoryView.swift */; };
 		0D78657023E4B56B00BD4C4D /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78655E23E4B55400BD4C4D /* Poppins-Black.ttf */; };
 		0D78657123E4B56B00BD4C4D /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78655F23E4B55600BD4C4D /* Poppins-ExtraBold.ttf */; };
 		0D78657223E4B56B00BD4C4D /* Poppins-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656023E4B55700BD4C4D /* Poppins-BoldItalic.ttf */; };
@@ -303,6 +305,7 @@
 		0D70F91A2428730F00407E4A /* ProfileSidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSidebarViewController.swift; sourceTree = "<group>"; };
 		0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LogInRegister.storyboard; sourceTree = "<group>"; };
 		0D70F91E2429BF0800407E4A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		0D7271242460DE1B0033C196 /* MessageTextViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTextViewContainer.swift; sourceTree = "<group>"; };
 		0D72D2482453FB6E00C11D5F /* Collab2.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Collab2.storyboard; sourceTree = "<group>"; };
 		0D72D24A2453FE7B00C11D5F /* CollabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabView.swift; sourceTree = "<group>"; };
 		0D72D24C2456932800C11D5F /* CollabView+Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabView+Messages.swift"; sourceTree = "<group>"; };
@@ -313,6 +316,7 @@
 		0D77B70823FB9EED00AF60CC /* HalfBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalfBlock.swift; sourceTree = "<group>"; };
 		0D77B70A23FB9EFD00AF60CC /* OneThirdBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneThirdBlock.swift; sourceTree = "<group>"; };
 		0D77B710240C316600AF60CC /* BigBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigBlock.swift; sourceTree = "<group>"; };
+		0D7862F2245FF65B003189AE /* InputAccesoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccesoryView.swift; sourceTree = "<group>"; };
 		0D78655E23E4B55400BD4C4D /* Poppins-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Black.ttf"; sourceTree = "<group>"; };
 		0D78655F23E4B55600BD4C4D /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
 		0D78656023E4B55700BD4C4D /* Poppins-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-BoldItalic.ttf"; sourceTree = "<group>"; };
@@ -671,6 +675,8 @@
 				0D77B710240C316600AF60CC /* BigBlock.swift */,
 				0D41738B242E8738006076A5 /* Swift+Gif.swift */,
 				0D0ECF3A243E5B0E00D947F4 /* previous_nextButton.swift */,
+				0D7862F2245FF65B003189AE /* InputAccesoryView.swift */,
+				0D7271242460DE1B0033C196 /* MessageTextViewContainer.swift */,
 				0DA9F83322A84788008BECAE /* Storyboards */,
 				0D7CE24123C6A493005BB8EE /* FreeTime View Files */,
 				0D7CE24223C6A4AC005BB8EE /* Pomodoro View Files */,
@@ -1319,6 +1325,7 @@
 				0D589DF024593FB6005AC7BC /* String+Extension.swift in Sources */,
 				0D0C8D9A2442488300EB51F7 /* Collab.swift in Sources */,
 				0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */,
+				0D7271252460DE1B0033C196 /* MessageTextViewContainer.swift in Sources */,
 				0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */,
 				0DE79A1C244E41BB00F25440 /* TimeSelectorCell.swift in Sources */,
 				0DD9D89324437F4E006AA8AB /* ImageView+Extension.swift in Sources */,
@@ -1397,6 +1404,7 @@
 				0D9C8803244E1DB800209609 /* CalendarCell.swift in Sources */,
 				0DE31E15244BA97800DE6EE3 /* Date+Extension.swift in Sources */,
 				0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */,
+				0D7862F3245FF65B003189AE /* InputAccesoryView.swift in Sources */,
 				0D0C8D8A244116F700EB51F7 /* CollabMembersCell.swift in Sources */,
 				0D1128322349A51B0080774C /* SettingsTableViewCell.swift in Sources */,
 				0D76F844243652CF00A52386 /* RegistrationValidationMethods.swift in Sources */,
