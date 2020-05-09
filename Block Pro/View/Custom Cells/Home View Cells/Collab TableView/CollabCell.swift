@@ -50,13 +50,18 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
     @IBOutlet weak var progressBar: UIView!
     @IBOutlet weak var progressBarTrailingAnchor: NSLayoutConstraint!
     
+    let currentUser = CurrentUser.sharedInstance
+    
     var firebaseCollab = FirebaseCollab.sharedInstance
+    var firebaseStorage = FirebaseStorage()
     var collab: Collab? {
         didSet {
             
             configureCell()
         }
     }
+    
+    var memberContainer: [String : Int] = [:]
     
     var reminderSelected: Bool = false
     var addMemberSelected: Bool = false
@@ -91,7 +96,7 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
         
         setDeadlineText(deadline: (collab?.dates["deadline"])!)
         
-        configureProfilePics()
+        retrieveProfilePics()
         
         //rotateButtons()
         
@@ -148,29 +153,61 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
         //reminderButton.transform = CGAffineTransform(rotationAngle: 2 * CGFloat.pi / 3)
     }
     
-    private func configureProfilePics () {
+    private func retrieveProfilePics () {
         
         var profilePics: [UIImage?] = []
         
         if let collabMembers = collab?.members, collabMembers.count > 0 {
             
+            imageContainer1.alpha = 0
+            imageContainer2.alpha = 0
+            imageContainer3.alpha = 0
+            imageContainer4.alpha = 0
+            
+            var count = 0
+            
             for member in collabMembers {
                 
-                for friend in firebaseCollab.friends {
-                    
-                    if member.userID == friend.userID {
-                        
-                        //profilePics.insert(friend.profilePictureImage, at: profilePics.count)
-                        profilePics.append(friend.profilePictureImage)
-                        break
-                    }
+                if member.userID == currentUser.userID {
+                    continue
                 }
                 
-                if profilePics.last == nil {
+                memberContainer[member.userID] = count
+                
+                if let friendIndex = firebaseCollab.friends.firstIndex(where: { $0.userID == member.userID }) {
                     
-                    //profilePics.insert(UIImage(named: "DefaultProfilePic"), at: profilePics.count)
-                    profilePics.append(UIImage(named: "DefaultProfilePic"))
+                    profilePics.append(firebaseCollab.friends[friendIndex].profilePictureImage)
+                    
+                    setProfilePics(container: profilePics.count - 1, profilePic: profilePics.last!)
                 }
+                
+                else {
+                    
+                    //let memberContainer = collabMembers.firstIndex(where: { $0.userID == member.userID })
+                    
+                    profilePics.append(UIImage(named: "DefaultProfilePic"))
+                    setProfilePics(container: memberContainer[member.userID]!, profilePic: profilePics[memberContainer[member.userID]!])
+                    
+                    if firebaseCollab.membersProfilePics[member.userID] != nil {
+                        
+                        setProfilePics(container: memberContainer[member.userID]!, profilePic: firebaseCollab.membersProfilePics[member.userID]!)
+                    }
+                    
+                    else {
+                        
+                        firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic) in
+                            
+                            profilePics[self.memberContainer[member.userID]!] = profilePic
+                            
+                            self.setProfilePics(container: self.memberContainer[member.userID]!, profilePic: profilePics[self.memberContainer[member.userID]!])
+                            
+                            self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: profilePic)
+                        }
+                    }
+                    
+                }
+                
+                count += 1
             }
         }
         
@@ -183,130 +220,6 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
             
             return
         }
-        
-        var count: Int = 0
-        
-        while count < 6 {
-            
-            if count == 0 {
-                
-                imageContainer1.alpha = 1
-                imageContainer1.configureProfilePicContainer()
-                imageView1.configureProfileImageView(profileImage: profilePics[count])
-            }
-            
-            else if count == 1 {
-                
-                if count < profilePics.count {
-                    
-                    imageContainer2.alpha = 1
-                    imageContainer2.configureProfilePicContainer()
-                    imageView2.configureProfileImageView(profileImage: profilePics[count])
-                }
-                
-                else {
-                    
-                    imageContainer2.alpha = 0
-                }
-            }
-            
-            else if count == 2 {
-                
-                if count < profilePics.count {
-                    
-                    imageContainer3.alpha = 1
-                    imageContainer3.configureProfilePicContainer()
-                    imageView3.configureProfileImageView(profileImage: profilePics[count])
-                }
-                
-                else {
-                    
-                    imageContainer3.alpha = 0
-                }
-            }
-            
-            else if count == 3 {
-                
-                if count < profilePics.count {
-                    
-                    if profilePics.count == 4 {
-                        
-                        imageContainer4.alpha = 1
-                        imageContainer4.configureProfilePicContainer()
-                        imageView4.configureProfileImageView(profileImage: profilePics[count])
-                    }
-                    
-                    else if profilePics.count == 5 {
-                        
-                        imageContainer4.alpha = 1
-                        imageContainer4.configureProfilePicContainer(clip: true)
-                        imageContainer4.backgroundColor = .black
-                        extraMembersLabel.text = "+2"
-                        extraMembersLabel.textColor = .white
-                        
-                        break
-                    }
-                }
-                
-                else {
-                    
-                    imageContainer4.alpha = 0
-                }
-            }
-            
-            count += 1
-        }
-        
-//        if let collab = collab {
-//
-//            if collab.members.count > 0 {
-//
-//                var count: Int = 0
-//
-//                while count <= 5 {
-//
-//                    if count == 0 && count < collab.members.count {
-//
-//                        imageContainer1.configureProfilePicContainer()
-//
-//                        for friend in firebaseCollab.friends {
-//
-//                            if friend.userID == collab.members[count].userID {
-//
-//                                imageView1.configureProfileImageView(profileImage: friend.profilePictureImage)
-//                            }
-//
-//                            else {
-//
-//                            }
-//                        }
-//                    }
-//
-//
-//                    if count == 1 && count < collab.members.count {
-//
-//                        imageContainer2.configureProfilePicContainer()
-//
-//                        for friend in firebaseCollab.friends {
-//
-//                            if friend.userID == collab.members[count].userID {
-//
-//                                imageView2.configureProfileImageView(profileImage: friend.profilePictureImage)
-//                            }
-//
-//                            else {
-//
-//
-//                            }
-//                        }
-//                    }
-//
-//                    count += 1
-//                }
-//            }
-//        }
-        
-        
         
         
 //        imageContainer1.configureProfilePicContainer()
@@ -324,6 +237,74 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
 //        extraMembersLabel.backgroundColor = .black
         //imageView4.configureImageView(profileImage: UIImage(named: "ProfilePic-4")!)
         //extraMembersLabel.isHidden = true
+    }
+    
+    private func setProfilePics (container: Int, profilePic: UIImage?) {
+        
+        if container == 0 {
+            
+            imageContainer1.alpha = 1
+            imageContainer1.configureProfilePicContainer()
+            imageView1.configureProfileImageView(profileImage: profilePic)
+        }
+        
+        else if container == 1 {
+             
+            if profilePic != nil {
+            
+                imageContainer2.alpha = 1
+                imageContainer2.configureProfilePicContainer()
+                imageView2.configureProfileImageView(profileImage: profilePic)
+            }
+            
+            else {
+                
+                imageContainer2.alpha = 0
+            }
+        }
+        
+        else if container == 2 {
+            
+            if profilePic != nil {
+                
+                imageContainer3.alpha = 1
+                imageContainer3.configureProfilePicContainer()
+                imageView3.configureProfileImageView(profileImage: profilePic)
+            }
+            
+            else {
+                
+                imageContainer3.alpha = 0
+            }
+        }
+        
+        else if container >= 3 {
+            
+            extraMembersLabel.textColor = .white
+            
+            if profilePic != nil {
+                
+                if container == 3 {
+                        
+                    imageContainer4.alpha = 1
+                    imageContainer4.configureProfilePicContainer()
+                    imageView4.configureProfileImageView(profileImage: profilePic)
+                    
+                    imageView4.alpha = 1
+                }
+                    
+                else if container == 4 {
+                    
+                    imageContainer4.alpha = 1
+                    imageContainer4.configureProfilePicContainer(clip: true)
+                    imageContainer4.backgroundColor = .black
+                    extraMembersLabel.text = "+2"
+                    
+                    imageView4.alpha = 0
+                    //extraMembersLabel.textColor = .white
+                }
+            }
+        }
     }
     
     private func configureProgressBars () {

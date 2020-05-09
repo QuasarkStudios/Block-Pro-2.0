@@ -23,6 +23,7 @@ class FirebaseCollab {
     
     var friends: [Friend] = []
     var collabs: [Collab] = []
+    var membersProfilePics: [String : UIImage?] = [:]
     //var collabRequests: [CollabRequest] = []
     
     static let sharedInstance = FirebaseCollab()
@@ -38,7 +39,6 @@ class FirebaseCollab {
         let memberCollabData: [String : Any] = ["collabID" : collabID, "collabName" : collabInfo.name, "collabObjective" : collabInfo.objective, "startTime" : collabInfo.dates["startTime"]!, "deadline" : collabInfo.dates["deadline"]!, "reminders" : "will be set up later"]
         
         batch.setData(collabData, forDocument: db.collection("Collaborations").document(collabID))
-        
         
         var memberArray: [[String : String]] = []
         
@@ -64,62 +64,75 @@ class FirebaseCollab {
                 memberToBeAdded["username"] = currentUser.username
                 memberToBeAdded["role"] = "Lead"
                 
-                batch.setData(memberToBeAdded, forDocument: db.collection("Collaborations").document(collabID).collection("Members").document(member.userID))
+                batch.setData(memberToBeAdded, forDocument: db.collection("Collaborations").document(collabID).collection("Members").document(memberToBeAdded["userID"]!))
                 memberArray.append(memberToBeAdded)
             }
         }
+
         
         for member in collabInfo.members {
-            
+
             batch.setData(memberCollabData, forDocument: db.collection("Users").document(member.userID).collection("CollabRequests").document(collabID))
-            
+
             for addedMember in memberArray {
-                
-                if member.userID != addedMember["userID"] {
-                    
-                    batch.setData(addedMember, forDocument: db.collection("Users").document(member.userID).collection("CollabRequests").document(collabID).collection("Members").document(addedMember["userID"]!))
-                }
+
+                batch.setData(addedMember, forDocument: db.collection("Users").document(member.userID).collection("CollabRequests").document(collabID).collection("Members").document(addedMember["userID"]!))
             }
         }
-        
+
         //Sets the leader collab data
         batch.setData(memberCollabData, forDocument: db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID))
-        
-        
-        
+
+
+        //Setting the members for the collab to the leaders collab document
         for addedMember in memberArray {
-            
-            if currentUser.userID != addedMember["userID"] {
-                
-                batch.setData(addedMember, forDocument: db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID).collection("Members").document(addedMember["userID"]!))
+
+            batch.setData(addedMember, forDocument: db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID).collection("Members").document(addedMember["userID"]!))
+        }
+
+        commitBatch(batch: batch) {
+
+            var count = 0
+
+            for photo in collabInfo.photos {
+
+                let photoDict: [String : Any] = ["photoID" : photoIDs[count], "photo" : photo]
+
+                self.firebaseStorage.saveNewCollabPhotosToStorage(collabID: collabID, collabPhoto: photoDict)
+
+                count += 1
             }
+
+            completion()
         }
         
         
         
-        batch.commit { (error) in
-            
-            if error != nil {
-                
-                ProgressHUD.showError(error?.localizedDescription)
-            }
-            
-            else {
-                    
-                var count = 0
-                
-                for photo in collabInfo.photos {
-                    
-                    let photoDict: [String : Any] = ["photoID" : photoIDs[count], "photo" : photo]
-                    
-                    self.firebaseStorage.saveNewCollabPhotosToStorage(collabID: collabID, collabPhoto: photoDict)
-                    
-                    count += 1
-                }
-                
-                completion()
-            }
-        }
+        
+        
+//        batch.commit { (error) in
+//
+//            if error != nil {
+//
+//                ProgressHUD.showError(error?.localizedDescription)
+//            }
+//
+//            else {
+//
+//                var count = 0
+//
+//                for photo in collabInfo.photos {
+//
+//                    let photoDict: [String : Any] = ["photoID" : photoIDs[count], "photo" : photo]
+//
+//                    self.firebaseStorage.saveNewCollabPhotosToStorage(collabID: collabID, collabPhoto: photoDict)
+//
+//                    count += 1
+//                }
+//
+//                completion()
+//            }
+//        }
     }
     
     func retrieveCollabs () {
@@ -157,8 +170,9 @@ class FirebaseCollab {
                         let deadline = document.data()["deadline"] as! Timestamp
                         collab.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
                         
-                        self.userRef.collection("Collabs").document(collab.collabID).collection("Members").getDocuments { (snapshot, error) in
-                            
+                        //self.userRef.collection("Collabs").document(collab.collabID).collection("Members").getDocuments { (snapshot, error) in
+                        self.db.collection("Collaborations").document(collab.collabID).collection("Members").getDocuments{ (snapshot, error) in
+                        
                             if error != nil {
                                 
                                 print(error as Any)
@@ -180,11 +194,17 @@ class FirebaseCollab {
                                         
                                         collab.members.append(member)
                                     }
+                                    
+                                    self.collabs.append(collab)
+                                    self.collabs = self.collabs.sorted(by: {$0.dates["deadline"]! > $1.dates["deadline"]!})
+                                }
+                                
+                                else {
+                                    
+                                    self.collabs.append(collab)
+                                    self.collabs = self.collabs.sorted(by: {$0.dates["deadline"]! > $1.dates["deadline"]!})
                                 }
                             }
-                            
-                            self.collabs.append(collab)
-                            self.collabs = self.collabs.sorted(by: {$0.dates["deadline"]! > $1.dates["deadline"]!})
                         }
                     }
                 }
@@ -238,21 +258,6 @@ class FirebaseCollab {
         
         batch.setData(memberCollabData, forDocument: userRef.collection("Collabs").document(collab.collabID))
         
-        batch.deleteDocument(userRef.collection("CollabRequests").document(collab.collabID))
-        
-        batch.commit { (error) in
-
-            if error != nil {
-                
-                print(error?.localizedDescription as Any)
-            }
-            
-            else {
-                
-                completion()
-            }
-        }
-        
         userRef.collection("CollabRequests").document(collab.collabID).collection("Members").getDocuments { (snapshot, error) in
             
             if error != nil {
@@ -266,11 +271,40 @@ class FirebaseCollab {
                     
                     for document in snapshot!.documents {
                         
-                        let memberID = document.data()["userID"] as! String
+                        print("check")
                         
-                        self.userRef.collection("CollabRequests").document(collab.collabID).collection("Members").document(memberID).delete()
+                        let member: [String : Any] = ["userID" : document.data()["userID"] as! String, "firstName" : document.data()["firstName"] as! String, "lastName" : document.data()["lastName"] as! String, "username" : document.data()["username"] as! String, "role" : document.data()["role"] as! String]
+                        
+                        batch.setData(member, forDocument: self.userRef.collection("Collabs").document(collab.collabID).collection("Members").document(member["userID"] as! String))
+                        
+                        self.userRef.collection("CollabRequests").document(collab.collabID).collection("Members").document(member["userID"] as! String).delete()
                     }
+                    
+                    batch.deleteDocument(self.userRef.collection("CollabRequests").document(collab.collabID))
+                    
+                    self.commitBatch(batch: batch, completion: completion)
                 }
+                
+                else {
+                    
+                    self.commitBatch(batch: batch, completion: completion)
+                }
+            }
+        }
+    }
+    
+    private func commitBatch (batch: WriteBatch, completion: @escaping (() -> Void)) {
+        
+        batch.commit { (error) in
+
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+            
+            else {
+                
+                completion()
             }
         }
     }
@@ -378,7 +412,7 @@ class FirebaseCollab {
     
     func cacheFriendProfileImages (friend: Friend) {
             
-        firebaseStorage.retrieveFriendsProfilePicFromStorage(friend: friend) { (profilePic) in
+        firebaseStorage.retrieveUserProfilePicFromStorage(userID: friend.userID) { (profilePic) in
             
             if let profilePic = profilePic {
                 
@@ -403,5 +437,10 @@ class FirebaseCollab {
 //
 //            friendsProfileImageCache.setObject(UIImage(named: "DefaultProfilePic")!, forKey: friendID as AnyObject)
 //        }
+    }
+    
+    func cacheMemberProfilePics (userID: String, profilePic: UIImage?) {
+         
+        membersProfilePics[userID] = profilePic
     }
 }

@@ -12,19 +12,20 @@ import FirebaseStorage
 
 class FirebaseStorage {
     
+    let currentUser = CurrentUser.sharedInstance
+    
     let collabStorageRef = Storage.storage().reference().child("Collabs")
     let profilePicturesRef = Storage.storage().reference().child("profilePictures")
     
     func saveProfilePictureToStorage (_ profilePicture: UIImage) {
         
         //let profilePicName = UUID().uuidString
-        let profilePicData = UIImage.pngData(profilePicture)()
         
-        //.child("\(profilePicName).png")
+        let profilePicJPEGData = profilePicture.jpegData(compressionQuality: 0.1)
         
-        if let data = profilePicData {
+        if let data = profilePicJPEGData {
             
-            profilePicturesRef.child("\(Auth.auth().currentUser!.uid).png").putData(data, metadata: nil) { (metadata, error) in
+            profilePicturesRef.child("\(currentUser.userID).jpeg").putData(data, metadata: nil) { (metadata, error) in
                 
                 if error != nil {
                     
@@ -33,7 +34,7 @@ class FirebaseStorage {
                 
                 else {
                     
-                    self.profilePicturesRef.child("\(Auth.auth().currentUser!.uid).png").downloadURL { (url, error) in
+                    self.profilePicturesRef.child("\(Auth.auth().currentUser!.uid).jpeg").downloadURL { (url, error) in
                         
                         if error != nil {
                             
@@ -93,9 +94,9 @@ class FirebaseStorage {
         }.resume()
     }
     
-    func retrieveFriendsProfilePicFromStorage (friend: Friend, completion: @escaping ((_ profilePic: UIImage?) -> Void)) {
+    func retrieveUserProfilePicFromStorage (userID: String, completion: @escaping ((_ profilePic: UIImage?) -> Void)) {
         
-        profilePicturesRef.child("\(friend.userID).png").getData(maxSize: 3 * 1048576) { (data, error) in
+        profilePicturesRef.child("\(userID).jpeg").getData(maxSize: 3 * 1048576) { (data, error) in
             
             if error == nil {
                 

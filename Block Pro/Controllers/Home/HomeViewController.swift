@@ -624,7 +624,11 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }) { (finished: Bool) in
             
             self.homeTableView.reloadData()
-            self.homeTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+            
+            if self.firebaseCollab.collabs.count > 0 {
+                
+                self.homeTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            }
             
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
                 

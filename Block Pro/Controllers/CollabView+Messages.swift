@@ -250,11 +250,15 @@ extension CollabViewController: UITextViewDelegate {
         
         keyboardHeight = keyboardFrame.cgRectValue.height
             
-            let bottomInset: CGFloat = keyboardHeight! - messageInputAccesoryView.configureSize().height
+        let bottomInset: CGFloat = keyboardHeight! - messageInputAccesoryView.configureSize().height
+        
+        collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+    
+        if messages?.count ?? 0 > 0 {
             
-            collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-            collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
             collabTableView.scrollToRow(at: IndexPath(row: ((messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: true)
+        }
     }
 
     
@@ -266,7 +270,11 @@ extension CollabViewController: UITextViewDelegate {
         keyboardHeight = keyboardFrame.cgRectValue.height
         collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        collabTableView.scrollToRow(at: IndexPath(row: ((messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: true)
+        
+        if messages?.count ?? 0 > 0 {
+            
+            collabTableView.scrollToRow(at: IndexPath(row: ((messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: true)
+        }
         
         if messageTextView.text == "" || messageTextView.text == "Send a message" {
             

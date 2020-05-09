@@ -42,6 +42,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     let currentUser = CurrentUser.sharedInstance
     
     let firebaseCollab = FirebaseCollab.sharedInstance
+    let firebaseStorage = FirebaseStorage()
     var collab: Collab?
     
     var messages: [Message]?
@@ -66,6 +67,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         configureTextViewContainer()
         
         retrieveMessages()
+        
+        retrieveMemberProfilePics()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -155,7 +158,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             }
             
             //Not the first message
-            else if (indexPath.row / 2) - 1 > 0 {
+            else if (indexPath.row / 2) - 1 >= 0 {
                 
                 //If the current user sent the message
                 if messages?[indexPath.row / 2].sender == currentUser.userID {
@@ -169,7 +172,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 30
                 }
             }
-        
+
             return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 15
         }
         
@@ -274,6 +277,42 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             panGestureView.removeGestureRecognizer(gestureViewGesture)
             buttonStackView.removeGestureRecognizer(stackViewGesture)
+        }
+    }
+    
+    //May not be neccasary because profile pics may already be obtained from the home view; leaving it here for now tho mainly. Mainly because there may be cases where the user hasnt allowed for all the pics to be loaded yet, and its not the time for me to be setting up observors 
+    private func retrieveMemberProfilePics () {
+
+        if let members = collab?.members {
+            
+            var count = 0
+            
+            for member in members {
+                
+                if let memberIndex = firebaseCollab.friends.firstIndex(where: {$0.userID == member.userID}) {
+
+                    collab?.members[count].profilePictureImage = firebaseCollab.friends[memberIndex].profilePictureImage
+                }
+                
+                else {
+                    
+                    let memberIndex = count
+                    
+                    firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic) in
+                        
+                        self.collab?.members[memberIndex].profilePictureImage = profilePic
+                        
+                        
+                    }
+                }
+                
+                count += 1
+            }
+        }
+        
+        else {
+            
+            print("something went wrong")
         }
     }
     
@@ -550,8 +589,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             self.collabTableView.reloadData()
             
-            let row = self.messages?.count ?? 0 > 0 ? (self.messages!.count * 2) - 1 : 0
-            self.collabTableView.scrollToRow(at: IndexPath(row: row, section: 0), at: .top, animated: false)
+            if self.messages?.count ?? 0 > 0 {
+                
+                self.collabTableView.scrollToRow(at: IndexPath(row: ((self.messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: true)
+            }
             
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
 
