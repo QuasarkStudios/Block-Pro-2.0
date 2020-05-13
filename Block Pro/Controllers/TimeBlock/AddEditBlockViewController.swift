@@ -208,10 +208,8 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         detailsTableView.register(UINib(nibName: "BlockNotificationSettingCell", bundle: nil), forCellReuseIdentifier: "blockNotificationCell")
         
         detailsTableView.register(UINib(nibName: "DeleteBlockCell", bundle: nil), forCellReuseIdentifier: "deleteBlockCell")
-        
-        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
+
+        //configureGestureRecognizors()
     
         if #available(iOS 13.0, *) {
             isModalInPresentation = true
@@ -226,6 +224,11 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         guard let block = selectedBlock else { return }
         
             configureEditView(block)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        configureGestureRecognizors()
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -396,6 +399,19 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         
         tableView.beginUpdates()
         tableView.endUpdates()
+    }
+    
+    private func configureGestureRecognizors () {
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+        
+        let presentTabBar = UISwipeGestureRecognizer(target: self, action: #selector(presentDisabledTabBar))
+        presentTabBar.delegate = self
+        presentTabBar.cancelsTouchesInView = false
+        presentTabBar.direction = .left
+        view.addGestureRecognizer(presentTabBar)
     }
     
     private func configureNameSettingCell (_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell {
@@ -687,6 +703,12 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         notificationSettings["minsBefore"] = block.minsBefore
     }
     
+    @objc private func presentDisabledTabBar () {
+        
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.warning)
+    }
+    
     func validateTextEntered (_ text: String) -> Bool {
         
         let textArray = Array(text)
@@ -899,5 +921,12 @@ extension UILabel {
             attributedString.addAttribute(NSAttributedString.Key.kern, value: kernValue, range: NSRange(location: 0, length: attributedString.length - 1))
             attributedText = attributedString
         }
+    }
+}
+
+extension AddEditBlockViewController: UIGestureRecognizerDelegate {
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

@@ -46,6 +46,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var selectedCollab: Collab?
     
+    var tabBar = CustomTabBar.sharedInstance
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -77,6 +79,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         tabBarController?.tabBar.isTranslucent = false
         tabBarController?.tabBar.clipsToBounds = true
         
+        //tabBarController?.delegate = self
+        
         if currentUser.userSignedIn {
             
             userNameLabel.text = "Hey \(currentUser.firstName)"
@@ -100,12 +104,18 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             retrieveCollabs()
         }
         
+        configureTabBar()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
         configureNavBar()
+    }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        tabBar.previousNavigationController = navigationController
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -115,6 +125,21 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             scrollToCurrentWeek()
             viewInitiallyLoaded = true
         }
+        
+        if tabBar.previousNavigationController == navigationController && tabBar.popped != true {
+            
+            configureTabBar()
+        }
+        
+        else if tabBar.popped == true {
+            
+            tabBar.popped = false
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        
+        //tabBar.shouldHide = true
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -301,6 +326,21 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         profilePicBlurView.layer.cornerRadius = 0.5 * profilePicImageView.bounds.width
         profilePicBlurView.clipsToBounds = true
         profilePicBlurView.alpha = 0
+    }
+    
+    func configureTabBar () {
+
+        tabBarController?.tabBar.isHidden = true
+        tabBarController?.delegate = tabBar
+        
+        tabBar.shouldHide = false
+        tabBar.tabBarController = tabBarController
+        tabBar.currentNavigationController = self.navigationController
+        
+        tabBar.animateEntryToView()
+        tabBar.workItem?.cancel()
+        
+        view.addSubview(tabBar)
     }
     
     private func setProfilePicture () {

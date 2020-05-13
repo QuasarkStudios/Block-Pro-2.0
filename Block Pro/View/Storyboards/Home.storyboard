@@ -246,7 +246,7 @@
         <!--Home View Controller-->
         <scene sceneID="KbH-in-T8a">
             <objects>
-                <viewController id="V1r-b2-a7x" customClass="HomeViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="V1r-b2-a7x" customClass="HomeViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="90P-Kx-rfT">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -294,7 +294,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="BcB-qR-IAZ">
-                                <rect key="frame" x="0.0" y="184" width="375" height="496"/>
+                                <rect key="frame" x="0.0" y="184" width="375" height="628"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="liv-41-o1d">
@@ -348,7 +348,7 @@
                             <constraint firstItem="T8z-AM-GYO" firstAttribute="leading" secondItem="90P-Kx-rfT" secondAttribute="leading" constant="23" id="DMZ-VW-ZqQ"/>
                             <constraint firstItem="BcB-qR-IAZ" firstAttribute="top" secondItem="edH-Cw-qfJ" secondAttribute="bottom" constant="5" id="Ecy-oA-NLa"/>
                             <constraint firstItem="5oQ-31-ATB" firstAttribute="leading" secondItem="mqV-hW-uyA" secondAttribute="leading" constant="35" id="GhU-ck-SFK"/>
-                            <constraint firstItem="mqV-hW-uyA" firstAttribute="bottom" secondItem="BcB-qR-IAZ" secondAttribute="bottom" id="PJU-2C-34c"/>
+                            <constraint firstAttribute="bottom" secondItem="BcB-qR-IAZ" secondAttribute="bottom" id="RTJ-HE-e95"/>
                             <constraint firstItem="4bu-tw-S2V" firstAttribute="leading" secondItem="mqV-hW-uyA" secondAttribute="leading" constant="23" id="TgV-Bh-2Es"/>
                             <constraint firstItem="T8z-AM-GYO" firstAttribute="top" secondItem="90P-Kx-rfT" secondAttribute="top" constant="44" id="VDj-IN-1DJ"/>
                             <constraint firstItem="BcB-qR-IAZ" firstAttribute="top" secondItem="90P-Kx-rfT" secondAttribute="top" constant="184" id="XlD-Om-wyJ"/>
@@ -411,11 +411,10 @@
             </objects>
             <point key="canvasLocation" x="2246" y="-522"/>
         </scene>
-        <!--Home-->
+        <!--Navigation Controller-->
         <scene sceneID="2uB-wX-0i1">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="dDa-uz-dwL" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Home" image="home" id="XMI-M8-Aeu"/>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" hidesBottomBarWhenPushed="YES" id="dDa-uz-dwL" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="zMT-ST-lrt">
@@ -434,7 +433,6 @@
     </scenes>
     <resources>
         <image name="DefaultProfilePic" width="400" height="400"/>
-        <image name="home" width="30" height="30"/>
         <image name="icons8-back-50" width="50" height="50"/>
         <image name="icons8-forward-50" width="50" height="50"/>
     </resources>

@@ -34,6 +34,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     @IBOutlet weak var tableViewTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var tableViewBottomAnchor: NSLayoutConstraint!
     
+    let tabBar = CustomTabBar.sharedInstance
+    
     let messageInputAccesoryView = InputAccesoryView()
     let textViewContainer = MessageTextViewContainer()
     let messageTextView = UITextView()
@@ -74,13 +76,20 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidAppear(_ animated: Bool) {
         
         addKeyboardObservor()
+        
+        self.becomeFirstResponder()
+        
+        configureTabBar()
     }
+    
     
     override func viewWillDisappear(_ animated: Bool) {
         
         removeKeyboardObservor()
         
         firebaseCollab.messageListener?.remove()
+        
+        tabBar.previousNavigationController = navigationController
     }
     
     override func viewDidLayoutSubviews() {
@@ -240,6 +249,24 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabTableView.register(UINib(nibName: "MessageCell", bundle: nil), forCellReuseIdentifier: "messageCell")
     }
     
+    func configureTabBar () {
+
+        tabBarController?.tabBar.isHidden = true
+        tabBarController?.delegate = tabBar
+        
+        tabBar.tabBarController = tabBarController
+        tabBar.currentNavigationController = self.navigationController
+        
+        tabBar.configureActiveTabBarGestureRecognizers(self.view)
+        
+        if tabBar.previousNavigationController == tabBar.currentNavigationController {
+            
+            tabBar.shouldHide = true
+        }
+        
+        view.addSubview(tabBar)
+    }
+    
     private func addKeyboardObservor () {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingPresented), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -264,7 +291,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         stackViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
         buttonStackView.addGestureRecognizer(stackViewPanGesture!)
     }
-    
+        
     private func reconfigureGestureRecognizers () {
         
         panGestureView.addGestureRecognizer(gestureViewPanGesture!)
@@ -280,7 +307,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
-    //May not be neccasary because profile pics may already be obtained from the home view; leaving it here for now tho mainly. Mainly because there may be cases where the user hasnt allowed for all the pics to be loaded yet, and its not the time for me to be setting up observors 
+    //May not be neccasary because profile pics may already be obtained from the home view; leaving it here for now tho. Mainly because there may be cases where the user hasnt allowed for all the pics to be loaded yet, and its not the time for me to be setting up observors 
     private func retrieveMemberProfilePics () {
 
         if let members = collab?.members {
@@ -527,6 +554,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         blocksButton.setTitleColor(.lightGray, for: .normal)
         messagesButton.setTitleColor(.lightGray, for: .normal)
         
+        view.removeGestureRecognizer(tabBar.presentDisabledTabBarSwipeGesture)
+        tabBar.configureActiveTabBarGestureRecognizers(self.view)
+        
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
             
             self.messageInputAccesoryView.alpha = 0
@@ -551,6 +581,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         blocksButton.setTitleColor(.black, for: .normal)
         progressButton.setTitleColor(.lightGray, for: .normal)
         messagesButton.setTitleColor(.lightGray, for: .normal)
+        
+        view.removeGestureRecognizer(tabBar.presentDisabledTabBarSwipeGesture)
+        tabBar.configureActiveTabBarGestureRecognizers(self.view)
         
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
                             
@@ -579,11 +612,17 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         tableViewBottomAnchor.constant = messageInputAccesoryView.configureSize().height
         
+        view.removeGestureRecognizer(tabBar.presentActiveTabBarSwipeGesture)
+        view.removeGestureRecognizer(tabBar.dismissActiveTabBarSwipeGesture)
+        tabBar.configureDisabledTabBarGestureRecognizer(self.view)
+        
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
             
             self.view.layoutIfNeeded()
             
             self.collabTableView.alpha = 0
+            
+            self.tabBar.shouldHide = true
 
         }) { (finished: Bool) in
             

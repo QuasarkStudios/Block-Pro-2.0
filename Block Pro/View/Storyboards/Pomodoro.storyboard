@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="E6s-Xj-VKL">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="E6s-Xj-VKL">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -11,7 +11,7 @@
         <!--Pomodoro-->
         <scene sceneID="197-ZW-NJP">
             <objects>
-                <viewController title="Pomodoro" id="SQN-AH-eZQ" customClass="PomodoroViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Pomodoro" extendedLayoutIncludesOpaqueBars="YES" hidesBottomBarWhenPushed="YES" id="SQN-AH-eZQ" customClass="PomodoroViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="pG4-oQ-nR0">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -417,11 +417,10 @@
             </objects>
             <point key="canvasLocation" x="3293.5999999999999" y="-729.31034482758628"/>
         </scene>
-        <!--Pomodoro-->
+        <!--Navigation Controller-->
         <scene sceneID="YAb-mE-hff">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="E6s-Xj-VKL" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Pomodoro" image="icons8-tomato-37" id="MSQ-ph-gI6"/>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="nNo-NF-QeB">
@@ -438,7 +437,4 @@
             <point key="canvasLocation" x="1250.4000000000001" y="-728.57142857142856"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="icons8-tomato-37" width="37" height="37"/>
-    </resources>
 </document>

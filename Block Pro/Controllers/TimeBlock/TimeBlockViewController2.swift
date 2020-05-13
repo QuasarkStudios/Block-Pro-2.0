@@ -30,6 +30,8 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
 
     var selectedBlock: PersonalRealmDatabase.blockTuple?
     
+    let tabBar = CustomTabBar.sharedInstance
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -46,11 +48,12 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         timeBlockTableView.register(UINib(nibName: "TimeBlockCell", bundle: nil), forCellReuseIdentifier: "timeBlockCell")
         
         createDetailsButton()
+        
+        //configureGestureRecognizers()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
         
         applyGradientFade()
     }
@@ -65,6 +68,13 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         selectedBlock = nil
         
         autoScrollToBlock()
+        
+        configureTabBar()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        tabBar.previousNavigationController = navigationController
     }
 
     
@@ -80,6 +90,24 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         cell.editBlockDelegate = self
         
         return cell
+    }
+    
+    func configureTabBar () {
+
+        tabBarController?.tabBar.isHidden = true
+        tabBarController?.delegate = tabBar
+        
+        tabBar.tabBarController = tabBarController
+        tabBar.currentNavigationController = self.navigationController
+        
+        tabBar.configureActiveTabBarGestureRecognizers(self.view)
+        
+        if tabBar.previousNavigationController == tabBar.currentNavigationController {
+            
+            tabBar.shouldHide = true
+        }
+        
+        view.addSubview(tabBar)
     }
     
     private func applyGradientFade () {

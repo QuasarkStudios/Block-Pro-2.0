@@ -15,6 +15,8 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
     lazy var firebaseCollab = FirebaseCollab()
     var collabRequests: [CollabRequest]?
     
+    let tabBar = CustomTabBar.sharedInstance
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -26,6 +28,16 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
             self.collabRequests = requests
             self.notificationsTableView.reloadData()
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        //configureTabBar()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        tabBar.previousNavigationController = navigationController
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -60,6 +72,18 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
             
             print("success")
         }
+    }
+    
+    func configureTabBar () {
+
+        tabBar.shouldHide = false
+        tabBarController?.tabBar.isHidden = true
+        tabBarController?.delegate = tabBar
+        
+        tabBar.tabBarController = tabBarController
+        tabBar.currentNavigationController = self.navigationController
+        
+        view.addSubview(tabBar)
     }
     
     @IBAction func acceptButton(_ sender: Any) {

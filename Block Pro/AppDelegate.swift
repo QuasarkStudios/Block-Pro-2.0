@@ -30,8 +30,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         
         //Sets the intial view of the tabBar to be the TimeBlock view
-        let tabBarController = self.window?.rootViewController as! UITabBarController
-        tabBarController.selectedIndex = 2
+//        let tabBarController = self.window?.rootViewController as! UITabBarController
+//        tabBarController.selectedIndex = 2
         
 //        UINavigationBar.appearance().tintColor = UIColor(hexString: "#e35d5b")
         UINavigationBar.appearance().tintColor = .black

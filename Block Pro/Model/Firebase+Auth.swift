@@ -83,7 +83,7 @@ class UserAuthentication {
         
         let db = Firestore.firestore()
         
-        db.collection("Users").whereField("username", isEqualTo: username).getDocuments { (snapshot, error) in
+        db.collection("Users").whereField("username", isEqualTo: username.lowercased()).getDocuments { (snapshot, error) in
             
             if error != nil {
                 
@@ -144,7 +144,7 @@ class UserAuthentication {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM d, yyyy"
         
-        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username, "accountCreated" : formatter.string(from: Date())])
+        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : formatter.string(from: Date())])
         
         completion()
     }

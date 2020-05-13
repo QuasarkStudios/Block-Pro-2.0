@@ -11,7 +11,7 @@
         <!--Notifications View Controller-->
         <scene sceneID="0S5-Xe-lTj">
             <objects>
-                <viewController id="40w-6h-o9b" customClass="NotificationsViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController extendedLayoutIncludesOpaqueBars="YES" hidesBottomBarWhenPushed="YES" id="40w-6h-o9b" customClass="NotificationsViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="wkN-XY-rDc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -77,11 +77,10 @@
             </objects>
             <point key="canvasLocation" x="1002.8985507246377" y="111.83035714285714"/>
         </scene>
-        <!--Notifs-->
+        <!--Navigation Controller-->
         <scene sceneID="MGT-Cn-EqV">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="yNY-dM-iQX" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Notifs" image="bell" id="zQv-dH-s1r"/>
+                <navigationController extendedLayoutIncludesOpaqueBars="YES" automaticallyAdjustsScrollViewInsets="NO" hidesBottomBarWhenPushed="YES" id="yNY-dM-iQX" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="M05-7s-HgP">
@@ -98,7 +97,4 @@
             <point key="canvasLocation" x="92.753623188405811" y="111.83035714285714"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="bell" width="30" height="30"/>
-    </resources>
 </document>

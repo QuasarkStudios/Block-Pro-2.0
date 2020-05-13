@@ -68,7 +68,7 @@ extension RegistrationViewController {
                 
                 cell.progressView.showProgress()
                 
-                userAuth.validateUsername(username: newUser.username) { (snapshot, error) in
+            userAuth.validateUsername(username: newUser.username) { (snapshot, error) in
                     
                     if error != nil {
                         

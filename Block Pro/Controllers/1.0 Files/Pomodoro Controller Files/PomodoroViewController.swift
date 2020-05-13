@@ -103,6 +103,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     var controlViewAnimatedPosition: CGFloat = 0 //Animated topAnchor constant of the "controlView"
     var gestureViewAnimatedPosition: CGFloat = 0 //Animate topAnchor constant of the "gestureView"
     
+    let tabBar = CustomTabBar.sharedInstance
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -120,9 +121,13 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         //Removes the pending notification that would be scheduled if a user leaves this view during a active Pomodoro session
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [defaults.value(forKey: "pomodoroNotificationID") as? String ?? ""])
+        
+//        configureTabBar()
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
+        //configureTabBar()
         
         //If the view hasn't been loaded up at least once before
         if viewIntiallyLoaded == false {
@@ -143,6 +148,8 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        
+        tabBar.previousNavigationController = navigationController
         
         viewResignedActive()
         
@@ -254,6 +261,18 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
         gestureView.addGestureRecognizer(pan)
+    }
+    
+    func configureTabBar () {
+
+        tabBarController?.tabBar.isHidden = true
+        tabBarController?.delegate = tabBar
+        
+        tabBar.shouldHide = false
+        tabBar.tabBarController = tabBarController
+        tabBar.currentNavigationController = self.navigationController
+        
+        view.addSubview(tabBar)
     }
     
     

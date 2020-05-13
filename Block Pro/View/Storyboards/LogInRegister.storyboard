@@ -20,7 +20,7 @@
         <!--Log In View Controller-->
         <scene sceneID="zf4-It-qJ8">
             <objects>
-                <viewController id="R2C-U1-vnq" customClass="LogInViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="R2C-U1-vnq" customClass="LogInViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="oCj-og-Ola">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -417,11 +417,10 @@
             </objects>
             <point key="canvasLocation" x="4051" y="-349"/>
         </scene>
-        <!--Home-->
+        <!--Navigation Controller-->
         <scene sceneID="2Md-B9-nT1">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="poB-7U-mBZ" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Home" image="home" id="S01-qN-v8p"/>
                     <toolbarItems/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="lEf-Nq-dWu">
@@ -438,9 +437,6 @@
             <point key="canvasLocation" x="1213.0434782608697" y="-348.21428571428572"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="home" width="30" height="30"/>
-    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="rAg-rr-XWa"/>
     </inferredMetricsTieBreakers>

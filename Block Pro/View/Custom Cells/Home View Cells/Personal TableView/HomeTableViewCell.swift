@@ -108,7 +108,9 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
         
         let leftInset: CGFloat = (UIScreen.main.bounds.width - 5) / 4
         
-        return UIEdgeInsets(top: -40, left: leftInset, bottom: 0, right: 0)
+        //return UIEdgeInsets(top: -60, left: leftInset, bottom: 0, right: 0) //Change this; probably just make the item height the size of the collection view so it's easier to manipulate the top anchor
+        
+        return UIEdgeInsets(top: 0, left: leftInset, bottom: 0, right: 0)
     }
 
 //    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -220,7 +222,7 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
                 guard let cell = self.personalCollectionView.cellForItem(at: self.visibleItem!) as? PersonalCell else { return }
 
                     cell.cellBackgroundTopAnchor.constant = 5
-                    cell.cellBackgroundBottomAnchor.constant = 5
+                    cell.cellBackgroundBottomAnchor.constant = 125
                     cell.cellBackgroundLeadingAnchor.constant = 5
                     cell.cellBackgroundTrailingAnchor.constant = 5
 
@@ -275,7 +277,7 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
             }
 
             cell.cellBackgroundTopAnchor.constant = 30
-            cell.cellBackgroundBottomAnchor.constant = 75
+            cell.cellBackgroundBottomAnchor.constant = 175
             cell.cellBackgroundLeadingAnchor.constant = 15
             cell.cellBackgroundTrailingAnchor.constant = 15
 

@@ -56,7 +56,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         configureTableView()
         
-        addTapGesture()
+        configureGestureRecognizors()
         
         fetchCollabData()
         
@@ -288,11 +288,23 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         newCollab.dates = ["startTime" : starts, "deadline" : deadline]
     }
     
-    private func addTapGesture () {
+    private func configureGestureRecognizors () {
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
+        
+        let presentTabBar = UISwipeGestureRecognizer(target: self, action: #selector(presentDisabledTabBar))
+        presentTabBar.delegate = self
+        presentTabBar.cancelsTouchesInView = false
+        presentTabBar.direction = .left
+        view.addGestureRecognizer(presentTabBar)
+    }
+    
+    @objc private func presentDisabledTabBar () {
+        
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.warning)
     }
     
     private func createCollab () {
@@ -706,5 +718,12 @@ extension CreateCollabViewController: PhotoEdited {
             photosCellCollectionViewPresent = false
             details_attachmentsTableView.reloadData()
         }
+    }
+}
+
+extension CreateCollabViewController: UIGestureRecognizerDelegate {
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

@@ -209,7 +209,6 @@
                         <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="7hS-Kn-fcm" secondAttribute="bottom" constant="8" id="18i-g4-OaO"/>
-                            <constraint firstAttribute="width" constant="335" id="1Om-Cg-lxf"/>
                             <constraint firstItem="933-s8-c2c" firstAttribute="leading" secondItem="meQ-H9-Jlx" secondAttribute="leading" constant="15" id="4c9-xb-4Bo"/>
                             <constraint firstItem="SNp-aC-ZEV" firstAttribute="top" secondItem="7UR-Z9-nyX" secondAttribute="bottom" id="5cD-Fh-VMz"/>
                             <constraint firstItem="0W0-Vm-Vy7" firstAttribute="leading" secondItem="meQ-H9-Jlx" secondAttribute="leading" constant="65" id="7ka-LF-CrE"/>
@@ -239,7 +238,9 @@
             </view>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
+                <constraint firstItem="meQ-H9-Jlx" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="20" id="9qI-U0-cLg"/>
                 <constraint firstItem="meQ-H9-Jlx" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="Ib3-2l-fkd"/>
+                <constraint firstAttribute="trailing" secondItem="meQ-H9-Jlx" secondAttribute="trailing" constant="20" id="Q3o-ea-3cE"/>
                 <constraint firstItem="meQ-H9-Jlx" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="nkH-hq-esT"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>

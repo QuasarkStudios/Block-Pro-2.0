@@ -244,7 +244,7 @@ class PersonalCell: UICollectionViewCell {
         
         tempLabel.isHidden = false
         
-        tempLabel.frame = CGRect(x: contentView.center.x - 75, y: contentView.center.y - 75, width: 150, height: 150)
+        tempLabel.frame = CGRect(x: contentView.center.x - 75, y: contentView.center.y - 150, width: 150, height: 150)
         tempLabel.text = text
         tempLabel.font = UIFont(name: "Poppins-SemiBold", size: 20)
         tempLabel.textColor = .black

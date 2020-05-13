@@ -18,7 +18,7 @@ class PersonalCollectionViewFlowLayout: UICollectionViewFlowLayout{
     override func prepare() {
         super.prepare()
         
-        self.itemSize = CGSize(width: 205, height: 455)
+        self.itemSize = CGSize(width: 205, height: (collectionView?.frame.height)!)
         self.minimumInteritemSpacing = 15
         self.minimumLineSpacing = 15
         self.scrollDirection = .horizontal
