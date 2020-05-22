@@ -28,7 +28,7 @@ extension CollabViewController: UITextViewDelegate {
         
         guard let collabID = collab?.collabID else { return }
         
-        firebaseCollab.retrieveMessages(collabID: collabID) { (messages, error) in
+        firebaseMessaging.retrieveAllMessages(collabID: collabID) { (messages, error) in
             
             if error != nil {
                 
@@ -214,7 +214,7 @@ extension CollabViewController: UITextViewDelegate {
         ].forEach { $0.isActive = true }
         
         messageTextView.delegate = self
-        messageTextView.font = UIFont(name: "Poppins-SemiBold", size: 13)
+        messageTextView.font = UIFont(name: "Poppins-SemiBold", size: 14)
         messageTextView.text = "Send a message"
         messageTextView.isScrollEnabled = false
         messageTextView.showsVerticalScrollIndicator = false
@@ -255,8 +255,8 @@ extension CollabViewController: UITextViewDelegate {
         collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
         collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     
-        if messages?.count ?? 0 > 0 {
-            
+        if messages?.count ?? 0 > 0 && selectedTab == "Messages" {
+
             collabTableView.scrollToRow(at: IndexPath(row: ((messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: true)
         }
     }
@@ -399,7 +399,7 @@ extension CollabViewController: UITextViewDelegate {
             
             if let collabID = collab?.collabID {
                 
-                firebaseCollab.sendMessage(collabID: collabID, message) { (error) in
+                firebaseMessaging.sendMessage(collabID: collabID, message) { (error) in
                     
                     if error != nil {
                         

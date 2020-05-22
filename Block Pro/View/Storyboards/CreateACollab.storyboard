@@ -21,11 +21,11 @@
             <objects>
                 <viewController id="aWh-Qt-A1S" customClass="AddMembersViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="UvW-Bg-RMp">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wo8-1Y-JFP">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="7zR-Kl-atQ"/>
                                 </constraints>
@@ -45,7 +45,7 @@
                                 </items>
                             </navigationBar>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Members" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f2A-eL-9Nx">
-                                <rect key="frame" x="30" y="64" width="200" height="40"/>
+                                <rect key="frame" x="30" y="108" width="200" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="MTK-3W-aic"/>
                                     <constraint firstAttribute="width" constant="200" id="eiu-do-Hdj"/>
@@ -55,7 +55,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0/5" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NHo-IR-Hdc">
-                                <rect key="frame" x="295" y="64" width="60" height="40"/>
+                                <rect key="frame" x="295" y="108" width="60" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="60" id="EAZ-SK-FbL"/>
                                     <constraint firstAttribute="height" constant="40" id="N3G-Ra-Ke5"/>
@@ -65,7 +65,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="zbY-tg-lzY">
-                                <rect key="frame" x="0.0" y="124" width="375" height="600"/>
+                                <rect key="frame" x="0.0" y="168" width="375" height="644"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                             </tableView>
                         </subviews>
@@ -75,10 +75,10 @@
                             <constraint firstItem="wo8-1Y-JFP" firstAttribute="top" secondItem="pic-uJ-ACT" secondAttribute="top" id="D1I-zF-uTj"/>
                             <constraint firstItem="f2A-eL-9Nx" firstAttribute="leading" secondItem="pic-uJ-ACT" secondAttribute="leading" constant="30" id="MBz-Pc-ygM"/>
                             <constraint firstItem="NHo-IR-Hdc" firstAttribute="top" secondItem="wo8-1Y-JFP" secondAttribute="bottom" constant="20" id="Oid-Nc-h8V"/>
+                            <constraint firstAttribute="bottom" secondItem="zbY-tg-lzY" secondAttribute="bottom" id="Pk6-ep-YJj"/>
                             <constraint firstItem="f2A-eL-9Nx" firstAttribute="top" secondItem="wo8-1Y-JFP" secondAttribute="bottom" constant="20" id="QDd-Xi-Oxd"/>
                             <constraint firstItem="pic-uJ-ACT" firstAttribute="trailing" secondItem="NHo-IR-Hdc" secondAttribute="trailing" constant="20" id="XD0-jb-GYo"/>
                             <constraint firstItem="zbY-tg-lzY" firstAttribute="top" secondItem="f2A-eL-9Nx" secondAttribute="bottom" constant="20" id="aXO-Wt-9u6"/>
-                            <constraint firstItem="pic-uJ-ACT" firstAttribute="bottom" secondItem="zbY-tg-lzY" secondAttribute="bottom" id="c25-ui-3Jg"/>
                             <constraint firstItem="zbY-tg-lzY" firstAttribute="leading" secondItem="pic-uJ-ACT" secondAttribute="leading" id="coL-DD-6Jy"/>
                             <constraint firstItem="pic-uJ-ACT" firstAttribute="trailing" secondItem="zbY-tg-lzY" secondAttribute="trailing" id="dSh-cc-B8f"/>
                             <constraint firstItem="wo8-1Y-JFP" firstAttribute="leading" secondItem="pic-uJ-ACT" secondAttribute="leading" id="f5Z-nO-py3"/>
@@ -94,7 +94,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2l0-R8-T7L" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-757" y="-125"/>
+            <point key="canvasLocation" x="-817" y="-618"/>
         </scene>
         <!--Collab Dates View Controller-->
         <scene sceneID="hGk-tG-xub">
@@ -338,7 +338,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bGl-ao-aE9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="115.94202898550725" y="-125.22321428571428"/>
+            <point key="canvasLocation" x="466" y="-126"/>
         </scene>
         <!--Create Collab View Controller-->
         <scene sceneID="p3H-UE-U59">
@@ -474,15 +474,23 @@
                         <outlet property="segmentIndicatorLeadingAnchor" destination="KAY-F2-SZv" id="ZAg-ZU-UWI"/>
                         <outlet property="segmentIndicatorWidthConstraint" destination="RFM-jo-NzX" id="WKO-ND-sgY"/>
                         <outlet property="selectedSegmentIndicator" destination="mMK-vg-ws2" id="yOJ-uP-wll"/>
-                        <segue destination="aWh-Qt-A1S" kind="showDetail" identifier="moveToAddMembersView" id="J6N-dw-hz1"/>
                         <segue destination="Aib-ri-8Um" kind="showDetail" identifier="moveToMemberProfileView" id="8N5-xD-jrZ"/>
                         <segue destination="9q4-II-GJ8" kind="showDetail" identifier="moveToCalendarView" id="qck-wp-ll5"/>
                         <segue destination="fcF-GM-Vyk" kind="showDetail" identifier="moveToSelectedPhotoView" id="kRl-Yf-eOL"/>
+                        <segue destination="H1Y-3F-UIy" kind="presentation" identifier="moveToAddMembersView" id="EIL-Lt-IUX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RJi-lx-3XP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1767" y="-125"/>
+        </scene>
+        <!--AddMembers-->
+        <scene sceneID="QbW-oI-4R4">
+            <objects>
+                <viewControllerPlaceholder storyboardName="AddMembers" id="H1Y-3F-UIy" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Wpi-5H-jM3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1180" y="-52"/>
         </scene>
     </scenes>
     <resources>

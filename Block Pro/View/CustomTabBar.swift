@@ -28,12 +28,16 @@ class CustomTabBar: UIView {
 
                 let xCoord = UIScreen.main.bounds.width + 10
                 frame = CGRect(x: xCoord, y: frame.origin.y, width: 240, height: 55)
+                
+                alpha = 0
             }
 
             else {
 
                 let centeredXCoord = (UIScreen.main.bounds.width / 2) - 120
                 frame = CGRect(x: centeredXCoord, y: frame.origin.y, width: 240, height: 55)
+                
+                alpha = 1
             }
         }
     }
@@ -84,7 +88,7 @@ class CustomTabBar: UIView {
         
         frame = CGRect(x: centeredXCoord, y: yCoord, width: 225, height: 45)
         backgroundColor = UIColor(hexString: "282828")
-        layer.cornerRadius = 27
+        layer.cornerRadius = 28.5
         
         if #available(iOS 13.0, *) {
             layer.cornerCurve = .continuous
@@ -177,10 +181,7 @@ class CustomTabBar: UIView {
 
                 self.layoutIfNeeded()
 
-            }) { (finished: Bool) in
-
-            }
-
+            })
         }
     }
     
@@ -267,10 +268,7 @@ class CustomTabBar: UIView {
                 
                 self.shouldHide = true
 
-            }) { (finished: Bool) in
-
-
-            }
+            })
         })
     }
     
@@ -377,7 +375,7 @@ extension CustomTabBar: UITabBarControllerDelegate {
                 
                 else if selectedIndex == 2 {
                     
-                    let messagesViewController = selectedNavigationController.visibleViewController as! MessagesViewController
+                    let messagesViewController = selectedNavigationController.visibleViewController as! MessagesHomeViewController
                     messagesViewController.configureTabBar()
                 }
                 

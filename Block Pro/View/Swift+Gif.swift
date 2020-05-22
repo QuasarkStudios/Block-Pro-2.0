@@ -222,5 +222,4 @@ extension UIImage {
 
         return animation
     }
-
 }

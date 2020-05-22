@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="TOE-og-tZG">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="Poppins-SemiBold.ttf">
+            <string>Poppins-SemiBold</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--Add Members View Controller-->
+        <scene sceneID="CNt-pf-CCR">
+            <objects>
+                <viewController id="TOE-og-tZG" customClass="AddMembersViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Cs8-m3-HED">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gHz-ab-4F5">
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="FYQ-pi-aLi"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem id="hJc-au-yxP">
+                                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="stop" id="Yko-KW-WcG">
+                                            <connections>
+                                                <action selector="cancelButton:" destination="TOE-og-tZG" id="Sa7-ds-Iqy"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="03l-lb-mer">
+                                            <connections>
+                                                <action selector="doneButton:" destination="TOE-og-tZG" id="SZu-jh-pUA"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Header Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TVL-re-4qb">
+                                <rect key="frame" x="30" y="108" width="200" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Rc0-oD-fCW"/>
+                                    <constraint firstAttribute="width" constant="200" id="X46-TK-Zwb"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="22"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0/5" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QO6-8p-055">
+                                <rect key="frame" x="334" y="108" width="60" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Oar-Bu-bDL"/>
+                                    <constraint firstAttribute="width" constant="60" id="US8-uH-jxR"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="nEi-Wi-M0J">
+                                <rect key="frame" x="0.0" y="168" width="414" height="728"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="QO6-8p-055" firstAttribute="top" secondItem="gHz-ab-4F5" secondAttribute="bottom" constant="20" id="2d4-gA-TT0"/>
+                            <constraint firstItem="KJN-ZM-4uP" firstAttribute="trailing" secondItem="QO6-8p-055" secondAttribute="trailing" constant="20" id="DZp-cq-5QO"/>
+                            <constraint firstItem="KJN-ZM-4uP" firstAttribute="trailing" secondItem="nEi-Wi-M0J" secondAttribute="trailing" id="EXb-8A-JDc"/>
+                            <constraint firstItem="gHz-ab-4F5" firstAttribute="trailing" secondItem="KJN-ZM-4uP" secondAttribute="trailing" id="Iux-z1-DNd"/>
+                            <constraint firstAttribute="bottom" secondItem="nEi-Wi-M0J" secondAttribute="bottom" id="LbF-LN-0Yh"/>
+                            <constraint firstItem="nEi-Wi-M0J" firstAttribute="leading" secondItem="KJN-ZM-4uP" secondAttribute="leading" id="OZl-vN-hLE"/>
+                            <constraint firstItem="gHz-ab-4F5" firstAttribute="top" secondItem="KJN-ZM-4uP" secondAttribute="top" id="hrZ-G5-NOq"/>
+                            <constraint firstItem="TVL-re-4qb" firstAttribute="top" secondItem="gHz-ab-4F5" secondAttribute="bottom" constant="20" id="hyR-Dn-HJa"/>
+                            <constraint firstItem="nEi-Wi-M0J" firstAttribute="top" secondItem="TVL-re-4qb" secondAttribute="bottom" constant="20" id="o54-FJ-Hk9"/>
+                            <constraint firstItem="TVL-re-4qb" firstAttribute="leading" secondItem="KJN-ZM-4uP" secondAttribute="leading" constant="30" id="pcO-Lc-K91"/>
+                            <constraint firstItem="gHz-ab-4F5" firstAttribute="leading" secondItem="KJN-ZM-4uP" secondAttribute="leading" id="xXA-Xo-vlP"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="KJN-ZM-4uP"/>
+                    </view>
+                    <connections>
+                        <outlet property="addMembersTableView" destination="nEi-Wi-M0J" id="LDZ-sA-6cQ"/>
+                        <outlet property="headerLabel" destination="TVL-re-4qb" id="Lch-HJ-gwV"/>
+                        <outlet property="membersCountLabel" destination="QO6-8p-055" id="Sc5-uX-toS"/>
+                        <outlet property="navBar" destination="gHz-ab-4F5" id="t7d-gc-3Gs"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8Xe-EW-tOA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-428" y="19"/>
+        </scene>
+    </scenes>
+</document>

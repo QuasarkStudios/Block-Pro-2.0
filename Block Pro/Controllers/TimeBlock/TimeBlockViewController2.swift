@@ -48,8 +48,6 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         timeBlockTableView.register(UINib(nibName: "TimeBlockCell", bundle: nil), forCellReuseIdentifier: "timeBlockCell")
         
         createDetailsButton()
-        
-        //configureGestureRecognizers()
     }
     
     override func viewDidLayoutSubviews() {

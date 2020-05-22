@@ -309,66 +309,6 @@ class FirebaseCollab {
         }
     }
     
-    func retrieveMessages (collabID: String, completion: @escaping ((_ messages: [Message], _ error: Error?) -> Void)) {
-        
-        messageListener = db.collection("Collaborations").document(collabID).collection("Messages").addSnapshotListener { (snapshot, error) in
-            
-            if error != nil {
-                
-                completion([], error)
-            }
-            
-            else {
-                
-                if snapshot?.isEmpty != true {
-                    
-                    var messages: [Message] = []
-                    
-                    for document in snapshot!.documents {
-                        
-                        var message = Message()
-                        message.sender = document.data()["sender"] as! String
-                        message.message = document.data()["message"] as! String
-                        
-                        let timestamp = document.data()["timestamp"] as! Timestamp
-                        message.timestamp = Date(timeIntervalSince1970: TimeInterval(timestamp.seconds))
-                        
-                        //messages.insert(message, at: 0)
-                        
-                        messages.append(message)
-                    }
-                    
-                    messages = messages.sorted(by: { $0.timestamp < $1.timestamp })
-                    
-                    completion(messages, nil)
-                }
-                
-                else {
-                    
-                    completion([], nil)
-                }
-            }
-        }
-    }
-    
-    func sendMessage (collabID: String, _ message: Message, completion: @escaping ((_ error: Error?) -> Void)) {
-        
-        let message: [String : Any] = ["sender" : message.sender, "message" : message.message, "timestamp" : message.timestamp as Any]
-        
-        db.collection("Collaborations").document(collabID).collection("Messages").addDocument(data: message) { (error) in
-            
-            if error != nil {
-                
-                completion(error)
-            }
-            
-            else {
-                
-                completion(nil)
-            }
-        }
-    }
-    
     func retrieveUsersFriends () {
         
         friendListener = db.collection("Users").document(currentUser.userID).collection("Friends").addSnapshotListener({ (snapshot, error) in

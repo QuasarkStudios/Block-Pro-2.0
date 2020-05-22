@@ -17,6 +17,8 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
     
     @IBOutlet weak var navBar: UINavigationBar!
     
+    @IBOutlet weak var headerLabel: UILabel!
+    
     @IBOutlet weak var membersCountLabel: UILabel!
     
     @IBOutlet weak var addMembersTableView: UITableView!
@@ -31,10 +33,15 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
     
     weak var membersAddedDelegate: MembersAdded?
     
+    var headerLabelText: String = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavBar()
+        navBar.configureNavBar()
+        
+        headerLabel.adjustsFontSizeToFitWidth = true
+        headerLabel.text = headerLabelText
         
         configureTableView()
         
@@ -143,15 +150,6 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
         membersCountLabel.text = "\(newlyAddedMembers.count)/5"
     }
     
-    private func configureNavBar () {
-        
-        navBar.setBackgroundImage(UIImage(), for: .default)
-        navBar.shadowImage = UIImage()
-        navBar.backgroundColor = .clear
-        
-        navBar.tintColor = .black
-    }
-    
     private func configureTableView () {
         
         addMembersTableView.dataSource = self
@@ -161,7 +159,6 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
         addMembersTableView.showsVerticalScrollIndicator = false
         
         addMembersTableView.register(UINib(nibName: "MembersTableViewCell", bundle: nil), forCellReuseIdentifier: "membersTableViewCell")
-        
     }
     
     
@@ -188,8 +185,6 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
             }
             
             membersAddedDelegate?.membersAdded(members: friends)
-            
-            dismiss(animated: true, completion: nil)
         }
     }
 }

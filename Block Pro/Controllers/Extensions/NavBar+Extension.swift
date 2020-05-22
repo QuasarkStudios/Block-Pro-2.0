@@ -14,7 +14,7 @@ extension UINavigationBar {
         
         setBackgroundImage(UIImage(), for: .default)
         shadowImage = UIImage()
-        backgroundColor = .clear
+        backgroundColor = .white
         
         tintColor = .black
     }

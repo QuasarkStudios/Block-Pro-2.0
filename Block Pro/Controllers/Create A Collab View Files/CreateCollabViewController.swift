@@ -333,6 +333,8 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
             let addMembersVC = segue.destination as! AddMembersViewController
             addMembersVC.membersAddedDelegate = self
             
+            addMembersVC.headerLabelText = "Add Members"
+            
             if newCollab.members.count > 0 {
                 
                 addMembersVC.previouslyAddedMembers = newCollab.members
@@ -523,6 +525,8 @@ extension CreateCollabViewController: MembersAdded {
         cell.membersCollectionView.reloadData()
         
         newCollab.members = members
+        
+        dismiss(animated: true, completion: nil)
     }
 }
 

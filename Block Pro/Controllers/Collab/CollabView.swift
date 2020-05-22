@@ -45,6 +45,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseStorage = FirebaseStorage()
+    let firebaseMessaging = FirebaseMessaging()
     var collab: Collab?
     
     var messages: [Message]?
@@ -57,6 +58,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     var gestureViewPanGesture: UIPanGestureRecognizer?
     var stackViewPanGesture: UIPanGestureRecognizer?
+    var dismissExpandedViewGesture: UISwipeGestureRecognizer?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -79,7 +81,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         self.becomeFirstResponder()
         
-        configureTabBar()
+        configureTabBar() //Possibly animate to avoid finnicky animation when user partially leaves view on swipe dismissal then returns 
     }
     
     
@@ -284,6 +286,12 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         let dismissKeyboardTap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         dismissKeyboardTap.cancelsTouchesInView = false
         view.addGestureRecognizer(dismissKeyboardTap)
+
+        dismissExpandedViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(dismissExpandedView))
+        dismissExpandedViewGesture?.delegate = self
+        dismissExpandedViewGesture?.cancelsTouchesInView = true
+        dismissExpandedViewGesture?.direction = .right
+        view.addGestureRecognizer(dismissExpandedViewGesture!)
         
         gestureViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
         panGestureView.addGestureRecognizer(gestureViewPanGesture!)
@@ -533,6 +541,14 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    @objc private func dismissExpandedView () {
+
+        if navigationItem.hidesBackButton == true && tabBar.shouldHide == true {
+            
+            cancelButtonPressed()
+        }
+    }
+    
     @objc private func usersButtonPressed () {
         
     }
@@ -641,5 +657,23 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 self.collabTableView.alpha = 1
             })
         }
+    }
+}
+
+extension CollabViewController: UIGestureRecognizerDelegate {
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+
+        if gestureRecognizer == tabBar.dismissActiveTabBarSwipeGesture && otherGestureRecognizer == dismissExpandedViewGesture {
+
+            return true
+        }
+
+        else if gestureRecognizer == dismissExpandedViewGesture && otherGestureRecognizer == tabBar.dismissActiveTabBarSwipeGesture {
+
+            return true
+        }
+
+        return false
     }
 }
