@@ -11,8 +11,9 @@ import Foundation
 struct Collab {
     
     var collabID: String = ""
-    
     var name: String = ""
+    var dateCreated: Date?
+    
     var objective: String = ""
     var members: [Member] = []
     var dates: [String : Date] = [:]

@@ -13,7 +13,7 @@ protocol MembersAdded: AnyObject {
     func membersAdded (members: [Friend])
 }
 
-class AddMembersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class AddMembersViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var navBar: UINavigationBar!
     
@@ -21,9 +21,14 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
     
     @IBOutlet weak var membersCountLabel: UILabel!
     
+    @IBOutlet weak var searchBarContainer: UIView!
+    @IBOutlet weak var searchImageView: UIImageView!
+    @IBOutlet weak var searchTextField: UITextField!
+    
     @IBOutlet weak var addMembersTableView: UITableView!
     
     var friends: [Friend] = []
+    var filteredFriends: [Friend] = []
     
     var previouslyAddedMembers: [Friend]?
     
@@ -35,6 +40,8 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
     
     var headerLabelText: String = ""
     
+    var searchBeingConducted: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -43,6 +50,8 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
         headerLabel.adjustsFontSizeToFitWidth = true
         headerLabel.text = headerLabelText
         
+        configureSearchBar()
+        
         configureTableView()
         
         friends = firebaseCollab.friends
@@ -50,6 +59,10 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
         if #available(iOS 13.0, *) {
             isModalInPresentation = true
         }
+        
+        let dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(dimissKeyboard))
+        dismissKeyboardGesture.cancelsTouchesInView = false
+        view.addGestureRecognizer(dismissKeyboardGesture)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -60,34 +73,71 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return friends.count * 2
+        if !searchBeingConducted {
+            
+            return friends.count * 2
+        }
+        
+        else {
+            
+            return filteredFriends.count * 2
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if indexPath.row % 2 == 0 {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "membersTableViewCell", for: indexPath) as! MembersTableViewCell
-            
-            cell.nameLabel.text = friends[indexPath.row / 2].firstName + " " + friends[indexPath.row / 2].lastName
-            cell.profilePicImageView.configureProfileImageView(profileImage: friends[indexPath.row / 2].profilePictureImage)
-            
-            if let addedMembers = previouslyAddedMembers {
+            if !searchBeingConducted {
                 
-                for member in addedMembers {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "membersTableViewCell", for: indexPath) as! MembersTableViewCell
+                
+                cell.nameLabel.text = friends[indexPath.row / 2].firstName + " " + friends[indexPath.row / 2].lastName
+                cell.profilePicImageView.configureProfileImageView(profileImage: friends[indexPath.row / 2].profilePictureImage)
+                
+                if let addedMembers = previouslyAddedMembers {
                     
-                    if friends[indexPath.row / 2].userID == member.userID {
+                    for member in addedMembers {
                         
-                        cell.addedIndicator.isHidden = false
-                        
-                        newlyAddedMembers[indexPath.row / 2] = member
-                        
-                        membersCountLabel.text = "\(newlyAddedMembers.count)/5"
+                        if friends[indexPath.row / 2].userID == member.userID {
+                            
+                            cell.addedIndicator.isHidden = false
+                            
+                            newlyAddedMembers[indexPath.row / 2] = member
+                            
+                            membersCountLabel.text = "\(newlyAddedMembers.count)/5"
+                        }
                     }
                 }
+                
+                return cell
             }
             
-            return cell
+            else {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "membersTableViewCell", for: indexPath) as! MembersTableViewCell
+                
+                cell.nameLabel.text = filteredFriends[indexPath.row / 2].firstName + " " + filteredFriends[indexPath.row / 2].lastName
+                cell.profilePicImageView.configureProfileImageView(profileImage: filteredFriends[indexPath.row / 2].profilePictureImage)
+                
+                if let addedMembers = previouslyAddedMembers {
+                    
+                    for member in addedMembers {
+                        
+                        if filteredFriends[indexPath.row / 2].userID == member.userID {
+                            
+                            cell.addedIndicator.isHidden = false
+                            
+                            newlyAddedMembers[indexPath.row / 2] = member
+                            
+                            membersCountLabel.text = "\(newlyAddedMembers.count)/5"
+                        }
+                    }
+                }
+                
+                return cell
+            }
+            
         }
         
         else {
@@ -150,6 +200,25 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
         membersCountLabel.text = "\(newlyAddedMembers.count)/5"
     }
     
+ 
+    
+    
+    private func configureSearchBar () {
+        
+        searchBarContainer.backgroundColor = .white
+        searchBarContainer.layer.cornerRadius = 18
+        searchBarContainer.clipsToBounds = true
+        searchBarContainer.layer.borderColor = UIColor(hexString: "D8D8D8")?.cgColor
+        searchBarContainer.layer.borderWidth = 1
+        
+        if #available(iOS 13.0, *) {
+            searchBarContainer.layer.cornerCurve = .continuous
+        }
+        
+        searchTextField.delegate = self
+        searchTextField.borderStyle = .none
+    }
+    
     private func configureTableView () {
         
         addMembersTableView.dataSource = self
@@ -161,7 +230,36 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
         addMembersTableView.register(UINib(nibName: "MembersTableViewCell", bundle: nil), forCellReuseIdentifier: "membersTableViewCell")
     }
     
-    
+    @IBAction func searchTextChanged(_ sender: Any) {
+        
+        filteredFriends.removeAll()
+        
+        if searchTextField.text!.leniantValidationOfTextEntered() {
+            
+            searchBeingConducted = true
+            
+            for friend in friends {
+                
+                if friend.firstName.localizedCaseInsensitiveContains(searchTextField.text!) {
+                    
+                    filteredFriends.append(friend)
+                }
+                
+                else if friend.lastName.localizedCaseInsensitiveContains(searchTextField.text!) {
+                    
+                    filteredFriends.append(friend)
+                }
+            }
+        }
+        
+        else {
+            
+            searchBeingConducted = false
+        }
+        
+        addMembersTableView.reloadData()
+    }
+
     @IBAction func cancelButton(_ sender: Any) {
         
         dismiss(animated: true, completion: nil)
@@ -186,5 +284,10 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
             
             membersAddedDelegate?.membersAdded(members: friends)
         }
+    }
+    
+    @objc private func dimissKeyboard () {
+        
+        searchTextField.endEditing(true)
     }
 }

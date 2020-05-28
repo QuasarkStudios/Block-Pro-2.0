@@ -163,7 +163,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         else {
-            
+
             return firebaseCollab.collabs.count
         }
     }

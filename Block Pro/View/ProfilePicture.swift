@@ -9,8 +9,14 @@
 import UIKit
 
 class ProfilePicture: UIView {
-
-    var profilePic: UIImage?
+    
+    let profilePicImageView = UIImageView()
+    var profilePic: UIImage? {
+        didSet {
+            
+            profilePicImageView.configureProfileImageView(profileImage: profilePic)
+        }
+    }
     
     var shadowRadius: CGFloat
     var shadowColor: CGColor
@@ -19,13 +25,11 @@ class ProfilePicture: UIView {
 
     var borderColor: CGColor
     
-//    var clip: Bool
-    
     var extraMembers: Int
     
     var intiallyConfiguredConstraints: Bool = false
     
-    init(profilePic: UIImage? = nil, shadowRadius: CGFloat = 2.5, shadowColor: CGColor = UIColor(hexString: "39434A")!.cgColor, shadowOpacity: Float = 0.75, borderColor: CGColor = UIColor(hexString: "F4F4F4", withAlpha: 0.05)!.cgColor, extraMembers: Int = 0/*clip: Bool = false*/) {
+    init(profilePic: UIImage? = nil, shadowRadius: CGFloat = 2.5, shadowColor: CGColor = UIColor(hexString: "39434A")!.cgColor, shadowOpacity: Float = 0.75, borderColor: CGColor = UIColor(hexString: "F4F4F4", withAlpha: 0.05)!.cgColor, extraMembers: Int = 0) {
         
         self.profilePic = profilePic
         
@@ -34,8 +38,6 @@ class ProfilePicture: UIView {
         self.shadowOpacity = shadowOpacity
         
         self.borderColor = borderColor
-        
-        //self.clip = extraMembers == 0 ? false : true//clip
         
         self.extraMembers = extraMembers
         
@@ -59,8 +61,6 @@ class ProfilePicture: UIView {
     }
     
     private func configureProfilePicImageView () {
-        
-        let profilePicImageView = UIImageView()
         
         self.addSubview(profilePicImageView)
         
@@ -135,6 +135,11 @@ extension ProfilePicture {
         clipsToBounds = false
         
         if profilePic != nil {
+            
+            configureProfilePicImageView()
+        }
+        
+        else if profilePic == nil && extraMembers == 0 {
             
             configureProfilePicImageView()
         }

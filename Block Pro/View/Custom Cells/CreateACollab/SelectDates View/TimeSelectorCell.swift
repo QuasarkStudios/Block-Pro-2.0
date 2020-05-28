@@ -247,6 +247,26 @@ class TimeSelectorCell: UITableViewCell, UICollectionViewDataSource, UICollectio
         timeSelectorCollectionView.scrollToItem(at: IndexPath(item: 12, section: 0), at: .centeredHorizontally, animated: true)
     }
     
+    private func vibrate (selectedTime: Date, newSelectedTime: Date) {
+        
+        if selectedTime != newSelectedTime {
+            
+            let generator: UIImpactFeedbackGenerator?
+            
+            if #available(iOS 13.0, *) {
+
+                generator = UIImpactFeedbackGenerator(style: .light)
+            
+            } else {
+                
+                generator = UIImpactFeedbackGenerator(style: .medium)
+            }
+            
+            
+            generator?.impactOccurred()
+        }
+    }
+    
     //Calcs which index to scroll to for a preselected time
     func calcSelectedIndex (start: Bool) {
         
@@ -299,10 +319,14 @@ class TimeSelectorCell: UITableViewCell, UICollectionViewDataSource, UICollectio
         
             if starts_deadlineLabel.text == "Starts" {
                 
+                vibrate(selectedTime: selectedStartTime!, newSelectedTime: time)
+                
                 selectedStartTime = time
             }
         
             else if starts_deadlineLabel.text == "Deadline" {
+                
+                vibrate(selectedTime: selectedDeadlineTime!, newSelectedTime: time)
                 
                 selectedDeadlineTime = time
             }

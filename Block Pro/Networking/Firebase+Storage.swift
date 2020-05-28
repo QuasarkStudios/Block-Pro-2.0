@@ -94,7 +94,7 @@ class FirebaseStorage {
         }.resume()
     }
     
-    func retrieveUserProfilePicFromStorage (userID: String, completion: @escaping ((_ profilePic: UIImage?) -> Void)) {
+    func retrieveUserProfilePicFromStorage (userID: String, completion: @escaping ((_ profilePic: UIImage?, _ userID: String) -> Void)) {
         
         profilePicturesRef.child("\(userID).jpeg").getData(maxSize: 3 * 1048576) { (data, error) in
             
@@ -102,7 +102,7 @@ class FirebaseStorage {
                 
                 if let imageData = data {
                     
-                    completion(UIImage(data: imageData))
+                    completion(UIImage(data: imageData), userID)
                 }
                 
 
@@ -166,9 +166,4 @@ class FirebaseStorage {
             }
         }
     }
-}
-
-extension Notification.Name {
-    
-    static let didDownloadProfilePic = Notification.Name("didDownloadProfilePic")
 }

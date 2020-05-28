@@ -13,4 +13,6 @@ struct Message {
     var sender: String = ""
     var message: String = ""
     var timestamp: Date!
+    
+    var readBy: [Member]?
 }

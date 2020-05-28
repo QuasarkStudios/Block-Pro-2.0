@@ -35,8 +35,8 @@ class FirebaseCollab {
         let collabID = UUID().uuidString
         let photoIDs: [String] = Array(repeating: UUID().uuidString, count: collabInfo.photos.count)
         
-        let collabData: [String : Any] = ["collabID" : collabID, "collabName" : collabInfo.name, "collabObjective" : collabInfo.objective, "startTime" : collabInfo.dates["startTime"]!, "deadline" : collabInfo.dates["deadline"]!, "reminders" : "will be set up later", "photos" : photoIDs]
-        let memberCollabData: [String : Any] = ["collabID" : collabID, "collabName" : collabInfo.name, "collabObjective" : collabInfo.objective, "startTime" : collabInfo.dates["startTime"]!, "deadline" : collabInfo.dates["deadline"]!, "reminders" : "will be set up later"]
+        let collabData: [String : Any] = ["collabID" : collabID, "collabName" : collabInfo.name, "dateCreated" : Date(), "collabObjective" : collabInfo.objective, "startTime" : collabInfo.dates["startTime"]!, "deadline" : collabInfo.dates["deadline"]!, "reminders" : "will be set up later", "photos" : photoIDs]
+        let memberCollabData: [String : Any] = ["collabID" : collabID, "collabName" : collabInfo.name,  "dateCreated" : Date(), "collabObjective" : collabInfo.objective, "startTime" : collabInfo.dates["startTime"]!, "deadline" : collabInfo.dates["deadline"]!, "reminders" : "will be set up later"]
         
         batch.setData(collabData, forDocument: db.collection("Collaborations").document(collabID))
         
@@ -105,34 +105,6 @@ class FirebaseCollab {
 
             completion()
         }
-        
-        
-        
-        
-        
-//        batch.commit { (error) in
-//
-//            if error != nil {
-//
-//                ProgressHUD.showError(error?.localizedDescription)
-//            }
-//
-//            else {
-//
-//                var count = 0
-//
-//                for photo in collabInfo.photos {
-//
-//                    let photoDict: [String : Any] = ["photoID" : photoIDs[count], "photo" : photo]
-//
-//                    self.firebaseStorage.saveNewCollabPhotosToStorage(collabID: collabID, collabPhoto: photoDict)
-//
-//                    count += 1
-//                }
-//
-//                completion()
-//            }
-//        }
     }
     
     func retrieveCollabs () {
@@ -352,7 +324,7 @@ class FirebaseCollab {
     
     func cacheFriendProfileImages (friend: Friend) {
             
-        firebaseStorage.retrieveUserProfilePicFromStorage(userID: friend.userID) { (profilePic) in
+        firebaseStorage.retrieveUserProfilePicFromStorage(userID: friend.userID) { (profilePic, userID) in
             
             if let profilePic = profilePic {
                 

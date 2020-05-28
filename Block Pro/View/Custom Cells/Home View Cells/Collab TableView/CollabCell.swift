@@ -195,7 +195,7 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
                     
                     else {
                         
-                        firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic) in
+                        firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic, userID) in
                             
                             profilePics[self.memberContainer[member.userID]!] = profilePic
                             

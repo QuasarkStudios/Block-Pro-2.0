@@ -22,23 +22,6 @@
                 <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ibz-NJ-f79">
-                        <rect key="frame" x="17" y="25" width="50" height="50"/>
-                        <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="n6E-W6-JgP">
-                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                            </imageView>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="50" id="Jqv-YS-AgN"/>
-                            <constraint firstItem="n6E-W6-JgP" firstAttribute="leading" secondItem="Ibz-NJ-f79" secondAttribute="leading" id="Zek-F1-TIN"/>
-                            <constraint firstAttribute="trailing" secondItem="n6E-W6-JgP" secondAttribute="trailing" id="ddQ-Yh-B6b"/>
-                            <constraint firstItem="n6E-W6-JgP" firstAttribute="top" secondItem="Ibz-NJ-f79" secondAttribute="top" id="gtE-UA-7tr"/>
-                            <constraint firstAttribute="bottom" secondItem="n6E-W6-JgP" secondAttribute="bottom" id="mEC-fE-yJV"/>
-                            <constraint firstAttribute="height" constant="50" id="rZv-2j-yYg"/>
-                        </constraints>
-                    </view>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bGz-Qc-7PG">
                         <rect key="frame" x="95" y="13" width="170" height="25"/>
                         <constraints>
@@ -75,6 +58,32 @@
                             <constraint firstAttribute="width" constant="9" id="qAX-IC-VmA"/>
                         </constraints>
                     </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Q1Z-1G-XRa" customClass="BEMCheckBox">
+                        <rect key="frame" x="11" y="32.5" width="15" height="15"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="15" id="OxP-xW-Be6"/>
+                            <constraint firstAttribute="width" constant="15" id="U3w-mg-dkf"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="boolean" keyPath="on" value="NO"/>
+                            <userDefinedRuntimeAttribute type="color" keyPath="onTintColor">
+                                <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="onFillColor">
+                                <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="offFillColor">
+                                <color key="value" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="onCheckColor">
+                                <color key="value" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="number" keyPath="animationDuration">
+                                <real key="value" value="0.29999999999999999"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="trailing" secondItem="dUD-HM-Fpb" secondAttribute="trailing" constant="28" id="72N-tx-4aY"/>
@@ -82,23 +91,27 @@
                     <constraint firstItem="bGz-Qc-7PG" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="95" id="JQV-CN-fe8"/>
                     <constraint firstAttribute="trailing" secondItem="VUY-ti-9cy" secondAttribute="trailing" constant="9" id="NyD-hy-jm4"/>
                     <constraint firstItem="dUD-HM-Fpb" firstAttribute="top" secondItem="bGz-Qc-7PG" secondAttribute="bottom" constant="7" id="T4W-cr-b6s"/>
+                    <constraint firstItem="Q1Z-1G-XRa" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="11" id="Ups-mL-rj2"/>
+                    <constraint firstItem="Q1Z-1G-XRa" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="Uwm-92-3t1"/>
                     <constraint firstAttribute="trailing" secondItem="3NY-kT-hiZ" secondAttribute="trailing" constant="30" id="Vy8-DY-PZh"/>
                     <constraint firstItem="3NY-kT-hiZ" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="13.5" id="c7e-Ma-W7L"/>
-                    <constraint firstItem="Ibz-NJ-f79" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="17" id="chF-hp-Vt3"/>
                     <constraint firstItem="bGz-Qc-7PG" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="13" id="e7f-ZA-PYU"/>
                     <constraint firstItem="dUD-HM-Fpb" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="95" id="l8d-Nn-FaQ"/>
-                    <constraint firstItem="Ibz-NJ-f79" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="25" id="vtn-Yg-RP3"/>
                     <constraint firstItem="VUY-ti-9cy" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="21" id="yoa-aJ-ESe"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="checkBox" destination="Q1Z-1G-XRa" id="4n4-k3-I8q"/>
                 <outlet property="lastMessageDateLabel" destination="3NY-kT-hiZ" id="JwZ-ef-FFN"/>
-                <outlet property="messagePreview" destination="dUD-HM-Fpb" id="Y3k-Fa-ktQ"/>
+                <outlet property="lastMessageLeadingAnchor" destination="Hmc-VP-LGV" id="18T-SL-AV4"/>
+                <outlet property="lastMessageTrailingAnchor" destination="Vy8-DY-PZh" id="eWZ-JS-esx"/>
+                <outlet property="messagePreviewLabel" destination="dUD-HM-Fpb" id="LhP-6u-EJy"/>
+                <outlet property="messagePreviewLeadingAnchor" destination="l8d-Nn-FaQ" id="3am-Ug-t1k"/>
                 <outlet property="messagePreviewTopAnchor" destination="T4W-cr-b6s" id="Hey-F2-FVv"/>
                 <outlet property="messagesTitleLabel" destination="bGz-Qc-7PG" id="4hh-Ut-jhm"/>
-                <outlet property="profilePicContainer" destination="Ibz-NJ-f79" id="pAO-ba-fSO"/>
-                <outlet property="profilePicImageView" destination="n6E-W6-JgP" id="MJ2-PG-xPj"/>
+                <outlet property="messagesTitleLeadingAnchor" destination="JQV-CN-fe8" id="PGg-35-bzW"/>
+                <outlet property="unreadIndicatorTrailingAnchor" destination="NyD-hy-jm4" id="Y3n-Oh-Jhb"/>
                 <outlet property="unreadMessageIndicator" destination="VUY-ti-9cy" id="JPQ-vb-36u"/>
             </connections>
             <point key="canvasLocation" x="138.40579710144928" y="153.34821428571428"/>

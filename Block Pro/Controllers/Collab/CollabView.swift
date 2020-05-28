@@ -333,7 +333,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     
                     let memberIndex = count
                     
-                    firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic) in
+                    firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic, userID) in
                         
                         self.collab?.members[memberIndex].profilePictureImage = profilePic
                         

@@ -85,6 +85,8 @@
 		0D44BA862476EF8D00647E06 /* Firebase+Messaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D44BA852476EF8D00647E06 /* Firebase+Messaging.swift */; };
 		0D44BA8A2476F76300647E06 /* AddMembers.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D44BA892476F76300647E06 /* AddMembers.storyboard */; };
 		0D495225244F70A000AAD436 /* DateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D495223244F70A000AAD436 /* DateCell.xib */; };
+		0D50A90024783BD700D71654 /* Conversation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D50A8FF24783BD700D71654 /* Conversation.swift */; };
+		0D50A90224785C5700D71654 /* Notification+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D50A90124785C5700D71654 /* Notification+Extension.swift */; };
 		0D589DE52458A0D9005AC7BC /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D589DE32458A0D9005AC7BC /* MessageCell.swift */; };
 		0D589DE62458A0D9005AC7BC /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D589DE42458A0D9005AC7BC /* MessageCell.xib */; };
 		0D589DE82458C3E5005AC7BC /* Notifications.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D589DE72458C3E5005AC7BC /* Notifications.storyboard */; };
@@ -184,6 +186,7 @@
 		0DBAB34324204EA00021FE35 /* CategoryProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBAB34224204EA00021FE35 /* CategoryProgressBar.swift */; };
 		0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */; };
 		0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */; };
+		0DBFED69247C52B900EDFEC3 /* MessagingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */; };
 		0DC119CD24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC119CC24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift */; };
 		0DD636BE241028EF0026B623 /* BlockTimePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636BC241028EF0026B623 /* BlockTimePickerCell.swift */; };
 		0DD636BF241028EF0026B623 /* BlockTimePickerCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DD636BD241028EF0026B623 /* BlockTimePickerCell.xib */; };
@@ -303,6 +306,8 @@
 		0D44BA852476EF8D00647E06 /* Firebase+Messaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Firebase+Messaging.swift"; sourceTree = "<group>"; };
 		0D44BA892476F76300647E06 /* AddMembers.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AddMembers.storyboard; sourceTree = "<group>"; };
 		0D495223244F70A000AAD436 /* DateCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateCell.xib; sourceTree = "<group>"; };
+		0D50A8FF24783BD700D71654 /* Conversation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conversation.swift; sourceTree = "<group>"; };
+		0D50A90124785C5700D71654 /* Notification+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Notification+Extension.swift"; sourceTree = "<group>"; };
 		0D589DE32458A0D9005AC7BC /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		0D589DE42458A0D9005AC7BC /* MessageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
 		0D589DE72458C3E5005AC7BC /* Notifications.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Notifications.storyboard; sourceTree = "<group>"; };
@@ -404,6 +409,7 @@
 		0DBF3E9422B03DC800E180D2 /* ProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
 		0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
 		0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
+		0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingViewController.swift; sourceTree = "<group>"; };
 		0DC119CC24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		0DD636BC241028EF0026B623 /* BlockTimePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockTimePickerCell.swift; sourceTree = "<group>"; };
 		0DD636BD241028EF0026B623 /* BlockTimePickerCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockTimePickerCell.xib; sourceTree = "<group>"; };
@@ -682,6 +688,7 @@
 			isa = PBXGroup;
 			children = (
 				0D0102A82468F49D00A5FF28 /* MessagesHomeViewController.swift */,
+				0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */,
 				0D7868532446ABD400A92DD1 /* LogIn_Registration */,
 				0D7868522446ABC900A92DD1 /* Home */,
 				0D7868542446ABF700A92DD1 /* TimeBlock */,
@@ -979,6 +986,7 @@
 				0D0C8D992442488300EB51F7 /* Collab.swift */,
 				0D589DEB2458C7C2005AC7BC /* CollabRequest.swift */,
 				0D7655D32452909500707867 /* Member.swift */,
+				0D50A8FF24783BD700D71654 /* Conversation.swift */,
 				0D589DED24593D4A005AC7BC /* Message.swift */,
 			);
 			path = Model;
@@ -1068,6 +1076,7 @@
 				0D78684D2446920200A92DD1 /* NavBar+Extension.swift */,
 				0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */,
 				0D589DEF24593FB6005AC7BC /* String+Extension.swift */,
+				0D50A90124785C5700D71654 /* Notification+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1363,6 +1372,7 @@
 				0D872F7C22E25350001D35B4 /* CurrentUser.swift in Sources */,
 				0DDF79C52346AB9B00BAAD51 /* UserSettingsViewController.swift in Sources */,
 				0DC119CD24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift in Sources */,
+				0D50A90024783BD700D71654 /* Conversation.swift in Sources */,
 				0D589DEA2458C519005AC7BC /* NotificationsViewController.swift in Sources */,
 				0D41F5BC2311C05B00B4B11E /* CollabFiveMinCell.swift in Sources */,
 				0D589DF024593FB6005AC7BC /* String+Extension.swift in Sources */,
@@ -1459,8 +1469,10 @@
 				0DADDAAE2355916A00E79F89 /* TimeTenMinCell.swift in Sources */,
 				0D0ECF3F243E5FCF00D947F4 /* HomeCollabTableViewCell.swift in Sources */,
 				0D23077622D3DB6D00A12393 /* SelectedFriendViewController.swift in Sources */,
+				0DBFED69247C52B900EDFEC3 /* MessagingViewController.swift in Sources */,
 				0DD636D12414478B0026B623 /* NotificationScheduler.swift in Sources */,
 				0D1E0B19229F856000638772 /* Add_Update_BlockViewController.swift in Sources */,
+				0D50A90224785C5700D71654 /* Notification+Extension.swift in Sources */,
 				0D1B1DF72450FCF2008DA9B5 /* PhotoCell.swift in Sources */,
 				0D41F5C423124B3700B4B11E /* CollabTwentyFiveMinCell.swift in Sources */,
 				0DD636C224102A1F0026B623 /* BlockCategoryPickerCell.swift in Sources */,
