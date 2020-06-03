@@ -15,7 +15,7 @@ extension CollabViewController: UITextViewDelegate {
         
         messageInputAccesoryView.addSubview(textViewContainer)
         
-        textViewContainer.configureConstraints() //Has to be called from here
+        textViewContainer.configureConstraints(true) //Has to be called from here
         
         textViewContainer.addSubview(messageTextView)
         configureMessageTextView()
@@ -28,7 +28,7 @@ extension CollabViewController: UITextViewDelegate {
         
         guard let collabID = collab?.collabID else { return }
         
-        firebaseMessaging.retrieveAllMessages(collabID: collabID) { (messages, error) in
+        firebaseMessaging.retrieveAllCollabMessages(collabID: collabID) { (messages, error) in
             
             if error != nil {
                 
@@ -399,7 +399,7 @@ extension CollabViewController: UITextViewDelegate {
             
             if let collabID = collab?.collabID {
                 
-                firebaseMessaging.sendMessage(collabID: collabID, message) { (error) in
+                firebaseMessaging.sendCollabMessage(collabID: collabID, message) { (error) in
                     
                     if error != nil {
                         

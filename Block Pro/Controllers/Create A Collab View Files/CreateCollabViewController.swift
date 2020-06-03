@@ -609,6 +609,7 @@ extension CreateCollabViewController: CollabPhotosCellProtocol, UIImagePickerCon
         let chooseFromLibraryAction = UIAlertAction(title: "Choose From Library", style: .default) { (chooseFromLibrary) in
 
             let imagePicker = UIImagePickerController()
+            imagePicker.navigationBar.configureNavBar()
             imagePicker.delegate = self
             imagePicker.sourceType = .photoLibrary
             imagePicker.allowsEditing = true

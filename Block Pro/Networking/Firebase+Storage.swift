@@ -107,6 +107,11 @@ class FirebaseStorage {
                 
 
             }
+            
+            else {
+                
+                print(error)
+            }
         }
         
 //        let url = NSURL(string: profilePicURL)

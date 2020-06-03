@@ -251,18 +251,16 @@ class TimeSelectorCell: UITableViewCell, UICollectionViewDataSource, UICollectio
         
         if selectedTime != newSelectedTime {
             
-            let generator: UIImpactFeedbackGenerator?
+            formatter.dateFormat = "mm"
+            let newSelectedMinute = Int(formatter.string(from: newSelectedTime))!
             
-            if #available(iOS 13.0, *) {
+            if newSelectedMinute != 0 && newSelectedMinute != 30 {
 
-                generator = UIImpactFeedbackGenerator(style: .light)
-            
-            } else {
-                
-                generator = UIImpactFeedbackGenerator(style: .medium)
+                return
             }
             
-            
+            let generator: UIImpactFeedbackGenerator?
+            generator = UIImpactFeedbackGenerator(style: .light)
             generator?.impactOccurred()
         }
     }

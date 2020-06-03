@@ -36,6 +36,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     var selectedConversationID: String?
+    var selectedConversationMembers: [Member]?
     
     var filteredConversations: [Conversation] = []
     var searchBeingConducted: Bool = false
@@ -139,11 +140,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             }
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "messageHomeCell", for: indexPath) as! MessageHomeCell
-            cell.conversationID = conversationToBeUsed?.conversationID ?? ""
-            cell.conversationCreationDate = conversationToBeUsed?.dateCreated
-            cell.conversationName = conversationToBeUsed?.conversationName
-            cell.messagePreview = conversationToBeUsed?.messagePreview
-            cell.convoMembers = conversationToBeUsed?.members
+            cell.conversation = conversationToBeUsed
             
             if viewEditing {
                 
@@ -191,9 +188,9 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         if viewEditing {
             
             let cell = tableView.cellForRow(at: indexPath) as! MessageHomeCell
-            cell.checkBox.setOn(!(editedConversations[cell.conversationID] ?? false), animated: true)
+            cell.checkBox.setOn(!(editedConversations[cell.conversation!.conversationID] ?? false), animated: true)
             
-            editedConversations[cell.conversationID] = !(editedConversations[cell.conversationID] ?? false)
+            editedConversations[cell.conversation!.conversationID] = !(editedConversations[cell.conversation!.conversationID] ?? false)
             
             //Checks to see if any conversations have been selected
             if editedConversations.first(where: { $0.value == true } ) != nil {
@@ -224,6 +221,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         else {
             
             selectedConversationID = conversations?[indexPath.row / 2].conversationID
+            selectedConversationMembers = conversations?[indexPath.row / 2].members
             performSegue(withIdentifier: "moveToMessagesView", sender: self)
         }
     }
@@ -352,7 +350,10 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
     @objc private func didRetrieveConversationMembers () {
         
-        self.conversations = firebaseMessaging.conversations
+        //self.conversations = firebaseMessaging.conversations
+        
+        //Sorted by either the timeStamp of the last message or the time the convo was created if no message has been sent yet
+        self.conversations = firebaseMessaging.conversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
     }
     
     @objc private func didRetrieveConversationPreview () {
@@ -549,6 +550,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             
             let messagesVC = segue.destination as! MessagingViewController
             messagesVC.conversationID = selectedConversationID
+            messagesVC.conversationMembers = selectedConversationMembers
             
             let backItem = UIBarButtonItem()
             backItem.title = ""
@@ -615,7 +617,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             
             DispatchQueue.main.asyncAfter(deadline: .now() + delayDuration) {
                 
-                self.firebaseMessaging.retrieveCollabConversations { (conversations, error) in
+                self.firebaseMessaging.retrieveCollabConversations { [weak self] (conversations, error) in
     
                     if error != nil {
     
@@ -624,10 +626,10 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
                     else {
     
-                        self.conversations = conversations
-                        self.personal_collabButton.setTitle("Personal", for: .normal)
+                        self?.conversations = conversations
+                        self?.personal_collabButton.setTitle("Personal", for: .normal)
     
-                        self.navigationItem.rightBarButtonItem = nil
+                        self?.navigationItem.rightBarButtonItem = nil
                     }
                 }
             }

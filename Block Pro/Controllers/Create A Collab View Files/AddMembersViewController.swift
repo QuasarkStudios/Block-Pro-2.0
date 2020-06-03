@@ -32,7 +32,7 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
     
     var previouslyAddedMembers: [Friend]?
     
-    var newlyAddedMembers: [Int : Friend] = [:]
+    var newlyAddedMembers: [String : Friend] = [:]
     
     let firebaseCollab = FirebaseCollab.sharedInstance
     
@@ -92,6 +92,7 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "membersTableViewCell", for: indexPath) as! MembersTableViewCell
                 
+                cell.memberUserID = friends[indexPath.row / 2].userID
                 cell.nameLabel.text = friends[indexPath.row / 2].firstName + " " + friends[indexPath.row / 2].lastName
                 cell.profilePicImageView.configureProfileImageView(profileImage: friends[indexPath.row / 2].profilePictureImage)
                 
@@ -103,11 +104,25 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
                             
                             cell.addedIndicator.isHidden = false
                             
-                            newlyAddedMembers[indexPath.row / 2] = member
+                            newlyAddedMembers[member.userID] = member
                             
                             membersCountLabel.text = "\(newlyAddedMembers.count)/5"
                         }
                     }
+                }
+                
+                else {
+                    
+                    if newlyAddedMembers[friends[indexPath.row / 2].userID] != nil {
+                        
+                        cell.addedIndicator.isHidden = false
+                    }
+                    
+                    else {
+                        
+                        cell.addedIndicator.isHidden = true
+                    }
+                    
                 }
                 
                 return cell
@@ -117,6 +132,7 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "membersTableViewCell", for: indexPath) as! MembersTableViewCell
                 
+                cell.memberUserID = filteredFriends[indexPath.row / 2].userID
                 cell.nameLabel.text = filteredFriends[indexPath.row / 2].firstName + " " + filteredFriends[indexPath.row / 2].lastName
                 cell.profilePicImageView.configureProfileImageView(profileImage: filteredFriends[indexPath.row / 2].profilePictureImage)
                 
@@ -128,10 +144,23 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
                             
                             cell.addedIndicator.isHidden = false
                             
-                            newlyAddedMembers[indexPath.row / 2] = member
+                            newlyAddedMembers[member.userID] = member
                             
                             membersCountLabel.text = "\(newlyAddedMembers.count)/5"
                         }
+                    }
+                }
+                
+                else {
+                    
+                    if newlyAddedMembers[filteredFriends[indexPath.row / 2].userID] != nil {
+                        
+                        cell.addedIndicator.isHidden = false
+                    }
+                    
+                    else {
+                        
+                        cell.addedIndicator.isHidden = true
                     }
                 }
                 
@@ -165,7 +194,7 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         let cell = tableView.cellForRow(at: indexPath) as! MembersTableViewCell
-        cell.isSelected = false
+        tableView.deselectRow(at: indexPath, animated: true)
         
         if newlyAddedMembers.count < 5 {
             
@@ -173,12 +202,20 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
             
             if cell.addedIndicator.isHidden {
                 
-                newlyAddedMembers.removeValue(forKey: indexPath.row / 2)
+                newlyAddedMembers.removeValue(forKey: cell.memberUserID)
             }
             
             else {
                 
-                newlyAddedMembers[indexPath.row / 2] = friends[indexPath.row / 2]
+                if !searchBeingConducted {
+                    
+                    newlyAddedMembers[cell.memberUserID] = friends[indexPath.row / 2]
+                }
+                
+                else {
+                    
+                    newlyAddedMembers[cell.memberUserID] = filteredFriends[indexPath.row / 2]
+                }
             }
         }
         
@@ -186,9 +223,9 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
             
             if !cell.addedIndicator.isHidden {
                 
-                newlyAddedMembers.removeValue(forKey: indexPath.row / 2)
-                
                 cell.addedIndicator.isHidden = true
+                
+                newlyAddedMembers.removeValue(forKey: cell.memberUserID)
             }
             
             else {
@@ -199,9 +236,6 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
         
         membersCountLabel.text = "\(newlyAddedMembers.count)/5"
     }
-    
- 
-    
     
     private func configureSearchBar () {
         

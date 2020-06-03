@@ -36,7 +36,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     let tabBar = CustomTabBar.sharedInstance
     
-    let messageInputAccesoryView = InputAccesoryView()
+    let messageInputAccesoryView = InputAccesoryView(showsAddButton: true, textViewPlaceholderText: "Send a message")
     let textViewContainer = MessageTextViewContainer()
     let messageTextView = UITextView()
     let sendButton = UIButton(type: .system)
@@ -132,7 +132,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         if indexPath.row % 2 == 0 {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell", for: indexPath) as! MessageCell
-            cell.collabMembers = collab?.members // Must be set first
+            cell.members = collab?.members // Must be set first
             cell.previousMessage = (indexPath.row / 2) - 1 >= 0 ? messages![(indexPath.row / 2) - 1] : nil
             cell.message = messages?[indexPath.row / 2]
             

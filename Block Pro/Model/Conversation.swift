@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 struct Conversation {
     
     var conversationID: String = ""
@@ -16,5 +17,8 @@ struct Conversation {
     
     var messagePreview: Message?
     var members: [Member] = []
+    
+    var lastTimeCurrentUserWasActive: Date?
+    var lastTimeMembersWereActive: [String : Date]?
     
 }

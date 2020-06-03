@@ -32,60 +32,14 @@ class MessageHomeCell: UITableViewCell {
     let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseStorage = FirebaseStorage()
     
-    var conversationID: String = ""
-    var conversationCreationDate: Date?
     
-    var conversationName: String? {
+    var conversation: Conversation? {
         didSet {
             
-            if let name = conversationName {
-                
-                messagesTitleLabel.text = name
-            }
-            
-            else {
-                
-                messagesTitleLabel.text = "Loading..."
-            }
-        }
-    }
-    
-    var convoMembers: [Member]? {
-        didSet {
-            
-            configureConversationName(members: convoMembers!)
-            configureProfilePicContainers()
-        }
-    }
-    
-    var messagePreview: Message? {
-        didSet {
-            
-            if let text = messagePreview?.message {
-                
-                messagePreviewLabel.text = text
-                
-                setLastMessageLabel(date: messagePreview!.timestamp)
-                
-                if messagePreview?.readBy?.contains(where: { $0.userID == currentUser.userID }) ?? false {
-                    
-                    unreadMessageIndicator.isHidden = true
-                }
-                
-                else {
-                    
-                    unreadMessageIndicator.isHidden = false
-                }
-            }
-            
-            else {
-                
-                messagePreviewLabel.text = "No Messages Yet"
-                
-                setLastMessageLabel(date: conversationCreationDate!)
-                
-                unreadMessageIndicator.isHidden = true
-            }
+            configureProfilePicContainers(members: conversation?.members)
+            configureConversationName(conversation: conversation, members: conversation?.members)
+            configureMessagePreview(conversation: conversation)
+            configureUnreadMessageIndicator(conversation: conversation)
         }
     }
     
@@ -94,52 +48,10 @@ class MessageHomeCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        configureCell()
         configureCheckBox()
     }
-
-    private func configureCell () {
-        
-        unreadMessageIndicator.layer.cornerRadius = 0.5 * unreadMessageIndicator.bounds.size.width
-        unreadMessageIndicator.clipsToBounds = true
-    }
     
-    func configureConversationName (members: [Member]) {
-        
-        if conversationName == nil {
-            
-            var organizedMembers = convoMembers?.sorted(by: { $0.firstName < $1.firstName })
-            
-            if let currentUserIndex = organizedMembers?.firstIndex(where: { $0.userID == currentUser.userID }) {
-                
-                organizedMembers?.remove(at: currentUserIndex)
-            }
-            
-            var name: String = ""
-    
-            for member in organizedMembers ?? [] {
-                    
-                if member.userID == organizedMembers?.first?.userID {
-    
-                    name = member.firstName
-                }
-    
-                else if member.userID != organizedMembers?.last?.userID {
-    
-                    name += ", \(member.firstName)"
-                }
-    
-                else {
-    
-                    name += " & \(member.firstName)"
-                }
-            }
-            
-            messagesTitleLabel.text = name
-        }
-    }
-    
-    func configureProfilePicContainers () {
+    func configureProfilePicContainers (members: [Member]?) {
         
         for container in profilePicContainers {
             
@@ -148,7 +60,7 @@ class MessageHomeCell: UITableViewCell {
         
         profilePicContainers.removeAll()
         
-        if (convoMembers?.count ?? 0) - 1 == 1 {
+        if (members?.count ?? 0) - 1 == 1 {
             
             let profilePic = ProfilePicture.init(profilePic: UIImage(named: "DefaultProfilePic")!)
             self.addSubview(profilePic)
@@ -157,7 +69,7 @@ class MessageHomeCell: UITableViewCell {
             profilePicContainers.append(profilePic)
         }
         
-        else if (convoMembers?.count ?? 0) - 1 == 2 {
+        else if (members?.count ?? 0) - 1 == 2 {
             
             let profilePic1 = ProfilePicture.init(profilePic: UIImage(named: "DefaultProfilePic")!, borderColor: UIColor.white.withAlphaComponent(0.75).cgColor)
             self.addSubview(profilePic1)
@@ -172,7 +84,7 @@ class MessageHomeCell: UITableViewCell {
             profilePicContainers.append(profilePic2)
         }
         
-        else if (convoMembers?.count ?? 0) - 1 == 3 {
+        else if (members?.count ?? 0) - 1 == 3 {
 
             let profilePic1 = ProfilePicture.init(profilePic: UIImage(named: "DefaultProfilePic")!, borderColor: UIColor.white.withAlphaComponent(0.75).cgColor)
             self.addSubview(profilePic1)
@@ -193,7 +105,7 @@ class MessageHomeCell: UITableViewCell {
             profilePicContainers.append(profilePic3)
         }
         
-        else if (convoMembers?.count ?? 0) - 1 >= 4 {
+        else if (members?.count ?? 0) - 1 >= 4 {
             
             let profilePic1 = ProfilePicture.init(profilePic: UIImage(named: "DefaultProfilePic")!, borderColor: UIColor.white.withAlphaComponent(0.75).cgColor)
             self.addSubview(profilePic1)
@@ -231,6 +143,118 @@ class MessageHomeCell: UITableViewCell {
         ].forEach( { $0.isActive = true } )
     }
     
+    func configureConversationName (conversation: Conversation?, members: [Member]?) {
+        
+        if let name = conversation?.conversationName {
+            
+            messagesTitleLabel.text = name
+        }
+        
+        else if let members = members {
+            
+            var organizedMembers = members.sorted(by: { $0.firstName < $1.firstName })
+            
+            if let currentUserIndex = organizedMembers.firstIndex(where: { $0.userID == currentUser.userID }) {
+                
+                organizedMembers.remove(at: currentUserIndex)
+            }
+            
+            var name: String = ""
+    
+            for member in organizedMembers {
+                    
+                if member.userID == organizedMembers.first?.userID {
+    
+                    name = member.firstName
+                }
+    
+                else if member.userID != organizedMembers.last?.userID {
+    
+                    name += ", \(member.firstName)"
+                }
+    
+                else {
+    
+                    name += " & \(member.firstName)"
+                }
+            }
+            
+            messagesTitleLabel.text = name
+        }
+        
+        else {
+            
+            messagesTitleLabel.text = "Loading"
+        }
+    }
+    
+    func configureMessagePreview (conversation: Conversation?) {
+        
+        if let messagePreview = conversation?.messagePreview {
+            
+            messagePreviewLabel.text = messagePreview.message
+            
+            setLastMessageLabel(date: messagePreview.timestamp)
+        }
+        
+        else {
+            
+            messagePreviewLabel.text = "No Messages Yet"
+            
+            setLastMessageLabel(date: conversation!.dateCreated!)
+            
+            unreadMessageIndicator.isHidden = true
+        }
+    }
+    
+    private func configureUnreadMessageIndicator (conversation: Conversation?) {
+        
+        unreadMessageIndicator.layer.cornerRadius = 0.5 * unreadMessageIndicator.bounds.size.width
+        unreadMessageIndicator.clipsToBounds = true
+        
+        if let lastMessage = conversation?.messagePreview {
+            
+            if let lastTimeUserActive = conversation?.lastTimeCurrentUserWasActive {
+                
+                if  lastTimeUserActive > lastMessage.timestamp {
+                    
+                    unreadMessageIndicator.isHidden = true
+                }
+                
+                else {
+                    
+                    if lastMessage.sender != currentUser.userID {
+                        
+                        unreadMessageIndicator.isHidden = false
+                    }
+                    
+                    else {
+                        
+                        unreadMessageIndicator.isHidden = true
+                    }
+                }
+            }
+            
+            else {
+                
+                if lastMessage.sender != currentUser.userID {
+                    
+                    unreadMessageIndicator.isHidden = false
+                }
+                    
+                else {
+                    
+                    unreadMessageIndicator.isHidden = true
+                }
+            }
+        }
+        
+        else {
+            
+            unreadMessageIndicator.isHidden = true
+        }
+    }
+    
     func configureCheckBox () {
         
         checkBox.onAnimationType = BEMAnimationType.fill
@@ -242,7 +266,7 @@ class MessageHomeCell: UITableViewCell {
     
     private func retrieveProfilePics () {
         
-        var organizedMembers = convoMembers?.sorted(by: { $0.firstName < $1.firstName })
+        var organizedMembers = conversation?.members.sorted(by: { $0.firstName < $1.firstName })
         
         if let currentUserIndex = organizedMembers?.firstIndex(where: { $0.userID == currentUser.userID }) {
             

@@ -17,6 +17,8 @@ class MembersTableViewCell: UITableViewCell {
     
     @IBOutlet weak var addedIndicator: UILabel!
     
+    var memberUserID: String = ""
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         

@@ -25,7 +25,10 @@ class MessageCell: UITableViewCell {
     @IBOutlet weak var messageTextView: UITextView!
     
     let currentUser = CurrentUser.sharedInstance
-    var collabMembers: [Member]?
+    let firebaseCollab = FirebaseCollab.sharedInstance
+    let firebaseStorage = FirebaseStorage()
+    
+    var members: [Member]?
     
     var previousMessage: Message?
     var message: Message? {
@@ -116,16 +119,47 @@ class MessageCell: UITableViewCell {
             messageBubbleTopAnchor.constant = 15
         }
         
-        if message != nil && collabMembers != nil {
+        if message != nil && members != nil {
             
             if message!.sender != currentUser.userID {
                 
-                for member in collabMembers! {
+                for member in members! {
                     
                     if member.userID == message!.sender {
                         
                         profilePicContainer.configureProfilePicContainer(shadowRadius: 2)
-                        profilePicImageView.configureProfileImageView(profileImage: member.profilePictureImage)
+                        
+                        if let friendIndex = firebaseCollab.friends.firstIndex(where: { $0.userID == member.userID }) {
+                            
+                            profilePicImageView.configureProfileImageView(profileImage: firebaseCollab.friends[friendIndex].profilePictureImage)
+                        }
+                        
+                        else {
+                            
+                            if firebaseCollab.membersProfilePics[member.userID] != nil {
+
+                                profilePicImageView.configureProfileImageView(profileImage: firebaseCollab.membersProfilePics[member.userID]!)
+                                
+                                //profilePicture.profilePic = firebaseCollab.membersProfilePics[organizedMembers?[count].userID ?? ""]!
+                            }
+
+                            else {
+
+                                firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic, userID) in
+                                    
+                                    self.profilePicImageView.configureProfileImageView(profileImage: profilePic)
+                                    
+                                    //profilePicture.profilePic = profilePic
+                                    
+                                    //if let memberIndex = organizedMembers?.firstIndex(where: { $0.userID == userID }) {
+                                        
+                                    self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: profilePic)
+                                    //}
+                                }
+                            }
+                        }
+                        
+                        //profilePicImageView.configureProfileImageView(profileImage: member.profilePictureImage)
                     }
                 }
                 
@@ -166,7 +200,7 @@ class MessageCell: UITableViewCell {
             picContainerTopAnchor.constant = 15
             messageBubbleTopAnchor.constant = 15
             
-            for member in collabMembers ?? [] {
+            for member in members ?? [] {
                 
                 if member.userID == message?.sender {
                     

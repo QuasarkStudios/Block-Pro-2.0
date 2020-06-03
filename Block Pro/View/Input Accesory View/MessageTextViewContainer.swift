@@ -10,6 +10,18 @@ import Foundation
 
 class MessageTextViewContainer: UIView {
     
+    let messageTextView = MessageTextView()
+    let sendButton = SendButton()
+    
+    var parentViewController: Any? {
+        didSet {
+            
+            messageTextView.parentViewController = parentViewController!
+        }
+    }
+    
+    var constraintsInitiallyConfigured: Bool = false
+    
     override init (frame: CGRect) {
         super.init(frame: frame)
         
@@ -29,21 +41,27 @@ class MessageTextViewContainer: UIView {
     private func configureView () {
         
         backgroundColor = .white
-        layer.cornerRadius = 16
+        layer.cornerRadius = 18//16
         clipsToBounds = true
         layer.borderColor = UIColor(hexString: "D8D8D8")?.cgColor
         layer.borderWidth = 1
+        
+        addSubview(messageTextView)
+        addSubview(sendButton)
     }
     
-    func configureConstraints () {
+    func configureConstraints (_ showsAddButton: Bool) {
         
         translatesAutoresizingMaskIntoConstraints = false
         
         var constraints: [NSLayoutConstraint] = []
         
+        let proposedTrailingAnchor: CGFloat = showsAddButton ? -55 : -13
+        
         constraints.append(leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: 13))
-        constraints.append(trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: -13))
-        constraints.append(heightAnchor.constraint(equalToConstant: 35))
+//        constraints.append(trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: -13))
+        constraints.append(trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: proposedTrailingAnchor))
+        constraints.append(heightAnchor.constraint(equalToConstant: 37))
         
         //iPhone 11 Pro Max & iPhone 11
         if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
@@ -64,5 +82,8 @@ class MessageTextViewContainer: UIView {
         }
         
         constraints.forEach { $0.isActive = true }
+        
+        messageTextView.configureConstraints()
+        sendButton.configureConstraints()
     }
 }
