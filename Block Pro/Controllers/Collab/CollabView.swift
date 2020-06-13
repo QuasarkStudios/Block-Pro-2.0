@@ -159,12 +159,12 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                //If the current user sent the message
                 if messages?[indexPath.row / 2].sender == currentUser.userID {
                     
-                    return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 15
+                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 15
                 }
                 
                 else {
                     
-                   return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 30
+                   return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 30
                 }
             }
             
@@ -174,17 +174,17 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 //If the current user sent the message
                 if messages?[indexPath.row / 2].sender == currentUser.userID {
                     
-                    return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 15
+                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 15
                 }
                 
                 //If the previous message was sent by another user
                 else if messages?[indexPath.row / 2].sender != messages![(indexPath.row / 2) - 1].sender {
                     
-                    return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 30
+                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 30
                 }
             }
 
-            return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 15
+            return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 15
         }
         
         else {

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UjF-Qj-xnX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UjF-Qj-xnX">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -156,6 +156,16 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Akv-qA-kTT">
                                 <rect key="frame" x="0.0" y="88" width="414" height="808"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="seperatorCell" id="5xM-oH-nFj">
+                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5xM-oH-nFj" id="ySo-Z7-sF3">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -187,6 +197,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Qdi-G1-LuR">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                            </imageView>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WRi-Jh-cRi">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
                                 <constraints>
@@ -194,26 +207,25 @@
                                 </constraints>
                                 <items>
                                     <navigationItem id="xye-jI-dJq">
-                                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="stop" id="Izq-iB-KGe"/>
+                                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="stop" id="Izq-iB-KGe">
+                                            <connections>
+                                                <action selector="exitButton:" destination="zZj-Xy-xfR" id="6cn-LM-MVL"/>
+                                            </connections>
+                                        </barButtonItem>
                                         <barButtonItem key="rightBarButtonItem" style="done" systemItem="edit" id="z9u-ce-LQt"/>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Qdi-G1-LuR">
-                                <rect key="frame" x="0.0" y="44" width="414" height="400"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="400" id="ryu-fH-hb9"/>
-                                </constraints>
-                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="Qdi-G1-LuR" firstAttribute="top" secondItem="sUT-cZ-Yty" secondAttribute="top" id="E0g-EP-Vm0"/>
                             <constraint firstItem="WRi-Jh-cRi" firstAttribute="trailing" secondItem="RR2-f7-ELd" secondAttribute="trailing" id="M9r-OY-4FC"/>
                             <constraint firstItem="WRi-Jh-cRi" firstAttribute="top" secondItem="RR2-f7-ELd" secondAttribute="top" id="XBF-vJ-vVn"/>
-                            <constraint firstItem="Qdi-G1-LuR" firstAttribute="top" secondItem="WRi-Jh-cRi" secondAttribute="bottom" id="bct-qo-7Vv"/>
                             <constraint firstItem="RR2-f7-ELd" firstAttribute="trailing" secondItem="Qdi-G1-LuR" secondAttribute="trailing" id="buP-d4-Zv9"/>
                             <constraint firstItem="Qdi-G1-LuR" firstAttribute="leading" secondItem="RR2-f7-ELd" secondAttribute="leading" id="ije-wU-7H9"/>
                             <constraint firstItem="WRi-Jh-cRi" firstAttribute="leading" secondItem="RR2-f7-ELd" secondAttribute="leading" id="rQj-YH-lQK"/>
+                            <constraint firstAttribute="bottom" secondItem="Qdi-G1-LuR" secondAttribute="bottom" id="tsy-pv-eSV"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="RR2-f7-ELd"/>
                     </view>

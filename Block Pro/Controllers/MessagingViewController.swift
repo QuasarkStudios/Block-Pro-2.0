@@ -14,23 +14,24 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     @IBOutlet weak var messagesTableView: UITableView!
     
     let messageInputAccesoryView = InputAccesoryView(showsAddButton: true, textViewPlaceholderText: "Send a message")
-    let textViewContainer = MessageTextViewContainer()
-    let messageTextView = UITextView()
-    let selectedAttachmentView = UIView()
-    //let sendButton = UIButton(type: .system)
-
-    let addButton = UIButton(type: .system)
+    var inputAccesoryViewMethods: InputAccesoryViewMethods!
     
     let currentUser = CurrentUser.sharedInstance
     
     let firebaseMessaging = FirebaseMessaging()
-    
-    var inputAccesoryViewMethods: InputAccesoryViewMethods!
+    let firebaseStorage = FirebaseStorage()
     
     var conversationID: String? {
         didSet {
             
-            retrieveMessages()
+            retrievePersonalMessages()
+        }
+    }
+    
+    var collabID: String? {
+        didSet {
+            
+            retrieveCollabMessages()
         }
     }
     
@@ -87,6 +88,8 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         addObservors()
         
         self.becomeFirstResponder()
+        
+        viewInitiallyLoaded = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -94,6 +97,11 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         readMessages()
         
         removeObservors()
+    }
+    
+    deinit {
+        
+        print("view deintialized")
     }
     
     override var inputAccessoryView: UIView? {
@@ -115,69 +123,53 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         
         if indexPath.row % 2 == 0 {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell", for: indexPath) as! MessageCell
-            cell.members = conversationMembers
-            cell.previousMessage = (indexPath.row / 2) - 1 >= 0 ? messages![(indexPath.row / 2) - 1] : nil
-            cell.message = messages?[indexPath.row / 2]
+            if messages?[indexPath.row / 2].messagePhoto == nil {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell", for: indexPath) as! MessageCell
+                cell.conversationID = conversationID
+                cell.members = conversationMembers
+                cell.previousMessage = (indexPath.row / 2) - 1 >= 0 ? messages![(indexPath.row / 2) - 1] : nil
+                cell.message = messages?[indexPath.row / 2]
+                
+                cell.selectionStyle = .none
+                
+                return cell
+            }
             
-            cell.selectionStyle = .none
-            
-            return cell
+            else {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "photoMessageCell", for: indexPath) as! PhotoMessageCell
+                cell.conversationID = conversationID
+                cell.collabID = collabID
+                cell.members = conversationMembers
+                cell.previousMessage = (indexPath.row / 2) - 1 >= 0 ? messages![(indexPath.row / 2) - 1] : nil
+                cell.message = messages?[indexPath.row / 2]
+                
+                cell.cachePhotoDelegate = self
+                
+                cell.selectionStyle = .none
+
+                return cell
+            }
         }
         
         else {
             
-//            let cell = tableView.dequeueReusableCell(withIdentifier: "seperatorCell", for: indexPath)
-//            cell.selectionStyle = .none
-            
-            let cell = UITableViewCell()
+            let cell = tableView.dequeueReusableCell(withIdentifier: "seperatorCell", for: indexPath)
             cell.isUserInteractionEnabled = false
             return cell
         }
-
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         if indexPath.row % 2 == 0 {
-        
-            //First message
-            if indexPath.row == 0 {
-                
-               //If the current user sent the message
-                if messages?[indexPath.row / 2].sender == currentUser.userID {
-                    
-                    return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 15
-                }
-                
-                else {
-                    
-                   return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 30
-                }
-            }
             
-            //Not the first message
-            else if (indexPath.row / 2) - 1 >= 0 {
-                
-                //If the current user sent the message
-                if messages?[indexPath.row / 2].sender == currentUser.userID {
-                    
-                    return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 15
-                }
-                
-                //If the previous message was sent by another user
-                else if messages?[indexPath.row / 2].sender != messages![(indexPath.row / 2) - 1].sender {
-                    
-                    return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 30
-                }
-            }
-
-            return (messages?[indexPath.row / 2].message.estimateFrameForMessageCell().height)! + 15
+            return determineMessageRowHeight(indexPath: indexPath)
         }
         
         else {
             
-            //Seperator cell
             return determineSeperatorRowHeight(indexPath: indexPath)
         }
     }
@@ -189,10 +181,13 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         
         tableView.separatorStyle = .none
         
+        tableView.estimatedRowHeight = 0
+        
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: topBarHeight, right: 0)
         tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: topBarHeight, right: 0)
         
         tableView.register(UINib(nibName: "MessageCell", bundle: nil), forCellReuseIdentifier: "messageCell")
+        tableView.register(UINib(nibName: "PhotoMessageCell", bundle: nil), forCellReuseIdentifier: "photoMessageCell")
     }
     
     private func configureTextViewContainer () {
@@ -200,59 +195,22 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         messageInputAccesoryView.parentViewController = self
         messageInputAccesoryView.isHidden = false
         messageInputAccesoryView.alpha = 1
-        messageInputAccesoryView.addSubview(textViewContainer)
-//        
-//        textViewContainer.configureConstraints() //Has to be called from here
-//        
-//        textViewContainer.addSubview(selectedAttachmentView)
-//        textViewContainer.addSubview(messageTextView)
-//        
-//        configureSelectedAttachmentView()
-//        configureMessageTextView()
-//        
-//        textViewContainer.addSubview(sendButton)
-//        configureSendButton()
-//    
-//        messageInputAccesoryView.addSubview(addButton)
-//        configureAddButton()
     }
     
     private func configureSelectedAttachmentView () {
         
-        selectedAttachmentView.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            selectedAttachmentView.topAnchor.constraint(equalTo: textViewContainer.topAnchor, constant: 0),
-            selectedAttachmentView.bottomAnchor.constraint(equalTo: messageTextView.topAnchor, constant: 0),
-            selectedAttachmentView.leadingAnchor.constraint(equalTo: textViewContainer.leadingAnchor, constant: 10),
-            selectedAttachmentView.trailingAnchor.constraint(equalTo: textViewContainer.trailingAnchor, constant: -55)
-        
-        ].forEach( { $0.isActive = true } )
-        
-        selectedAttachmentView.backgroundColor = .blue
-    }
-    
-    private func configureAddButton () {
-        
-        addButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            addButton.leadingAnchor.constraint(equalTo: textViewContainer.trailingAnchor, constant: 17.5),
-            addButton.trailingAnchor.constraint(equalTo: messageInputAccesoryView.trailingAnchor, constant: -17.5),
-            addButton.widthAnchor.constraint(equalToConstant: 27),
-            addButton.heightAnchor.constraint(equalToConstant: 27),
-            addButton.bottomAnchor.constraint(equalTo: textViewContainer.bottomAnchor, constant: -5)
-            //addButton.centerYAnchor.constraint(equalTo: textViewContainer.centerYAnchor, constant: -2.5)
-        
-        ].forEach( { $0.isActive = true })
-        
-        //addButton.setImage(UIImage(named: "share"), for: .normal)
-        addButton.setImage(UIImage(named: "plus 3"), for: .normal)
-        addButton.tintColor = UIColor(hexString: "222222")
-        
-        //addButton.addTarget(self, action: #selector((addButtonPressed)), for: .touchUpInside)
+//        selectedAttachmentView.translatesAutoresizingMaskIntoConstraints = false
+//
+//        [
+//
+//            selectedAttachmentView.topAnchor.constraint(equalTo: textViewContainer.topAnchor, constant: 0),
+//            selectedAttachmentView.bottomAnchor.constraint(equalTo: messageTextView.topAnchor, constant: 0),
+//            selectedAttachmentView.leadingAnchor.constraint(equalTo: textViewContainer.leadingAnchor, constant: 10),
+//            selectedAttachmentView.trailingAnchor.constraint(equalTo: textViewContainer.trailingAnchor, constant: -55)
+//
+//        ].forEach( { $0.isActive = true } )
+//
+//        selectedAttachmentView.backgroundColor = .blue
     }
 
     private func configureGestureRecognizors () {
@@ -289,38 +247,106 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     @objc internal func keyboardBeingDismissed (notification: NSNotification) {
 
         inputAccesoryViewMethods.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0, textViewText: messageTextViewText)
-
     }
     
-    private func retrieveMessages () {
+    private func retrievePersonalMessages () {
         
         guard let conversation = conversationID else { return }
         
-        firebaseMessaging.retrieveAllPersonalMessages(conversationID: conversation) { (messages, error) in
-            
-            if error != nil {
+            firebaseMessaging.retrieveAllPersonalMessages(conversationID: conversation) { (messages, error) in
                 
-                SVProgressHUD.showError(withStatus: error?.localizedDescription)
-            }
-            
-            else {
-                
-                self.messages = messages
-                self.messagesTableView.reloadData()
-                
-                //if !self.viewInitiallyLoaded {
+                if error != nil {
                     
-                    if self.messages?.count ?? 0 > 0 {
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                }
+                
+                else {
+                    
+                    for message in messages {
                         
-                        self.messagesTableView.scrollToRow(at: IndexPath(row: ((self.messages?.count ?? 0) * 2) - 1, section: 0), at: .bottom, animated: true)
+                        if self.messages == nil {
+                            
+                            self.messages = []
+                        }
+                        
+                        //Checks if current message already exists in global messages array
+                        if !(self.messages?.contains(where: { $0.messageID == message.messageID }) ?? false) {
+                            
+                            self.messages?.append(message)
+                        }
                     }
                     
-                    self.viewInitiallyLoaded = true
-                //}
-                
-                //self.collabTableView.reloadRows(at: <#T##[IndexPath]#>, with: <#T##UITableView.RowAnimation#>) look into this future sir
-                
+                    self.messages = self.messages?.sorted(by: { $0.timestamp < $1.timestamp })
+                    
+                    self.reloadTableView()
+                }
             }
+    }
+    
+    private func retrieveCollabMessages () {
+        
+        guard let collab = collabID else { return }
+        
+            firebaseMessaging.retrieveAllCollabMessages(collabID: collab) { (messages, error) in
+                
+                if error != nil {
+                    
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                }
+                
+                else {
+                    
+                    for message in messages {
+                        
+                        if self.messages == nil {
+                            
+                            self.messages = []
+                        }
+                        
+                        //Checks if current message already exists in global messages array
+                        if !(self.messages?.contains(where: { $0.messageID == message.messageID }) ?? false) {
+                            
+                            self.messages?.append(message)
+                        }
+                    }
+                    
+                    self.messages = self.messages?.sorted(by: { $0.timestamp < $1.timestamp })
+                    
+                    self.reloadTableView()
+                }
+            }
+    }
+    
+    private func reloadTableView () {
+        
+        if !self.viewInitiallyLoaded {
+
+            self.messagesTableView.reloadData()
+        }
+
+        //If new messages have been recieved
+        else if ((self.messages?.count ?? 0) * 2) != self.messagesTableView.numberOfRows(inSection: 0) {
+
+            let seperatorCellIndexPath = IndexPath(row: ((self.messages?.count ?? 0) * 2) - 2, section: 0)
+            let messageCellIndexPath = IndexPath(row: ((self.messages?.count ?? 0) * 2) - 1, section: 0)
+
+            let lastMessageIndex = messages?.count ?? 0 > 0 ? (messages?.count ?? 0) - 1 : 0
+
+            if messages?[lastMessageIndex].sender == self.currentUser.userID {
+
+                self.messagesTableView.insertRows(at: [seperatorCellIndexPath, messageCellIndexPath], with: .right)
+            }
+
+            else {
+
+                self.messagesTableView.insertRows(at: [seperatorCellIndexPath, messageCellIndexPath], with: .left)
+            }
+        }
+
+        if self.messages?.count ?? 0 > 0 {
+
+            let animateScroll = viewInitiallyLoaded ? true : false
+            self.messagesTableView.scrollToRow(at: IndexPath(row: ((self.messages?.count ?? 0) * 2) - 1, section: 0), at: .bottom, animated: animateScroll)
         }
     }
     
@@ -331,7 +357,8 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     
     @objc private func sendMessage () {
         
-        //sendButton.isEnabled = false
+        let sendButton = messageInputAccesoryView.textViewContainer.sendButton
+        sendButton.isEnabled = false
         
         if messageTextViewText.leniantValidationOfTextEntered() && inputAccesoryViewMethods.validateTextChange() {
             
@@ -339,7 +366,6 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             message.sender = currentUser.userID
             message.message = messageTextViewText
             message.timestamp = Date()
-            //message.readBy = [currentUser.userID]
             
             if let conversation = conversationID {
                 
@@ -352,16 +378,34 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
                     
                     else {
                         
-                        //self.messageSent()
+                        self.inputAccesoryViewMethods.messageSent(messagesCount: self.messages?.count ?? 0)
+                        self.messageTextViewText = ""
+                        sendButton.isEnabled = true
+                    }
+                }
+            }
+                
+            else if let collab = collabID {
+                
+                firebaseMessaging.sendCollabMessage(collabID: collab, message) { (error) in
+                    
+                    if error != nil {
+                        
+                        SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                    }
+                    
+                    else {
                         
                         self.inputAccesoryViewMethods.messageSent(messagesCount: self.messages?.count ?? 0)
+                        self.messageTextViewText = ""
+                        sendButton.isEnabled = true
                     }
                 }
             }
             
             else {
                 
-                //sendButton.isEnabled = true
+                sendButton.isEnabled = true
                 
                 SVProgressHUD.showError(withStatus: "Sorry, something went wrong")
             }
@@ -369,7 +413,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         
         else {
             
-            //sendButton.isEnabled = true
+            sendButton.isEnabled = true
         }
     }
     
@@ -416,19 +460,110 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         present(addAttachmentAlert, animated: true, completion: nil)
     }
     
-//    private func messageSent () {
-//        
-//        //self.sendButton.isEnabled = true
-//        self.messageTextView.text = ""
-//        
-//        //self.resetMessageContainerHeights()
-//        inputAccesoryViewMethods.resetMessageContainerHeights()
-//        
-//        if self.messages?.count ?? 0 > 0 {
-//            
-//            self.messagesTableView.scrollToRow(at: IndexPath(row: (self.messages!.count * 2) - 1, section: 0), at: .top, animated: true)
-//        }
-//    }
+    private func determineMessageRowHeight (indexPath: IndexPath) -> CGFloat {
+
+        //First message
+        if indexPath.row == 0 {
+
+           //If the current user sent the message
+            if messages?[indexPath.row / 2].sender == currentUser.userID {
+
+                if let messagePhoto = messages?[indexPath.row / 2].messagePhoto {
+                    
+                    let imageViewHeight = calculatePhotoMessageCellHeight(messagePhoto: messagePhoto)
+                    let textViewHeight = messages?[indexPath.row / 2].message?.estimateFrameForMessageCell().height ?? -14
+                    
+                    return imageViewHeight + textViewHeight + 16
+                }
+                
+                else {
+                    
+                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 15
+                }
+            }
+
+            //If another user sent the message
+            else {
+                
+                if let messagePhoto = messages?[indexPath.row / 2].messagePhoto {
+                    
+                    let imageViewHeight = calculatePhotoMessageCellHeight(messagePhoto: messagePhoto)
+                    let textViewHeight = messages?[indexPath.row / 2].message?.estimateFrameForMessageCell().height ?? -29
+                    
+                    return imageViewHeight + textViewHeight + 31
+                }
+                
+                else {
+                    
+                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 30
+                }
+            }
+        }
+
+        //Not the first message
+        else {
+
+            //If the current user sent the message
+            if messages?[indexPath.row / 2].sender == currentUser.userID {
+
+                if let messagePhoto = messages?[indexPath.row / 2].messagePhoto {
+                    
+                    let imageViewHeight = calculatePhotoMessageCellHeight(messagePhoto: messagePhoto)
+                    let textViewHeight = messages?[indexPath.row / 2].message?.estimateFrameForMessageCell().height ?? -14
+                    
+                    return imageViewHeight + textViewHeight + 16
+                }
+                
+                else {
+                    
+                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 15
+                }
+            }
+
+            //If the previous message was sent by another user
+            else if messages?[indexPath.row / 2].sender != messages![(indexPath.row / 2) - 1].sender {
+
+                if let messagePhoto = messages?[indexPath.row / 2].messagePhoto {
+                   
+                    let imageViewHeight = calculatePhotoMessageCellHeight(messagePhoto: messagePhoto)
+                    let textViewHeight = messages?[indexPath.row / 2].message?.estimateFrameForMessageCell().height ?? -29
+                    
+                    return imageViewHeight + textViewHeight + 31
+                }
+                
+                else {
+                    
+                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 30
+                }
+            }
+            
+            //If all else fails 
+            else {
+                
+                if let messagePhoto = messages?[indexPath.row / 2].messagePhoto {
+
+                    let imageViewHeight = calculatePhotoMessageCellHeight(messagePhoto: messagePhoto)
+                    let textViewHeight = messages?[indexPath.row / 2].message?.estimateFrameForMessageCell().height ?? -14
+
+                    return imageViewHeight + textViewHeight + 16
+                }
+
+                else {
+
+                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 15
+                }
+            }
+        }
+    }
+    
+    private func calculatePhotoMessageCellHeight (messagePhoto: [String : Any]) -> CGFloat {
+        
+        let photoWidth = messagePhoto["photoWidth"] as! CGFloat
+        let photoHeight = messagePhoto["photoHeight"] as! CGFloat
+        let height = (photoHeight / photoWidth) * 200
+        
+        return height
+    }
     
     private func determineSeperatorRowHeight (indexPath: IndexPath) -> CGFloat {
         
@@ -451,56 +586,30 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
-//    func validateTextChange () -> Bool {
-//        
-//        if messageTextView.text != "Send a message" {
-//            
-//            return true
-//        }
-//        
-//        else {
-//            
-//            if #available(iOS 13.0, *) {
-//                
-//                if (messageTextView.text == "Send a message") && (messageTextView.textColor != UIColor.placeholderText) {
-//                    
-//                    return true
-//                }
-//                
-//                else {
-//                    
-//                    return false
-//                }
-//                
-//            }
-//            
-//            else {
-//                
-//                if (messageTextView.text == "Send a message") && (messageTextView.textColor != UIColor.lightGray) {
-//                    
-//                    return true
-//                }
-//                
-//                else {
-//                    
-//                    return false
-//                }
-//            }
-//        }
-//    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "moveToSendPhotoView" {
             
             let sendPhotoVC = segue.destination as! SendPhotoMessageViewController
+            sendPhotoVC.reconfigureViewDelegate = self
             sendPhotoVC.selectedPhoto = selectedPhoto
+            
+            if let conversation = conversationID {
+                
+                sendPhotoVC.conversationID = conversation
+            }
+            
+            else if let collab = collabID {
+                
+                sendPhotoVC.collabID = collab
+            }
+            
+            removeObservors()
         }
     }
     
     @objc private func dismissKeyboard () {
         
-        //messageTextView.resignFirstResponder()
         messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
     }
 }
@@ -512,16 +621,16 @@ extension MessagingViewController: UITextViewDelegate {
         inputAccesoryViewMethods.textViewBeganEditing(textView: textView)
     }
     
-    func textViewDidEndEditing(_ textView: UITextView) {
-        
-        inputAccesoryViewMethods.textViewEndedEditing(textView: textView)
-    }
-    
     func textViewDidChange(_ textView: UITextView) {
         
         messageTextViewText = textView.text
         
         inputAccesoryViewMethods.textViewTextChanged(textView: textView, keyboardHeight: keyboardHeight)
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        
+        inputAccesoryViewMethods.textViewEndedEditing(textView: textView)
     }
 }
 
@@ -564,16 +673,6 @@ extension MessagingViewController: UIImagePickerControllerDelegate, UINavigation
         }
         
         if let selectedImage = selectedImageFromPicker {
-
-//            messageInputAccesoryView.size = CGSize(width: 0, height: messageInputAccesoryView.size!.height + 200)
-//
-//            textViewContainer.constraints.forEach { (constraint) in
-//
-//                if constraint.firstAttribute == .height {
-//
-//                    constraint.constant = 237
-//                }
-//            }
             
             selectedPhoto = selectedImage
             
@@ -588,6 +687,27 @@ extension MessagingViewController: UIImagePickerControllerDelegate, UINavigation
                 
                 SVProgressHUD.showError(withStatus: "Sorry, something went wrong selecting this photo")
             }
+        }
+    }
+}
+
+extension MessagingViewController: ReconfigureView {
+    
+    func reconfigureView () {
+        
+        addObservors()
+        
+        self.becomeFirstResponder()
+    }
+}
+
+extension MessagingViewController: CachePhotoProtocol {
+    
+    func cachePhoto (messageID: String, photo: UIImage?) {
+        
+        if let messageIndex = messages?.firstIndex(where: { $0.messageID == messageID }) {
+            
+            messages?[messageIndex].messagePhoto?["photo"] = photo
         }
     }
 }

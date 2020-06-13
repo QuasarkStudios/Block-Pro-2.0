@@ -10,12 +10,12 @@ import Foundation
 
 extension UINavigationBar {
     
-    func configureNavBar () {
+    func configureNavBar (barBackgroundColor: UIColor = .white, barTintColor: UIColor = .black) {
         
         setBackgroundImage(UIImage(), for: .default)
         shadowImage = UIImage()
-        backgroundColor = .white
+        backgroundColor = barBackgroundColor//.white
         
-        tintColor = .black
+        tintColor = barTintColor//.black
     }
 }

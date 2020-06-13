@@ -25,6 +25,8 @@ class MessageCell: UITableViewCell {
     @IBOutlet weak var messageTextView: UITextView!
     
     let currentUser = CurrentUser.sharedInstance
+    var conversationID: String?
+    
     let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseStorage = FirebaseStorage()
     
@@ -65,7 +67,7 @@ class MessageCell: UITableViewCell {
             
             messageTextView.text = message!.message
             
-            messageBubbleWidthConstraint.constant = message!.message.estimateFrameForMessageCell().width + 30
+            messageBubbleWidthConstraint.constant = message!.message!.estimateFrameForMessageCell().width + 30
             
             if message!.sender != currentUser.userID {
                 

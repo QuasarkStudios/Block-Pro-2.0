@@ -168,6 +168,8 @@
 		0D9C8800244E1CDC00209609 /* CollabDatesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D9C87FF244E1CDC00209609 /* CollabDatesViewController.swift */; };
 		0D9C8803244E1DB800209609 /* CalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D9C8801244E1DB800209609 /* CalendarCell.swift */; };
 		0D9C8804244E1DB800209609 /* CalendarCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D9C8802244E1DB800209609 /* CalendarCell.xib */; };
+		0DA2A6FD248AC3250051ADAB /* PhotoMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA2A6FB248AC3240051ADAB /* PhotoMessageCell.swift */; };
+		0DA2A6FE248AC3250051ADAB /* PhotoMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DA2A6FC248AC3250051ADAB /* PhotoMessageCell.xib */; };
 		0DA7FFA324482D9200A42817 /* BarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA7FFA224482D9200A42817 /* BarCell.swift */; };
 		0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83422A84833008BECAE /* FreeTime.storyboard */; };
 		0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83622A84862008BECAE /* Pomodoro.storyboard */; };
@@ -394,6 +396,8 @@
 		0D9C87FF244E1CDC00209609 /* CollabDatesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabDatesViewController.swift; sourceTree = "<group>"; };
 		0D9C8801244E1DB800209609 /* CalendarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCell.swift; sourceTree = "<group>"; };
 		0D9C8802244E1DB800209609 /* CalendarCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalendarCell.xib; sourceTree = "<group>"; };
+		0DA2A6FB248AC3240051ADAB /* PhotoMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMessageCell.swift; sourceTree = "<group>"; };
+		0DA2A6FC248AC3250051ADAB /* PhotoMessageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoMessageCell.xib; sourceTree = "<group>"; };
 		0DA7FFA224482D9200A42817 /* BarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarCell.swift; sourceTree = "<group>"; };
 		0DA9F83422A84833008BECAE /* FreeTime.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FreeTime.storyboard; sourceTree = "<group>"; };
 		0DA9F83622A84862008BECAE /* Pomodoro.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Pomodoro.storyboard; sourceTree = "<group>"; };
@@ -960,6 +964,8 @@
 			children = (
 				0D589DE32458A0D9005AC7BC /* MessageCell.swift */,
 				0D589DE42458A0D9005AC7BC /* MessageCell.xib */,
+				0DA2A6FB248AC3240051ADAB /* PhotoMessageCell.swift */,
+				0DA2A6FC248AC3250051ADAB /* PhotoMessageCell.xib */,
 				0D7E1B76247435AC00BB8E58 /* MessageHomeCell.swift */,
 				0D7E1B77247435AC00BB8E58 /* MessageHomeCell.xib */,
 			);
@@ -1313,6 +1319,7 @@
 				0D78657723E4B56B00BD4C4D /* Poppins-BlackItalic.ttf in Resources */,
 				0DD636CB2412F3300026B623 /* ReminderCell.xib in Resources */,
 				0D0C8D8F24411EC200EB51F7 /* CollabDeadlineCell.xib in Resources */,
+				0DA2A6FE248AC3250051ADAB /* PhotoMessageCell.xib in Resources */,
 				0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */,
 				0D13ABFF232A15E60025EDC3 /* End Break.wav in Resources */,
 				0D0ECF40243E5FCF00D947F4 /* HomeCollabTableViewCell.xib in Resources */,
@@ -1479,6 +1486,7 @@
 				0D44BA862476EF8D00647E06 /* Firebase+Messaging.swift in Sources */,
 				0D78658B23E6928000BD4C4D /* PersonalCell.swift in Sources */,
 				0D41738C242E8738006076A5 /* Swift+Gif.swift in Sources */,
+				0DA2A6FD248AC3250051ADAB /* PhotoMessageCell.swift in Sources */,
 				0DEB9726241C480D004F7422 /* DetailsViewController.swift in Sources */,
 				0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */,
 				0D7655D42452909500707867 /* Member.swift in Sources */,

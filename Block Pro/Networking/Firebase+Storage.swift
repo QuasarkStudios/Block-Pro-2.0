@@ -14,8 +14,9 @@ class FirebaseStorage {
     
     let currentUser = CurrentUser.sharedInstance
     
-    let collabStorageRef = Storage.storage().reference().child("Collabs")
     let profilePicturesRef = Storage.storage().reference().child("profilePictures")
+    let collabStorageRef = Storage.storage().reference().child("Collabs")
+    let conversationStorageRef = Storage.storage().reference().child("Conversations")
     
     func saveProfilePictureToStorage (_ profilePicture: UIImage) {
         
@@ -139,7 +140,7 @@ class FirebaseStorage {
         
         if let data = photoData {
             
-            collabStorageRef.child(collabID).child("photos").child("\(collabPhoto["photoID"]!)).png").putData(data, metadata: nil) { (metadata, error) in
+            collabStorageRef.child(collabID).child("photos").child("\(collabPhoto["photoID"]!).png").putData(data, metadata: nil) { (metadata, error) in
                 
                 if error != nil {
                     
@@ -167,6 +168,96 @@ class FirebaseStorage {
                     print(photoData)
                     
 //                    completion(photos)
+                }
+            }
+        }
+    }
+    
+    func savePersonalMessagePhoto (conversationID: String, messagePhoto: [String : Any], completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        let photoID = messagePhoto["photoID"] as! String
+        let photo = messagePhoto["photo"] as! UIImage//UIImage.pngData(messagePhoto["photo"] as! UIImage)()
+        
+        let photoData = photo.jpegData(compressionQuality: 0.2)
+        
+        if let data = photoData {
+           
+            let uploadTask = conversationStorageRef.child(conversationID).child("MessagePhotos").child(photoID + ".jpeg").putData(data)
+            
+            uploadTask.observe(.failure) { (snapshot) in
+                
+                if let error = snapshot.error {
+                    
+                    completion(error)
+                }
+            }
+            
+            uploadTask.observe(.success) { (snapshot) in
+                
+                completion(nil)
+            }
+        }
+    }
+    
+    func retrievePersonalMessagePhoto (conversationID: String, photoID: String, completion: @escaping ((_ photo: UIImage?, _ error: Error?) -> Void)) {
+        
+        conversationStorageRef.child(conversationID).child("MessagePhotos").child(photoID + ".jpeg").getData(maxSize: 1048576) { (data, error) in
+            
+            if error != nil {
+                
+                print(error as Any)
+            }
+            
+            else {
+                
+                if let photoData = data {
+                    
+                    completion(UIImage(data: photoData), nil)
+                }
+            }
+        }
+    }
+    
+    func saveCollabMessagePhoto (collabID: String, messagePhoto: [String : Any], completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        let photoID = messagePhoto["photoID"] as! String
+        let photo = messagePhoto["photo"] as! UIImage
+        
+        let photoData = photo.jpegData(compressionQuality: 0.2)
+        
+        if let data = photoData {
+            
+            let uploadTask = collabStorageRef.child(collabID).child("MessagePhotos").child(photoID + ".jpeg").putData(data)
+            
+            uploadTask.observe(.failure) { (snapshot) in
+                
+                if let error = snapshot.error {
+                    
+                    completion(error)
+                }
+            }
+            
+            uploadTask.observe(.success) { (snapshot) in
+                
+                completion(nil)
+            }
+        }
+    }
+    
+    func retrieveCollabMessagePhoto (collabID: String, photoID: String, completion: @escaping ((_ photo: UIImage?, _ error: Error?) -> Void)) {
+        
+        collabStorageRef.child(collabID).child("MessagePhotos").child(photoID + ".jpeg").getData(maxSize: 1048576) { (data, error) in
+            
+            if error != nil {
+                
+                completion(nil, error)
+            }
+            
+            else {
+                
+                if let photoData = data {
+                    
+                    completion(UIImage(data: photoData), nil)
                 }
             }
         }

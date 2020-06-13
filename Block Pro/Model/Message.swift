@@ -10,7 +10,18 @@ import Foundation
 
 struct Message {
     
+    var messageID: String = ""
+    
     var sender: String = ""
-    var message: String = ""
+    
+    var message: String?
+    
+    var messagePhoto: [String : Any]?
+    
+//    var photoID: String?
+//    var photo: UIImage? = nil
+//    var photoWidth: CGFloat?
+//    var photoHeight: CGFloat?
+    
     var timestamp: Date!
 }

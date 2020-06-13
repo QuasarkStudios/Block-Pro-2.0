@@ -14,10 +14,11 @@ class FirebaseMessaging {
     lazy var db = Firestore.firestore()
 
     lazy var firebaseCollab = FirebaseCollab.sharedInstance
+    lazy var firebaseStorage = FirebaseStorage()
     
     var conversationListener: ListenerRegistration?
-    var conversationPreviewListener: ListenerRegistration?
-    var conversationMembersListener: ListenerRegistration?
+    var conversationPreviewListeners: [ListenerRegistration] = []
+    var conversationMembersListeners: [ListenerRegistration] = []
 
     var conversations: [Conversation] = []
     
@@ -88,7 +89,7 @@ class FirebaseMessaging {
         
         conversationListener = db.collection("Users").document(currentUser.userID).collection("Conversations").addSnapshotListener { (snapshot, error) in
             
-            self.conversations.removeAll()
+            //self.conversations.removeAll()
             
             if error != nil {
                 
@@ -103,24 +104,43 @@ class FirebaseMessaging {
                     
                     for document in snapshot!.documents {
                         
-                        var conversation = Conversation()
+                        let conversationID: String = document.data()["conversationID"] as! String
+                        let conversationName: String? = document.data()["conversationName"] as? String
+                        let dateCreatedTimestamp: Timestamp = document.data()["dateCreated"] as! Timestamp
+                        let lastTimeActiveTimestamp: Timestamp? = document.data()["lastTimeActive"] as? Timestamp
                         
-                        conversation.conversationID = document.data()["conversationID"] as! String
-                        conversation.conversationName = document.data()["conversationName"] as? String
-                        
-                        var timestamp: Timestamp? = document.data()["dateCreated"] as! Timestamp//snapshot!.documents.first!["dateCreated"] as! Timestamp
-                        conversation.dateCreated = Date(timeIntervalSince1970: TimeInterval(timestamp!.seconds))
-                        
-                        timestamp = document.data()["lastTimeActive"] as? Timestamp
-                        
-                        if timestamp != nil {
-                           
-                            conversation.lastTimeCurrentUserWasActive = Date(timeIntervalSince1970: TimeInterval(timestamp!.seconds))
+                        if let conversationIndex = self.conversations.firstIndex(where: { $0.conversationID == conversationID })  {
+                            
+                            self.conversations[conversationIndex].conversationName = conversationName//document.data()["conversationName"] as? String
+                            
+                            if lastTimeActiveTimestamp != nil {
+                                
+                                self.conversations[conversationIndex].lastTimeCurrentUserWasActive = Date(timeIntervalSince1970: TimeInterval(lastTimeActiveTimestamp!.seconds))
+                            }
                         }
                         
-                        self.conversations.append(conversation)
+                        else {
+                            
+                            var conversation = Conversation()
+                            
+                            conversation.conversationID = conversationID//document.data()["conversationID"] as! String
+                            conversation.conversationName = conversationName//document.data()["conversationName"] as? String
+                            
+                            //var timestamp: Timestamp? = document.data()["dateCreated"] as! Timestamp//snapshot!.documents.first!["dateCreated"] as! Timestamp
+                            conversation.dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreatedTimestamp.seconds))
+                            
+                            //timestamp = document.data()["lastTimeActive"] as? Timestamp
+                            
+                            if lastTimeActiveTimestamp != nil {
+                               
+                                conversation.lastTimeCurrentUserWasActive = Date(timeIntervalSince1970: TimeInterval(lastTimeActiveTimestamp!.seconds))
+                            }
+                            
+                            self.conversations.append(conversation)
+                        }
                         
-                        self.retrievePersonalConversationMembers(conversation.conversationID) { (members, error) in
+                        
+                        self.retrievePersonalConversationMembers(conversationID) { (members, error) in
                             
                             if error != nil {
                                 
@@ -131,7 +151,7 @@ class FirebaseMessaging {
                             
                             else {
                                 
-                                let conversationIndex = self.conversations.firstIndex(where: {$0.conversationID == conversation.conversationID})
+                                let conversationIndex = self.conversations.firstIndex(where: {$0.conversationID == conversationID})
                                 
                                 self.conversations[conversationIndex!].members = members
                                 
@@ -139,7 +159,7 @@ class FirebaseMessaging {
                             }
                         }
                         
-                        self.retrievePersonalConversationPreview(conversation.conversationID) { (message, error) in
+                        self.retrievePersonalConversationPreview(conversationID) { (message, error) in
                             
                             if error != nil {
                                 
@@ -150,7 +170,7 @@ class FirebaseMessaging {
                             
                             else {
                                 
-                                let conversationIndex = self.conversations.firstIndex(where: {$0.conversationID == conversation.conversationID})
+                                let conversationIndex = self.conversations.firstIndex(where: {$0.conversationID == conversationID})
                                 
                                 self.conversations[conversationIndex!].messagePreview = message
                                 
@@ -167,7 +187,7 @@ class FirebaseMessaging {
     
     private func retrievePersonalConversationMembers (_ conversationID: String, completion: @escaping ((_ members: [Member], _ error: Error?) -> Void)) {
         
-        conversationMembersListener = db.collection("Users").document(currentUser.userID).collection("Conversations").document(conversationID).collection("Members").addSnapshotListener { (snapshot, error) in
+        let listener = db.collection("Users").document(currentUser.userID).collection("Conversations").document(conversationID).collection("Members").addSnapshotListener { (snapshot, error) in
             
             if error != nil {
                 
@@ -204,11 +224,13 @@ class FirebaseMessaging {
                 }
             }
         }
+        
+        conversationMembersListeners.append(listener)
     }
     
     private func retrievePersonalConversationPreview (_ conversationID: String, completion: @escaping ((_ message: Message?, _ error: Error?) -> Void)) {
         
-        conversationPreviewListener = db.collection("Conversations").document(conversationID).collection("Messages").order(by: "timestamp", descending: true).limit(to: 1).addSnapshotListener({ (snapshot, error) in
+        let listener = db.collection("Conversations").document(conversationID).collection("Messages").order(by: "timestamp", descending: true).limit(to: 1).addSnapshotListener({ (snapshot, error) in
             
             if error != nil {
 
@@ -222,7 +244,8 @@ class FirebaseMessaging {
                 if snapshot?.isEmpty != true {
 
                     var message = Message()
-                    message.message = snapshot!.documents.first!["message"] as! String
+                    message.messageID = snapshot!.documents.first!.documentID
+                    message.message = snapshot!.documents.first!["message"] as? String
                     message.sender = snapshot!.documents.first!["sender"] as! String
                     
                     let timestamp = snapshot!.documents.first!["timestamp"] as! Timestamp
@@ -237,13 +260,15 @@ class FirebaseMessaging {
                 }
             }
         })
+        
+        conversationPreviewListeners.append(listener)
     }
     
     func retrieveCollabConversations (completion: @escaping ((_ conversations: [Conversation], _ error: Error?) -> Void)) {
         
         conversationListener = db.collection("Users").document(currentUser.userID).collection("Collabs").addSnapshotListener({ (snapshot, error) in
             
-            self.conversations.removeAll()
+//            self.conversations.removeAll()
             
             if error != nil {
                 
@@ -258,20 +283,49 @@ class FirebaseMessaging {
                         
                     for document in snapshot!.documents {
                         
-                        var conversation = Conversation()
-                        conversation.conversationID = document.data()["collabID"] as! String
-                        conversation.conversationName = document.data()["collabName"] as? String
+                        let collabID = document.data()["collabID"] as! String
+                        let collabName = document.data()["collabName"] as? String
+                        let startTime = document.data()["startTime"] as! Timestamp
+                        let lastTimeActiveTimestamp: Timestamp? = document.data()["lastTimeActive"] as? Timestamp; #warning("configure")
                         
-                        let timestamp = document.data()["dateCreated"] as! Timestamp
-                        conversation.dateCreated = Date(timeIntervalSince1970: TimeInterval(timestamp.seconds))
+                        if let conversationIndex = self.conversations.firstIndex(where: { $0.conversationID == collabID }) {
+                            
+                            self.conversations[conversationIndex].conversationName = collabName
+                            
+                            if lastTimeActiveTimestamp != nil {
+                                
+                                self.conversations[conversationIndex].lastTimeCurrentUserWasActive = Date(timeIntervalSince1970: TimeInterval(lastTimeActiveTimestamp!.seconds))
+                            }
+                        }
                         
-                        //conversation.lastTimeMembersWereActive = document.data()["lastTimeMembersWereActive"] as! [String : Any]
+                        else {
+                            
+                            var conversation = Conversation()
+                            
+                            conversation.conversationID = collabID
+                            conversation.conversationName = collabName
+                            conversation.dateCreated = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))
+                            
+                            if lastTimeActiveTimestamp != nil {
+                                
+                                conversation.lastTimeCurrentUserWasActive = Date(timeIntervalSince1970: TimeInterval(lastTimeActiveTimestamp!.seconds))
+                            }
+                            
+                            self.conversations.append(conversation)
+                        }
                         
-                        //print(conversation.lastTimeMembersWereActive)
+//                        var conversation = Conversation()
+//                        conversation.conversationID = document.data()["collabID"] as! String
+//                        conversation.conversationName = document.data()["collabName"] as? String
+//
+//                        let timestamp = document.data()["startTime"] as! Timestamp
+//                        conversation.dateCreated = Date(timeIntervalSince1970: TimeInterval(timestamp.seconds))
+//
+//
+//
+//                        self.conversations.append(conversation)
                         
-                        self.conversations.append(conversation)
-                        
-                        self.retrieveCollabConversationMembers(conversation.conversationID) { (members, error) in
+                        self.retrieveCollabConversationMembers(collabID) { (members, error) in
                             
                             if error != nil {
                                 
@@ -280,7 +334,7 @@ class FirebaseMessaging {
                                 
                             else {
                                 
-                                let conversationIndex = self.conversations.firstIndex(where: {$0.conversationID == conversation.conversationID})
+                                let conversationIndex = self.conversations.firstIndex(where: {$0.conversationID == collabID})
                                 
                                 self.conversations[conversationIndex!].members = members
                                 
@@ -288,7 +342,7 @@ class FirebaseMessaging {
                             }
                         }
                         
-                        self.retrieveCollabConversationPreview(conversation.conversationID) { (message, error) in
+                        self.retrieveCollabConversationPreview(collabID) { (message, error) in
                             
                             if error != nil {
                                 
@@ -297,7 +351,7 @@ class FirebaseMessaging {
                             
                             else {
                                 
-                                let conversationIndex = self.conversations.firstIndex(where: {$0.conversationID == conversation.conversationID})
+                                let conversationIndex = self.conversations.firstIndex(where: {$0.conversationID == collabID})
                                 
                                 self.conversations[conversationIndex!].messagePreview = message
                                 
@@ -327,7 +381,7 @@ class FirebaseMessaging {
     
     private func retrieveCollabConversationPreview (_ collabID: String, completion: @escaping ((_ message: Message?, _ error: Error?) -> Void)) {
         
-        conversationPreviewListener = db.collection("Collaborations").document(collabID).collection("Messages").order(by: "timestamp", descending: true).limit(to: 1).addSnapshotListener({ (snapshot, error) in
+        let listener = db.collection("Collaborations").document(collabID).collection("Messages").order(by: "timestamp", descending: true).limit(to: 1).addSnapshotListener({ (snapshot, error) in
             
             if error != nil {
 
@@ -341,7 +395,8 @@ class FirebaseMessaging {
                 if snapshot?.isEmpty != true {
 
                     var message = Message()
-                    message.message = snapshot!.documents.first!["message"] as! String
+                    message.messageID = snapshot!.documents.first!.documentID
+                    message.message = snapshot!.documents.first!["message"] as? String
                     message.sender = snapshot!.documents.first!["sender"] as! String
                     
                     let timestamp = snapshot!.documents.first!["timestamp"] as! Timestamp
@@ -356,6 +411,8 @@ class FirebaseMessaging {
                 }
             }
         })
+        
+        conversationPreviewListeners.append(listener)
     }
     
     func retrieveAllPersonalMessages (conversationID: String, completion: @escaping ((_ messages: [Message], _ error: Error?) -> Void)) {
@@ -376,9 +433,10 @@ class FirebaseMessaging {
                     for document in snapshot!.documents {
                         
                         var message = Message()
+                        message.messageID = document.documentID
                         message.sender = document.data()["sender"] as! String
-                        message.message = document.data()["message"] as! String
-                        //message.readBy = document.data()["readBy"] as? [String]
+                        message.message = document.data()["message"] as? String
+                        message.messagePhoto = document.data()["photo"] as? [String : Any]
                         
                         let timestamp = document.data()["timestamp"] as! Timestamp
                         message.timestamp = Date(timeIntervalSince1970: TimeInterval(timestamp.seconds))
@@ -386,7 +444,7 @@ class FirebaseMessaging {
                         messages.append(message)
                     }
                     
-                    messages = messages.sorted(by: { $0.timestamp < $1.timestamp })
+                    //messages = messages.sorted(by: { $0.timestamp < $1.timestamp })
                     
                     completion(messages, nil)
                 }
@@ -417,8 +475,10 @@ class FirebaseMessaging {
                     for document in snapshot!.documents {
                         
                         var message = Message()
+                        message.messageID = document.documentID
                         message.sender = document.data()["sender"] as! String
-                        message.message = document.data()["message"] as! String
+                        message.message = document.data()["message"] as? String
+                        message.messagePhoto = document.data()["photo"] as? [String : Any]
                         
                         let timestamp = document.data()["timestamp"] as! Timestamp
                         message.timestamp = Date(timeIntervalSince1970: TimeInterval(timestamp.seconds))
@@ -426,7 +486,7 @@ class FirebaseMessaging {
                         messages.append(message)
                     }
                     
-                    messages = messages.sorted(by: { $0.timestamp < $1.timestamp })
+                    //messages = messages.sorted(by: { $0.timestamp < $1.timestamp })
                     
                     completion(messages, nil)
                 }
@@ -441,36 +501,102 @@ class FirebaseMessaging {
     
     func sendPersonalMessage (conversationID: String, _ message: Message, completion: @escaping ((_ error: Error?) -> Void)) {
         
-        let message: [String : Any] = ["sender" : message.sender, "message" : message.message, "timestamp" : message.timestamp as Any, /*"readBy" : message.readBy as Any*/]
+        var photoDict = message.messagePhoto != nil ? message.messagePhoto : nil
+        photoDict?.removeValue(forKey: "photo")
         
-        db.collection("Conversations").document(conversationID).collection("Messages").addDocument(data: message) { (error) in
-            
-            if error != nil {
+        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "timestamp" : message.timestamp as Any]
+        
+        if let photoID = message.messagePhoto?["photoID"] as? String, let photo = message.messagePhoto?["photo"] as? UIImage {
+
+            self.firebaseStorage.savePersonalMessagePhoto(conversationID: conversationID, messagePhoto: ["photoID" : photoID, "photo" : photo]) { (error) in
                 
-                completion(error)
+                if error != nil {
+                    
+                    completion(error)
+                }
+                
+                else {
+                    
+                    self.db.collection("Conversations").document(conversationID).collection("Messages").addDocument(data: messageDict) { (error) in
+                        
+                        if error != nil {
+                            
+                            completion(error)
+                        }
+                        
+                        else {
+                            
+                            completion(nil)
+                        }
+                    }
+                }
             }
-            
-            else {
+        }
+        
+        else {
+        
+            self.db.collection("Conversations").document(conversationID).collection("Messages").addDocument(data: messageDict) { (error) in
                 
-                completion(nil)
+                if error != nil {
+                    
+                    completion(error)
+                }
+                
+                else {
+                    
+                    completion(nil)
+                }
             }
         }
     }
     
     func sendCollabMessage (collabID: String, _ message: Message, completion: @escaping ((_ error: Error?) -> Void)) {
         
-        let message: [String : Any] = ["sender" : message.sender, "message" : message.message, "timestamp" : message.timestamp as Any]
+        var photoDict = message.messagePhoto != nil ? message.messagePhoto : nil
+        photoDict?.removeValue(forKey: "photo")
         
-        db.collection("Collaborations").document(collabID).collection("Messages").addDocument(data: message) { (error) in
+        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "timestamp" : message.timestamp as Any]
+        
+        if let photoID = message.messagePhoto?["photoID"] as? String, let photo = message.messagePhoto?["photo"] as? UIImage {
             
-            if error != nil {
+            self.firebaseStorage.saveCollabMessagePhoto(collabID: collabID, messagePhoto: ["photoID" : photoID, "photo" : photo]) { (error) in
                 
-                completion(error)
+                if error != nil {
+                    
+                    completion(error)
+                }
+                
+                else {
+                    
+                    self.db.collection("Collaborations").document(collabID).collection("Messages").addDocument(data: messageDict) { (error) in
+                        
+                        if error != nil {
+                            
+                            completion(error)
+                        }
+                        
+                        else {
+                            
+                            completion(nil)
+                        }
+                    }
+                }
             }
+        }
+        
+        else {
             
-            else {
+            self.db.collection("Collaborations").document(collabID).collection("Messages").addDocument(data: messageDict) { (error) in
                 
-                completion(nil)
+                if error != nil {
+                    
+                    completion(error)
+                }
+                
+                else {
+                    
+                    completion(nil)
+                }
             }
         }
     }

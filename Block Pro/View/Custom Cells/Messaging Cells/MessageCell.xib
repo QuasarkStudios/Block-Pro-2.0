@@ -38,9 +38,9 @@
                         </subviews>
                         <color key="backgroundColor" red="0.15686274509803921" green="0.15686274509803921" blue="0.15686274509803921" alpha="0.84999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="Ygy-cW-0L2" firstAttribute="top" secondItem="Sum-mX-FOZ" secondAttribute="top" id="74M-Xi-lWF"/>
                             <constraint firstAttribute="bottom" secondItem="Ygy-cW-0L2" secondAttribute="bottom" id="9a0-D6-C0d"/>
                             <constraint firstAttribute="width" constant="100" id="ElR-Y9-qaj"/>
-                            <constraint firstItem="Ygy-cW-0L2" firstAttribute="top" secondItem="Sum-mX-FOZ" secondAttribute="top" id="NY7-uy-kJF"/>
                             <constraint firstAttribute="trailing" secondItem="Ygy-cW-0L2" secondAttribute="trailing" constant="8" id="UO6-3Z-qKH"/>
                             <constraint firstItem="Ygy-cW-0L2" firstAttribute="leading" secondItem="Sum-mX-FOZ" secondAttribute="leading" constant="8" id="dcO-DU-dc1"/>
                         </constraints>
@@ -93,7 +93,7 @@
             <connections>
                 <outlet property="messageBubbleLeadingAnchor" destination="Wdb-tX-f9R" id="EhH-0r-rD5"/>
                 <outlet property="messageBubbleTopAnchor" destination="4pL-8q-Dzx" id="6RD-Kv-zqM"/>
-                <outlet property="messageBubbleTrailingAnchor" destination="AJW-yj-tO1" id="5EM-cx-7Zd"/>
+                <outlet property="messageBubbleTrailingAnchor" destination="AJW-yj-tO1" id="gZB-y3-Xeg"/>
                 <outlet property="messageBubbleView" destination="Sum-mX-FOZ" id="y5w-Z1-1T4"/>
                 <outlet property="messageBubbleWidthConstraint" destination="ElR-Y9-qaj" id="GSl-Xt-EcT"/>
                 <outlet property="messageTextView" destination="Ygy-cW-0L2" id="OMg-Se-ChE"/>
@@ -102,7 +102,7 @@
                 <outlet property="profilePicContainer" destination="tip-RV-xkn" id="xXd-SU-rN7"/>
                 <outlet property="profilePicImageView" destination="waA-HA-4IY" id="f1t-GV-3de"/>
             </connections>
-            <point key="canvasLocation" x="32.608695652173914" y="130.58035714285714"/>
+            <point key="canvasLocation" x="31.199999999999999" y="130.04926108374386"/>
         </tableViewCell>
     </objects>
 </document>

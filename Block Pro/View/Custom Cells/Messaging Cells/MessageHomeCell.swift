@@ -192,7 +192,26 @@ class MessageHomeCell: UITableViewCell {
         
         if let messagePreview = conversation?.messagePreview {
             
-            messagePreviewLabel.text = messagePreview.message
+            if let messageText = messagePreview.message {
+                
+                messagePreviewLabel.font = UIFont(name: "Poppins-SemiBold", size: 12)
+                messagePreviewLabel.text = messageText
+            }
+
+            else {
+                
+                for member in conversation?.members ?? [] {
+                    
+                    if member.userID == messagePreview.sender {
+                        
+                        let memberName = member.userID == currentUser.userID ? "You" : member.firstName
+                        
+                        messagePreviewLabel.font = UIFont(name: "Poppins-Italic", size: 13)
+                        messagePreviewLabel.text = "\(memberName) sent a photo"
+                        break
+                    }
+                }
+            }
             
             setLastMessageLabel(date: messagePreview.timestamp)
         }
