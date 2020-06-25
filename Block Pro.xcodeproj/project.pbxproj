@@ -156,6 +156,9 @@
 		0D7CE24023C43AF6005BB8EE /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CE23F23C43AF6005BB8EE /* CardView.swift */; };
 		0D7E1B78247435AC00BB8E58 /* MessageHomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7E1B76247435AC00BB8E58 /* MessageHomeCell.swift */; };
 		0D7E1B79247435AC00BB8E58 /* MessageHomeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D7E1B77247435AC00BB8E58 /* MessageHomeCell.xib */; };
+		0D86013B2499377F0027F043 /* ConversationInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D86013A2499377F0027F043 /* ConversationInfoViewController.swift */; };
+		0D86013E24993A860027F043 /* ConvoNameInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D86013C24993A860027F043 /* ConvoNameInfoCell.swift */; };
+		0D86013F24993A860027F043 /* ConvoNameInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D86013D24993A860027F043 /* ConvoNameInfoCell.xib */; };
 		0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7522DBE435001D35B4 /* FriendRequest.swift */; };
 		0D872F7822DEE925001D35B4 /* PendingFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7722DEE925001D35B4 /* PendingFriend.swift */; };
 		0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7922E01F7C001D35B4 /* Friend.swift */; };
@@ -186,6 +189,10 @@
 		0DADDAB6235591C200E79F89 /* TimeThirtyMinAndUpCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAB5235591C200E79F89 /* TimeThirtyMinAndUpCell.swift */; };
 		0DADDAB823579D1500E79F89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */; };
 		0DB29FB42448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB29FB32448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift */; };
+		0DB3FEC2249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB3FEC0249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift */; };
+		0DB3FEC3249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DB3FEC1249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib */; };
+		0DB3FEC6249A9A6D00A14FF9 /* ConvoMemberInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB3FEC4249A9A6D00A14FF9 /* ConvoMemberInfoCell.swift */; };
+		0DB3FEC7249A9A6D00A14FF9 /* ConvoMemberInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DB3FEC5249A9A6D00A14FF9 /* ConvoMemberInfoCell.xib */; };
 		0DBAB33E242039CC0021FE35 /* CategoriesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBAB33C242039CC0021FE35 /* CategoriesCell.swift */; };
 		0DBAB33F242039CC0021FE35 /* CategoriesCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DBAB33D242039CC0021FE35 /* CategoriesCell.xib */; };
 		0DBAB34124204E8F0021FE35 /* CategoryTrackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBAB34024204E8F0021FE35 /* CategoryTrackBar.swift */; };
@@ -384,6 +391,9 @@
 		0D7CE23F23C43AF6005BB8EE /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		0D7E1B76247435AC00BB8E58 /* MessageHomeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageHomeCell.swift; sourceTree = "<group>"; };
 		0D7E1B77247435AC00BB8E58 /* MessageHomeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageHomeCell.xib; sourceTree = "<group>"; };
+		0D86013A2499377F0027F043 /* ConversationInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationInfoViewController.swift; sourceTree = "<group>"; };
+		0D86013C24993A860027F043 /* ConvoNameInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoNameInfoCell.swift; sourceTree = "<group>"; };
+		0D86013D24993A860027F043 /* ConvoNameInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoNameInfoCell.xib; sourceTree = "<group>"; };
 		0D872F7522DBE435001D35B4 /* FriendRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequest.swift; sourceTree = "<group>"; };
 		0D872F7722DEE925001D35B4 /* PendingFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingFriend.swift; sourceTree = "<group>"; };
 		0D872F7922E01F7C001D35B4 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
@@ -414,6 +424,10 @@
 		0DADDAB5235591C200E79F89 /* TimeThirtyMinAndUpCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeThirtyMinAndUpCell.swift; sourceTree = "<group>"; };
 		0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0DB29FB32448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectorCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
+		0DB3FEC0249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoMemberHeaderInfoCell.swift; sourceTree = "<group>"; };
+		0DB3FEC1249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoMemberHeaderInfoCell.xib; sourceTree = "<group>"; };
+		0DB3FEC4249A9A6D00A14FF9 /* ConvoMemberInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoMemberInfoCell.swift; sourceTree = "<group>"; };
+		0DB3FEC5249A9A6D00A14FF9 /* ConvoMemberInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoMemberInfoCell.xib; sourceTree = "<group>"; };
 		0DBAB33C242039CC0021FE35 /* CategoriesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesCell.swift; sourceTree = "<group>"; };
 		0DBAB33D242039CC0021FE35 /* CategoriesCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoriesCell.xib; sourceTree = "<group>"; };
 		0DBAB34024204E8F0021FE35 /* CategoryTrackBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTrackBar.swift; sourceTree = "<group>"; };
@@ -704,6 +718,7 @@
 				0D0102A82468F49D00A5FF28 /* MessagesHomeViewController.swift */,
 				0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */,
 				0D3F29312485ED9900C7763F /* SendPhotoMessageViewController.swift */,
+				0D86013A2499377F0027F043 /* ConversationInfoViewController.swift */,
 				0D7868532446ABD400A92DD1 /* LogIn_Registration */,
 				0D7868522446ABC900A92DD1 /* Home */,
 				0D7868542446ABF700A92DD1 /* TimeBlock */,
@@ -968,6 +983,7 @@
 				0DA2A6FC248AC3250051ADAB /* PhotoMessageCell.xib */,
 				0D7E1B76247435AC00BB8E58 /* MessageHomeCell.swift */,
 				0D7E1B77247435AC00BB8E58 /* MessageHomeCell.xib */,
+				0D86014024993A980027F043 /* Info View Cells */,
 			);
 			path = "Messaging Cells";
 			sourceTree = "<group>";
@@ -986,6 +1002,19 @@
 				0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */,
 			);
 			path = FriendCell;
+			sourceTree = "<group>";
+		};
+		0D86014024993A980027F043 /* Info View Cells */ = {
+			isa = PBXGroup;
+			children = (
+				0D86013C24993A860027F043 /* ConvoNameInfoCell.swift */,
+				0D86013D24993A860027F043 /* ConvoNameInfoCell.xib */,
+				0DB3FEC0249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift */,
+				0DB3FEC1249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib */,
+				0DB3FEC4249A9A6D00A14FF9 /* ConvoMemberInfoCell.swift */,
+				0DB3FEC5249A9A6D00A14FF9 /* ConvoMemberInfoCell.xib */,
+			);
+			path = "Info View Cells";
 			sourceTree = "<group>";
 		};
 		0D872F7D22E2AB72001D35B4 /* Collab Model Files */ = {
@@ -1275,7 +1304,9 @@
 				0D1B1DF82450FCF2008DA9B5 /* PhotoCell.xib in Resources */,
 				0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */,
 				0D95C17C2328923000421BE0 /* Timer Running.wav in Resources */,
+				0DB3FEC3249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib in Resources */,
 				0D1128332349A51B0080774C /* SettingsTableViewCell.xib in Resources */,
+				0D86013F24993A860027F043 /* ConvoNameInfoCell.xib in Resources */,
 				0DD9D88E24437A64006AA8AB /* MembersTableViewCell.xib in Resources */,
 				0D4173A624303610006076A5 /* RegistrationAccountCreationCell.xib in Resources */,
 				0D78657A23E4B56B00BD4C4D /* Poppins-Regular.ttf in Resources */,
@@ -1315,6 +1346,7 @@
 				0D23076D22D29FE900A12393 /* UpcomingCollabTableCell.xib in Resources */,
 				0D4173A2242FDE38006076A5 /* RegistrationUsernameCell.xib in Resources */,
 				0D41739A242EC1FB006076A5 /* RegistrationNameCell.xib in Resources */,
+				0DB3FEC7249A9A6D00A14FF9 /* ConvoMemberInfoCell.xib in Resources */,
 				0DE79A23244E490000F25440 /* SegmentCell.xib in Resources */,
 				0D78657723E4B56B00BD4C4D /* Poppins-BlackItalic.ttf in Resources */,
 				0DD636CB2412F3300026B623 /* ReminderCell.xib in Resources */,
@@ -1409,8 +1441,10 @@
 				0D0C8D9A2442488300EB51F7 /* Collab.swift in Sources */,
 				0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */,
 				0D7271252460DE1B0033C196 /* MessageTextViewContainer.swift in Sources */,
+				0DB3FEC2249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift in Sources */,
 				0DF441DE24677C4200B2037B /* CustomTabBar.swift in Sources */,
 				0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */,
+				0D86013B2499377F0027F043 /* ConversationInfoViewController.swift in Sources */,
 				0DE79A1C244E41BB00F25440 /* TimeSelectorCell.swift in Sources */,
 				0DD9D89324437F4E006AA8AB /* ImageView+Extension.swift in Sources */,
 				0DEB972C241CBBB7004F7422 /* ProgressCirclesCell.swift in Sources */,
@@ -1484,6 +1518,7 @@
 				0D0C8D922441A1FE00EB51F7 /* CollabRemindersCell.swift in Sources */,
 				0D70F91F2429BF0800407E4A /* LogInViewController.swift in Sources */,
 				0D44BA862476EF8D00647E06 /* Firebase+Messaging.swift in Sources */,
+				0DB3FEC6249A9A6D00A14FF9 /* ConvoMemberInfoCell.swift in Sources */,
 				0D78658B23E6928000BD4C4D /* PersonalCell.swift in Sources */,
 				0D41738C242E8738006076A5 /* Swift+Gif.swift in Sources */,
 				0DA2A6FD248AC3250051ADAB /* PhotoMessageCell.swift in Sources */,
@@ -1520,6 +1555,7 @@
 				0D035329235D634E00BB79B4 /* FreeTimeViewController.swift in Sources */,
 				0D23076C22D29FE900A12393 /* UpcomingCollabTableCell.swift in Sources */,
 				0DADDAB22355918A00E79F89 /* TimeTwentyMinCell.swift in Sources */,
+				0D86013E24993A860027F043 /* ConvoNameInfoCell.swift in Sources */,
 				0DFE5C1C231DF7C10025B4EB /* FriendCell.swift in Sources */,
 				0D77B70B23FB9EFD00AF60CC /* OneThirdBlock.swift in Sources */,
 				0D41F5C2231203A200B4B11E /* CollabTwentyMinCell.swift in Sources */,

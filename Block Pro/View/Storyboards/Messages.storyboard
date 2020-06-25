@@ -8,6 +8,9 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
+        <array key="Poppins-Regular.ttf">
+            <string>Poppins-Regular</string>
+        </array>
         <array key="Poppins-SemiBold.ttf">
             <string>Poppins-SemiBold</string>
         </array>
@@ -126,6 +129,62 @@
             </objects>
             <point key="canvasLocation" x="1030" y="598"/>
         </scene>
+        <!--Conversation Info View Controller-->
+        <scene sceneID="uBe-XL-jhX">
+            <objects>
+                <viewController id="SMO-Xb-ouZ" customClass="ConversationInfoViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="IvJ-pg-0fm">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T7B-FK-p3F">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="qhc-Wc-hhY"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem title="Info" id="ctz-jw-YfG">
+                                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="stop" id="uMP-oH-TV3"/>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="7Et-Xh-rJD">
+                                <rect key="frame" x="0.0" y="44" width="414" height="798"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="seperatorCell" id="Tba-em-ib5">
+                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Tba-em-ib5" id="IkR-ZW-3u1">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="T7B-FK-p3F" firstAttribute="leading" secondItem="7zk-Bd-TSu" secondAttribute="leading" id="L9q-XK-SGM"/>
+                            <constraint firstAttribute="bottom" secondItem="7Et-Xh-rJD" secondAttribute="bottom" id="YVs-ST-bn8"/>
+                            <constraint firstItem="7Et-Xh-rJD" firstAttribute="top" secondItem="T7B-FK-p3F" secondAttribute="bottom" id="hYe-EG-EC0"/>
+                            <constraint firstItem="T7B-FK-p3F" firstAttribute="trailing" secondItem="7zk-Bd-TSu" secondAttribute="trailing" id="iUa-Cp-pgL"/>
+                            <constraint firstItem="7Et-Xh-rJD" firstAttribute="leading" secondItem="7zk-Bd-TSu" secondAttribute="leading" id="lb0-Tp-F7v"/>
+                            <constraint firstItem="T7B-FK-p3F" firstAttribute="top" secondItem="7zk-Bd-TSu" secondAttribute="top" id="uVz-Cj-NBr"/>
+                            <constraint firstItem="7zk-Bd-TSu" firstAttribute="trailing" secondItem="7Et-Xh-rJD" secondAttribute="trailing" id="wCX-PO-3N1"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="7zk-Bd-TSu"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="7bR-so-MEM"/>
+                    <connections>
+                        <outlet property="messagingInfoTableView" destination="7Et-Xh-rJD" id="Wtj-Ma-ynE"/>
+                        <outlet property="navBar" destination="T7B-FK-p3F" id="Mw6-55-ai4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="lYR-U3-7ue" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1986.9565217391305" y="847.76785714285711"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="zvU-6B-9Gc">
             <objects>
@@ -167,21 +226,49 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0c1-9K-S8r">
+                                <rect key="frame" x="0.0" y="88" width="414" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="evq-FA-vlZ"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fpb-LQ-wbI">
+                                <rect key="frame" x="107" y="80.5" width="200" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="P4R-Yx-r7N"/>
+                                    <constraint firstAttribute="width" constant="200" id="U2S-qC-Swj"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="12"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
+                            <constraint firstItem="0c1-9K-S8r" firstAttribute="trailing" secondItem="WXi-5l-vNA" secondAttribute="trailing" id="7mv-Eb-K3Z"/>
+                            <constraint firstItem="Fpb-LQ-wbI" firstAttribute="centerX" secondItem="Cki-l1-ReW" secondAttribute="centerX" id="LgA-2K-tqj"/>
                             <constraint firstAttribute="bottom" secondItem="Akv-qA-kTT" secondAttribute="bottom" id="Ogi-pe-0HU"/>
-                            <constraint firstItem="Akv-qA-kTT" firstAttribute="top" secondItem="WXi-5l-vNA" secondAttribute="top" id="Tig-CG-c2p"/>
                             <constraint firstItem="WXi-5l-vNA" firstAttribute="trailing" secondItem="Akv-qA-kTT" secondAttribute="trailing" id="Uoy-B9-nEd"/>
+                            <constraint firstItem="Akv-qA-kTT" firstAttribute="top" secondItem="WXi-5l-vNA" secondAttribute="top" id="WDT-Bc-Mch"/>
+                            <constraint firstItem="0c1-9K-S8r" firstAttribute="top" secondItem="WXi-5l-vNA" secondAttribute="top" id="a2w-y5-qfO"/>
                             <constraint firstItem="Akv-qA-kTT" firstAttribute="leading" secondItem="WXi-5l-vNA" secondAttribute="leading" id="kOu-kA-Qle"/>
+                            <constraint firstItem="0c1-9K-S8r" firstAttribute="leading" secondItem="WXi-5l-vNA" secondAttribute="leading" id="vFQ-OZ-sue"/>
+                            <constraint firstItem="Fpb-LQ-wbI" firstAttribute="top" secondItem="WXi-5l-vNA" secondAttribute="top" constant="-7.5" id="zlw-Dd-SdH"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="WXi-5l-vNA"/>
                     </view>
                     <navigationItem key="navigationItem" id="veG-YE-8KN">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="info" id="pXg-pC-Z9B"/>
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="info" id="pXg-pC-Z9B">
+                            <connections>
+                                <segue destination="SMO-Xb-ouZ" kind="presentation" identifier="moveToConvoInfoView" id="riL-ao-uNM"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="conversationNameLabel" destination="Fpb-LQ-wbI" id="LZS-Rg-upG"/>
                         <outlet property="messagesTableView" destination="Akv-qA-kTT" id="MKE-3e-yHI"/>
+                        <outlet property="navBarExtensionView" destination="0c1-9K-S8r" id="r53-Qf-XJZ"/>
                         <segue destination="zZj-Xy-xfR" kind="presentation" identifier="moveToSendPhotoView" id="eTO-xR-ZPe"/>
                     </connections>
                 </viewController>

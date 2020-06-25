@@ -27,7 +27,6 @@ class MembersTableViewCell: UITableViewCell {
         addedIndicator.layer.cornerRadius = 0.21 * addedIndicator.frame.width
         addedIndicator.clipsToBounds = true
         addedIndicator.isHidden = true
-        
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

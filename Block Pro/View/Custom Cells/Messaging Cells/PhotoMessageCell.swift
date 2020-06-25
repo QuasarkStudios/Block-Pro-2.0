@@ -14,6 +14,11 @@ protocol CachePhotoProtocol: AnyObject {
     func cachePhoto (messageID: String, photo: UIImage?)
 }
 
+protocol ZoomInProtocol: AnyObject {
+    
+    func zoomInOnPhotoImageView (photoImageView: UIImageView)
+}
+
 class PhotoMessageCell: UITableViewCell {
 
     @IBOutlet weak var profilePicContainer: UIView!
@@ -65,6 +70,7 @@ class PhotoMessageCell: UITableViewCell {
     }
     
     weak var cachePhotoDelegate: CachePhotoProtocol?
+    weak var zoomInDelegate: ZoomInProtocol?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -80,7 +86,7 @@ class PhotoMessageCell: UITableViewCell {
         
         messageTextView.backgroundColor = .clear
         
-        imageViewContainer.backgroundColor = UIColor(hexString: "F4F4F4")?.darken(byPercentage: 0.1)
+        //iProgressView.backgroundColor = .clear
     }
     
     private func configureCell (message: Message) {
@@ -252,10 +258,17 @@ class PhotoMessageCell: UITableViewCell {
         guard let messagePhoto = message.messagePhoto else { return }
        
             imageViewContainerHeightConstraint.constant = calculatePhotoMessageCellHeight(messagePhoto: messagePhoto)
+
+            photoImageView.isUserInteractionEnabled = false
+            photoImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomIn)))
+            
         
             if let photo = message.messagePhoto?["photo"] as? UIImage {
                 
                 photoImageView.image = photo
+                photoImageView.isUserInteractionEnabled = true
+                
+                iProgressView.isHidden = true
             }
             
             else if let photoID = message.messagePhoto?["photoID"] as? String {
@@ -276,8 +289,11 @@ class PhotoMessageCell: UITableViewCell {
                         else {
 
                             self.photoImageView.image = photo
+                            self.photoImageView.isUserInteractionEnabled = true
                             
+                            self.imageViewContainer.backgroundColor = .white
                             self.iProgressView.dismissProgress()
+                            self.iProgressView.isHidden = true
 
                             self.cachePhotoDelegate?.cachePhoto(messageID: message.messageID, photo: photo)
                         }
@@ -296,8 +312,11 @@ class PhotoMessageCell: UITableViewCell {
                         else {
                             
                             self.photoImageView.image = photo
+                            self.photoImageView.isUserInteractionEnabled = true
                             
+                            self.imageViewContainer.backgroundColor = .white
                             self.iProgressView.dismissProgress()
+                            self.iProgressView.isHidden = true
                             
                             self.cachePhotoDelegate?.cachePhoto(messageID: message.messageID, photo: photo)
                         }
@@ -316,6 +335,10 @@ class PhotoMessageCell: UITableViewCell {
     }
     
     private func configureLoadingPhotoIndicator () {
+        
+        imageViewContainer.backgroundColor = UIColor(hexString: "F4F4F4")?.darken(byPercentage: 0.1)
+        
+        iProgressView.isHidden = false
         
         configureProgressHUD()
         
@@ -342,6 +365,14 @@ class PhotoMessageCell: UITableViewCell {
             iProgressView.updateIndicator(style: .circleStrokeSpin)
             
             iProgressAttached = true
+        }
+    }
+    
+    @objc private func handleZoomIn (tapGesture: UITapGestureRecognizer) {
+        
+        if let imageView = tapGesture.view as? UIImageView {
+            
+            zoomInDelegate?.zoomInOnPhotoImageView(photoImageView: imageView)
         }
     }
 }

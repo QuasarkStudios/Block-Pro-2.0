@@ -33,8 +33,9 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         }
     }
     
-    var selectedConversationID: String?
-    var selectedConversationMembers: [Member]?
+    var selectedConversation: Conversation?
+//    var selectedConversationID: String?
+//    var selectedConversationMembers: [Member]?
     
     var filteredConversations: [Conversation] = []
     var searchBeingConducted: Bool = false
@@ -149,7 +150,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             }
             
             cell.selectionStyle = .none
-        
+            
             return cell
         }
         
@@ -217,8 +218,9 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         
         else {
             
-            selectedConversationID = conversations?[indexPath.row / 2].conversationID
-            selectedConversationMembers = conversations?[indexPath.row / 2].members
+            selectedConversation = conversations?[indexPath.row / 2]
+//            selectedConversationID = conversations?[indexPath.row / 2].conversationID
+//            selectedConversationMembers = conversations?[indexPath.row / 2].members
             performSegue(withIdentifier: "moveToMessagesView", sender: self)
         }
     }
@@ -535,6 +537,12 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
                         
                         indexPathsToReload.append(indexPath)
                     }
+                    
+                    //If the conversation name has changed 
+                    else if cell.conversation?.conversationName != conversations?[indexPath.row / 2].conversationName {
+                        
+                        indexPathsToReload.append(indexPath)
+                    }
                 }
             }
         }
@@ -563,7 +571,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
     //MARK: - Conversation Verification Function
     
-    private func verifyNewConversation (members: [Friend]) -> String? {
+    private func verifyNewConversation (members: [Friend]) -> Conversation? {
         
         var convoArray: [Conversation] = []
         
@@ -597,7 +605,8 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
                     //If the convo has yet to be given a name
                     if conversation.conversationName == nil {
                         
-                        return conversation.conversationID
+//                        return conversation.conversationID
+                        return conversation
                     }
                 }
             }
@@ -804,17 +813,22 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         else if segue.identifier == "moveToMessagesView" {
             
             let messagesVC = segue.destination as! MessagingViewController
+            messagesVC.moveToConversationWithMemberDelegate = self
             
             if selectedView == "personal" {
                 
-                messagesVC.conversationID = selectedConversationID
+                //messagesVC.conversationID = selectedConversationID
+                
+                messagesVC.personalConversation = selectedConversation
                 
             } else {
 
-                messagesVC.collabID = selectedConversationID
+                messagesVC.collabConversation = selectedConversation
+                
+                //messagesVC.collabID = selectedConversationID
             }
 
-            messagesVC.conversationMembers = selectedConversationMembers
+            //messagesVC.conversationMembers = selectedConversationMembers
             
             let backItem = UIBarButtonItem()
             backItem.title = ""
@@ -963,22 +977,25 @@ extension MessagesHomeViewController: MembersAdded {
     
     func membersAdded(members: [Friend]) {
         
-        SVProgressHUD.show()
+        membersLoadedCount = 0
+        conversationPreviewLoadedCount = 0
         
         //If it isn't a new conversation
         if let conversation = verifyNewConversation(members: members) {
             
-            SVProgressHUD.dismiss()
-            
             dismiss(animated: true) {
                 
-                self.selectedConversationID = conversation
+                //self.selectedConversationID = conversation
+                
+                self.selectedConversation = conversation
                 
                 self.performSegue(withIdentifier: "moveToMessagesView", sender: self)
             }
         }
         
         else {
+            
+            SVProgressHUD.show()
             
             firebaseMessaging.createPersonalConversation(members: members) { (conversationID, error) in
 
@@ -993,12 +1010,30 @@ extension MessagesHomeViewController: MembersAdded {
 
                     self.dismiss(animated: true, completion: {
 
-                        self.selectedConversationID = conversationID
+                        for convo in self.conversations ?? [] {
+                            
+                            if convo.conversationID == conversationID {
+                                
+                                self.selectedConversation = convo
+                                break
+                            }
+                        }
+
+                        
+                        //self.selectedConversationID = conversationID
 
                         self.performSegue(withIdentifier: "moveToMessagesView", sender: self)
                     })
                 }
             }
         }
+    }
+}
+
+extension MessagesHomeViewController: MoveToConversationWithMemberProtcol {
+    
+    func moveToConversationWithMember(_ member: Friend) {
+        
+        membersAdded(members: [member])
     }
 }

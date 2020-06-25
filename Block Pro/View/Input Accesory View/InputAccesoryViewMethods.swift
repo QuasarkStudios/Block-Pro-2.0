@@ -42,8 +42,8 @@ class InputAccesoryViewMethods {
             
         let bottomInset: CGFloat = keyboardHeight! - (accesoryView.configureSize().height - topBarHeight)
         
-        tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        tableView?.contentInset = UIEdgeInsets(top: 30, left: 0, bottom: bottomInset, right: 0)
+        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: bottomInset, right: 0)
     
         if messagesCount > 0 {
 
@@ -58,8 +58,8 @@ class InputAccesoryViewMethods {
         
         keyboardHeight = keyboardFrame.cgRectValue.height
         
-        tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        tableView?.contentInset = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 0)
+        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 0)
         
         if messagesCount > 0 {
             
@@ -68,8 +68,8 @@ class InputAccesoryViewMethods {
         
         if textViewText == "" || textViewText == textViewPlaceholderText/*"Send a message"*/ {
             
-            tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            tableView?.contentInset = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 0)
+            tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 0)
             
             accesoryView.size = accesoryView.configureSize()
         }
@@ -78,8 +78,8 @@ class InputAccesoryViewMethods {
             
             let messageViewHeight = (textViewContainer.frame.height + abs(setTextViewBottomAnchor())) + 5
             
-            tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: messageViewHeight, right: 0)
-            tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: messageViewHeight, right: 0)
+            tableView?.contentInset = UIEdgeInsets(top: 30, left: 0, bottom: messageViewHeight, right: 0)
+            tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: messageViewHeight, right: 0)
             
             accesoryView.size = CGSize(width: 0, height: messageViewHeight)
         }

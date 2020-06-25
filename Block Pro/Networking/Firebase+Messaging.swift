@@ -30,7 +30,7 @@ class FirebaseMessaging {
         
         let batch = db.batch()
         let conversationID = UUID().uuidString
-        var memberArray: [[String : String]] = []
+        //var memberArray: [[String : String]] = []
         
         batch.setData(["conversationID" : conversationID, "dateCreated" : Date()], forDocument: db.collection("Conversations").document(conversationID))
         
@@ -44,8 +44,11 @@ class FirebaseMessaging {
             memberToBeAdded["username"] = member.username
             memberToBeAdded["role"] = "Member"
             
+            batch.setData(["Members" : [member.userID]], forDocument: db.collection("Conversations").document(conversationID), merge: true)
+            
             batch.setData(memberToBeAdded, forDocument: db.collection("Conversations").document(conversationID).collection("Members").document(memberToBeAdded["userID"]!))
-            memberArray.append(memberToBeAdded)
+            
+            //memberArray.append(memberToBeAdded)
             
             if member.userID == members.last?.userID {
                 
@@ -55,20 +58,24 @@ class FirebaseMessaging {
                 memberToBeAdded["username"] = currentUser.username
                 memberToBeAdded["role"] = "Lead"
                 
+                batch.setData(["Members" : [currentUser.userID]], forDocument: db.collection("Conversations").document(conversationID), merge: true)
+                
                 batch.setData(memberToBeAdded, forDocument: db.collection("Conversations").document(conversationID).collection("Members").document(memberToBeAdded["userID"]!))
-                memberArray.append(memberToBeAdded)
+                //memberArray.append(memberToBeAdded)
             }
         }
         
-        for member in memberArray {
-            
-            batch.setData(["conversationID" : conversationID, "dateCreated" : Date()], forDocument: db.collection("Users").document(member["userID"]!).collection("Conversations").document(conversationID))
-            
-            for addedMember in memberArray {
-                
-                batch.setData(addedMember, forDocument: db.collection("Users").document(member["userID"]!).collection("Conversations").document(conversationID).collection("Members").document(addedMember["userID"]!))
-            }
-        }
+        //was used when a reference to the conversation was still being stored in each users document
+        
+//        for member in memberArray {
+//
+//            batch.setData(["conversationID" : conversationID, "dateCreated" : Date()], forDocument: db.collection("Users").document(member["userID"]!).collection("Conversations").document(conversationID))
+//
+//            for addedMember in memberArray {
+//
+//                batch.setData(addedMember, forDocument: db.collection("Users").document(member["userID"]!).collection("Conversations").document(conversationID).collection("Members").document(addedMember["userID"]!))
+//            }
+//        }
         
         
         batch.commit { (error) in
@@ -183,6 +190,30 @@ class FirebaseMessaging {
                 }
             }
         }
+    }
+    
+    func retrievePersonalConversation2 (completion: @escaping ((_ conversations: [Conversation], _ error: Error?) -> Void)) {
+        
+        conversationListener = db.collection("Conversations").whereField("Members", arrayContains: currentUser.userID).addSnapshotListener({ (snapshot, error) in
+            
+            if error != nil {
+                
+                print(error as Any)
+                
+                completion([], error)
+            }
+            
+            else {
+                
+                if snapshot?.isEmpty != true {
+                    
+                    for document in snapshot!.documents {
+                        
+                        print("check")
+                    }
+                }
+            }
+        })
     }
     
     private func retrievePersonalConversationMembers (_ conversationID: String, completion: @escaping ((_ members: [Member], _ error: Error?) -> Void)) {
@@ -368,6 +399,8 @@ class FirebaseMessaging {
 
     private func retrieveCollabConversationMembers (_ collabID: String, completion: @escaping ((_ members: [Member], _ error: Error?) -> Void)) {
         
+        #warning("thisll have to be changed to be an observor to monitor for updates in members")
+        
         let collab = firebaseCollab.collabs.first(where: { $0.collabID == collabID })
         var conversationMembers: [Member] = []
         
@@ -499,6 +532,68 @@ class FirebaseMessaging {
         }
     }
     
+    func monitorPersonalConversation (conversationID: String, completion:  @escaping ((_ conversationName: String?, _ conversationMembers: [Member]?, _ error: Error?) -> Void)) {
+        
+        conversationListener = db.collection("Users").document(currentUser.userID).collection("Conversations").document(conversationID).addSnapshotListener({ (snapshot, error) in
+            
+            if error != nil {
+                
+                completion(nil, nil, error)
+            }
+            
+            else {
+
+                let conversationName = snapshot!.data()!["conversationName"] as? String
+                
+                completion(conversationName, nil, nil)
+            }
+        })
+        
+        retrievePersonalConversationMembers(conversationID) { (members, error) in
+            
+            if error != nil {
+                
+                completion(nil, nil, error)
+            }
+            
+            else {
+                
+                completion(nil, members, nil)
+            }
+        }
+    }
+    
+    func monitorCollabConversation (collabID: String, completion: @escaping ((_ collabName: String?, _ collabMembers: [Member]?, _ error: Error?) -> Void)) {
+        
+        conversationListener = db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID).addSnapshotListener({ (snapshot, error) in
+            
+            if error != nil {
+                
+                completion(nil, nil, error)
+            }
+            
+            else {
+                
+                let collabName = snapshot!.data()!["collabName"] as? String
+                
+                completion(collabName, nil, nil)
+            }
+        })
+        
+        retrieveCollabConversationMembers(collabID) { (members, error) in
+            
+            if error != nil {
+                
+                completion(nil, nil, error)
+            }
+            
+            else {
+                
+                completion(nil, members, nil)
+            }
+        }
+    }
+    
     func sendPersonalMessage (conversationID: String, _ message: Message, completion: @escaping ((_ error: Error?) -> Void)) {
         
         var photoDict = message.messagePhoto != nil ? message.messagePhoto : nil
@@ -609,18 +704,62 @@ class FirebaseMessaging {
         
         if let conversation = conversationID {
             
-            db.collection("Users").document(currentUser.userID).collection("Conversations").document(conversation).setData(["lastTimeActive" : currentDate], merge: true)
+            //db.collection("Users").document(currentUser.userID).collection("Conversations").document(conversation).setData(["lastTimeActive" : currentDate], merge: true)
             
-            db.collection("Conversations").document(conversation).setData(["lastTimeMembersWereActive" : [currentUser.userID : currentDate]], merge: true)
+//            db.collection("Conversations").document(conversation).setData(["lastTimeMembersWereActive" : [currentUser.userID : currentDate]], merge: true)
+            
+            db.collection("Users").document(currentUser.userID).collection("Conversations").document(conversation).updateData(["lastTimeActive" : currentDate])
+            
+            db.collection("Conversations").document(conversation).updateData(["lastTimeMembersWereActive" : [currentUser.userID : currentDate]])
         }
         
         else if let collab = collabID {
             
-            db.collection("Users").document(currentUser.userID).collection("Collabs").document(collab).setData(["lastTimeActive" : currentDate])
+//            db.collection("Users").document(currentUser.userID).collection("Collabs").document(collab).setData(["lastTimeActive" : currentDate])
             
-            db.collection("Collaborations").document(collab).setData(["lastTimeMembersWereActive" : [currentUser.userID : currentDate]], merge: true)
+//            db.collection("Collaborations").document(collab).setData(["lastTimeMembersWereActive" : [currentUser.userID : currentDate]], merge: true)
+            
+            db.collection("Users").document(currentUser.userID).collection("Collabs").document(collab).updateData(["lastTimeActive" : currentDate])
+            
+            db.collection("Collaborations").document(collab).updateData(["lastTimeMembersWereActive" : [currentUser.userID : currentDate]])
+        }
+    }
+    
+    func updateConversationName (conversationID: String, members: [Member], name: String?, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        let batch = db.batch()
+        
+        batch.updateData(["conversationName" : name as Any], forDocument: db.collection("Conversations").document(conversationID))
+        
+        for member in members {
+            
+            batch.updateData(["conversationName" : name as Any], forDocument: db.collection("Users").document(member.userID).collection("Conversations").document(conversationID))
         }
         
+        batch.commit { (error) in
+            
+            if error != nil {
+
+                completion(error)
+            }
+
+            else {
+
+                completion(nil)
+            }
+        }
         
+//        db.collection("Conversations").document(conversationID).updateData(["conversationName" : name]) { (error) in
+//
+//            if error != nil {
+//
+//                completion(error)
+//            }
+//
+//            else {
+//
+//                completion(nil)
+//            }
+//        }
     }
 }

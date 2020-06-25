@@ -25,7 +25,6 @@ class MessageCell: UITableViewCell {
     @IBOutlet weak var messageTextView: UITextView!
     
     let currentUser = CurrentUser.sharedInstance
-    var conversationID: String?
     
     let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseStorage = FirebaseStorage()

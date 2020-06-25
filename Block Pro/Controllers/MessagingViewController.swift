@@ -10,7 +10,9 @@ import UIKit
 import SVProgressHUD
 
 class MessagingViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-
+    
+    @IBOutlet weak var navBarExtensionView: UIView!
+    @IBOutlet weak var conversationNameLabel: UILabel!
     @IBOutlet weak var messagesTableView: UITableView!
     
     let messageInputAccesoryView = InputAccesoryView(showsAddButton: true, textViewPlaceholderText: "Send a message")
@@ -18,24 +20,47 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     
     let currentUser = CurrentUser.sharedInstance
     
+    let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseMessaging = FirebaseMessaging()
     let firebaseStorage = FirebaseStorage()
     
-    var conversationID: String? {
+    var personalConversation: Conversation? {
         didSet {
             
-            retrievePersonalMessages()
+            if !viewInitiallyLoaded {
+                
+                retrievePersonalMessages(personalConversation)
+                monitorPersonalConversation(personalConversation)
+            }
         }
     }
     
-    var collabID: String? {
+    var collabConversation: Conversation? {
         didSet {
             
-            retrieveCollabMessages()
+            if !viewInitiallyLoaded {
+                
+                retrieveCollabMessages(collabConversation)
+                monitorCollabConversation(collabConversation)
+            }
         }
     }
     
-    var conversationMembers: [Member]?
+//    var conversationID: String? {
+//        didSet {
+//            
+//            retrievePersonalMessages()
+//        }
+//    }
+//    
+//    var collabID: String? {
+//        didSet {
+//            
+//            retrieveCollabMessages()
+//        }
+//    }
+    
+    //var conversationMembers: [Member]?
     
     var messages: [Message]?
     
@@ -69,10 +94,12 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
+    weak var moveToConversationWithMemberDelegate: MoveToConversationWithMemberProtcol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationController?.navigationBar.configureNavBar()
+        configureNavBar(navBar: navigationController?.navigationBar)
         
         configureTableView(tableView: messagesTableView)
         
@@ -81,6 +108,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         configureGestureRecognizors()
         
         inputAccesoryViewMethods = InputAccesoryViewMethods(accesoryView: messageInputAccesoryView, textViewPlaceholderText: "Send a message", tableView: messagesTableView)
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -126,8 +154,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             if messages?[indexPath.row / 2].messagePhoto == nil {
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell", for: indexPath) as! MessageCell
-                cell.conversationID = conversationID
-                cell.members = conversationMembers
+                cell.members = personalConversation != nil ? personalConversation?.members : collabConversation?.members
                 cell.previousMessage = (indexPath.row / 2) - 1 >= 0 ? messages![(indexPath.row / 2) - 1] : nil
                 cell.message = messages?[indexPath.row / 2]
                 
@@ -139,13 +166,14 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             else {
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "photoMessageCell", for: indexPath) as! PhotoMessageCell
-                cell.conversationID = conversationID
-                cell.collabID = collabID
-                cell.members = conversationMembers
+                cell.conversationID = personalConversation != nil ? personalConversation?.conversationID : nil
+                cell.collabID = collabConversation != nil ? collabConversation?.conversationID : nil
+                cell.members = personalConversation != nil ? personalConversation?.members : collabConversation?.members
                 cell.previousMessage = (indexPath.row / 2) - 1 >= 0 ? messages![(indexPath.row / 2) - 1] : nil
                 cell.message = messages?[indexPath.row / 2]
                 
                 cell.cachePhotoDelegate = self
+                cell.zoomInDelegate = self
                 
                 cell.selectionStyle = .none
 
@@ -174,6 +202,125 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
+    private func configureNavBar (navBar: UINavigationBar?) {
+        
+        navBar?.configureNavBar(barBackgroundColor: .clear)
+        applyGradientFade(view: navBarExtensionView)
+        
+        if let conversation = personalConversation {
+            
+            configureNavBarTitleView(conversation.members)
+            
+            configureConversationNameLabel(conversation: conversation)
+        }
+        
+        else if let conversation = collabConversation {
+            
+            configureNavBarTitleView(conversation.members)
+            
+            configureConversationNameLabel(conversation: conversation)
+        }
+    }
+    
+    private func configureNavBarTitleView (_ convoMembers: [Member]) {
+        
+        self.navigationItem.titleView = nil
+        
+        let stackViewWidth = ((convoMembers.count - 1) * 32) - ((convoMembers.count - 1) * 11)
+        let memberStackView = UIStackView(frame: CGRect(x: 0, y: 0, width: stackViewWidth, height: 32))
+        memberStackView.alignment = .center
+        memberStackView.distribution = .fillProportionally
+        memberStackView.axis = .horizontal
+        memberStackView.spacing = -13
+        
+        var memberCount = 0
+        
+        for member in convoMembers {
+            
+            if member.userID != currentUser.userID {
+                
+                let profilePic = ProfilePicture.init(profilePic: UIImage(named: "DefaultProfilePic"), shadowRadius: 2, shadowOpacity: 0.35, borderColor: UIColor.white.cgColor)
+                
+                memberStackView.addArrangedSubview(profilePic)
+                
+                profilePic.translatesAutoresizingMaskIntoConstraints = false
+                
+                [
+
+                    profilePic.topAnchor.constraint(equalTo: profilePic.superview!.topAnchor, constant: 0),
+                    profilePic.leadingAnchor.constraint(equalTo: profilePic.superview!.leadingAnchor, constant: CGFloat(memberCount * 19)),
+                    profilePic.widthAnchor.constraint(equalToConstant: 32),
+                    profilePic.heightAnchor.constraint(equalToConstant: 32)
+                    
+                ].forEach( { $0.isActive = true } )
+                
+                if let friend = firebaseCollab.friends.first(where: { $0.userID == member.userID }) {
+                    
+                    profilePic.profilePic = friend.profilePictureImage
+                }
+                
+                else if let memberProfilePic = firebaseCollab.membersProfilePics[member.userID] {
+                    
+                    profilePic.profilePic = memberProfilePic
+                }
+                
+                else {
+                    
+                    firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (retrievedProfilePic, userID) in
+                        
+                        profilePic.profilePic = retrievedProfilePic
+                        
+                        self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: retrievedProfilePic)
+                    }
+                }
+                
+                memberCount += 1
+            }
+        }
+        
+        self.navigationItem.titleView = memberStackView
+    }
+    
+    private func configureConversationNameLabel (conversation: Conversation) {
+        
+        if let name = conversation.conversationName {
+            
+            conversationNameLabel.text = name
+        }
+        
+        else {
+            
+            var organizedMembers = conversation.members.sorted(by: { $0.firstName < $1.firstName })
+            
+            if let currentUserIndex = organizedMembers.firstIndex(where: { $0.userID == currentUser.userID }) {
+                
+                organizedMembers.remove(at: currentUserIndex)
+            }
+            
+            var name: String = ""
+            
+            for member in organizedMembers {
+                
+                if member.userID == organizedMembers.first?.userID {
+                    
+                    name = member.firstName
+                }
+                
+                else if member.userID != organizedMembers.last?.userID {
+                    
+                    name += ", \(member.firstName)"
+                }
+                
+                else {
+                    
+                    name += " & \(member.firstName) "
+                }
+            }
+            
+            conversationNameLabel.text = name
+        }
+    }
+    
     private func configureTableView (tableView: UITableView) {
         
         tableView.dataSource = self
@@ -183,8 +330,8 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         
         tableView.estimatedRowHeight = 0
         
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: topBarHeight, right: 0)
-        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: topBarHeight, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 30, left: 0, bottom: topBarHeight, right: 0)
+        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: topBarHeight, right: 0)
         
         tableView.register(UINib(nibName: "MessageCell", bundle: nil), forCellReuseIdentifier: "messageCell")
         tableView.register(UINib(nibName: "PhotoMessageCell", bundle: nil), forCellReuseIdentifier: "photoMessageCell")
@@ -214,10 +361,22 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     }
 
     private func configureGestureRecognizors () {
-        
+
         let dismissKeyboardTap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         dismissKeyboardTap.cancelsTouchesInView = false
         view.addGestureRecognizer(dismissKeyboardTap)
+    }
+    
+    private func applyGradientFade (view: UIView) {
+        
+        let gradientFade = CAGradientLayer()
+        gradientFade.frame = view.bounds
+//        gradientFade.colors = [UIColor.white.cgColor, UIColor.white.withAlphaComponent(0.5).cgColor, UIColor.clear.cgColor]
+        gradientFade.colors = [UIColor.white.withAlphaComponent(0.99).cgColor, UIColor.white.withAlphaComponent(0.25).cgColor, UIColor.clear.cgColor]
+        
+        gradientFade.locations = [0.45, 0.7, 0.8]//[0.45, 0.7, 0.8]
+        
+        view.layer.mask = gradientFade
     }
 
     private func addObservors () {
@@ -238,22 +397,118 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         NotificationCenter.default.removeObserver(self)
     }
     
+    private func monitorPersonalConversation (_ personalConversation: Conversation?) {
+        
+        if let conversation = personalConversation {
+            
+            firebaseMessaging.monitorPersonalConversation(conversationID: conversation.conversationID) { (conversationName, conversationMembers, error) in
+                
+                if error != nil {
+                    
+                    print(error as Any)
+                }
+                
+                else if let name = conversationName {
+                    
+                    if name != conversation.conversationName {
+                        
+                        self.personalConversation?.conversationName = name
+                        self.configureConversationNameLabel(conversation: self.personalConversation!)
+                    }
+                }
+                
+                else if let members = conversationMembers {
+                    
+                    if conversation.members.count != members.count {
+                        
+                        self.personalConversation?.members = members
+                        self.configureNavBarTitleView(members)
+                    }
+                    
+                    else {
+                        
+                        for member in members {
+                            
+                            if conversationMembers?.contains(where: { $0.userID == member.userID }) == false {
+                                
+                                self.personalConversation?.members = members
+                                self.configureNavBarTitleView(members)
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func monitorCollabConversation (_ collabConversation: Conversation?) {
+        
+        if let conversation = collabConversation {
+            
+            firebaseMessaging.monitorCollabConversation(collabID: conversation.conversationID) { (collabName, collabMembers, error) in
+                
+                if error != nil {
+                    
+                    print(error as Any)
+                }
+                
+                else if let name = collabName {
+                    
+                    if name != conversation.conversationName {
+                        
+                        self.collabConversation?.conversationName = name
+                        self.configureConversationNameLabel(conversation: self.collabConversation!)
+                    }
+                }
+                
+                else if let members = collabMembers {
+                    
+                    if conversation.members.count != members.count {
+                        
+                        self.collabConversation?.members = members
+                        self.configureNavBarTitleView(members)
+                    }
+                    
+                    else {
+                        
+                        for member in members {
+                            
+                            if collabMembers?.contains(where: { $0.userID == member.userID }) == false {
+                                
+                                self.collabConversation?.members = members
+                                self.configureNavBarTitleView(members)
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     @objc internal func keyboardBeingPresented (notification: NSNotification) {
         
-        inputAccesoryViewMethods.keyboardBeingPresented(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0, topBarHeight: topBarHeight)
+        if !(imageViewBeingZoomed ?? false) {
+            
+            inputAccesoryViewMethods.keyboardBeingPresented(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0, topBarHeight: topBarHeight)
+        }
     }
 
     
     @objc internal func keyboardBeingDismissed (notification: NSNotification) {
-
-        inputAccesoryViewMethods.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0, textViewText: messageTextViewText)
+        
+        if !(imageViewBeingZoomed ?? false) {
+            
+            inputAccesoryViewMethods.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0, textViewText: messageTextViewText)
+        }
     }
     
-    private func retrievePersonalMessages () {
+    private func retrievePersonalMessages (_ personalConversation: Conversation?) {
         
-        guard let conversation = conversationID else { return }
+        guard let conversation = personalConversation else { return }
         
-            firebaseMessaging.retrieveAllPersonalMessages(conversationID: conversation) { (messages, error) in
+        firebaseMessaging.retrieveAllPersonalMessages(conversationID: conversation.conversationID) { (messages, error) in
                 
                 if error != nil {
                     
@@ -283,11 +538,11 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             }
     }
     
-    private func retrieveCollabMessages () {
+    private func retrieveCollabMessages (_ collabConversation: Conversation?) {
         
-        guard let collab = collabID else { return }
+        guard let collab = collabConversation else { return }
         
-            firebaseMessaging.retrieveAllCollabMessages(collabID: collab) { (messages, error) in
+        firebaseMessaging.retrieveAllCollabMessages(collabID: collab.conversationID) { (messages, error) in
                 
                 if error != nil {
                     
@@ -352,7 +607,17 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     
     @objc private func readMessages () {
         
-        firebaseMessaging.readMessages(conversationID: conversationID)
+        if let conversation = personalConversation {
+            
+            firebaseMessaging.readMessages(conversationID: conversation.conversationID)
+        }
+        
+        else if let conversation = collabConversation {
+            
+            firebaseMessaging.readMessages(collabID: conversation.conversationID)
+        }
+        
+        //firebaseMessaging.readMessages(conversationID: conversationID)
     }
     
     @objc private func sendMessage () {
@@ -367,7 +632,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             message.message = messageTextViewText
             message.timestamp = Date()
             
-            if let conversation = conversationID {
+            if let conversation = personalConversation?.conversationID {
                 
                 firebaseMessaging.sendPersonalMessage(conversationID: conversation, message) { (error) in
                     
@@ -385,7 +650,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
                 }
             }
                 
-            else if let collab = collabID {
+            else if let collab = collabConversation?.conversationID {
                 
                 firebaseMessaging.sendCollabMessage(collabID: collab, message) { (error) in
                     
@@ -586,6 +851,100 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
+    var zoomedOutImageView: UIImageView?
+    var zoomedOutImageViewFrame: CGRect?
+    
+    var blackBackground: UIView?
+    var zoomedInImageView: UIImageView?
+
+    var imageViewBeingZoomed: Bool?
+    var keyboardWasPresent: Bool?
+    
+    func performZoomOnPhotoImageView (photoImageView: UIImageView) {
+        
+        self.zoomedOutImageView = photoImageView
+        imageViewBeingZoomed = true
+        
+        if messageInputAccesoryView.textViewContainer.messageTextView.isFirstResponder {
+            
+            keyboardWasPresent = true
+        }
+        
+        else {
+            
+            keyboardWasPresent = false
+        }
+        
+        self.messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
+        self.resignFirstResponder()
+        
+        blackBackground = UIView(frame: self.view.frame)
+        blackBackground?.backgroundColor = .clear
+        
+        blackBackground?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
+        
+        UIApplication.shared.keyWindow?.addSubview(blackBackground!)
+        
+        if let startingFrame = photoImageView.superview?.convert(photoImageView.frame, from: self.view) {
+            
+            zoomedOutImageViewFrame = CGRect(x: abs(startingFrame.minX), y: abs(startingFrame.minY), width: startingFrame.width, height: startingFrame.height)
+            
+            let zoomingImageView = UIImageView(frame: zoomedOutImageViewFrame!)
+            zoomingImageView.image = photoImageView.image
+            zoomingImageView.layer.cornerRadius = 10
+            zoomingImageView.clipsToBounds = true
+            
+            zoomingImageView.isUserInteractionEnabled = true
+            zoomingImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
+            
+            UIApplication.shared.keyWindow?.addSubview(zoomingImageView)
+            zoomedInImageView = zoomingImageView
+            
+            photoImageView.isHidden = true
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+                
+                self.blackBackground?.backgroundColor = .black
+                
+                let height = (startingFrame.height / startingFrame.width) * self.view.frame.width
+                zoomingImageView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: height)
+                zoomingImageView.center = self.view.center
+                
+                zoomingImageView.layer.cornerRadius = 0
+            })
+        }
+    }
+    
+    @objc private func handleZoomOut () {
+        
+        self.becomeFirstResponder()
+        
+        if keyboardWasPresent ?? false {
+            
+            messageInputAccesoryView.textViewContainer.messageTextView.becomeFirstResponder()
+        }
+        
+        if let imageView = zoomedInImageView {
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
+                
+                self.blackBackground?.backgroundColor = .clear
+                
+                imageView.frame = self.zoomedOutImageViewFrame!
+                imageView.layer.cornerRadius = 10
+                imageView.clipsToBounds = true
+                
+            }) { (finished: Bool) in
+                
+                self.imageViewBeingZoomed = false
+                
+                self.zoomedOutImageView?.isHidden = false
+                self.blackBackground?.removeFromSuperview()
+                imageView.removeFromSuperview()
+            }
+        }
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "moveToSendPhotoView" {
@@ -594,17 +953,25 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             sendPhotoVC.reconfigureViewDelegate = self
             sendPhotoVC.selectedPhoto = selectedPhoto
             
-            if let conversation = conversationID {
+            if let personalConversationID = personalConversation?.conversationID {
                 
-                sendPhotoVC.conversationID = conversation
+                sendPhotoVC.conversationID = personalConversationID
             }
             
-            else if let collab = collabID {
+            else if let collabConversationID = collabConversation?.conversationID {
                 
-                sendPhotoVC.collabID = collab
+                sendPhotoVC.collabID = collabConversationID
             }
             
             removeObservors()
+        }
+        
+        else if segue.identifier == "moveToConvoInfoView" {
+            
+            let convoInfoVC = segue.destination as! ConversationInfoViewController
+            convoInfoVC.personalConversation = personalConversation
+            convoInfoVC.collabConversation = collabConversation
+            convoInfoVC.moveToConversationWithMemberDelegate = self
         }
     }
     
@@ -710,4 +1077,24 @@ extension MessagingViewController: CachePhotoProtocol {
             messages?[messageIndex].messagePhoto?["photo"] = photo
         }
     }
+}
+
+extension MessagingViewController: ZoomInProtocol {
+    
+    func zoomInOnPhotoImageView(photoImageView: UIImageView) {
+        
+        performZoomOnPhotoImageView(photoImageView: photoImageView)
+    }
+}
+
+extension MessagingViewController: MoveToConversationWithMemberProtcol {
+    
+    func moveToConversationWithMember(_ member: Friend) {
+        
+        navigationController?.popToRootViewController(animated: true)
+        
+        moveToConversationWithMemberDelegate?.moveToConversationWithMember(member)
+    }
+    
+
 }
