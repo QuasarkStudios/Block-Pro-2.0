@@ -173,6 +173,66 @@ class FirebaseStorage {
         }
     }
     
+    func saveConversationCoverPhoto (conversationID: String, coverPhoto: UIImage, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        let photoData = coverPhoto.jpegData(compressionQuality: 0.2)
+        
+        if let data = photoData {
+            
+            let uploadTask = conversationStorageRef.child(conversationID).child("CoverPhoto.jpeg").putData(data)
+            
+            uploadTask.observe(.failure) { (snapshot) in
+                
+                if let error = snapshot.error {
+                    
+                    completion(error)
+                }
+            }
+            
+            uploadTask.observe(.success) { (snapshot) in
+                
+                completion(nil)
+            }
+        }
+    }
+    
+    func retrievePersonalConversationCoverPhoto (conversationID: String, completion: @escaping ((_ coverPhoto: UIImage?, _ error: Error?) -> Void)) {
+        
+        conversationStorageRef.child(conversationID).child("CoverPhoto.jpeg").getData(maxSize: 1048576) { (data, error) in
+            
+            if error != nil {
+                
+                //print(error as Any)
+                
+                //completion(nil, error)
+            }
+            
+            else {
+                
+                if let photoData = data {
+                    
+                    completion(UIImage(data: photoData), nil)
+                }
+            }
+        }
+    }
+    
+    func deletePersonalConversationCoverPhoto (conversationID: String, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        conversationStorageRef.child(conversationID).child("CoverPhoto.jpeg").delete { (error) in
+            
+            if error != nil {
+                
+                completion(error)
+            }
+            
+            else {
+                
+                completion(nil)
+            }
+        }
+    }
+    
     func savePersonalMessagePhoto (conversationID: String, messagePhoto: [String : Any], completion: @escaping ((_ error: Error?) -> Void)) {
         
         let photoID = messagePhoto["photoID"] as! String
@@ -206,6 +266,8 @@ class FirebaseStorage {
             if error != nil {
                 
                 print(error as Any)
+                
+                completion(nil, error)
             }
             
             else {

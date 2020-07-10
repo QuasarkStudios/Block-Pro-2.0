@@ -24,18 +24,31 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     let tabBar = CustomTabBar.sharedInstance
     let deleteConversationButton = UIButton(type: .system)
     
-    let firebaseMessaging = FirebaseMessaging()
+    let firebaseMessaging = FirebaseMessaging.sharedInstance
     
-    var conversations: [Conversation]? {
+    var personalConversations: [Conversation]? {
         didSet {
             
-            populateEditConversationDictionary(conversations: conversations!); #warning("when new messages are recieved and a user is editing, this will wipe out all they've check marked.... so fix it please future me")
+            guard let conversations = personalConversations else { return }
+            
+                populateEditConversationDictionary(conversations: conversations)
+            
+            #warning("when new messages are recieved and a user is editing, this will wipe out all they've check marked.... so fix it please future me")
+        }
+    }
+    
+    var collabConversations: [Conversation]? {
+        didSet {
+            
+            guard let conversations = personalConversations else { return }
+            
+                populateEditConversationDictionary(conversations: conversations)
+            
+            #warning("when new messages are recieved and a user is editing, this will wipe out all they've check marked.... so fix it please future me")
         }
     }
     
     var selectedConversation: Conversation?
-//    var selectedConversationID: String?
-//    var selectedConversationMembers: [Member]?
     
     var filteredConversations: [Conversation] = []
     var searchBeingConducted: Bool = false
@@ -115,7 +128,15 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         
         else {
 
-            return (conversations?.count ?? 0) * 2
+            if let conversations = personalConversations {
+                
+                return conversations.count * 2
+            }
+            
+            else {
+                
+                return (collabConversations?.count ?? 0) * 2
+            }
         }
     }
     
@@ -132,11 +153,30 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             
             else {
                 
-                conversationToBeUsed = conversations?[indexPath.row / 2] ?? nil
+                if let conversations = personalConversations {
+                    
+                    conversationToBeUsed = conversations[indexPath.row / 2]
+                }
+                
+                else if let conversations = collabConversations {
+                    
+                    conversationToBeUsed = conversations[indexPath.row / 2]
+                }
+                
+                //conversationToBeUsed = conversations?[indexPath.row / 2] ?? nil
             }
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "messageHomeCell", for: indexPath) as! MessageHomeCell
-            cell.conversation = conversationToBeUsed
+            
+            if personalConversations != nil {
+                
+                cell.personalConversation = conversationToBeUsed
+            }
+            
+            else {
+                
+                cell.collabConversation = conversationToBeUsed
+            }
             
             if viewEditing {
                 
@@ -186,9 +226,13 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         if viewEditing {
             
             let cell = tableView.cellForRow(at: indexPath) as! MessageHomeCell
-            cell.checkBox.setOn(!(editedConversations[cell.conversation!.conversationID] ?? false), animated: true)
             
-            editedConversations[cell.conversation!.conversationID] = !(editedConversations[cell.conversation!.conversationID] ?? false)
+            if personalConversations != nil {
+                
+                cell.checkBox.setOn(!(editedConversations[cell.personalConversation!.conversationID] ?? false), animated: true)
+                
+                editedConversations[cell.personalConversation!.conversationID] = !(editedConversations[cell.personalConversation!.conversationID] ?? false)
+            }
             
             //Checks to see if any conversations have been selected
             if editedConversations.first(where: { $0.value == true } ) != nil {
@@ -218,9 +262,18 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         
         else {
             
-            selectedConversation = conversations?[indexPath.row / 2]
-//            selectedConversationID = conversations?[indexPath.row / 2].conversationID
-//            selectedConversationMembers = conversations?[indexPath.row / 2].members
+            if let conversations = personalConversations {
+                
+                selectedConversation = conversations[indexPath.row / 2]
+            }
+            
+            else if let conversations = collabConversations {
+                
+                selectedConversation = conversations[indexPath.row / 2]
+            }
+            
+            //selectedConversation = conversations?[indexPath.row / 2]
+
             performSegue(withIdentifier: "moveToMessagesView", sender: self)
         }
     }
@@ -229,7 +282,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
     private func configureNavBar () {
         
-        navigationController?.navigationBar.configureNavBar()
+        navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear)
         
         navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 20)!]
         navigationItem.title =  "Messages"
@@ -372,7 +425,29 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         
         if selectedView == "personal" {
             
-            firebaseMessaging.retrievePersonalConversations { (conversations, error) in
+//            firebaseMessaging.retrievePersonalConversations { (conversations, error) in
+//
+//                if error != nil {
+//
+//                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+//                }
+//
+//                else {
+//
+//                    self.conversations = conversations
+//
+//                    self.conversations = self.conversations?.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+//
+//                    if self.messagingHomeTableView.visibleCells.count == 0 {
+//
+//                        self.messagingHomeTableView.reloadData()
+//                    }
+//                }
+//            }
+            
+            collabConversations = nil
+            
+            firebaseMessaging.retrievePersonalConversations2 { (conversations, error) in
                 
                 if error != nil {
                     
@@ -381,19 +456,28 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
                 
                 else {
                     
-                    self.conversations = conversations
+                    //                    self.conversations = conversations
+                    //
+                    //                    self.conversations = self.conversations?.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
                     
-                    self.conversations = self.conversations?.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+                    self.personalConversations = conversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
                     
                     if self.messagingHomeTableView.visibleCells.count == 0 {
                         
                         self.messagingHomeTableView.reloadData()
+                    }
+                    
+                    else {
+                        
+                        self.messagingHomeTableView.reloadRows(at: self.messagingHomeTableView.indexPathsForVisibleRows ?? [], with: .none)
                     }
                 }
             }
         }
         
         else {
+            
+            personalConversations = nil
             
             firebaseMessaging.retrieveCollabConversations { (conversations, error) in
                 
@@ -404,7 +488,9 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
                 
                 else {
                     
-                    self.conversations = conversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+//                    self.conversations = conversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+                    
+                    self.collabConversations = conversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
                     
                     if self.messagingHomeTableView.visibleCells.count == 0 {
                         
@@ -435,8 +521,19 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
     @objc private func didRetrieveConversationMembers () {
         
+        
+//        self.conversations = firebaseMessaging.conversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+        
         //Sorted by either the timeStamp of the last message or the time the convo was created if no message has been sent yet
-        self.conversations = firebaseMessaging.conversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+        if personalConversations != nil {
+            
+            personalConversations = firebaseMessaging.personalConversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+        }
+        
+        else {
+            
+            collabConversations = firebaseMessaging.collabConversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+        }
         
         //Updates the filteredConversations when conversation members have changed
         if searchBeingConducted {
@@ -461,26 +558,52 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
                     
                     let cell = messagingHomeTableView.cellForRow(at: indexPath) as! MessageHomeCell
                     
-                    //If the amount of memebrs in the conversation has changed
-                    if cell.conversation?.members.count ?? 0 != conversations?[indexPath.row / 2].members.count {
+                    if let conversations = personalConversations {
                         
-                        indexPathsToReload.append(indexPath)
+                        //If the amount of memebrs in the conversation has changed
+                        if cell.personalConversation?.members.count ?? 0 != conversations[indexPath.row / 2].members.count {
+                            
+                            indexPathsToReload.append(indexPath)
+                        }
+                        
+                        else {
+                            
+                            //Checks to see if any members now exist that didn't previously
+                            for member in cell.personalConversation?.members ?? [] {
+                                
+                                if conversations[indexPath.row / 2].members.first(where: { $0.userID == member.userID }) == nil {
+                                    
+                                    indexPathsToReload.append(indexPath)
+                                }
+                            }
+                        }
                     }
                     
-                    else {
+                    else if let conversations = collabConversations {
                         
-                        //Checks to see if any members now exist that didn't previously
-                        for member in cell.conversation?.members ?? [] {
+                        //If the amount of memebrs in the conversation has changed
+                        if cell.collabConversation?.members.count ?? 0 != conversations[indexPath.row / 2].members.count {
                             
-                            if conversations?[indexPath.row / 2].members.first(where: { $0.userID == member.userID }) == nil {
+                            indexPathsToReload.append(indexPath)
+                        }
+                        
+                        else {
+                            
+                            //Checks to see if any members now exist that didn't previously
+                            for member in cell.collabConversation?.members ?? [] {
                                 
-                                indexPathsToReload.append(indexPath)
+                                if conversations[indexPath.row / 2].members.first(where: { $0.userID == member.userID }) == nil {
+                                    
+                                    indexPathsToReload.append(indexPath)
+                                }
                             }
                         }
                     }
                 }
             }
         }
+        
+        let conversations = personalConversations != nil ? personalConversations : collabConversations
         
         //If the conversation members hasn't been completely intially loaded
         if let memberCount = membersLoadedCount, memberCount < (conversations?.count ?? 0) - 1 {
@@ -506,8 +629,19 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
     @objc private func didRetrieveConversationPreview () {
         
+//        //Sorted by either the timeStamp of the last message or the time the convo was created if no message has been sent yet
+//        self.conversations = firebaseMessaging.conversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+        
         //Sorted by either the timeStamp of the last message or the time the convo was created if no message has been sent yet
-        self.conversations = firebaseMessaging.conversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+        if personalConversations != nil {
+            
+            personalConversations = firebaseMessaging.personalConversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+        }
+        
+        else {
+            
+            collabConversations = firebaseMessaging.collabConversations.sorted(by: { $0.messagePreview?.timestamp ?? $0.dateCreated! > $1.messagePreview?.timestamp ?? $1.dateCreated! })
+        }
         
         //Updates the filteredConversations when conversation preview have changed
         if searchBeingConducted {
@@ -532,20 +666,40 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
                     
                     let cell = messagingHomeTableView.cellForRow(at: indexPath) as! MessageHomeCell
                     
-                    //If the last message of this conversation has changed
-                    if cell.conversation?.messagePreview?.messageID != conversations?[indexPath.row / 2].messagePreview?.messageID {
+                    if let conversations = personalConversations {
                         
-                        indexPathsToReload.append(indexPath)
+                        //If the last message of this conversation has changed
+                        if cell.personalConversation?.messagePreview?.messageID != conversations[indexPath.row / 2].messagePreview?.messageID {
+                            
+                            indexPathsToReload.append(indexPath)
+                        }
+                        
+                        //If the conversation name has changed
+                        else if cell.personalConversation?.conversationName != conversations[indexPath.row / 2].conversationName {
+                            
+                            indexPathsToReload.append(indexPath)
+                        }
                     }
                     
-                    //If the conversation name has changed 
-                    else if cell.conversation?.conversationName != conversations?[indexPath.row / 2].conversationName {
+                    else if let conversations = collabConversations {
                         
-                        indexPathsToReload.append(indexPath)
+                        //If the last message of this conversation has changed
+                        if cell.collabConversation?.messagePreview?.messageID != conversations[indexPath.row / 2].messagePreview?.messageID {
+                            
+                            indexPathsToReload.append(indexPath)
+                        }
+                        
+                        //If the conversation name has changed
+                        else if cell.collabConversation?.conversationName != conversations[indexPath.row / 2].conversationName {
+                            
+                            indexPathsToReload.append(indexPath)
+                        }
                     }
                 }
             }
         }
+        
+        let conversations = personalConversations != nil ? personalConversations : collabConversations
         
         //If the conversation previews hasn't been completely intially loaded
         if let conversationCount = conversationPreviewLoadedCount, conversationCount < (conversations?.count ?? 0) - 1 {
@@ -575,11 +729,13 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         
         var convoArray: [Conversation] = []
         
+        let conversations = personalConversations != nil ? personalConversations : collabConversations
+        
         //Checks to see which convos have the same amount of members as the one being created
         for convo in conversations ?? [] {
-            
+
             if (members.count + 1) == convo.members.count {
-                
+
                 convoArray.append(convo)
             }
         }
@@ -600,12 +756,20 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             
             if sameMembers {
                 
-                if let conversation = conversations?.first(where: { $0.conversationID == convo.conversationID }) {
+                if let conversation = personalConversations?.first(where: { $0.conversationID == convo.conversationID }) {
                     
                     //If the convo has yet to be given a name
                     if conversation.conversationName == nil {
                         
 //                        return conversation.conversationID
+                        return conversation
+                    }
+                }
+                
+                else if let conversation = collabConversations?.first(where: { $0.conversationID == convo.conversationID }) {
+                    
+                    if conversation.conversationName == nil {
+                        
                         return conversation
                     }
                 }
@@ -635,6 +799,8 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         }
         
         else {
+            
+            let conversations = personalConversations != nil ? personalConversations : collabConversations
             
             populateEditConversationDictionary(conversations: conversations ?? [])
             
@@ -850,6 +1016,8 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             
             searchBeingConducted = true
             
+            let conversations = personalConversations != nil ? personalConversations : collabConversations
+            
             for conversation in conversations ?? [] {
                 
                 if conversation.conversationName != nil {
@@ -885,12 +1053,14 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
     @IBAction func personal_collabButtonPressed(_ sender: Any) {
         
-        firebaseMessaging.conversations.removeAll()
+        //firebaseMessaging.conversations.removeAll()
         removeListeners()
         
         if selectedView == "personal" {
             
             selectedView = "collab"
+            
+            personalConversations = nil
             
             let delayDuration = viewEditing ? 0.7 : 0
             
@@ -910,8 +1080,8 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
                     }
     
                     else {
-    
-                        self?.conversations = conversations
+                        
+                        self?.collabConversations = conversations
                         self?.addNotificationObservors()
                         //self?.reloadTableView()
                         self?.messagingHomeTableView.reloadData()
@@ -927,11 +1097,13 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             
             selectedView = "personal"
             
+            collabConversations = nil
+            
             hideNewConversationButton(hide: false)
             
             NotificationCenter.default.removeObserver(self)
             
-            firebaseMessaging.retrievePersonalConversations { (conversations, error) in
+            firebaseMessaging.retrievePersonalConversations2 { (conversations, error) in
                 
                 if error != nil {
                     
@@ -940,7 +1112,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
                 
                 else {
                     
-                    self.conversations = conversations
+                    self.personalConversations = conversations
                     self.addNotificationObservors()
                     //self.reloadTableView()
                     self.messagingHomeTableView.reloadData()
@@ -1010,7 +1182,9 @@ extension MessagesHomeViewController: MembersAdded {
 
                     self.dismiss(animated: true, completion: {
 
-                        for convo in self.conversations ?? [] {
+                        let conversations = self.personalConversations != nil ? self.personalConversations : self.collabConversations
+                        
+                        for convo in conversations ?? [] {
                             
                             if convo.conversationID == conversationID {
                                 

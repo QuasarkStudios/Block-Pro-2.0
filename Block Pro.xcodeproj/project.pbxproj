@@ -181,6 +181,8 @@
 		0DA9F83D22A848A5008BECAE /* UserSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83C22A848A5008BECAE /* UserSettings.storyboard */; };
 		0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */; };
 		0DA9F84122AC7C42008BECAE /* BlockPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */; };
+		0DAD3B5E24A7C66F00607579 /* ConvoCoverInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAD3B5C24A7C66F00607579 /* ConvoCoverInfoCell.swift */; };
+		0DAD3B5F24A7C66F00607579 /* ConvoCoverInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAD3B5D24A7C66F00607579 /* ConvoCoverInfoCell.xib */; };
 		0DADDAAC2355915700E79F89 /* TimeFiveMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAAB2355915700E79F89 /* TimeFiveMinCell.swift */; };
 		0DADDAAE2355916A00E79F89 /* TimeTenMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAAD2355916A00E79F89 /* TimeTenMinCell.swift */; };
 		0DADDAB02355917C00E79F89 /* TimeFifteenMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAAF2355917C00E79F89 /* TimeFifteenMinCell.swift */; };
@@ -416,6 +418,8 @@
 		0DA9F83C22A848A5008BECAE /* UserSettings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = UserSettings.storyboard; sourceTree = "<group>"; };
 		0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlocksDate.swift; sourceTree = "<group>"; };
 		0DA9F84022AC7C42008BECAE /* BlockPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockPopoverViewController.swift; sourceTree = "<group>"; };
+		0DAD3B5C24A7C66F00607579 /* ConvoCoverInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoCoverInfoCell.swift; sourceTree = "<group>"; };
+		0DAD3B5D24A7C66F00607579 /* ConvoCoverInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoCoverInfoCell.xib; sourceTree = "<group>"; };
 		0DADDAAB2355915700E79F89 /* TimeFiveMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFiveMinCell.swift; sourceTree = "<group>"; };
 		0DADDAAD2355916A00E79F89 /* TimeTenMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTenMinCell.swift; sourceTree = "<group>"; };
 		0DADDAAF2355917C00E79F89 /* TimeFifteenMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeFifteenMinCell.swift; sourceTree = "<group>"; };
@@ -1007,6 +1011,8 @@
 		0D86014024993A980027F043 /* Info View Cells */ = {
 			isa = PBXGroup;
 			children = (
+				0DAD3B5C24A7C66F00607579 /* ConvoCoverInfoCell.swift */,
+				0DAD3B5D24A7C66F00607579 /* ConvoCoverInfoCell.xib */,
 				0D86013C24993A860027F043 /* ConvoNameInfoCell.swift */,
 				0D86013D24993A860027F043 /* ConvoNameInfoCell.xib */,
 				0DB3FEC0249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift */,
@@ -1327,6 +1333,7 @@
 				0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */,
 				0D78658823E51C7D00BD4C4D /* HomeTableViewCell.xib in Resources */,
 				0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */,
+				0DAD3B5F24A7C66F00607579 /* ConvoCoverInfoCell.xib in Resources */,
 				0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */,
 				0D78658C23E6928000BD4C4D /* PersonalCell.xib in Resources */,
 				0D78657823E4B56B00BD4C4D /* Poppins-Light.ttf in Resources */,
@@ -1549,6 +1556,7 @@
 				0D5BEFE723E286DA00B5DCE5 /* HomeViewController.swift in Sources */,
 				0DD9D89024437DC2006AA8AB /* View+Extension.swift in Sources */,
 				0DD9D8952443812A006AA8AB /* Firebase+Collab.swift in Sources */,
+				0DAD3B5E24A7C66F00607579 /* ConvoCoverInfoCell.swift in Sources */,
 				0DD636C6241174040026B623 /* BlockNotificationSettingCell.swift in Sources */,
 				0DBAB34124204E8F0021FE35 /* CategoryTrackBar.swift in Sources */,
 				0DADDAB6235591C200E79F89 /* TimeThirtyMinAndUpCell.swift in Sources */,

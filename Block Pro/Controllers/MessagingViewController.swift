@@ -21,7 +21,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     let currentUser = CurrentUser.sharedInstance
     
     let firebaseCollab = FirebaseCollab.sharedInstance
-    let firebaseMessaging = FirebaseMessaging()
+    let firebaseMessaging = FirebaseMessaging.sharedInstance
     let firebaseStorage = FirebaseStorage()
     
     var personalConversation: Conversation? {
@@ -30,7 +30,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             if !viewInitiallyLoaded {
                 
                 retrievePersonalMessages(personalConversation)
-                monitorPersonalConversation(personalConversation)
+                //monitorPersonalConversation(personalConversation)
             }
         }
     }
@@ -41,7 +41,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             if !viewInitiallyLoaded {
                 
                 retrieveCollabMessages(collabConversation)
-                monitorCollabConversation(collabConversation)
+                //monitorCollabConversation(collabConversation)
             }
         }
     }
@@ -99,7 +99,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureNavBar(navBar: navigationController?.navigationBar)
+        //configureNavBar(navBar: navigationController?.navigationBar)
         
         configureTableView(tableView: messagesTableView)
         
@@ -111,9 +111,22 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        
+        //self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black)
+        
+        
+        configureNavBar(navBar: navigationController?.navigationBar)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         
         addObservors()
+        
+        monitorPersonalConversation(personalConversation)
+        monitorCollabConversation(collabConversation)
+        
+        setActivityStatus(activity: "now")
         
         self.becomeFirstResponder()
         
@@ -122,9 +135,11 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     
     override func viewWillDisappear(_ animated: Bool) {
         
-        readMessages()
+        setActivityStatus(activity: nil)
         
         removeObservors()
+        
+        firebaseMessaging.conversationListener?.remove()
     }
     
     deinit {
@@ -204,27 +219,104 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     
     private func configureNavBar (navBar: UINavigationBar?) {
         
-        navBar?.configureNavBar(barBackgroundColor: .clear)
-        applyGradientFade(view: navBarExtensionView)
+        navBar?.configureNavBar(barBackgroundColor: .clear, barTintColor: .black)
+        self.navigationItem.titleView = nil
+        
+        if !viewInitiallyLoaded {
+            
+            applyGradientFade(view: navBarExtensionView)
+        }
         
         if let conversation = personalConversation {
             
-            configureNavBarTitleView(conversation.members)
+            if conversation.coverPhotoID != nil {
+                
+                configureNavBarTitleViewWithCoverPhoto(personalConversation: conversation)
+            }
+            
+            else {
+                
+                configureNavBarTitleViewWithMembers(conversation.members)
+            }
             
             configureConversationNameLabel(conversation: conversation)
         }
         
         else if let conversation = collabConversation {
             
-            configureNavBarTitleView(conversation.members)
+            if conversation.coverPhotoID != nil {
+                
+                configureNavBarTitleViewWithCoverPhoto(collabConversation: conversation)
+            }
+            
+            else {
+                
+                configureNavBarTitleViewWithMembers(conversation.members)
+            }
             
             configureConversationNameLabel(conversation: conversation)
         }
     }
     
-    private func configureNavBarTitleView (_ convoMembers: [Member]) {
+    private func configureNavBarTitleViewWithCoverPhoto (personalConversation: Conversation? = nil, collabConversation: Conversation? = nil) {
         
-        self.navigationItem.titleView = nil
+        let coverContainer = UIView(frame: CGRect(x: 0, y: 0, width: 32, height: 32))
+        let coverPicture = ProfilePicture.init(profilePic: UIImage(named: "Abstract"), shadowRadius: 2, shadowOpacity: 0.35, borderColor: UIColor.white.cgColor)
+        
+        coverContainer.addSubview(coverPicture)
+        
+        coverPicture.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+
+            coverPicture.widthAnchor.constraint(equalToConstant: 32),
+            coverPicture.heightAnchor.constraint(equalToConstant: 32),
+            coverPicture.centerXAnchor.constraint(equalTo: coverPicture.superview!.centerXAnchor),
+            coverPicture.centerYAnchor.constraint(equalTo: coverPicture.superview!.centerYAnchor)
+            
+        ].forEach( { $0.isActive = true } )
+        
+        if let conversation = personalConversation {
+            
+            if let conversationIndex = firebaseMessaging.personalConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                
+                if let cover = firebaseMessaging.personalConversations[conversationIndex].conversationCoverPhoto {
+                    
+                    coverPicture.profilePic = cover
+                }
+                
+                else {
+                    
+                    firebaseStorage.retrievePersonalConversationCoverPhoto(conversationID: conversation.conversationID) { (cover, error) in
+                        
+                        if error != nil {
+                            
+                            print(error as Any)
+                        }
+                        
+                        else {
+                            
+                            coverPicture.profilePic = cover
+                            
+                            if let conversationIndex = self.firebaseMessaging.personalConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                                
+                                self.firebaseMessaging.personalConversations[conversationIndex].conversationCoverPhoto = cover
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        else if let conversation = collabConversation {
+            
+            
+        }
+        
+        self.navigationItem.titleView = coverContainer
+    }
+    
+    private func configureNavBarTitleViewWithMembers (_ convoMembers: [Member]) {
         
         let stackViewWidth = ((convoMembers.count - 1) * 32) - ((convoMembers.count - 1) * 11)
         let memberStackView = UIStackView(frame: CGRect(x: 0, y: 0, width: stackViewWidth, height: 32))
@@ -385,7 +477,9 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingDismissed), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(readMessages), name: UIApplication.willResignActiveNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(readMessages), name: UIApplication.willResignActiveNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(setActivityStatus(activity:)), name: UIApplication.willResignActiveNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(sendMessage), name: .userDidSendMessage, object: nil)
         
@@ -401,43 +495,124 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         
         if let conversation = personalConversation {
             
-            firebaseMessaging.monitorPersonalConversation(conversationID: conversation.conversationID) { (conversationName, conversationMembers, error) in
+            firebaseMessaging.monitorPersonalConversation(conversationID: conversation.conversationID) { (updatedConvo/*conversationName, conversationActivity, conversationMembers, error*/) in
                 
-                if error != nil {
+                if let error = updatedConvo["error"] {
                     
                     print(error as Any)
                 }
                 
-                else if let name = conversationName {
+                else {
                     
-                    if name != conversation.conversationName {
-                        
-                        self.personalConversation?.conversationName = name
-                        self.configureConversationNameLabel(conversation: self.personalConversation!)
+                    self.personalConversation?.conversationName = updatedConvo["conversationName"] as? String ?? nil
+                    self.configureConversationNameLabel(conversation: self.personalConversation!)
+
+                    if let activity = updatedConvo["conversationActivity"] as? [String : Any] {
+    
+                        self.personalConversation?.memberActivity = activity
                     }
-                }
-                
-                else if let members = conversationMembers {
                     
-                    if conversation.members.count != members.count {
+                    self.personalConversation?.coverPhotoID = updatedConvo["coverPhotoID"] as? String
+                    
+                    if self.personalConversation?.coverPhotoID != nil {
                         
-                        self.personalConversation?.members = members
-                        self.configureNavBarTitleView(members)
+                        self.configureNavBarTitleViewWithCoverPhoto(personalConversation: self.personalConversation)
                     }
                     
                     else {
                         
-                        for member in members {
-                            
-                            if conversationMembers?.contains(where: { $0.userID == member.userID }) == false {
-                                
-                                self.personalConversation?.members = members
-                                self.configureNavBarTitleView(members)
-                                break
-                            }
-                        }
+                        self.configureNavBarTitleViewWithCoverPhoto(personalConversation: self.personalConversation)
+                    }
+                    
+                    if let members = updatedConvo["members"] as? [Member] {
+                        
+                        self.personalConversation?.members = members
                     }
                 }
+                    
+//                else if let name = updatedConvo["conversationName"] as? String {
+//
+//                    print("check 1")
+//
+//                    if name != conversation.conversationName {
+//
+//                        print("check 2")
+//
+//                        self.personalConversation?.conversationName = name
+//                        self.configureConversationNameLabel(conversation: self.personalConversation!)
+//                    }
+//
+//                    if let conversationHasCoverPhoto = updatedConvo["conversationHasCoverPhoto"] as? Bool {
+//
+//                        self.personalConversation?.conversationHasCoverPhoto = conversationHasCoverPhoto
+//
+//                        if conversationHasCoverPhoto {
+//
+//                            self.configureNavBarTitleViewWithCoverPhoto(personalConversation: personalConversation)
+//                        }
+//
+//                        else {
+//
+//                            self.configureNavBarTitleViewWithMembers(self.personalConversation?.members ?? [])
+//                        }
+//                    }
+//
+//                    if let activity = updatedConvo["conversationActivity"] as? [String : Any] {
+//
+//                        self.personalConversation?.memberActivity = activity
+//                    }
+//                }
+//
+//                else if let conversationHasCoverPhoto = updatedConvo["conversationHasCoverPhoto"] as? Bool {
+//
+//                    self.personalConversation?.conversationHasCoverPhoto = conversationHasCoverPhoto
+//
+//                    if conversationHasCoverPhoto {
+//
+//                        self.configureNavBarTitleViewWithCoverPhoto(personalConversation: personalConversation)
+//                    }
+//
+//                    else {
+//
+//                        self.configureNavBarTitleViewWithMembers(conversation.members)
+//                    }
+//                }
+//
+//                else if let activity = updatedConvo["conversationActivity"] as? [String : Any] {
+//
+//                    self.personalConversation?.memberActivity = activity
+//                }
+//
+//                else if let members = updatedConvo["members"] as? [Member] {
+//
+//                    if conversation.members.count != members.count {
+//
+//                        self.personalConversation?.members = members
+//
+//                        if (conversation.conversationHasCoverPhoto ?? false) == false {
+//
+//                            self.configureNavBarTitleViewWithMembers(members)
+//                        }
+//                    }
+//
+//                    else {
+//
+//                        for member in members {
+//
+//                            if members.contains(where: { $0.userID == member.userID }) == false {
+//
+//                                self.personalConversation?.members = members
+//
+//                                if (conversation.conversationHasCoverPhoto ?? false) == false {
+//
+//                                    self.configureNavBarTitleViewWithMembers(members)
+//                                }
+//
+//                                break
+//                            }
+//                        }
+//                    }
+//                }
             }
         }
     }
@@ -446,7 +621,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         
         if let conversation = collabConversation {
             
-            firebaseMessaging.monitorCollabConversation(collabID: conversation.conversationID) { (collabName, collabMembers, error) in
+            firebaseMessaging.monitorCollabConversation(collabID: conversation.conversationID) { (collabName, collabActivity, collabMembers, error) in
                 
                 if error != nil {
                     
@@ -460,6 +635,16 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
                         self.collabConversation?.conversationName = name
                         self.configureConversationNameLabel(conversation: self.collabConversation!)
                     }
+                    
+                    if let activity = collabActivity {
+                        
+                        self.collabConversation?.memberActivity = collabActivity
+                    }
+                }
+                    
+                else if let activity = collabActivity {
+                    
+                    self.collabConversation?.memberActivity = collabActivity
                 }
                 
                 else if let members = collabMembers {
@@ -467,7 +652,11 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
                     if conversation.members.count != members.count {
                         
                         self.collabConversation?.members = members
-                        self.configureNavBarTitleView(members)
+                        
+                        if conversation.coverPhotoID == nil {
+                            
+                            self.configureNavBarTitleViewWithMembers(members)
+                        }
                     }
                     
                     else {
@@ -477,7 +666,12 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
                             if collabMembers?.contains(where: { $0.userID == member.userID }) == false {
                                 
                                 self.collabConversation?.members = members
-                                self.configureNavBarTitleView(members)
+                                
+                                if conversation.coverPhotoID == nil {
+                                    
+                                    self.configureNavBarTitleViewWithMembers(members)
+                                }
+                                
                                 break
                             }
                         }
@@ -605,20 +799,35 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
-    @objc private func readMessages () {
+    @objc private func setActivityStatus (activity: Any?) {
         
-        if let conversation = personalConversation {
+        guard let status = ((activity as? String) != nil) ? activity : Date() else { return }
+        
+            if let conversation = personalConversation {
+                
+                firebaseMessaging.setActivityStatus(personalConversation: conversation, status)
+            }
             
-            firebaseMessaging.readMessages(conversationID: conversation.conversationID)
-        }
-        
-        else if let conversation = collabConversation {
-            
-            firebaseMessaging.readMessages(collabID: conversation.conversationID)
-        }
-        
-        //firebaseMessaging.readMessages(conversationID: conversationID)
+            else if let conversation = collabConversation {
+                
+                firebaseMessaging.setActivityStatus (collabConversation: conversation, status)
+            }
     }
+    
+//    @objc private func readMessages () {
+//        
+//        if let conversation = personalConversation {
+//            
+//            firebaseMessaging.readMessages(personalConversation: conversation)
+//        }
+//        
+//        else if let conversation = collabConversation {
+//            
+//            firebaseMessaging.readMessages(collabConversation: conversation)
+//        }
+//        
+//        //firebaseMessaging.readMessages(conversationID: conversationID)
+//    }
     
     @objc private func sendMessage () {
         
@@ -953,14 +1162,14 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             sendPhotoVC.reconfigureViewDelegate = self
             sendPhotoVC.selectedPhoto = selectedPhoto
             
-            if let personalConversationID = personalConversation?.conversationID {
+            if let conversation = personalConversation {
                 
-                sendPhotoVC.conversationID = personalConversationID
+                sendPhotoVC.personalConversation = conversation
             }
             
-            else if let collabConversationID = collabConversation?.conversationID {
+            else if let conversation = collabConversation {
                 
-                sendPhotoVC.collabID = collabConversationID
+                sendPhotoVC.collabConversation = conversation
             }
             
             removeObservors()
@@ -972,6 +1181,10 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             convoInfoVC.personalConversation = personalConversation
             convoInfoVC.collabConversation = collabConversation
             convoInfoVC.moveToConversationWithMemberDelegate = self
+            
+            let backItem = UIBarButtonItem()
+            backItem.title = nil
+            navigationItem.backBarButtonItem = backItem
         }
     }
     

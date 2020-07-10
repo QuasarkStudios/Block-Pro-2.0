@@ -17,7 +17,6 @@ extension UINavigationBar {
         backgroundColor = barBackgroundColor//.white
         
         tintColor = barTintColor//.black
-        
-        //frame = CGRect(x: frame.minX, y: frame.minY, width: UIScreen.main.bounds.width, height: 200)
+        titleTextAttributes = [.foregroundColor : tintColor as Any]
     }
 }

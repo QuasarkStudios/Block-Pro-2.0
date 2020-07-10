@@ -30,16 +30,28 @@ class MessageHomeCell: UITableViewCell {
     let currentUser = CurrentUser.sharedInstance
     
     let firebaseCollab = FirebaseCollab.sharedInstance
+    let firebaseMessaging = FirebaseMessaging.sharedInstance
     let firebaseStorage = FirebaseStorage()
     
-    
-    var conversation: Conversation? {
+    var personalConversation: Conversation? {
         didSet {
             
-            configureProfilePicContainers(members: conversation?.members)
-            configureConversationName(conversation: conversation, members: conversation?.members)
-            configureMessagePreview(conversation: conversation)
-            configureUnreadMessageIndicator(conversation: conversation)
+            configureConvoCoverContainer(personalConversation: personalConversation)
+            configureProfilePicContainers(members: personalConversation?.members)
+            configureConversationName(conversation: personalConversation, members: personalConversation?.members)
+            configureMessagePreview(conversation: personalConversation)
+            configureUnreadMessageIndicator(conversation: personalConversation)
+        }
+    }
+    
+    var collabConversation: Conversation? {
+        didSet {
+            
+            configureConvoCoverContainer(collabConversation: collabConversation)
+            configureProfilePicContainers(members: collabConversation?.members)
+            configureConversationName(conversation: collabConversation, members: collabConversation?.members)
+            configureMessagePreview(conversation: collabConversation)
+            configureUnreadMessageIndicator(conversation: collabConversation)
         }
     }
     
@@ -51,7 +63,59 @@ class MessageHomeCell: UITableViewCell {
         configureCheckBox()
     }
     
+    func configureConvoCoverContainer (personalConversation: Conversation? = nil, collabConversation: Conversation? = nil) {
+        
+        if let conversation = personalConversation {
+            
+            if conversation.coverPhotoID != nil {
+                
+                for container in profilePicContainers {
+                    
+                    container.removeFromSuperview()
+                }
+                
+                profilePicContainers.removeAll()
+                
+                let profilePic = ProfilePicture.init(profilePic: UIImage(named: "Abstract")!)
+                self.addSubview(profilePic)
+                configureProfilePicContainerConstraints(profilePic, top: 25, leading: 17, width: 50, height: 50)
+                
+                profilePicContainers.append(profilePic)
+                
+                retrieveConvoCoverPhoto(personalConversation: conversation)
+            }
+        }
+        
+        else if let conversation = collabConversation {
+            
+            if conversation.coverPhotoID != nil {
+                
+                for container in profilePicContainers {
+                    
+                    container.removeFromSuperview()
+                }
+            }
+        }
+    }
+    
     func configureProfilePicContainers (members: [Member]?) {
+        
+        //Returns out this function if the conversation has a cover photo set
+        if let conversation = personalConversation {
+            
+            if conversation.coverPhotoID != nil {
+                
+                return
+            }
+        }
+        
+        else if let conversation = collabConversation {
+            
+            if conversation.coverPhotoID != nil {
+                
+                return
+            }
+        }
         
         for container in profilePicContainers {
             
@@ -126,7 +190,7 @@ class MessageHomeCell: UITableViewCell {
             profilePicContainers.append(profilePic3)
         }
         
-        retrieveProfilePics()
+        retrieveProfilePics(members)
     }
     
     func configureProfilePicContainerConstraints (_ container: UIView, top: CGFloat, leading: CGFloat, width: CGFloat, height: CGFloat) {
@@ -194,7 +258,7 @@ class MessageHomeCell: UITableViewCell {
             
             if let messageText = messagePreview.message {
                 
-                messagePreviewLabel.font = UIFont(name: "Poppins-SemiBold", size: 12)
+                //messagePreviewLabel.font = UIFont(name: "Poppins-Regular", size: 12)
                 messagePreviewLabel.text = messageText
             }
 
@@ -206,7 +270,7 @@ class MessageHomeCell: UITableViewCell {
                         
                         let memberName = member.userID == currentUser.userID ? "You" : member.firstName
                         
-                        messagePreviewLabel.font = UIFont(name: "Poppins-Italic", size: 13)
+                        //messagePreviewLabel.font = UIFont(name: "Poppins-Italic", size: 13)
                         messagePreviewLabel.text = "\(memberName) sent a photo"
                         break
                     }
@@ -233,9 +297,9 @@ class MessageHomeCell: UITableViewCell {
         
         if let lastMessage = conversation?.messagePreview {
             
-            if let lastTimeUserActive = conversation?.lastTimeCurrentUserWasActive {
+            if let lastTimeUserActive = conversation?.memberActivity?[currentUser.userID] as? Date {
                 
-                if  lastTimeUserActive > lastMessage.timestamp {
+                if lastTimeUserActive > lastMessage.timestamp {
                     
                     unreadMessageIndicator.isHidden = true
                 }
@@ -283,9 +347,51 @@ class MessageHomeCell: UITableViewCell {
         checkBox.isHidden = true
     }
     
-    private func retrieveProfilePics () {
+    private func retrieveConvoCoverPhoto (personalConversation: Conversation? = nil, collabConversation: Conversation? = nil) {
         
-        var organizedMembers = conversation?.members.sorted(by: { $0.firstName < $1.firstName })
+        if let conversation = personalConversation {
+
+            if let conversationIndex = firebaseMessaging.personalConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                
+                if let cover = firebaseMessaging.personalConversations[conversationIndex].conversationCoverPhoto {
+                    
+                    let coverPicture = profilePicContainers.first as! ProfilePicture
+                    coverPicture.profilePic = cover
+                }
+                
+                else {
+                    
+                    firebaseStorage.retrievePersonalConversationCoverPhoto(conversationID: conversation.conversationID) { (cover, error) in
+                        
+                        if error != nil {
+                            
+                            print(error?.localizedDescription as Any)
+                        }
+                        
+                        else {
+                            
+                            let profilePicture = self.profilePicContainers.first as! ProfilePicture
+                            profilePicture.profilePic = cover
+                            
+                            if let conversationIndex = self.firebaseMessaging.personalConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                                
+                                self.firebaseMessaging.personalConversations[conversationIndex].conversationCoverPhoto = cover
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        else if let conversation = collabConversation {
+            
+        }
+    }
+    
+    private func retrieveProfilePics (_ members: [Member]?) {
+        
+//        var organizedMembers = conversation?.members.sorted(by: { $0.firstName < $1.firstName })
+        var organizedMembers = members?.sorted(by: { $0.firstName < $1.firstName })
         
         if let currentUserIndex = organizedMembers?.firstIndex(where: { $0.userID == currentUser.userID }) {
             

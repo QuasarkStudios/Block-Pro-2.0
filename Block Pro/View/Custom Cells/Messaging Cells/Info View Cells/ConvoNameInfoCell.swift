@@ -16,14 +16,16 @@ protocol ConvoNameEnteredProtocol: AnyObject {
 class ConvoNameInfoCell: UITableViewCell, UITextFieldDelegate {
 
     @IBOutlet weak var nameTextFieldContainer: UIView!
+    @IBOutlet weak var textFieldContainerCenterYAnchor: NSLayoutConstraint!
+    
     @IBOutlet weak var nameTextField: UITextField!
     
     var personalConversation: Conversation? {
         didSet {
             
-            if let name = personalConversation?.conversationName {
+            if personalConversation != nil {
                 
-                nameTextField.text = name
+                nameTextField.text = personalConversation?.conversationName
                 nameTextField.textAlignment = .center
                 nameTextField.isUserInteractionEnabled = true
             }
@@ -33,9 +35,9 @@ class ConvoNameInfoCell: UITableViewCell, UITextFieldDelegate {
     var collabConversation: Conversation? {
         didSet {
             
-            if let name = collabConversation?.conversationName {
+            if collabConversation != nil {
                 
-                nameTextField.text = name
+                nameTextField.text = collabConversation?.conversationName
                 nameTextField.textAlignment = .center
                 nameTextField.isUserInteractionEnabled = false
             }
@@ -56,6 +58,8 @@ class ConvoNameInfoCell: UITableViewCell, UITextFieldDelegate {
         if #available(iOS 13.0, *) {
             nameTextFieldContainer.layer.cornerCurve = .continuous
         }
+        
+        textFieldContainerCenterYAnchor.constant = 20
         
         nameTextField.delegate = self
         nameTextField.borderStyle = .none

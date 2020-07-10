@@ -134,23 +134,18 @@
             <objects>
                 <viewController id="SMO-Xb-ouZ" customClass="ConversationInfoViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="IvJ-pg-0fm">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="T7B-FK-p3F">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="meo-Me-EoQ">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="300"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="qhc-Wc-hhY"/>
+                                    <constraint firstAttribute="height" constant="300" id="7gf-OC-bc4"/>
                                 </constraints>
-                                <items>
-                                    <navigationItem title="Info" id="ctz-jw-YfG">
-                                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="stop" id="uMP-oH-TV3"/>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
+                            </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="7Et-Xh-rJD">
-                                <rect key="frame" x="0.0" y="44" width="414" height="798"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="seperatorCell" id="Tba-em-ib5">
                                         <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
@@ -165,20 +160,20 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="T7B-FK-p3F" firstAttribute="leading" secondItem="7zk-Bd-TSu" secondAttribute="leading" id="L9q-XK-SGM"/>
-                            <constraint firstAttribute="bottom" secondItem="7Et-Xh-rJD" secondAttribute="bottom" id="YVs-ST-bn8"/>
-                            <constraint firstItem="7Et-Xh-rJD" firstAttribute="top" secondItem="T7B-FK-p3F" secondAttribute="bottom" id="hYe-EG-EC0"/>
-                            <constraint firstItem="T7B-FK-p3F" firstAttribute="trailing" secondItem="7zk-Bd-TSu" secondAttribute="trailing" id="iUa-Cp-pgL"/>
-                            <constraint firstItem="7Et-Xh-rJD" firstAttribute="leading" secondItem="7zk-Bd-TSu" secondAttribute="leading" id="lb0-Tp-F7v"/>
-                            <constraint firstItem="T7B-FK-p3F" firstAttribute="top" secondItem="7zk-Bd-TSu" secondAttribute="top" id="uVz-Cj-NBr"/>
-                            <constraint firstItem="7zk-Bd-TSu" firstAttribute="trailing" secondItem="7Et-Xh-rJD" secondAttribute="trailing" id="wCX-PO-3N1"/>
+                            <constraint firstItem="meo-Me-EoQ" firstAttribute="leading" secondItem="7zk-Bd-TSu" secondAttribute="leading" id="DsI-wc-cP1"/>
+                            <constraint firstItem="7zk-Bd-TSu" firstAttribute="bottom" secondItem="7Et-Xh-rJD" secondAttribute="bottom" id="QOu-7N-uhK"/>
+                            <constraint firstAttribute="trailing" secondItem="meo-Me-EoQ" secondAttribute="trailing" id="cGH-9o-EDC"/>
+                            <constraint firstItem="7Et-Xh-rJD" firstAttribute="trailing" secondItem="7zk-Bd-TSu" secondAttribute="trailing" id="iOK-dE-9xn"/>
+                            <constraint firstItem="meo-Me-EoQ" firstAttribute="top" secondItem="IvJ-pg-0fm" secondAttribute="top" id="nfW-sx-1lG"/>
+                            <constraint firstItem="7Et-Xh-rJD" firstAttribute="leading" secondItem="7zk-Bd-TSu" secondAttribute="leading" id="pHR-UN-mTn"/>
+                            <constraint firstItem="7Et-Xh-rJD" firstAttribute="top" secondItem="IvJ-pg-0fm" secondAttribute="top" id="syt-xQ-JSy"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="7zk-Bd-TSu"/>
                     </view>
                     <navigationItem key="navigationItem" id="7bR-so-MEM"/>
                     <connections>
+                        <outlet property="backgroundView" destination="meo-Me-EoQ" id="w0l-XE-MjC"/>
                         <outlet property="messagingInfoTableView" destination="7Et-Xh-rJD" id="Wtj-Ma-ynE"/>
-                        <outlet property="navBar" destination="T7B-FK-p3F" id="Mw6-55-ai4"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lYR-U3-7ue" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -261,7 +256,7 @@
                     <navigationItem key="navigationItem" id="veG-YE-8KN">
                         <barButtonItem key="rightBarButtonItem" title="Item" image="info" id="pXg-pC-Z9B">
                             <connections>
-                                <segue destination="SMO-Xb-ouZ" kind="presentation" identifier="moveToConvoInfoView" id="riL-ao-uNM"/>
+                                <segue destination="SMO-Xb-ouZ" kind="show" identifier="moveToConvoInfoView" id="riL-ao-uNM"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>

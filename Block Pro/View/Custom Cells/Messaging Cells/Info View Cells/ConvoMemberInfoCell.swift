@@ -35,12 +35,21 @@ class ConvoMemberInfoCell: UITableViewCell {
         }
     }
     
+    var memberActivity: Any? {
+        didSet {
+            
+            setActivityLabel(memberActivity)
+        }
+    }
+    
     weak var conversateWithMemberDelegate: ConversateWithMemberProtcol?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
         configureProfilePicImageView()
+        
+        activeLabel.adjustsFontSizeToFitWidth = true
     }
     
     private func configureProfilePicImageView () {
@@ -82,6 +91,88 @@ class ConvoMemberInfoCell: UITableViewCell {
                 
                 self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: profilePic)
             }
+        }
+    }
+    
+    private func setActivityLabel (_ activity: Any?) {
+        
+        let calendar = Calendar.current
+        
+        if activity != nil {
+            
+            if activity as? Date != nil {
+                
+                if calendar.dateComponents([.year], from: activity as! Date, to: Date()).year ?? 0 > 0 {
+                    
+                    activeLabel.text = "Active over a year ago"
+                }
+                
+                else if calendar.dateComponents([.month], from: activity as! Date, to: Date()).month ?? 0 > 0 {
+                    
+                    if calendar.dateComponents([.month], from: activity as! Date, to: Date()).month == 1 {
+                        
+                        activeLabel.text = "Active a month ago"
+                    }
+                    
+                    else {
+                        
+                        let monthsAgoActive = calendar.dateComponents([.month], from: activity as! Date, to: Date()).month
+                        activeLabel.text = "Active \(monthsAgoActive!) months ago"
+                    }
+                }
+                
+                else if calendar.dateComponents([.day], from: activity as! Date, to: Date()).day ?? 0 > 0 {
+
+                    if calendar.dateComponents([.day], from: activity as! Date, to: Date()).day == 1 {
+                        
+                        activeLabel.text = "Active yesterday"
+                    }
+                    
+                    else {
+                        
+                        let daysAgoActive = calendar.dateComponents([.day], from: activity as! Date, to: Date()).day
+                        activeLabel.text = "Active \(daysAgoActive!) days ago"
+                    }
+                }
+                
+                else if calendar.dateComponents([.hour], from: activity as! Date, to: Date()).hour ?? 0 > 0 {
+                    
+                    if calendar.dateComponents([.hour], from: activity as! Date, to: Date()).hour == 1 {
+                        
+                        activeLabel.text = "Active an hour ago"
+                    }
+                    
+                    else {
+                        
+                        let hoursAgoActive = calendar.dateComponents([.hour], from: activity as! Date, to: Date()).hour
+                        activeLabel.text = "Active \(hoursAgoActive!) hours ago"
+                    }
+                }
+                
+                else {
+                    
+                    if calendar.dateComponents([.minute], from: activity as! Date, to: Date()).minute ?? 0 < 2 {
+                        
+                        activeLabel.text = "Active a minute ago"
+                    }
+                    
+                    else {
+                        
+                        let minutesAgoActive = calendar.dateComponents([.minute], from: activity as! Date, to: Date()).minute
+                        activeLabel.text = "Active \(minutesAgoActive!) minutes ago"
+                    }
+                }
+            }
+            
+            else if activity as? String != nil {
+                
+                activeLabel.text = "Active \(activity!)"
+            }
+        }
+        
+        else {
+            
+            activeLabel.text = "Never active"
         }
     }
     

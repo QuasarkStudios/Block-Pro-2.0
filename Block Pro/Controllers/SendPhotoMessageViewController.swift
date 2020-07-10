@@ -23,8 +23,8 @@ class SendPhotoMessageViewController: UIViewController {
     
     let firebaseMessaging = FirebaseMessaging()
     
-    var conversationID: String?
-    var collabID: String?
+    var personalConversation: Conversation?
+    var collabConversation: Conversation?
     
     var selectedPhoto: UIImage?
     
@@ -145,7 +145,9 @@ class SendPhotoMessageViewController: UIViewController {
     
     @objc private func readMessages () {
         
-        firebaseMessaging.readMessages(conversationID: conversationID)
+        //firebaseMessaging.readMessages(personalConversation: personalConversation, collabConversation: collabConversation)
+        
+        firebaseMessaging.setActivityStatus(personalConversation: personalConversation, collabConversation: collabConversation, Date())
     }
     
     @objc private func sendMessage () {
@@ -167,9 +169,9 @@ class SendPhotoMessageViewController: UIViewController {
             message.message = messageTextViewText
         }
         
-        if let conversation = conversationID {
-
-            firebaseMessaging.sendPersonalMessage(conversationID: conversation, message) { (error) in
+        if let conversationID = personalConversation?.conversationID {
+            
+            firebaseMessaging.sendPersonalMessage(conversationID: conversationID, message) { (error) in
 
                 if error != nil {
 
@@ -187,9 +189,9 @@ class SendPhotoMessageViewController: UIViewController {
             }
         }
             
-        else if let collab = collabID {
+        else if let collabID = collabConversation?.conversationID {
             
-            firebaseMessaging.sendCollabMessage(collabID: collab, message) { (error) in
+            firebaseMessaging.sendCollabMessage(collabID: collabID, message) { (error) in
                 
                 if error != nil {
                     
