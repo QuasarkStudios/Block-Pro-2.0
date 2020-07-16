@@ -29,7 +29,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             
             if !viewInitiallyLoaded {
                 
-                retrievePersonalMessages(personalConversation)
+                //retrievePersonalMessages(personalConversation)
                 //monitorPersonalConversation(personalConversation)
             }
         }
@@ -40,7 +40,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             
             if !viewInitiallyLoaded {
                 
-                retrieveCollabMessages(collabConversation)
+//                retrieveCollabMessages(collabConversation)
                 //monitorCollabConversation(collabConversation)
             }
         }
@@ -72,6 +72,8 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     
     var viewInitiallyLoaded: Bool = false
     
+    var infoViewBeingPresented: Bool = false
+    
     var topBarHeight: CGFloat {
         
         //iPhone 11 Pro Max & iPhone 11
@@ -94,7 +96,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
-    weak var moveToConversationWithMemberDelegate: MoveToConversationWithMemberProtcol?
+    weak var moveToConversationWithFriendDelegate: MoveToConversationWithFriendProtcol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,8 +115,10 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     
     override func viewWillAppear(_ animated: Bool) {
         
-        //self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black)
+        retrievePersonalMessages(personalConversation)
+        retrieveCollabMessages(collabConversation)
         
+        infoViewBeingPresented = false
         
         configureNavBar(navBar: navigationController?.navigationBar)
     }
@@ -124,9 +128,11 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         addObservors()
         
         monitorPersonalConversation(personalConversation)
-        monitorCollabConversation(collabConversation)
+       //monitorCollabConversation(collabConversation)
         
-        setActivityStatus(activity: "now")
+        setUserActiveStatus()
+        
+        //setActivityStatus(activity: "now")
         
         self.becomeFirstResponder()
         
@@ -135,11 +141,14 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
     
     override func viewWillDisappear(_ animated: Bool) {
         
-        setActivityStatus(activity: nil)
+        setUserInactiveStatus()
+        
+        //setActivityStatus(activity: nil)
         
         removeObservors()
         
         firebaseMessaging.conversationListener?.remove()
+        firebaseMessaging.messageListener?.remove()
     }
     
     deinit {
@@ -479,7 +488,9 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         
 //        NotificationCenter.default.addObserver(self, selector: #selector(readMessages), name: UIApplication.willResignActiveNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(setActivityStatus(activity:)), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setUserActiveStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(setUserInactiveStatus), name: UIApplication.willResignActiveNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(sendMessage), name: .userDidSendMessage, object: nil)
         
@@ -617,69 +628,69 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
-    private func monitorCollabConversation (_ collabConversation: Conversation?) {
-        
-        if let conversation = collabConversation {
-            
-            firebaseMessaging.monitorCollabConversation(collabID: conversation.conversationID) { (collabName, collabActivity, collabMembers, error) in
-                
-                if error != nil {
-                    
-                    print(error as Any)
-                }
-                
-                else if let name = collabName {
-                    
-                    if name != conversation.conversationName {
-                        
-                        self.collabConversation?.conversationName = name
-                        self.configureConversationNameLabel(conversation: self.collabConversation!)
-                    }
-                    
-                    if let activity = collabActivity {
-                        
-                        self.collabConversation?.memberActivity = collabActivity
-                    }
-                }
-                    
-                else if let activity = collabActivity {
-                    
-                    self.collabConversation?.memberActivity = collabActivity
-                }
-                
-                else if let members = collabMembers {
-                    
-                    if conversation.members.count != members.count {
-                        
-                        self.collabConversation?.members = members
-                        
-                        if conversation.coverPhotoID == nil {
-                            
-                            self.configureNavBarTitleViewWithMembers(members)
-                        }
-                    }
-                    
-                    else {
-                        
-                        for member in members {
-                            
-                            if collabMembers?.contains(where: { $0.userID == member.userID }) == false {
-                                
-                                self.collabConversation?.members = members
-                                
-                                if conversation.coverPhotoID == nil {
-                                    
-                                    self.configureNavBarTitleViewWithMembers(members)
-                                }
-                                
-                                break
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    private func monitorCollabConversation (_ collabConversation: Conversation?) {
+//
+//        if let conversation = collabConversation {
+//
+//            firebaseMessaging.monitorCollabConversation(collabID: conversation.conversationID) { (collabName, collabActivity, collabMembers, error) in
+//
+//                if error != nil {
+//
+//                    print(error as Any)
+//                }
+//
+//                else if let name = collabName {
+//
+//                    if name != conversation.conversationName {
+//
+//                        self.collabConversation?.conversationName = name
+//                        self.configureConversationNameLabel(conversation: self.collabConversation!)
+//                    }
+//
+//                    if let activity = collabActivity {
+//
+//                        self.collabConversation?.memberActivity = collabActivity
+//                    }
+//                }
+//
+//                else if let activity = collabActivity {
+//
+//                    self.collabConversation?.memberActivity = collabActivity
+//                }
+//
+//                else if let members = collabMembers {
+//
+//                    if conversation.members.count != members.count {
+//
+//                        self.collabConversation?.members = members
+//
+//                        if conversation.coverPhotoID == nil {
+//
+//                            self.configureNavBarTitleViewWithMembers(members)
+//                        }
+//                    }
+//
+//                    else {
+//
+//                        for member in members {
+//
+//                            if collabMembers?.contains(where: { $0.userID == member.userID }) == false {
+//
+//                                self.collabConversation?.members = members
+//
+//                                if conversation.coverPhotoID == nil {
+//
+//                                    self.configureNavBarTitleViewWithMembers(members)
+//                                }
+//
+//                                break
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     @objc internal func keyboardBeingPresented (notification: NSNotification) {
         
@@ -702,7 +713,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         
         guard let conversation = personalConversation else { return }
         
-        firebaseMessaging.retrieveAllPersonalMessages(conversationID: conversation.conversationID) { (messages, error) in
+            firebaseMessaging.retrieveAllPersonalMessages(conversationID: conversation.conversationID) { (messages, error) in
                 
                 if error != nil {
                     
@@ -719,7 +730,7 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
                         }
                         
                         //Checks if current message already exists in global messages array
-                        if !(self.messages?.contains(where: { $0.messageID == message.messageID }) ?? false) {
+                        if self.messages?.contains(where: { $0.messageID == message.messageID }) == false {
                             
                             self.messages?.append(message)
                         }
@@ -766,6 +777,21 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             }
     }
     
+    private func filterPhotoMessages () -> [Message] {
+        
+        var messagesWithPhotos: [Message] = []
+        
+        for message in messages ?? [] {
+            
+            if message.messagePhoto != nil {
+                
+                messagesWithPhotos.append(message)
+            }
+        }
+        
+        return messagesWithPhotos
+    }
+    
     private func reloadTableView () {
         
         if !self.viewInitiallyLoaded {
@@ -799,20 +825,55 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
-    @objc private func setActivityStatus (activity: Any?) {
+    @objc private func setUserActiveStatus () {
         
-        guard let status = ((activity as? String) != nil) ? activity : Date() else { return }
-        
+        if !infoViewBeingPresented {
+            
             if let conversation = personalConversation {
                 
-                firebaseMessaging.setActivityStatus(personalConversation: conversation, status)
+                firebaseMessaging.setActivityStatus(conversationID: conversation.conversationID, "now")
             }
             
-            else if let conversation = collabConversation {
+            else if let collab = collabConversation {
                 
-                firebaseMessaging.setActivityStatus (collabConversation: conversation, status)
+                firebaseMessaging.setActivityStatus(collabID: collab.conversationID, "now")
             }
+        }
     }
+    
+    @objc private func setUserInactiveStatus () {
+        
+        if !infoViewBeingPresented {
+            
+            if let conversation = personalConversation {
+                
+                firebaseMessaging.setActivityStatus(conversationID: conversation.conversationID, Date())
+            }
+            
+            else if let collab = collabConversation {
+                
+                firebaseMessaging.setActivityStatus(collabID: collab.conversationID, Date())
+            }
+        }
+    }
+    
+//    @objc private func setActivityStatus (activity: Any?) {
+//
+//        if !infoViewBeingPresented {
+//
+//            guard let status = ((activity as? String) != nil) ? activity : Date() else { return }
+//
+//                if let conversation = personalConversation {
+//
+//                    firebaseMessaging.setActivityStatus(personalConversation: conversation, status)
+//                }
+//
+//                else if let conversation = collabConversation {
+//
+//                    firebaseMessaging.setActivityStatus (collabConversation: conversation, status)
+//                }
+//        }
+//    }
     
 //    @objc private func readMessages () {
 //        
@@ -1180,7 +1241,11 @@ class MessagingViewController: UIViewController, UITableViewDataSource, UITableV
             let convoInfoVC = segue.destination as! ConversationInfoViewController
             convoInfoVC.personalConversation = personalConversation
             convoInfoVC.collabConversation = collabConversation
-            convoInfoVC.moveToConversationWithMemberDelegate = self
+            convoInfoVC.photoMessages = filterPhotoMessages()
+            
+            convoInfoVC.moveToConversationWithFriendDelegate = self
+            
+            infoViewBeingPresented = true
             
             let backItem = UIBarButtonItem()
             backItem.title = nil
@@ -1300,14 +1365,12 @@ extension MessagingViewController: ZoomInProtocol {
     }
 }
 
-extension MessagingViewController: MoveToConversationWithMemberProtcol {
+extension MessagingViewController: MoveToConversationWithFriendProtcol {
     
-    func moveToConversationWithMember(_ member: Friend) {
+    func moveToConversationWithFriend(_ friend: Friend) {
         
         navigationController?.popToRootViewController(animated: true)
         
-        moveToConversationWithMemberDelegate?.moveToConversationWithMember(member)
+        moveToConversationWithFriendDelegate?.moveToConversationWithFriend(friend)
     }
-    
-
 }

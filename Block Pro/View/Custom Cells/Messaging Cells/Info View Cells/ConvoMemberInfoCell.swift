@@ -8,9 +8,9 @@
 
 import UIKit
 
-protocol ConversateWithMemberProtcol: AnyObject {
+protocol ConversateWithFriendProtcol: AnyObject {
     
-    func conversateWithMember (_ member: Friend)
+    func conversateWithFriend (_ friend: Friend)
 }
 
 class ConvoMemberInfoCell: UITableViewCell {
@@ -42,7 +42,7 @@ class ConvoMemberInfoCell: UITableViewCell {
         }
     }
     
-    weak var conversateWithMemberDelegate: ConversateWithMemberProtcol?
+    weak var conversateWithFriendDelegate: ConversateWithFriendProtcol?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -182,7 +182,7 @@ class ConvoMemberInfoCell: UITableViewCell {
         
             if let friend = firebaseCollab.friends.first(where: { $0.userID == member!.userID }) {
                     
-                    conversateWithMemberDelegate?.conversateWithMember(friend)
+                    conversateWithFriendDelegate?.conversateWithFriend(friend)
             }
     }
 }

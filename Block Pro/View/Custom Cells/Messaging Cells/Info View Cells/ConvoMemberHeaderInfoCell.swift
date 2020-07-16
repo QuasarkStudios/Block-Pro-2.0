@@ -10,6 +10,7 @@ import UIKit
 
 class ConvoMemberHeaderInfoCell: UITableViewCell {
 
+    @IBOutlet weak var membersLabel: UILabel!
     @IBOutlet weak var seeAllLabel: UILabel!
     @IBOutlet weak var arrowIndicator: UIImageView!
     

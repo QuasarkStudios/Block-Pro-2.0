@@ -56,6 +56,7 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="arrowIndicator" destination="OQa-Kj-oqK" id="APg-1t-g0Q"/>
+                <outlet property="membersLabel" destination="x4d-Hd-4gG" id="iyz-97-XPt"/>
                 <outlet property="seeAllLabel" destination="T1q-gK-6Ri" id="uOh-hy-10v"/>
             </connections>
             <point key="canvasLocation" x="139.85507246376812" y="153.34821428571428"/>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BkY-Di-fkD">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Friend Profile View Controller-->
+        <scene sceneID="utK-Zh-tcA">
+            <objects>
+                <viewController id="BkY-Di-fkD" customClass="FriendProfileViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NKg-Zt-S9c">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zwd-eb-9S2">
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="Xnb-CG-ZpZ"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem id="zFZ-NE-edT">
+                                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="gBb-0H-qOJ">
+                                            <connections>
+                                                <action selector="doneButton:" destination="BkY-Di-fkD" id="etL-Q2-MR7"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="DefaultProfilePic" translatesAutoresizingMaskIntoConstraints="NO" id="6Tw-JH-UgZ">
+                                <rect key="frame" x="107" y="138" width="200" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="6Ze-O1-GNk"/>
+                                    <constraint firstAttribute="width" constant="200" id="Pcf-sY-EaN"/>
+                                </constraints>
+                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="zwd-eb-9S2" firstAttribute="leading" secondItem="pkN-wd-nlf" secondAttribute="leading" id="675-wG-iAU"/>
+                            <constraint firstItem="6Tw-JH-UgZ" firstAttribute="centerX" secondItem="NKg-Zt-S9c" secondAttribute="centerX" id="IjC-2z-R1u"/>
+                            <constraint firstItem="6Tw-JH-UgZ" firstAttribute="top" secondItem="zwd-eb-9S2" secondAttribute="bottom" constant="50" id="LAd-tp-P6t"/>
+                            <constraint firstItem="zwd-eb-9S2" firstAttribute="trailing" secondItem="pkN-wd-nlf" secondAttribute="trailing" id="PJ7-Ih-dFe"/>
+                            <constraint firstItem="zwd-eb-9S2" firstAttribute="top" secondItem="pkN-wd-nlf" secondAttribute="top" id="Uhk-P4-Iuz"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="pkN-wd-nlf"/>
+                    </view>
+                    <connections>
+                        <outlet property="navBar" destination="zwd-eb-9S2" id="Xwa-ap-u5d"/>
+                        <outlet property="profileImageView" destination="6Tw-JH-UgZ" id="Z6v-P7-hi9"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="IuB-VQ-U71" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="170" y="119"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="DefaultProfilePic" width="400" height="400"/>
+    </resources>
+</document>

@@ -14,9 +14,6 @@ class ConvoCoverInfoCell: UITableViewCell {
     @IBOutlet weak var ovalBackgroundView: UIView!
     @IBOutlet weak var ovalBackgroundBottomAnchor: NSLayoutConstraint!
     
-//    @IBOutlet weak var blurView: UIVisualEffectView!
-//    @IBOutlet weak var blurViewWidthConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var backgroundImageViewWidthConstraint: NSLayoutConstraint!
     
@@ -26,28 +23,40 @@ class ConvoCoverInfoCell: UITableViewCell {
     @IBOutlet weak var coverContainerBottomAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var coverPhotoImageView: UIImageView!
-//    @IBOutlet weak var coverPhotoWidthConstraint: NSLayoutConstraint!
-//    @IBOutlet weak var coverPhotoHeightConstraint: NSLayoutConstraint!
-//    @IBOutlet weak var coverPhotoBottomAnchor: NSLayoutConstraint!
     
     @IBOutlet weak var coverPhotoLabel: UILabel!
     @IBOutlet weak var photoLabelHeightConstraint: NSLayoutConstraint!
     
     let firebaseMessaging = FirebaseMessaging.sharedInstance
+    let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseStorage = FirebaseStorage()
     
     var personalConversation: Conversation? {
         didSet {
             
-            //configureCoverContainer2(personalConversation: personalConversation)
-            verifyCoverPhoto(personalConversation: personalConversation)
+            if conversationMember == nil {
+                
+                verifyCoverPhoto(personalConversation: personalConversation)
+            }
         }
     }
-    var collabConversation: Conversation?
+    
+    var collabConversation: Conversation? {
+        didSet {
+            
+            verifyCoverPhoto(collabConversation: collabConversation)
+        }
+    }
+    
+    var conversationMember: Member? {
+        didSet {
+
+            retrieveProfilePic(member: conversationMember!)
+        }
+    }
     
     var visualEffectView = UIVisualEffectView(effect: nil)
     var animator = UIViewPropertyAnimator(duration: 0, curve: .linear, animations: nil)
-    
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -55,7 +64,6 @@ class ConvoCoverInfoCell: UITableViewCell {
         self.contentView.bringSubviewToFront(coverPhotoContainer)
         
         ovalBackgroundView.backgroundColor = UIColor(hexString: "222222")
-        
         ovalBackgroundView.layer.cornerRadius = 0.5 * ovalBackgroundView.frame.width
         ovalBackgroundView.clipsToBounds = true
         
@@ -109,22 +117,35 @@ class ConvoCoverInfoCell: UITableViewCell {
         
         else if let conversation = collabConversation {
             
-            if conversation.coverPhotoID != nil {
+            self.configureCover(nil)
+        }
+    }
+    
+    private func retrieveProfilePic (member: Member) {
+        
+        if let friendIndex = firebaseCollab.friends.firstIndex(where: { $0.userID == member.userID }) {
+            
+            if let profilePic = firebaseCollab.friends[friendIndex].profilePictureImage {
                 
-//                if let photo = conversation.conversationCoverPhoto {
-//
-//                    configureCover(photo)
-//                }
-//
-//                else {
-//
-//
-//                }
+                configureCover(profilePic)
+            }
+            
+            else if let memberProfilePic = firebaseCollab.membersProfilePics[member.userID] {
+                
+                configureCover(memberProfilePic)
             }
             
             else {
                 
-                self.configureCover(nil)
+                firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic, userID) in
+                    
+                    self.configureProfilePic(profilePic)
+                    
+                    if profilePic != nil {
+                       
+                        self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: profilePic)
+                    }
+                }
             }
         }
     }
@@ -142,7 +163,6 @@ class ConvoCoverInfoCell: UITableViewCell {
             
         ].forEach({ $0.isActive = true })
 
-        
         animator.addAnimations {
             
             self.visualEffectView.effect = UIBlurEffect(style: .dark)
@@ -185,6 +205,47 @@ class ConvoCoverInfoCell: UITableViewCell {
             configureCoverImageView(photo: nil)
             
             coverPhotoLabel.isHidden = false
+            
+            if personalConversation != nil {
+                
+                coverPhotoLabel.text = "Add a Cover Photo"
+            }
+            
+            else if collabConversation != nil {
+                
+                coverPhotoLabel.text = "No Cover Photo Yet"
+            }
+        }
+    }
+    
+    private func configureProfilePic (_ photo: UIImage?) {
+        
+        if photo != nil {
+            
+            ovalBackgroundBottomAnchor.constant = 80
+            
+            backgroundImageView.image = photo
+            
+            visualEffectView.isHidden = false
+            
+            configureCoverContainer(photo: photo)
+            configureCoverImageView(photo: photo)
+            
+            coverPhotoLabel.isHidden = true
+        }
+        
+        else {
+            
+            ovalBackgroundBottomAnchor.constant = 80
+            
+            backgroundImageView.image = nil
+            
+            visualEffectView.isHidden = true
+            
+            configureCoverContainer(photo: UIImage(named: "DefaultProfilePic"))
+            configureCoverImageView(photo: UIImage(named: "DefaultProfilePic"))
+            
+            coverPhotoLabel.isHidden = true
         }
     }
     

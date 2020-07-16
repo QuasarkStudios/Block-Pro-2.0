@@ -5,6 +5,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -143,8 +144,8 @@
                                     <constraint firstAttribute="height" constant="300" id="7gf-OC-bc4"/>
                                 </constraints>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="7Et-Xh-rJD">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="7Et-Xh-rJD">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="seperatorCell" id="Tba-em-ib5">
@@ -161,8 +162,8 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="meo-Me-EoQ" firstAttribute="leading" secondItem="7zk-Bd-TSu" secondAttribute="leading" id="DsI-wc-cP1"/>
-                            <constraint firstItem="7zk-Bd-TSu" firstAttribute="bottom" secondItem="7Et-Xh-rJD" secondAttribute="bottom" id="QOu-7N-uhK"/>
                             <constraint firstAttribute="trailing" secondItem="meo-Me-EoQ" secondAttribute="trailing" id="cGH-9o-EDC"/>
+                            <constraint firstAttribute="bottom" secondItem="7Et-Xh-rJD" secondAttribute="bottom" id="fZe-my-sbp"/>
                             <constraint firstItem="7Et-Xh-rJD" firstAttribute="trailing" secondItem="7zk-Bd-TSu" secondAttribute="trailing" id="iOK-dE-9xn"/>
                             <constraint firstItem="meo-Me-EoQ" firstAttribute="top" secondItem="IvJ-pg-0fm" secondAttribute="top" id="nfW-sx-1lG"/>
                             <constraint firstItem="7Et-Xh-rJD" firstAttribute="leading" secondItem="7zk-Bd-TSu" secondAttribute="leading" id="pHR-UN-mTn"/>
@@ -174,11 +175,86 @@
                     <connections>
                         <outlet property="backgroundView" destination="meo-Me-EoQ" id="w0l-XE-MjC"/>
                         <outlet property="messagingInfoTableView" destination="7Et-Xh-rJD" id="Wtj-Ma-ynE"/>
+                        <segue destination="fGj-Gb-LZJ" kind="presentation" identifier="moveToFriendProfileView" id="S3o-JF-z2M"/>
+                        <segue destination="3re-Lx-1xx" kind="presentation" identifier="moveToConvoPhotoView" id="Ttw-se-Aq5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lYR-U3-7ue" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1986.9565217391305" y="847.76785714285711"/>
+        </scene>
+        <!--Conversation Photos View Controller-->
+        <scene sceneID="0Z3-4l-rUG">
+            <objects>
+                <viewController id="3re-Lx-1xx" customClass="ConversationPhotosViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="9zG-xe-A7l">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="qQ8-YB-T3m">
+                                <rect key="frame" x="0.0" y="54" width="414" height="788"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="PPd-bS-xOI">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="IwS-et-ZG8">
+                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="VdC-gs-Yhy">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </collectionViewCellContentView>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8dN-bU-DBQ">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="e4p-Qr-18M"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem title="Photos" id="Rh3-KQ-diz">
+                                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="oyO-zs-cba">
+                                            <connections>
+                                                <action selector="doneButton:" destination="3re-Lx-1xx" id="Lv7-hI-WwA"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="8dN-bU-DBQ" firstAttribute="leading" secondItem="wec-66-qut" secondAttribute="leading" id="4Rh-y3-bqj"/>
+                            <constraint firstItem="wec-66-qut" firstAttribute="trailing" secondItem="qQ8-YB-T3m" secondAttribute="trailing" id="H0h-BN-9Zf"/>
+                            <constraint firstItem="qQ8-YB-T3m" firstAttribute="top" secondItem="8dN-bU-DBQ" secondAttribute="bottom" constant="10" id="Ome-Yn-Qe2"/>
+                            <constraint firstItem="8dN-bU-DBQ" firstAttribute="top" secondItem="wec-66-qut" secondAttribute="top" id="ZrC-qo-k4y"/>
+                            <constraint firstItem="8dN-bU-DBQ" firstAttribute="trailing" secondItem="wec-66-qut" secondAttribute="trailing" id="bMh-6T-5qE"/>
+                            <constraint firstItem="qQ8-YB-T3m" firstAttribute="leading" secondItem="wec-66-qut" secondAttribute="leading" id="kQQ-gP-Wd1"/>
+                            <constraint firstAttribute="bottom" secondItem="qQ8-YB-T3m" secondAttribute="bottom" id="uTY-Jx-8sN"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="wec-66-qut"/>
+                    </view>
+                    <connections>
+                        <outlet property="navBar" destination="8dN-bU-DBQ" id="xG2-yh-aIb"/>
+                        <outlet property="photosCollectionView" destination="qQ8-YB-T3m" id="wHe-13-PX0"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Epj-Ca-6pL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2886.9565217391305" y="847.76785714285711"/>
+        </scene>
+        <!--FriendProfile-->
+        <scene sceneID="c3y-ol-luH">
+            <objects>
+                <viewControllerPlaceholder storyboardName="FriendProfile" id="fGj-Gb-LZJ" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="yMj-5r-zvI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1988" y="1254"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zvU-6B-9Gc">

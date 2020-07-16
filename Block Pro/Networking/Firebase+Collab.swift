@@ -40,7 +40,8 @@ class FirebaseCollab {
         
         batch.setData(collabData, forDocument: db.collection("Collaborations").document(collabID))
         
-        var memberArray: [[String : String]] = []
+        var memberDictArray: [[String : String]] = []
+        var memberUserIDArray: [String] = []
         
         for member in collabInfo.members {
             
@@ -53,7 +54,8 @@ class FirebaseCollab {
             memberToBeAdded["role"] = "Member"
             
             batch.setData(memberToBeAdded, forDocument: db.collection("Collaborations").document(collabID).collection("Members").document(member.userID))
-            memberArray.append(memberToBeAdded)
+            memberDictArray.append(memberToBeAdded)
+            memberUserIDArray.append(member.userID)
             
             //The person who created the collab
             if member.userID == collabInfo.members.last?.userID {
@@ -65,30 +67,33 @@ class FirebaseCollab {
                 memberToBeAdded["role"] = "Lead"
                 
                 batch.setData(memberToBeAdded, forDocument: db.collection("Collaborations").document(collabID).collection("Members").document(memberToBeAdded["userID"]!))
-                memberArray.append(memberToBeAdded)
+                memberDictArray.append(memberToBeAdded)
+                memberUserIDArray.append(currentUser.userID)
             }
         }
 
+        //Saving members userID to a memberArray
+        batch.setData(["Members" : memberUserIDArray], forDocument: db.collection("Collaborations").document(collabID), merge: true)
         
         for member in collabInfo.members {
 
             batch.setData(memberCollabData, forDocument: db.collection("Users").document(member.userID).collection("CollabRequests").document(collabID))
 
-            for addedMember in memberArray {
+            for addedMember in memberDictArray {
 
                 batch.setData(addedMember, forDocument: db.collection("Users").document(member.userID).collection("CollabRequests").document(collabID).collection("Members").document(addedMember["userID"]!))
             }
         }
 
         //Sets the leader collab data
-        batch.setData(memberCollabData, forDocument: db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID))
+        //batch.setData(memberCollabData, forDocument: db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID))
 
 
         //Setting the members for the collab to the leaders collab document
-        for addedMember in memberArray {
-
-            batch.setData(addedMember, forDocument: db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID).collection("Members").document(addedMember["userID"]!))
-        }
+//        for addedMember in memberArray {
+//
+//            batch.setData(addedMember, forDocument: db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID).collection("Members").document(addedMember["userID"]!))
+//        }
 
         commitBatch(batch: batch) {
 
@@ -109,8 +114,9 @@ class FirebaseCollab {
     
     func retrieveCollabs () {
         
-        userRef.collection("Collabs").addSnapshotListener { (snapshot, error) in
-            
+        //userRef.collection("Collabs").addSnapshotListener { (snapshot, error) in
+        db.collection("Collaborations").whereField("Members", arrayContains: currentUser.userID).addSnapshotListener { (snapshot, error) in
+        
             self.collabs.removeAll()
             
             if error != nil {

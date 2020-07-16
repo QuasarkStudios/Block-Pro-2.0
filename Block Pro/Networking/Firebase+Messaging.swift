@@ -380,7 +380,7 @@ class FirebaseMessaging {
                     
                     var members: [Member] = []
                     
-                    for document in snapshot!.documents {
+                    for document in snapshot?.documents ?? [] {
                         
                         var member = Member()
                         
@@ -390,7 +390,15 @@ class FirebaseMessaging {
                         member.username = document.data()["username"] as! String
                         member.role = document.data()["role"] as! String
                         
-                        members.append(member)
+                        if self.firebaseCollab.friends.contains(where: { $0.userID == member.userID }) {
+                            
+                            members.insert(member, at: 0)
+                        }
+                        
+                        else {
+                            
+                            members.append(member)
+                        }
                     }
                     
                     completion(members, nil)
@@ -444,7 +452,7 @@ class FirebaseMessaging {
     
     func retrieveCollabConversations (completion: @escaping ((_ conversations: [Conversation], _ error: Error?) -> Void)) {
         
-        conversationListener = db.collection("Users").document(currentUser.userID).collection("Collabs").addSnapshotListener({ (snapshot, error) in
+        conversationListener = db.collection("Collaborations").whereField("Members", arrayContains: currentUser.userID).addSnapshotListener({ (snapshot, error) in
             
 //            self.conversations.removeAll()
             
@@ -463,17 +471,15 @@ class FirebaseMessaging {
                         
                         let collabID = document.data()["collabID"] as! String
                         let collabName = document.data()["collabName"] as? String
-                        let startTime = document.data()["startTime"] as! Timestamp
-                        let lastTimeMembersActiveTimestamp: [String : Timestamp]? = document.data()["lastTimeMembersWereActive"] as? [String : Timestamp]; #warning("configure")
+                        let dateCreated = document.data()["dateCreated"] as! Timestamp
+                        let memberActivity: [String : Any]? = document.data()["memberActivity"] as? [String : Any]
                         
                         if let conversationIndex = self.collabConversations.firstIndex(where: { $0.conversationID == collabID }) {
                             
                             self.collabConversations[conversationIndex].conversationName = collabName
                             
-//                            if lastTimeActiveTimestamp != nil {
-//
-//                                self.conversations[conversationIndex].lastTimeCurrentUserWasActive = Date(timeIntervalSince1970: TimeInterval(lastTimeActiveTimestamp!.seconds))
-//                            }
+                            
+                            self.collabConversations[conversationIndex].memberActivity = self.parseConversationActivity(memberActivity: memberActivity)
                         }
                         
                         else {
@@ -482,12 +488,8 @@ class FirebaseMessaging {
                             
                             conversation.conversationID = collabID
                             conversation.conversationName = collabName
-                            conversation.dateCreated = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))
-                            
-//                            if lastTimeActiveTimestamp != nil {
-//                                
-//                                conversation.lastTimeCurrentUserWasActive = Date(timeIntervalSince1970: TimeInterval(lastTimeActiveTimestamp!.seconds))
-//                            }
+                            conversation.dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreated.seconds))
+                            conversation.memberActivity = self.parseConversationActivity(memberActivity: memberActivity)
                             
                             self.collabConversations.append(conversation)
                         }
@@ -535,17 +537,53 @@ class FirebaseMessaging {
 
     private func retrieveCollabConversationMembers (_ collabID: String, completion: @escaping ((_ members: [Member], _ error: Error?) -> Void)) {
         
-        #warning("thisll have to be changed to be an observor to monitor for updates in members")
-        
-        let collab = firebaseCollab.collabs.first(where: { $0.collabID == collabID })
-        var conversationMembers: [Member] = []
-        
-        for member in collab?.members ?? [] {
+        let listener = db.collection("Collaborations").document(collabID).collection("Members").addSnapshotListener { (snapshot, error) in
             
-            conversationMembers.append(member)
+            if error != nil {
+                
+                print(error as Any)
+                
+                completion([], error)
+            }
+            
+            else {
+                
+                if snapshot?.isEmpty != true {
+                    
+                    var members: [Member] = []
+                    
+                    for document in snapshot?.documents ?? [] {
+                        
+                        var member = Member()
+                        
+                        member.userID = document.data()["userID"] as! String
+                        member.firstName = document.data()["firstName"] as! String
+                        member.lastName = document.data()["lastName"] as! String
+                        member.username = document.data()["username"] as! String
+                        member.role = document.data()["role"] as! String
+                        
+                        if self.firebaseCollab.friends.contains(where: { $0.userID == member.userID }) {
+                            
+                            members.insert(member, at: 0)
+                        }
+                        
+                        else {
+                            
+                            members.insert(member, at: 0)
+                        }
+                    }
+                    
+                    completion(members, nil)
+                }
+                
+                else {
+                    
+                    completion([], nil)
+                }
+            }
         }
         
-        completion(conversationMembers, nil)
+        conversationMembersListeners.append(listener)
     }
     
     private func retrieveCollabConversationPreview (_ collabID: String, completion: @escaping ((_ message: Message?, _ error: Error?) -> Void)) {
@@ -685,7 +723,7 @@ class FirebaseMessaging {
                     
                     let conversationName = snapshot!.data()?["conversationName"] as? String
                     let coverPhotoID = snapshot!.data()?["coverPhotoID"] as? String
-                    let conversationActivity = self.parseConversationActivity(memberActivity: snapshot!.data()?["memberActivity"] as? [String : Any])
+                    let memberActivity = self.parseConversationActivity(memberActivity: snapshot!.data()?["memberActivity"] as? [String : Any])
                     
                     if let conversationIndex = self.personalConversations.firstIndex(where: { $0.conversationID == conversationID }) {
                         
@@ -696,17 +734,10 @@ class FirebaseMessaging {
                         
                         self.personalConversations[conversationIndex].conversationName = conversationName
                         self.personalConversations[conversationIndex].coverPhotoID = coverPhotoID
-                        self.personalConversations[conversationIndex].memberActivity = conversationActivity
-                        
-//                        if coverPhotoID == nil {
-//                            
-//                            self.personalConversations[conversationIndex].coverPhotoID = nil
-//                            
-//                            //left off with an issue where if a user deletes then adds new a cover, any users will active in the convo will be updated back to the previously deleted cover
-//                        }
+                        self.personalConversations[conversationIndex].memberActivity = memberActivity
                     }
                     
-                    completion(["conversationName" : conversationName, "coverPhotoID" : coverPhotoID, "conversationActivity" : conversationActivity])
+                    completion(["conversationName" : conversationName, "coverPhotoID" : coverPhotoID, "memberActivity" : memberActivity])
                     
                     //completion(conversationName, conversationActivity, nil, nil)
                 }
@@ -724,20 +755,35 @@ class FirebaseMessaging {
             
             else {
                 
-                completion(["members" : members])
+                var membersArray: [Member] = []
+                
+                for member in members {
+                    
+                    if self.firebaseCollab.friends.contains(where: { $0.userID == member.userID }) {
+                        
+                        membersArray.insert(member, at: 0)
+                    }
+                    
+                    else {
+                        
+                        membersArray.append(member)
+                    }
+                }
+                
+                completion(["members" : membersArray])
                 
                 //completion(nil, nil, members, nil)
             }
         }
     }
     
-    func monitorCollabConversation (collabID: String, completion: @escaping ((_ collabName: String?, _ collabActivity: [String : Any]?, _ collabMembers: [Member]?, _ error: Error?) -> Void)) {
+    func monitorCollabConversation (collabID: String, completion: @escaping ((_ updatedConvo: [String : Any?]) -> Void)) {
         
-        conversationListener = db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID).addSnapshotListener({ (snapshot, error) in
+        conversationListener = db.collection("Collaborations").document(collabID).addSnapshotListener({ (snapshot, error) in
             
             if error != nil {
                 
-                completion(nil, nil, nil, error)
+                completion(["error" : error])
             }
             
             else {
@@ -745,9 +791,22 @@ class FirebaseMessaging {
                 if snapshot != nil {
                     
                     let collabName = snapshot!.data()?["collabName"] as? String
-                    let collabActivity = self.parseConversationActivity(memberActivity: snapshot!.data()?["memberActivity"] as? [String : Any])
+                    let coverPhotoID = snapshot!.data()?["coverPhotoID"] as? String
+                    let memberActivity = self.parseConversationActivity(memberActivity: snapshot!.data()?["memberActivity"] as? [String : Any])
                     
-                    completion(collabName, collabActivity, nil, nil)
+                    if let conversationIndex = self.collabConversations.firstIndex(where: { $0.conversationID == collabID }) {
+                        
+                        if coverPhotoID != self.collabConversations[conversationIndex].coverPhotoID {
+                            
+                            self.collabConversations[conversationIndex].conversationCoverPhoto = nil
+                        }
+                        
+                        self.collabConversations[conversationIndex].conversationName = collabName
+                        self.collabConversations[conversationIndex].coverPhotoID = coverPhotoID
+                        self.collabConversations[conversationIndex].memberActivity = memberActivity
+                    }
+                    
+                    completion(["collabName" : collabName, "coverPhotoID" : coverPhotoID, "memberActivity" : memberActivity])
                 }
             }
         })
@@ -756,14 +815,61 @@ class FirebaseMessaging {
             
             if error != nil {
                 
-                completion(nil, nil, nil, error)
+                completion(["error" : error])
             }
             
             else {
                 
-                completion(nil, nil, members, nil)
+                var membersArray: [Member] = []
+                
+                for member in members {
+                    
+                    if self.firebaseCollab.friends.contains(where: { $0.userID == member.userID }) {
+                        
+                        membersArray.insert(member, at: 0)
+                    }
+                    
+                    else {
+                        
+                        membersArray.append(member)
+                    }
+                }
+                
+                completion(["members" : membersArray])
             }
         }
+        
+//        conversationListener = db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID).addSnapshotListener({ (snapshot, error) in
+//
+//            if error != nil {
+//
+//                completion(nil, nil, nil, error)
+//            }
+//
+//            else {
+//
+//                if snapshot != nil {
+//
+//                    let collabName = snapshot!.data()?["collabName"] as? String
+//                    let collabActivity = self.parseConversationActivity(memberActivity: snapshot!.data()?["memberActivity"] as? [String : Any])
+//
+//                    completion(collabName, collabActivity, nil, nil)
+//                }
+//            }
+//        })
+//
+//        retrieveCollabConversationMembers(collabID) { (members, error) in
+//
+//            if error != nil {
+//
+//                completion(nil, nil, nil, error)
+//            }
+//
+//            else {
+//
+//                completion(nil, nil, members, nil)
+//            }
+//        }
     }
     
     func sendPersonalMessage (conversationID: String, _ message: Message, completion: @escaping ((_ error: Error?) -> Void)) {
@@ -881,16 +987,16 @@ class FirebaseMessaging {
 //        }
 //    }
     
-    func setActivityStatus (personalConversation: Conversation? = nil, collabConversation: Conversation? = nil, _ status: Any) {
+    func setActivityStatus (conversationID: String? = nil, collabID: String? = nil, _ status: Any) {
         
-        if let conversation = personalConversation {
+        if let conversation = conversationID {
             
-            db.collection("Conversations").document(conversation.conversationID).updateData(["memberActivity.\(currentUser.userID)" : status])
+            db.collection("Conversations").document(conversation).updateData(["memberActivity.\(currentUser.userID)" : status])
         }
         
-        else if let collab = collabConversation {
+        else if let collab = collabID {
                 
-            db.collection("Conversations").document(collab.conversationID).updateData(["memberActivity.\(currentUser.userID)" : status])
+            db.collection("Collaborations").document(collab).updateData(["memberActivity.\(currentUser.userID)" : status])
         }
     }
     

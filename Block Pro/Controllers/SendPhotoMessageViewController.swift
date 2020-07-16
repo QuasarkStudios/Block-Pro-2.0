@@ -86,7 +86,7 @@ class SendPhotoMessageViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         
-        readMessages()
+        //readMessages()
         
         removeObservors()
     }
@@ -121,7 +121,9 @@ class SendPhotoMessageViewController: UIViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingDismissed), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(readMessages), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(setUserActiveStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(setUserInactiveStatus), name: UIApplication.willResignActiveNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(sendMessage), name: .userDidSendMessage, object: nil)
     }
@@ -143,11 +145,30 @@ class SendPhotoMessageViewController: UIViewController {
 
     }
     
-    @objc private func readMessages () {
+    @objc private func setUserActiveStatus () {
         
-        //firebaseMessaging.readMessages(personalConversation: personalConversation, collabConversation: collabConversation)
+        if let conversation = personalConversation {
+            
+            firebaseMessaging.setActivityStatus(conversationID: conversation.conversationID, "now")
+        }
         
-        firebaseMessaging.setActivityStatus(personalConversation: personalConversation, collabConversation: collabConversation, Date())
+        else if let collab = collabConversation {
+            
+            firebaseMessaging.setActivityStatus(collabID: collab.conversationID, "now")
+        }
+    }
+    
+    @objc private func setUserInactiveStatus () {
+        
+        if let conversation = personalConversation {
+            
+            firebaseMessaging.setActivityStatus(conversationID: conversation.conversationID, Date())
+        }
+        
+        else if let collab = collabConversation {
+            
+            firebaseMessaging.setActivityStatus(collabID: collab.conversationID, Date())
+        }
     }
     
     @objc private func sendMessage () {
