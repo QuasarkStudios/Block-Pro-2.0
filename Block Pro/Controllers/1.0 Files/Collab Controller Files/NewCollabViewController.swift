@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import Firebase
+import FirebaseAuth
+import FirebaseFirestore
 
 //Protocol required to reload collabs on the UpcomingCollabViewController
 protocol GetNewCollab {

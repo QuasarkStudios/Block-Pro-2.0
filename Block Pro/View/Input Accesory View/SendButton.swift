@@ -46,8 +46,8 @@ class SendButton: UIButton {
 
         [
          
-        trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: -8/*-10*/),
-        bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: -4),
+        trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: -8),
+        bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: -5),
         widthAnchor.constraint(equalToConstant: 29),
         heightAnchor.constraint(equalToConstant: 29)
          

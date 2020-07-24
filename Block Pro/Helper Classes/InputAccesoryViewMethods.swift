@@ -15,16 +15,38 @@ class InputAccesoryViewMethods {
     var textViewContainer: MessageTextViewContainer
     
     var textViewPlaceholderText: String
+    var textViewPlaceholderTextColor: UIColor
+    var textViewTextColor: UIColor
     
     var tableView: UITableView?
     
-    init(accesoryView: InputAccesoryView, textViewPlaceholderText: String, tableView: UITableView?) {
+    init(accesoryView: InputAccesoryView, textViewPlaceholderText: String, textViewPlaceholderTextColor: UIColor? = nil, textViewTextColor: UIColor = .black, tableView: UITableView?) {
         
         self.accesoryView = accesoryView
         
         self.textViewContainer = accesoryView.textViewContainer
         
         self.textViewPlaceholderText = textViewPlaceholderText
+        
+        if let textColor = textViewPlaceholderTextColor {
+            
+            self.textViewPlaceholderTextColor = textColor
+        }
+        
+        else {
+            
+            if #available(iOS 13.0, *) {
+                
+                self.textViewPlaceholderTextColor = .placeholderText
+            }
+            
+            else {
+                
+                self.textViewPlaceholderTextColor = .lightGray
+            }
+        }
+        
+        self.textViewTextColor = textViewTextColor
         
         self.tableView = tableView
         
@@ -34,16 +56,16 @@ class InputAccesoryViewMethods {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func keyboardBeingPresented (notification: NSNotification, keyboardHeight: inout CGFloat?, messagesCount: Int, topBarHeight: CGFloat) {
+    func keyboardBeingPresented (notification: NSNotification, keyboardHeight: inout CGFloat?, messagesCount: Int, tableViewBottomInset: CGFloat?) {
         
         let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
         
         keyboardHeight = keyboardFrame.cgRectValue.height
             
-        let bottomInset: CGFloat = keyboardHeight! - (accesoryView.configureSize().height - topBarHeight)
+        let bottomInset: CGFloat = keyboardHeight! - (accesoryView.configureSize().height - (tableViewBottomInset ?? 0))
         
-        tableView?.contentInset = UIEdgeInsets(top: 30, left: 0, bottom: bottomInset, right: 0)
-        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: bottomInset, right: 0)
+        tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
     
         if messagesCount > 0 {
 
@@ -51,25 +73,17 @@ class InputAccesoryViewMethods {
         }
     }
     
-    func keyboardBeingDismissed (notification: NSNotification, keyboardHeight: inout CGFloat?, messagesCount: Int, textViewText: String) {
+    func keyboardBeingDismissed (notification: NSNotification, keyboardHeight: inout CGFloat?, tableViewBottomInset: CGFloat?, messagesCount: Int, textViewText: String) {
         
         let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
         let keyboardAnimationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSValue
         
         keyboardHeight = keyboardFrame.cgRectValue.height
         
-        tableView?.contentInset = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 0)
-        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 0)
-        
-        if messagesCount > 0 {
+        if textViewText == "" || textViewText == textViewPlaceholderText {
             
-            tableView?.scrollToRow(at: IndexPath(row: (messagesCount * 2) - 1, section: 0), at: .top, animated: true)
-        }
-        
-        if textViewText == "" || textViewText == textViewPlaceholderText/*"Send a message"*/ {
-            
-            tableView?.contentInset = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 0)
-            tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: 0, right: 0)
+            tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tableViewBottomInset ?? 0, right: 0)
+            tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: tableViewBottomInset ?? 0, right: 0)
             
             accesoryView.size = accesoryView.configureSize()
         }
@@ -78,8 +92,8 @@ class InputAccesoryViewMethods {
             
             let messageViewHeight = (textViewContainer.frame.height + abs(setTextViewBottomAnchor())) + 5
             
-            tableView?.contentInset = UIEdgeInsets(top: 30, left: 0, bottom: messageViewHeight, right: 0)
-            tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 30, left: 0, bottom: messageViewHeight, right: 0)
+            tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: messageViewHeight, right: 0)
+            tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: messageViewHeight, right: 0)
             
             accesoryView.size = CGSize(width: 0, height: messageViewHeight)
         }
@@ -101,18 +115,62 @@ class InputAccesoryViewMethods {
         }
     }
     
-    func textViewBeganEditing (textView: UITextView) {
+    func textViewBeganEditing (textView: UITextView, keyboardHeight: CGFloat?) {
         
-        if textView.text == textViewPlaceholderText/*"Send a message"*/ {
+        if textView.text == textViewPlaceholderText {
             
             textView.text = ""
-            textView.textColor = .black
+            textView.textColor = textViewTextColor
         }
         
-        #warning("fix bug that causes the twxt view to be too larger than the max height when lots of text we=as previously entered, all code needed for this fix should be in textviewtextchanged func below")
-        
         let size = CGSize(width: textView.frame.width, height: .infinity)
-        let estimatedSize = textView.sizeThatFits(size)
+        var estimatedSize = textView.sizeThatFits(size)
+        
+        if UIScreen.main.bounds.width == 320.0 {
+            
+            let newKeyboardHeight = ((keyboardHeight ?? 324) - accesoryView.size!.height) + estimatedSize.height
+            
+            if newKeyboardHeight > (UIScreen.main.bounds.height * 0.7) {
+                
+                let maxMessageViewHeight = (UIScreen.main.bounds.height * 0.7) - ((keyboardHeight ?? 324) - accesoryView.size!.height)
+                
+                textView.isScrollEnabled = true
+                
+                accesoryView.size = CGSize(width: 0, height: maxMessageViewHeight)
+                
+                estimatedSize = CGSize(width: 0, height: maxMessageViewHeight - 15)
+            }
+            
+            else {
+                
+                textView.isScrollEnabled = false
+                
+                accesoryView.size = CGSize(width: 0, height: estimatedSize.height + 15)
+            }
+        }
+        
+        else {
+            
+            let newKeyboardHeight = ((keyboardHeight ?? 400) - accesoryView.size!.height) + estimatedSize.height
+            
+            if newKeyboardHeight > (UIScreen.main.bounds.height * 0.7) {
+                
+                let maxMessageViewHeight = (UIScreen.main.bounds.height * 0.7) - ((keyboardHeight ?? 400) - accesoryView.size!.height)
+                
+                textView.isScrollEnabled = true
+                
+                accesoryView.size = CGSize(width: 0, height: maxMessageViewHeight)
+                
+                estimatedSize = CGSize(width: 0, height: maxMessageViewHeight - 15)
+            }
+            
+            else {
+                
+                textView.isScrollEnabled = false
+                
+                accesoryView.size = CGSize(width: 0, height: estimatedSize.height + 15)
+            }
+        }
         
         accesoryView.size = CGSize(width: 0, height: estimatedSize.height + 15) //15 is equal to the  10 point bottom anchor and a 5 point buffer on top
         
@@ -124,14 +182,6 @@ class InputAccesoryViewMethods {
             }
         }
         
-//        messageTextView.constraints.forEach { (constraint) in
-//
-//            if constraint.firstAttribute == .height {
-//
-//                constraint.constant = estimatedSize.height
-//            }
-//        }
-        
         accesoryView.constraints.forEach { (constraint) in
             
             if constraint.firstAttribute  == .bottom {
@@ -140,7 +190,6 @@ class InputAccesoryViewMethods {
                     
                     constraint.constant = -10 //Setting the bottom anchor for the textView
                 }
-                
             }
         }
         
@@ -158,7 +207,6 @@ class InputAccesoryViewMethods {
     
     func textViewTextChanged (textView: UITextView, keyboardHeight: CGFloat?) {
         
-//        let size = CGSize(width: messageTextView.frame.width, height: .infinity)
         let size = CGSize(width: textView.frame.width, height: .infinity)
         var estimatedSize = textView.sizeThatFits(size)
         
@@ -170,7 +218,6 @@ class InputAccesoryViewMethods {
                 
                 let maxMessageViewHeight = (UIScreen.main.bounds.height * 0.7) - ((keyboardHeight ?? 324) - accesoryView.size!.height)
                 
-//                messageTextView.isScrollEnabled = true
                 textView.isScrollEnabled = true
                 
                 accesoryView.size = CGSize(width: 0, height: maxMessageViewHeight)
@@ -180,7 +227,6 @@ class InputAccesoryViewMethods {
             
             else {
                 
-//                messageTextView.isScrollEnabled = false
                 textView.isScrollEnabled = false
                 
                 accesoryView.size = CGSize(width: 0, height: estimatedSize.height + 15) //15 is equal to the 10 point bottom anchor and a 5 point buffer on top
@@ -196,7 +242,6 @@ class InputAccesoryViewMethods {
                 
                 let maxMessageViewHeight = (UIScreen.main.bounds.height * 0.7) - ((keyboardHeight ?? 400) - accesoryView.size!.height)
                 
-//                messageTextView.isScrollEnabled = true
                 textView.isScrollEnabled = true
                 
                 accesoryView.size = CGSize(width: 0, height: maxMessageViewHeight)
@@ -206,7 +251,6 @@ class InputAccesoryViewMethods {
             
             else {
                 
-//                messageTextView.isScrollEnabled = false
                 textView.isScrollEnabled = false
 
                 accesoryView.size = CGSize(width: 0, height: estimatedSize.height + 15) //15 is equal to the 10 point bottom anchor and a 5 point buffer on top
@@ -220,80 +264,44 @@ class InputAccesoryViewMethods {
                 constraint.constant = estimatedSize.height
             }
         }
-        
-//        textView.constraints.forEach { (constraint) in
-//
-//            if constraint.firstAttribute == .height {
-//
-//                constraint.constant = estimatedSize.height
-//            }
-//        }
     }
     
     func textViewEndedEditing (textView: UITextView) {
         
         if textView.text == "" {
             
-            textView.text = textViewPlaceholderText//"Send a message"
-            
-            if #available(iOS 13.0, *) {
-                textView.textColor = .placeholderText
-            } else {
-                textView.textColor = .lightGray
-            }
+            textView.text = textViewPlaceholderText
+            textView.textColor = textViewPlaceholderTextColor
         }
     }
     
     func validateTextChange () -> Bool {
         
-        if textViewContainer.messageTextView.text != textViewPlaceholderText/*"Send a message"*/ {
+        if textViewContainer.messageTextView.text != textViewPlaceholderText {
             
             return true
         }
         
         else {
             
-            if #available(iOS 13.0, *) {
+            if (textViewContainer.messageTextView.text == textViewPlaceholderText) && (textViewContainer.messageTextView.textColor != textViewPlaceholderTextColor) {
                 
-                if (textViewContainer.messageTextView.text == textViewPlaceholderText/*"Send a message"*/) && (textViewContainer.messageTextView.textColor != UIColor.placeholderText) {
-                    
-                    return true
-                }
-                
-                else {
-                    
-                    return false
-                }
-                
+                return true
             }
             
             else {
                 
-                if (textViewContainer.messageTextView.text == textViewPlaceholderText/*"Send a message"*/) && (textViewContainer.messageTextView.textColor != UIColor.lightGray) {
-                    
-                    return true
-                }
-                
-                else {
-                    
-                    return false
-                }
+                return false
             }
         }
     }
     
-    func messageSent (messagesCount: Int = 0) {
-        
-        //self.sendButton.isEnabled = true
+    func messageSent (keyboardHeight: CGFloat?) {
+
         textViewContainer.messageTextView.text = ""
-        textViewBeganEditing(textView: textViewContainer.messageTextView)
+        textViewBeganEditing(textView: textViewContainer.messageTextView, keyboardHeight: keyboardHeight)
         
         resetMessageContainerHeights()
-        
-        if messagesCount > 0 {
-            
-            //tableView?.scrollToRow(at: IndexPath(row: (messagesCount * 2) - 1, section: 0), at: .top, animated: true)
-        }
     }
     
     private func setTextViewBottomAnchor () -> CGFloat {
@@ -323,16 +331,8 @@ class InputAccesoryViewMethods {
 
             if constraint.firstAttribute == .height {
 
-                constraint.constant = 37//35
+                constraint.constant = 39
             }
         }
-
-//        messageTextView.constraints.forEach { (constraint) in
-//
-//            if constraint.firstAttribute == .height {
-//
-//                constraint.constant = 37//35
-//            }
-//        }
     }
 }

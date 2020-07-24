@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import Firebase
+import FirebaseAuth
+import FirebaseFirestore
 
 
 class UpcomingCollabViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {

@@ -19,7 +19,7 @@ class InputAccesoryView: UIView {
         }
     }
     
-    var parentViewController: Any? {
+    weak var parentViewController: AnyObject? {
         didSet {
             
             textViewContainer.parentViewController = parentViewController!
@@ -27,33 +27,13 @@ class InputAccesoryView: UIView {
     }
 
     
-//    override init (frame: CGRect) {
-//        super.init(frame: frame)
-//
-//        configureView()
-//
-//        self.autoresizingMask = .flexibleHeight
-//        size = configureSize()
-//    }
-//
-//    convenience init () {
-//        self.init(frame: .zero)
-//
-//        configureView()
-//
-//        size = configureSize()
-//    }
-//
-//    required init?(coder aDecoder: NSCoder) {
-//        super.init(coder: aDecoder)
-//    }
-    
-    init(showsAddButton: Bool, textViewPlaceholderText: String) {
+    init(showsAddButton: Bool, textViewPlaceholderText: String, textViewPlaceholderTextColor: UIColor? = nil) {
         super.init(frame: .zero)
 
         configureView(showsAddButton)
         
         textViewContainer.messageTextView.placeholderText = textViewPlaceholderText
+        textViewContainer.messageTextView.placeholderTextColor = textViewPlaceholderTextColor
         
         self.autoresizingMask = .flexibleHeight
         
@@ -70,9 +50,8 @@ class InputAccesoryView: UIView {
     
     private func configureView (_ showsAddButton: Bool) {
         
-//        isHidden = true
-//        alpha = 0
         backgroundColor = UIColor(hexString: "ffffff", withAlpha: 0.95)
+        
         translatesAutoresizingMaskIntoConstraints = false
         
         addSubview(textViewContainer)
@@ -90,19 +69,19 @@ class InputAccesoryView: UIView {
         //iPhone 11 Pro Max & iPhone 11
         if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
 
-            return CGSize(width: 0, height: 75)
+            return CGSize(width: 0, height: 77)
         }
             
         //iPhone 11 Pro
         else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
             
-            return CGSize(width: 0, height: 75)
+            return CGSize(width: 0, height: 77)
         }
             
         //Every other iPhone
         else  {
             
-            return CGSize(width: 0, height: 50)
+            return CGSize(width: 0, height: 51)
         }
     }
 }

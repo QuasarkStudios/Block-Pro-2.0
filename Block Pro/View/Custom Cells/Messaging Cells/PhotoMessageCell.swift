@@ -2,7 +2,7 @@
 //  PhotoMessageCell.swift
 //  Block Pro
 //
-//  Created by Nimat Azeez on 6/5/20.
+//  Created by Nimat Azeez on 7/17/20.
 //  Copyright © 2020 Nimat Azeez. All rights reserved.
 //
 
@@ -10,12 +10,12 @@ import UIKit
 import iProgressHUD
 
 protocol CachePhotoProtocol: AnyObject {
-    
+
     func cachePhoto (messageID: String, photo: UIImage?)
 }
 
 protocol ZoomInProtocol: AnyObject {
-    
+
     func zoomInOnPhotoImageView (photoImageView: UIImageView)
 }
 
@@ -28,23 +28,14 @@ class PhotoMessageCell: UITableViewCell {
     @IBOutlet weak var nameLabel: UILabel!
     
     @IBOutlet weak var imageViewContainer: UIView!
-    @IBOutlet weak var imageViewContainerTopAnchor: NSLayoutConstraint!
-    @IBOutlet weak var imageViewContainerLeadingAnchor: NSLayoutConstraint!
-    @IBOutlet weak var imageViewContainerTrailingAnchor: NSLayoutConstraint!
-    @IBOutlet weak var imageViewContainerHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var imageViewContainerTopAnchor: NSLayoutConstraint!
+    @IBOutlet var imageViewContainerLeadingAnchor: NSLayoutConstraint!
+    @IBOutlet var imageViewContainerTrailingAnchor: NSLayoutConstraint!
+    @IBOutlet var imageViewContainerHeightConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var photoImageView: UIImageView!
     
     @IBOutlet weak var iProgressView: UIView!
-    
-    @IBOutlet weak var messageBubbleView: UIView!
-    @IBOutlet weak var messageBubbleLeadingAnchor: NSLayoutConstraint!
-    @IBOutlet weak var messageBubbleTrailingAnchor: NSLayoutConstraint!
-    @IBOutlet weak var messageBubbleWidthConstraint: NSLayoutConstraint!
-    
-    @IBOutlet weak var messageTextView: UITextView!
-    @IBOutlet weak var textViewLeadingAnchor: NSLayoutConstraint!
-    @IBOutlet weak var textViewTrailingAnchor: NSLayoutConstraint!
     
     var iProgress: iProgressHUD?
     var iProgressAttached: Bool = false
@@ -71,83 +62,38 @@ class PhotoMessageCell: UITableViewCell {
     
     weak var cachePhotoDelegate: CachePhotoProtocol?
     weak var zoomInDelegate: ZoomInProtocol?
+    weak var presentCopiedAnimationDelegate: PresentCopiedAnimationProtocol?
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        messageBubbleView.layer.cornerRadius = 10
         imageViewContainer.layer.cornerRadius = 10
         imageViewContainer.clipsToBounds = true
         
         if #available(iOS 13.0, *) {
-            messageBubbleView.layer.cornerCurve = .continuous
             imageViewContainer.layer.cornerCurve = .continuous
         }
         
-        messageTextView.backgroundColor = .clear
-        
-        //iProgressView.backgroundColor = .clear
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
+        longPressGesture.minimumPressDuration = 0.3
+        self.contentView.addGestureRecognizer(longPressGesture)
     }
     
     private func configureCell (message: Message) {
         
-        if let messageText = message.message {
-            
-//            textViewLeadingAnchor.isActive = true
-//            textViewTrailingAnchor.isActive = true
-            messageBubbleView.isHidden = false
-            messageBubbleWidthConstraint.constant = messageText.estimateFrameForMessageCell().width + 30
-            messageTextView.text = messageText
-        }
-        
-        else {
-            
-//            textViewLeadingAnchor.isActive = false
-//            textViewTrailingAnchor.isActive = false
-            messageBubbleView.isHidden = true
-            messageTextView.text = ""
-        }
-        
         if message.sender != currentUser.userID {
             
             imageViewContainerTrailingAnchor.isActive = false
-            messageBubbleTrailingAnchor.isActive = false
             
             imageViewContainerLeadingAnchor.constant = 10
-            messageBubbleLeadingAnchor.constant = 10
-            
             imageViewContainerLeadingAnchor.isActive = true
-            messageBubbleLeadingAnchor.isActive = true
-            
-            messageBubbleView.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.50)
-            messageTextView.textColor = .black
         }
         
         else {
             
             imageViewContainerLeadingAnchor.isActive = false
-            messageBubbleLeadingAnchor.isActive = false
             
             imageViewContainerTrailingAnchor.isActive = true
-            messageBubbleTrailingAnchor.isActive = true
-            
-            messageBubbleView.backgroundColor = UIColor(hexString: "282828", withAlpha: 0.85)
-            messageTextView.textColor = .white
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-            
-            let numberOfLines = ((self.messageTextView.frame.height - 15) / self.messageTextView.font!.lineHeight)
-
-            if floor(numberOfLines) == 1 {
-
-                self.messageTextView.textAlignment = .center
-            }
-
-            else {
-
-                self.messageTextView.textAlignment = .left
-            }
         }
     }
     
@@ -163,7 +109,6 @@ class PhotoMessageCell: UITableViewCell {
         else {
             
             nameLabel.isHidden = false
-            //imageViewTopAnchor.constant = 15
         }
         
         if members != nil {
@@ -222,7 +167,6 @@ class PhotoMessageCell: UITableViewCell {
             
             nameLabel.isHidden = true
             picContainerTopAnchor.constant = 3
-            //messageBubbleTopAnchor.constant = 0
             imageViewContainerTopAnchor.constant = 0
         }
             
@@ -230,7 +174,6 @@ class PhotoMessageCell: UITableViewCell {
             
             nameLabel.isHidden = true
             picContainerTopAnchor.constant = 3
-            //messageBubbleTopAnchor.constant = 0
             imageViewContainerTopAnchor.constant = 0
         }
         
@@ -238,7 +181,6 @@ class PhotoMessageCell: UITableViewCell {
             
             nameLabel.isHidden = false
             picContainerTopAnchor.constant = 15
-            //messageBubbleTopAnchor.constant = 15
             imageViewContainerTopAnchor.constant = 15
             
             for member in members ?? [] {
@@ -258,7 +200,7 @@ class PhotoMessageCell: UITableViewCell {
         guard let messagePhoto = message.messagePhoto else { return }
        
             imageViewContainerHeightConstraint.constant = calculatePhotoMessageCellHeight(messagePhoto: messagePhoto)
-
+        
             photoImageView.isUserInteractionEnabled = false
             photoImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomIn)))
             
@@ -373,6 +315,37 @@ class PhotoMessageCell: UITableViewCell {
         if let imageView = tapGesture.view as? UIImageView {
             
             zoomInDelegate?.zoomInOnPhotoImageView(photoImageView: imageView)
+        }
+    }
+    
+    @objc func handleLongPress (gesture: UILongPressGestureRecognizer) {
+        
+        if gesture.state == .began {
+            
+            let pasteboard = UIPasteboard.general
+            pasteboard.image = photoImageView.image
+            
+            animatePhotoImageView()
+        }
+    }
+    
+    private func animatePhotoImageView () {
+        
+        let vibrateMethods = VibrateMethods()
+        vibrateMethods.quickVibrate()
+        
+        self.presentCopiedAnimationDelegate?.presentCopiedAnimation()
+        
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
+            
+            self.imageViewContainer.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+            
+        }) { (finished: Bool) in
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
+                
+                self.imageViewContainer.transform = .identity
+            })
         }
     }
 }

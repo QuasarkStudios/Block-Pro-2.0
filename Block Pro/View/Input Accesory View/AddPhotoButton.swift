@@ -39,11 +39,10 @@ class AddAttachmentButton: UIButton {
         translatesAutoresizingMaskIntoConstraints = false
         
         [
-            //topAnchor.constraint(equalTo: superview!.topAnchor, constant: 2),
-            //bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: 0),
+            
             trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: -17.5),
             widthAnchor.constraint(equalToConstant: 25),
-            heightAnchor.constraint(equalToConstant: 37)
+            heightAnchor.constraint(equalToConstant: 39)
             
         ].forEach( { $0.isActive = true } )
         
@@ -51,7 +50,7 @@ class AddAttachmentButton: UIButton {
             
             if let view = subview as? MessageTextViewContainer {
                 
-                bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -0.5).isActive = true
+                bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
             }
         }
     }

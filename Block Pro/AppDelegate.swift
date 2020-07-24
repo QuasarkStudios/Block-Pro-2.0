@@ -7,7 +7,9 @@
 //
 
 import UIKit
-import Firebase
+import FirebaseAuth
+import FirebaseFirestore
+import FirebaseCore
 import RealmSwift
 import UserNotifications
 
@@ -51,6 +53,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 print ("denied")
             }
         }
+        
+        
         
         FirebaseApp.configure()
         

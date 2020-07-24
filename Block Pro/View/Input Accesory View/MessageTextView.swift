@@ -10,7 +10,7 @@ import Foundation
 
 class MessageTextView: UITextView, UITextViewDelegate {
     
-    var parentViewController: Any? {
+    weak var parentViewController: AnyObject? {
         didSet {
             
             if let textViewDelegate = parentViewController as? MessagingViewController {
@@ -32,17 +32,13 @@ class MessageTextView: UITextView, UITextViewDelegate {
         }
     }
     
+    var placeholderTextColor: UIColor?
+    
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         
         configureView()
     }
-    
-//    override init (frame: CGRect) {
-//        super.init(frame: frame)
-//
-//        //configureView()
-//    }
     
     convenience init () {
         self.init(frame: .zero)
@@ -56,16 +52,25 @@ class MessageTextView: UITextView, UITextViewDelegate {
     
     private func configureView () {
         
-        //delegate = self
-        font = UIFont(name: "Poppins-SemiBold", size: 14)
-        text = placeholderText ?? "Send a message"//"Send a message"
+        font = UIFont(name: "Poppins-Medium", size: 15.5)
+        text = placeholderText ?? "Send a message"
         isScrollEnabled = false
         showsVerticalScrollIndicator = false
         
-        if #available(iOS 13.0, *) {
-            textColor = .placeholderText
-        } else {
-            textColor = .lightGray
+        if placeholderTextColor != nil {
+            
+            textColor = placeholderTextColor
+        }
+        
+        else {
+            
+            if #available(iOS 13.0, *) {
+                textColor = .placeholderText
+            }
+            
+            else {
+                textColor = .lightGray
+            }
         }
     }
     
@@ -78,8 +83,7 @@ class MessageTextView: UITextView, UITextViewDelegate {
             leadingAnchor.constraint(equalTo: superview!.leadingAnchor, constant: 10),
             trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: -55),
             topAnchor.constraint(equalTo: superview!.topAnchor, constant: 0),
-            //heightAnchor.constraint(equalToConstant: 37)
-        bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: 0)
+            bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: 0)
 
         ].forEach { $0.isActive = true }
     }

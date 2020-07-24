@@ -245,7 +245,8 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        vibrate()
+        let vibrateMethods = VibrateMethods()
+        vibrateMethods.quickVibrate()
         
         if viewEditing {
             
@@ -458,7 +459,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             
             //collabConversations = nil
             
-            firebaseMessaging.retrievePersonalConversations2 { (conversations, error) in
+            firebaseMessaging.retrievePersonalConversations { (conversations, error) in
                 
                 if error != nil {
                     
@@ -985,24 +986,6 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         }
     }
     
-    //MARK: - Vibrate Function
-    
-    private func vibrate () {
-        
-        let generator: UIImpactFeedbackGenerator?
-        
-        if #available(iOS 13.0, *) {
-
-            generator = UIImpactFeedbackGenerator(style: .rigid)
-        
-        } else {
-            
-            generator = UIImpactFeedbackGenerator(style: .medium)
-        }
-        
-        generator?.impactOccurred()
-    }
-    
     //MARK: - Prepare for Segue Function
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -1021,15 +1004,12 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             
             if selectedView == "personal" {
                 
-                //messagesVC.conversationID = selectedConversationID
-                
                 messagesVC.personalConversation = selectedConversation
                 
             } else {
 
                 messagesVC.collabConversation = selectedConversation
-                
-                //messagesVC.collabID = selectedConversationID
+
             }
 
             //messagesVC.conversationMembers = selectedConversationMembers
@@ -1143,7 +1123,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             
             NotificationCenter.default.removeObserver(self)
             
-            firebaseMessaging.retrievePersonalConversations2 { (conversations, error) in
+            firebaseMessaging.retrievePersonalConversations { (conversations, error) in
                 
                 if error != nil {
                     

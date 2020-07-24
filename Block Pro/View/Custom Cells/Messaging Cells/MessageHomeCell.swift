@@ -370,12 +370,20 @@ class MessageHomeCell: UITableViewCell {
                         
                         else {
                             
-                            let profilePicture = self.profilePicContainers.first as! ProfilePicture
-                            profilePicture.profilePic = cover
-                            
-                            if let conversationIndex = self.firebaseMessaging.personalConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                            if let profilePicture = self.profilePicContainers.first as? ProfilePicture {
                                 
-                                self.firebaseMessaging.personalConversations[conversationIndex].conversationCoverPhoto = cover
+                                profilePicture.profilePic = cover
+                                
+                                if let conversationIndex = self.firebaseMessaging.personalConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                                    
+                                    self.firebaseMessaging.personalConversations[conversationIndex].conversationCoverPhoto = cover
+                                }
+
+                            }
+                            
+                            else {
+                                
+                                print("caught nil value in the messagehomecell; retrievecoverphoto func")
                             }
                         }
                     }

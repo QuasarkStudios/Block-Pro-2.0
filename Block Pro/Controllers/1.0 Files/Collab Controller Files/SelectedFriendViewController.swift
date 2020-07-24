@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Firebase
+import FirebaseFirestore
 
 //Protocol neccasary to move user to Collab Blocks view
 protocol CollabViewDeprecated {

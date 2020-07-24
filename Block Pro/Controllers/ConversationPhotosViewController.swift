@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class ConversationPhotosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
 
@@ -31,6 +32,12 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
     override func viewDidAppear(_ animated: Bool) {
         
         monitorPersonalConversationMessages()
+        monitorCollabConversationMessages()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        firebaseMessaging.messageListener?.remove()
     }
     
     override func didReceiveMemoryWarning() {
@@ -101,12 +108,12 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
                 
                 if error != nil {
                     
-                    print(error as Any)
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
                 }
                 
                 else {
                     
-                    let photoMessages = self?.filterPhotoMessages(messages: messages)
+                    let photoMessages = self?.firebaseMessaging.filterPhotoMessages(messages: messages)
                     
                     if photoMessages?.count != self?.photoMessages.count ?? 0 {
                         
@@ -129,19 +136,40 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
             }
     }
     
-    private func filterPhotoMessages (messages: [Message]?) -> [Message] {
+    private func monitorCollabConversationMessages () {
         
-        var messagesWithPhotos: [Message] = []
+        guard let conversation = collabID else { return }
         
-        for message in messages ?? [] {
-            
-            if message.messagePhoto != nil {
+            firebaseMessaging.retrieveAllCollabMessages(collabID: conversation) { [weak self] (messages, error) in
                 
-                messagesWithPhotos.append(message)
+                if error != nil {
+                    
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                }
+                
+                else {
+                    
+                    let photoMessages = self?.firebaseMessaging.filterPhotoMessages(messages: messages)
+                    
+                    if photoMessages?.count != self?.photoMessages.count ?? 0 {
+                        
+                        for message in photoMessages ?? [] {
+                            
+                            if self?.photoMessages.contains(where: { $0.messageID == message.messageID }) == false {
+                                
+                                self?.photoMessages.append(message)
+                            }
+                        }
+                        
+                        if let sortedMessages = self?.photoMessages.sorted(by: { $0.timestamp > $1.timestamp }) {
+                            
+                            self?.photoMessages = sortedMessages
+                            
+                            self?.photosCollectionView.reloadData()
+                        }
+                    }
+                }
             }
-        }
-        
-        return messagesWithPhotos
     }
     
     var zoomedOutImageView: UIImageView?
@@ -196,7 +224,9 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
                 
                 self.zoomedInImageViewFrame = self.zoomedInImageView?.frame
                 
-                self.addPhotoImageViewPanGesture(imageView: self.zoomedInImageView)
+                self.addPhotoImageViewPanGesture(view: self.zoomedInImageView)
+                
+                self.addPhotoImageViewPanGesture(view: self.blackBackground)
             }
         }
     }
@@ -220,13 +250,13 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
         }
     }
     
-    private func addPhotoImageViewPanGesture (imageView: UIImageView?) {
+    private func addPhotoImageViewPanGesture (view: UIView?) {
         
-        if imageView != nil {
+        if view != nil {
             
             panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePhotoImageViewPan(sender:)))
             
-            imageView?.addGestureRecognizer(panGesture!)
+            view?.addGestureRecognizer(panGesture!)
         }
     }
     

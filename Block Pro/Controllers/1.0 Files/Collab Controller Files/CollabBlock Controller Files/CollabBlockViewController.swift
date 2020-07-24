@@ -8,7 +8,7 @@
 
 import UIKit
 import ChameleonFramework
-import Firebase
+import FirebaseFirestore
 import UserNotifications
 
 class CollabBlockViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {

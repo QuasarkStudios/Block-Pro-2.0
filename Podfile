@@ -17,6 +17,7 @@ pod 'iProgressHUD', '~> 1.1.1'
 pod 'SwipeCellKit'
 pod 'BEMCheckBox'
 pod 'SVProgressHUD'
+pod 'lottie-ios'
 
 
 end

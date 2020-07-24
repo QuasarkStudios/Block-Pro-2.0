@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol PresentCopiedAnimationProtocol: AnyObject {
+    
+    func presentCopiedAnimation ()
+}
+
 class MessageCell: UITableViewCell {
     
     @IBOutlet weak var profilePicContainer: UIView!
@@ -41,6 +46,8 @@ class MessageCell: UITableViewCell {
         }
     }
     
+    weak var presentCopiedAnimationDelegate: PresentCopiedAnimationProtocol?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
  
@@ -51,13 +58,10 @@ class MessageCell: UITableViewCell {
         }
         
         messageTextView.backgroundColor = .clear
-        messageTextView.textColor = .white
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
+        longPressGesture.minimumPressDuration = 0.3
+        self.addGestureRecognizer(longPressGesture)
     }
     
     private func configureCell (message: Message?) {
@@ -140,8 +144,6 @@ class MessageCell: UITableViewCell {
                             if firebaseCollab.membersProfilePics[member.userID] != nil {
 
                                 profilePicImageView.configureProfileImageView(profileImage: firebaseCollab.membersProfilePics[member.userID]!)
-                                
-                                //profilePicture.profilePic = firebaseCollab.membersProfilePics[organizedMembers?[count].userID ?? ""]!
                             }
 
                             else {
@@ -149,18 +151,11 @@ class MessageCell: UITableViewCell {
                                 firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic, userID) in
                                     
                                     self.profilePicImageView.configureProfileImageView(profileImage: profilePic)
-                                    
-                                    //profilePicture.profilePic = profilePic
-                                    
-                                    //if let memberIndex = organizedMembers?.firstIndex(where: { $0.userID == userID }) {
                                         
                                     self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: profilePic)
-                                    //}
                                 }
                             }
                         }
-                        
-                        //profilePicImageView.configureProfileImageView(profileImage: member.profilePictureImage)
                     }
                 }
                 
@@ -210,6 +205,37 @@ class MessageCell: UITableViewCell {
                     nameLabel.text = "\(member.firstName) \(lastInitial[0])."
                 }
             }
+        }
+    }
+    
+    @objc func handleLongPress (gesture: UILongPressGestureRecognizer) {
+        
+        if gesture.state == .began {
+            
+            let pasteboard = UIPasteboard.general
+            pasteboard.string = messageTextView.text
+            
+            animateMessageTextView()
+        }
+    }
+    
+    private func animateMessageTextView () {
+        
+        let vibrateMethods = VibrateMethods()
+        vibrateMethods.quickVibrate()
+        
+        self.presentCopiedAnimationDelegate?.presentCopiedAnimation()
+        
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
+            
+            self.messageBubbleView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+            
+        }) { (finished: Bool) in
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
+                
+                self.messageBubbleView.transform = .identity
+            })
         }
     }
 }

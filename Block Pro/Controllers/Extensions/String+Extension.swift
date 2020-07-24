@@ -28,9 +28,9 @@ extension String {
     
     func estimateFrameForMessageCell () -> CGRect {
         
-        let size = CGSize(width: 200, height: 1000)
+        let size = CGSize(width: 200, height: 100000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         
-        return NSString(string: self).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont(name: "Poppins-Medium", size: 13) as Any], context: nil)
+        return NSString(string: self).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont(name: "Poppins-Medium", size: 14) as Any], context: nil)
     }
 }

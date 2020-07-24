@@ -16,8 +16,15 @@ protocol ReconfigureView: AnyObject {
 
 class SendPhotoMessageViewController: UIViewController {
 
+    @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var navBar: UINavigationBar!
+    
     @IBOutlet weak var photoImageView: UIImageView!
+    @IBOutlet weak var imageViewTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var imageViewBottomAnchor: NSLayoutConstraint!
+    
+    let messageInputAccesoryView = InputAccesoryView(showsAddButton: false, textViewPlaceholderText: "Add a caption", textViewPlaceholderTextColor: .white)
+    var inputAccesoryViewMethods: InputAccesoryViewMethods!
     
     let currentUser = CurrentUser.sharedInstance
     
@@ -28,65 +35,37 @@ class SendPhotoMessageViewController: UIViewController {
     
     var selectedPhoto: UIImage?
     
-    weak var reconfigureViewDelegate: ReconfigureView?
-    
-    let messageInputAccesoryView = InputAccesoryView(showsAddButton: false, textViewPlaceholderText: "Add a caption")
-    var inputAccesoryViewMethods: InputAccesoryViewMethods!
+    var keyboardHeight: CGFloat?
     
     var messageTextViewText: String = ""
     
-    var keyboardHeight: CGFloat?
-    
-    var topBarHeight: CGFloat {
-        
-        //iPhone 11 Pro Max & iPhone 11
-        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
-            
-            return (self.navigationController?.navigationBar.frame.height ?? 0.0)
-        }
-            
-        //iPhone 11 Pro
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
-            
-            return (self.navigationController?.navigationBar.frame.height ?? 0.0)
-        }
-            
-        //Every other iPhone
-        else {
-
-            return (UIApplication.shared.statusBarFrame.height) +
-            (self.navigationController?.navigationBar.frame.height ?? 0.0)
-        }
-    }
+    weak var reconfigureViewDelegate: ReconfigureView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        navBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white)
+        
+        backgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.95)
+        
+        photoImageView.image = selectedPhoto
+        imageViewBottomAnchor.constant = messageInputAccesoryView.configureSize().height //Setting the bottom anchor of the imageView to be at the top of the messageInputAccesoryView
+        
+        configureInputAccesoryView()
+        
+        configureGestureRecognizors()
         
         if #available(iOS 13.0, *) {
             isModalInPresentation = true
         }
-
-        navBar.configureNavBar()
-        //navBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white)
-        
-        photoImageView.image = selectedPhoto ?? nil
-        
-        configureTextViewContainer()
-        
-        configureGestureRecognizors()
-        
-        //messageInputAccesoryView.backgroundColor = UIColor(hexString: "000000", withAlpha: 0.9)
-        inputAccesoryViewMethods = InputAccesoryViewMethods(accesoryView: messageInputAccesoryView, textViewPlaceholderText: "Add a caption", tableView: nil)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         
         addObservors()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        
-        //readMessages()
         
         removeObservors()
     }
@@ -101,12 +80,28 @@ class SendPhotoMessageViewController: UIViewController {
         return true
     }
     
-    private func configureTextViewContainer () {
+    
+    //MARK: - Configure Input Accesory View
+    
+    private func configureInputAccesoryView () {
         
         messageInputAccesoryView.parentViewController = self
-        messageInputAccesoryView.isHidden = false
-        messageInputAccesoryView.alpha = 1
+        
+        //Tweaking the appearance of the inputAccesoryView
+        messageInputAccesoryView.backgroundColor = .clear
+        messageInputAccesoryView.textViewContainer.backgroundColor = .clear
+        messageInputAccesoryView.textViewContainer.messageTextView.backgroundColor = .clear
+        messageInputAccesoryView.textViewContainer.messageTextView.textColor = .white
+        
+        messageInputAccesoryView.textViewContainer.sendButton.imageEdgeInsets = UIEdgeInsets(top: 3, left: 4, bottom: 3, right: 3)
+        messageInputAccesoryView.textViewContainer.sendButton.backgroundColor = .clear
+        messageInputAccesoryView.textViewContainer.sendButton.tintColor = .white
+        
+        inputAccesoryViewMethods = InputAccesoryViewMethods(accesoryView: messageInputAccesoryView, textViewPlaceholderText: "Add a caption", textViewPlaceholderTextColor: .white, textViewTextColor: .white, tableView: nil)
     }
+    
+    
+    //MARK: - Configure Gesture Recognizors
     
     private func configureGestureRecognizors () {
         
@@ -114,6 +109,9 @@ class SendPhotoMessageViewController: UIViewController {
         dismissKeyboardTap.cancelsTouchesInView = false
         view.addGestureRecognizer(dismissKeyboardTap)
     }
+    
+    
+    //MARK: - Add and Remove Observor Functions
     
     private func addObservors () {
         
@@ -133,17 +131,55 @@ class SendPhotoMessageViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
+    
+    //MARK: - Keyboard Notification Handlers
+    
     @objc internal func keyboardBeingPresented (notification: NSNotification) {
         
-        inputAccesoryViewMethods.keyboardBeingPresented(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: 0, topBarHeight: topBarHeight)
+        inputAccesoryViewMethods.keyboardBeingPresented(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: 0, tableViewBottomInset: nil)
     }
 
     
     @objc internal func keyboardBeingDismissed (notification: NSNotification) {
 
-        inputAccesoryViewMethods.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: 0, textViewText: messageTextViewText)
-
+        inputAccesoryViewMethods.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, tableViewBottomInset: nil, messagesCount: 0, textViewText: messageTextViewText)
     }
+    
+    
+    //MARK: - Animate ImageView Function
+    
+    private func animateImageView (up: Bool) {
+        
+        if up {
+            
+            self.imageViewTopAnchor.constant = -200
+            
+            UIView.animate(withDuration: 0.7, delay: 0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
+                
+                self.view.layoutIfNeeded()
+                
+                self.photoImageView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+                self.photoImageView.alpha = 0.7
+            })
+        }
+        
+        else {
+            
+            self.imageViewTopAnchor.constant = 0
+            
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+                
+                self.view.layoutIfNeeded()
+                
+                self.photoImageView.transform = CGAffineTransform(scaleX: 1, y: 1)
+                self.photoImageView.alpha = 1
+                
+            })
+        }
+    }
+    
+    
+    //MARK: - User Activity Functions
     
     @objc private func setUserActiveStatus () {
         
@@ -170,6 +206,9 @@ class SendPhotoMessageViewController: UIViewController {
             firebaseMessaging.setActivityStatus(collabID: collab.conversationID, Date())
         }
     }
+    
+    
+    //MARK: - Send Message Function
     
     @objc private func sendMessage () {
         
@@ -238,6 +277,9 @@ class SendPhotoMessageViewController: UIViewController {
         }
     }
     
+    
+    //MARK: - Exit Button Function
+    
     @IBAction func exitButton(_ sender: Any) {
         
         reconfigureViewDelegate?.reconfigureView()
@@ -245,17 +287,24 @@ class SendPhotoMessageViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
+    
+    //MARK: - Dismiss Keyboard Function
+    
     @objc private func dismissKeyboard () {
         
         messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
     }
 }
 
+//MARK: - UITextViewDelegate Extension
+
 extension SendPhotoMessageViewController: UITextViewDelegate {
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         
-        inputAccesoryViewMethods.textViewBeganEditing(textView: textView)
+        inputAccesoryViewMethods.textViewBeganEditing(textView: textView, keyboardHeight: keyboardHeight)
+        
+        animateImageView(up: true)
     }
     
     func textViewDidChange(_ textView: UITextView) {
@@ -268,5 +317,7 @@ extension SendPhotoMessageViewController: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
         
         inputAccesoryViewMethods.textViewEndedEditing(textView: textView)
+        
+        animateImageView(up: false)
     }
 }

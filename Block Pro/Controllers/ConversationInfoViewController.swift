@@ -17,6 +17,8 @@ protocol MoveToConversationWithFriendProtcol: AnyObject {
 class ConversationInfoViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet weak var backgroundView: UIView!
+    @IBOutlet weak var backgroundViewHeightConstraint: NSLayoutConstraint!
+    
     @IBOutlet weak var messagingInfoTableView: UITableView!
     
     var editCoverButton: UIButton?
@@ -483,7 +485,8 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         
         if indexPath.section == 0 {
             
-            vibrate()
+            let vibrateMethods = VibrateMethods()
+            vibrateMethods.quickVibrate()
             
             if let conversation = personalConversation {
                 
@@ -554,6 +557,14 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                     performSegue(withIdentifier: "moveToConvoPhotoView", sender: self)
                 }
             }
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if scrollView.contentOffset.y < 0 {
+            
+            backgroundViewHeightConstraint.constant = abs(scrollView.contentOffset.y)
         }
     }
     
@@ -746,7 +757,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 
                 else {
                     
-                    self?.retrieveNewPhotoMessages(self?.filterPhotoMessages(messages: messages))
+                    self?.retrieveNewPhotoMessages(self?.firebaseMessaging.filterPhotoMessages(messages: messages))
                 }
             }
     }
@@ -865,27 +876,9 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 
                 else {
                     
-                    self?.retrieveNewPhotoMessages(self?.filterPhotoMessages(messages: messages))
+                    self?.retrieveNewPhotoMessages(self?.firebaseMessaging.filterPhotoMessages(messages: messages))
                 }
             }
-    }
-    
-    
-    //MARK: - Filter Messages Function
-    
-    private func filterPhotoMessages (messages: [Message]?) -> [Message] {
-        
-        var photoMessages: [Message] = []
-        
-        for message in messages ?? [] {
-            
-            if message.messagePhoto != nil {
-                
-                photoMessages.append(message)
-            }
-        }
-        
-        return photoMessages
     }
     
     
@@ -1070,25 +1063,6 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 }
             }
         }
-    }
-    
-    
-    //MARK: - Vibrate Function
-    
-    private func vibrate () {
-        
-        let generator: UIImpactFeedbackGenerator?
-        
-        if #available(iOS 13.0, *) {
-
-            generator = UIImpactFeedbackGenerator(style: .rigid)
-        
-        } else {
-            
-            generator = UIImpactFeedbackGenerator(style: .medium)
-        }
-        
-        generator?.impactOccurred()
     }
     
     
@@ -1324,7 +1298,8 @@ extension ConversationInfoViewController {
                 
                 self.zoomedInImageViewFrame = self.zoomedInImageView?.frame
                 
-                self.addCoverImageViewPanGesture(imageView: self.zoomedInImageView)
+                self.addCoverImageViewPanGesture(view: self.zoomedInImageView)
+                self.addCoverImageViewPanGesture(view: self.blackBackground)
             }
         }
     }
@@ -1381,13 +1356,13 @@ extension ConversationInfoViewController {
         }
     }
     
-    private func addCoverImageViewPanGesture (imageView: UIImageView?) {
+    private func addCoverImageViewPanGesture (view: UIView?) {
         
-        if imageView != nil {
+        if view != nil {
             
             panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleCoverImageViewPan(sender:)))
             
-            imageView?.addGestureRecognizer(panGesture!)
+            view?.addGestureRecognizer(panGesture!)
         }
     }
     
@@ -1527,7 +1502,9 @@ extension ConversationInfoViewController {
                 
                 self.zoomedInImageViewFrame = self.zoomedInImageView?.frame
                 
-                self.addPhotoImageViewPanGesture(imageView: self.zoomedInImageView)
+                self.addPhotoImageViewPanGesture(view: self.zoomedInImageView)
+                
+                self.addPhotoImageViewPanGesture(view: self.blackBackground)
             }
         }
     }
@@ -1553,13 +1530,13 @@ extension ConversationInfoViewController {
         }
     }
     
-    private func addPhotoImageViewPanGesture (imageView: UIImageView?) {
+    private func addPhotoImageViewPanGesture (view: UIView?) {
         
-        if imageView != nil {
+        if view != nil {
             
             panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePhotoImageViewPan(sender:)))
             
-            imageView?.addGestureRecognizer(panGesture!)
+            view?.addGestureRecognizer(panGesture!)
         }
     }
     

@@ -7,7 +7,8 @@
 //
 
 import UIKit
-import Firebase
+import FirebaseAuth
+import FirebaseFirestore
 
 class LogIn_RegisterViewController: UIViewController, UITextFieldDelegate {
     

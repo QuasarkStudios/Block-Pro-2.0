@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import Firebase
+import FirebaseAuth
 import iProgressHUD
 import BEMCheckBox
 

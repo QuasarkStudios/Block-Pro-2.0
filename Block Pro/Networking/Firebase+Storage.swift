@@ -7,7 +7,9 @@
 //
 
 import Foundation
-import Firebase
+//import Firebase
+import FirebaseAuth
+import FirebaseFirestore
 import FirebaseStorage
 
 class FirebaseStorage {
