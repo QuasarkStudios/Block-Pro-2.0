@@ -31,6 +31,7 @@ class ConvoPhotoInfoCell: UITableViewCell, UICollectionViewDataSource, UICollect
     
     weak var cachePhotoDelegate: CachePhotoProtocol?
     weak var zoomInDelegate: ZoomInProtocol?
+    weak var presentCopiedAnimationDelegate: PresentCopiedAnimationProtocol?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -74,6 +75,7 @@ class ConvoPhotoInfoCell: UITableViewCell, UICollectionViewDataSource, UICollect
         cell.imageViewCornerRadius = 8
         
         cell.cachePhotoDelegate = cachePhotoDelegate
+        cell.presentCopiedAnimationDelegate = presentCopiedAnimationDelegate
         
         return cell
     }
@@ -88,6 +90,8 @@ class ConvoPhotoInfoCell: UITableViewCell, UICollectionViewDataSource, UICollect
         
         collectionView.dataSource = self
         collectionView.delegate = self
+        
+        collectionView.isScrollEnabled = false
         
         let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
         

@@ -21,8 +21,13 @@ struct Conversation {
     var dateCreated: Date?
     
     var messagePreview: Message?
-    var members: [Member] = []
     
+    var currentMembersIDs: [String] = []
+    var currentMembers: [Member] = []
+    var historicMembers: [Member] = []
+    
+    //var memberGainedAccessOn: [String : Date]?
+    var memberGainedAccessOn: [String : Any]?
     var memberActivity: [String : Any]?
     
 }

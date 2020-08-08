@@ -13,9 +13,25 @@ class ConvoPhotosHeaderInfoCell: UITableViewCell {
     @IBOutlet weak var seeAllLabel: UILabel!
     @IBOutlet weak var seeAllArrow: UIImageView!
     
+    var photoMessageCount: Int? {
+        didSet {
+            
+            if let count = photoMessageCount, count > 6 {
+                
+                seeAllLabel.isHidden = false
+                seeAllArrow.isHidden = false
+            }
+            
+            else {
+                
+                seeAllLabel.isHidden = true
+                seeAllArrow.isHidden = true
+            }
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
-
 }

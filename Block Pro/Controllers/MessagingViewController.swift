@@ -19,7 +19,7 @@ class MessagingViewController: UIViewController {
     let noMessagesAnimationView = AnimationView(name: "chat-bubbles-animation")
     let noMessagesAnimationTitle = UILabel()
     
-    let copiedAnimationContainer = UIView()
+    var copiedAnimationView: CopiedAnimationView?
     
     var messagingMethods: MessagingMethods!
     
@@ -45,29 +45,7 @@ class MessagingViewController: UIViewController {
     
     var infoViewBeingPresented: Bool = false
     
-    var tableViewBottomInset: CGFloat {
-        
-        //iPhone 11 Pro Max & iPhone 11
-        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
-            
-            //5 points away from the top of the messageTextView or 3 points away from the top messageInputAccesoryView
-            return 46
-        }
-            
-        //iPhone 11 Pro
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
-            
-            //5 points away from the top of the messageTextView or 3 points away from the top messageInputAccesoryView
-            return 46
-        }
-            
-        //Every other iPhone
-        else {
-
-            //5 points away from the top of the messageTextView or 3 points away from the top messageInputAccesoryView
-            return 54
-        }
-    }
+    var dismissKeyboardGesture: UITapGestureRecognizer?
     
     var dismissAnimationContainerWorkItem: DispatchWorkItem?
     
@@ -82,24 +60,23 @@ class MessagingViewController: UIViewController {
         if let conversationID = personalConversation?.conversationID {
             
             messagingMethods = MessagingMethods(parentViewController: self, tableView: messagesTableView, conversationID: conversationID)
-            messagingMethods.configureTableView(bottomInset: tableViewBottomInset)
+            messagingMethods.configureTableView()
         }
         
         else if let collabID = collabConversation?.conversationID {
             
             messagingMethods = MessagingMethods(parentViewController: self, tableView: messagesTableView, collabID: collabID)
-            messagingMethods.configureTableView(bottomInset: tableViewBottomInset)
+            messagingMethods.configureTableView()
         }
         
         //Initializing InputAccesoryViewMethods
         inputAccesoryViewMethods = InputAccesoryViewMethods(accesoryView: messageInputAccesoryView, textViewPlaceholderText: "Send a message", tableView: messagesTableView)
         
         setUserActiveStatus()
-        
-        configureCopiedAnimation()
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         configureNavBar(navBar: navigationController?.navigationBar)
         
@@ -107,6 +84,7 @@ class MessagingViewController: UIViewController {
         retrieveCollabMessages(collabConversation)
 
         //Experimenting with calling these functions here instead of viewDidAppear
+        
         monitorPersonalConversation(personalConversation)
         monitorCollabConversation(collabConversation)
         
@@ -114,10 +92,16 @@ class MessagingViewController: UIViewController {
         
         self.becomeFirstResponder()
         
+        retrieveMessageDraft()
+        
         infoViewBeingPresented = false
+        
+        //Initializing here allows the animationView to be removed and readded multiple times
+        copiedAnimationView = CopiedAnimationView()
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         //Testing placing all these functions in viewWillAppear
         
@@ -132,18 +116,24 @@ class MessagingViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
-        firebaseMessaging.conversationListener?.remove()
+        firebaseMessaging.personalConversationListener?.remove()
+        firebaseMessaging.collabConversationListener?.remove()
+        
         firebaseMessaging.messageListener?.remove()
         
         removeObservors()
         
-        setUserInactiveStatus()
+        saveMessageDraft()
         
-        removeCopiedAnimationContainer()
+        //If the infoView is not being presented, then the copiedAnimationContainer should be removed; otherwise just dismissed if present
+        copiedAnimationView?.removeCopiedAnimation(remove: !infoViewBeingPresented)
     }
     
     deinit {
+        
+        setUserInactiveStatus()
         
         print("view denit")
     }
@@ -175,7 +165,7 @@ class MessagingViewController: UIViewController {
             
             else {
                 
-                configureNavBarTitleViewWithMembers(conversation.members)
+                configureNavBarTitleViewWithMembers(conversation)
             }
             
             configureConversationNameLabel(conversation: conversation)
@@ -190,7 +180,7 @@ class MessagingViewController: UIViewController {
             
             else {
                 
-                configureNavBarTitleViewWithMembers(conversation.members)
+                configureNavBarTitleViewWithMembers(conversation)
             }
             
             configureConversationNameLabel(conversation: conversation)
@@ -203,7 +193,7 @@ class MessagingViewController: UIViewController {
     private func configureNavBarTitleViewWithCoverPhoto (personalConversation: Conversation? = nil, collabConversation: Conversation? = nil) {
         
         let coverContainer = UIView(frame: CGRect(x: 0, y: 0, width: 32, height: 32))
-        let coverPicture = ProfilePicture.init(profilePic: UIImage(named: "Abstract"), shadowRadius: 2, shadowOpacity: 0.35, borderColor: UIColor.white.cgColor)
+        let coverPicture = ProfilePicture(profilePic: UIImage(named: "Mountains"), shadowRadius: 2, shadowOpacity: 0.35, borderColor: UIColor(hexString: "F4F4F4", withAlpha: 0.1)!.cgColor)
         
         coverContainer.addSubview(coverPicture)
         
@@ -258,62 +248,126 @@ class MessagingViewController: UIViewController {
         self.navigationItem.titleView = coverContainer
     }
     
-    private func configureNavBarTitleViewWithMembers (_ convoMembers: [Member]) {
-        
-        let stackViewWidth = ((convoMembers.count - 1) * 32) - ((convoMembers.count - 1) * 11)
-        let memberStackView = UIStackView(frame: CGRect(x: 0, y: 0, width: stackViewWidth, height: 32))
-        memberStackView.alignment = .center
-        memberStackView.distribution = .fillProportionally
-        memberStackView.axis = .horizontal
-        memberStackView.spacing = -13
-        
-        var memberCount = 0
-        
-        for member in convoMembers {
-            
-            if member.userID != currentUser.userID {
-                
-                let profilePic = ProfilePicture.init(profilePic: UIImage(named: "DefaultProfilePic"), shadowRadius: 2, shadowOpacity: 0.35, borderColor: UIColor.white.cgColor)
-                
-                memberStackView.addArrangedSubview(profilePic)
-                
-                profilePic.translatesAutoresizingMaskIntoConstraints = false
-                
-                [
+    private func configureNavBarTitleViewWithMembers (_ personalConversation: Conversation? = nil, _ collabConversation: Conversation? = nil) {
 
-                    profilePic.topAnchor.constraint(equalTo: profilePic.superview!.topAnchor, constant: 0),
-                    profilePic.leadingAnchor.constraint(equalTo: profilePic.superview!.leadingAnchor, constant: CGFloat(memberCount * 19)),
-                    profilePic.widthAnchor.constraint(equalToConstant: 32),
-                    profilePic.heightAnchor.constraint(equalToConstant: 32)
-                    
-                ].forEach( { $0.isActive = true } )
-                
-                if let friend = firebaseCollab.friends.first(where: { $0.userID == member.userID }) {
-                    
-                    profilePic.profilePic = friend.profilePictureImage
-                }
-                
-                else if let memberProfilePic = firebaseCollab.membersProfilePics[member.userID] {
-                    
-                    profilePic.profilePic = memberProfilePic
-                }
-                
-                else {
-                    
-                    firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { [weak self] (retrievedProfilePic, userID) in
-                        
-                        profilePic.profilePic = retrievedProfilePic
-                        
-                        self?.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: retrievedProfilePic)
-                    }
-                }
-                
-                memberCount += 1
+        guard let conversation = personalConversation != nil ? personalConversation : collabConversation else { return }
+
+            if conversation.currentMembers.count == 1 {
+
+                configureCurrentUserProfilePic()
             }
+
+            else {
+
+                var filteredMembers = conversation.currentMembers.sorted(by: { $0.firstName < $1.firstName })
+                filteredMembers.removeAll(where: { $0.userID == currentUser.userID })
+                
+                let stackViewWidth = filteredMembers.count * 34
+                let memberStackView = UIStackView(frame: CGRect(x: 0, y: 0, width: CGFloat(stackViewWidth), height: 34))
+                memberStackView.alignment = .center
+                memberStackView.distribution = .fillProportionally
+                memberStackView.axis = .horizontal
+                memberStackView.spacing = -17 //Half the size of the profilePicOutline
+                
+                var memberCount: Int = 0
+                
+                for member in filteredMembers {
+                    
+                    let profilePicOutline = UIView()
+                    profilePicOutline.backgroundColor = memberCount == 0 ? .clear : .white
+                    profilePicOutline.layer.cornerRadius = 0.5 * 34
+                    profilePicOutline.clipsToBounds = true
+                    
+                    var profilePic: ProfilePicture
+                        
+                    if memberCount == 0 {
+                        
+                        profilePic = ProfilePicture(profilePic: UIImage(named: "DefaultProfilePic"), shadowRadius: 2, shadowOpacity: 0.2, borderColor: UIColor.clear.cgColor, borderWidth: 0)
+                    }
+                    
+                    else {
+                        
+                        profilePic = ProfilePicture(profilePic: UIImage(named: "DefaultProfilePic"), shadowRadius: 0, shadowColor: UIColor.clear.cgColor, shadowOpacity: 0, borderColor: UIColor.clear.cgColor, borderWidth: 0)
+                    }
+                    
+                    profilePicOutline.addSubview(profilePic)
+                    memberStackView.addArrangedSubview(profilePicOutline)
+                    
+                    profilePicOutline.translatesAutoresizingMaskIntoConstraints = false
+                    profilePic.translatesAutoresizingMaskIntoConstraints = false
+                    
+                    [
+                        // 17 is half the size of the profilePicOutline
+                        profilePicOutline.topAnchor.constraint(equalTo: profilePicOutline.superview!.topAnchor, constant: 0),
+                        profilePicOutline.leadingAnchor.constraint(equalTo: profilePicOutline.superview!.leadingAnchor, constant: CGFloat(memberCount * 17)),
+                        profilePicOutline.widthAnchor.constraint(equalToConstant: 34),
+                        profilePicOutline.heightAnchor.constraint(equalToConstant: 34),
+                        
+                        profilePic.centerXAnchor.constraint(equalTo: profilePic.superview!.centerXAnchor),
+                        profilePic.centerYAnchor.constraint(equalTo: profilePic.superview!.centerYAnchor),
+                        profilePic.widthAnchor.constraint(equalToConstant: 30),
+                        profilePic.heightAnchor.constraint(equalToConstant: 30)
+                    
+                    ].forEach({ $0.isActive = true })
+                    
+                    if let friend = firebaseCollab.friends.first(where: { $0.userID == member.userID }) {
+
+                        profilePic.profilePic = friend.profilePictureImage
+                    }
+
+                    else if let memberProfilePic = firebaseCollab.membersProfilePics[member.userID] {
+
+                        profilePic.profilePic = memberProfilePic
+                    }
+
+                    else {
+
+                        firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { [weak self] (retrievedProfilePic, userID) in
+
+                            profilePic.profilePic = retrievedProfilePic
+
+                            self?.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: retrievedProfilePic)
+                        }
+                    }
+                    
+                    memberCount += 1
+                }
+                
+                self.navigationItem.titleView = memberStackView
+            }
+    }
+    
+    private func configureCurrentUserProfilePic () {
+        
+        let profilePicture = ProfilePicture(profilePic: UIImage(named: "DefaultProfilePic")!, shadowRadius: 2, shadowOpacity: 0.35, borderColor: UIColor(hexString: "F4F4F4", withAlpha: 0.1)!.cgColor)
+        
+        profilePicture.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+
+            profilePicture.widthAnchor.constraint(equalToConstant: 32),
+            profilePicture.heightAnchor.constraint(equalToConstant: 32)
+            
+        ].forEach( { $0.isActive = true } )
+        
+        if let currentUserProfilePic = currentUser.profilePictureImage {
+            
+            profilePicture.profilePic = currentUserProfilePic
+            
+            self.navigationItem.titleView = profilePicture
         }
         
-        self.navigationItem.titleView = memberStackView
+        else {
+            
+            firebaseStorage.retrieveUserProfilePicFromStorage(userID: currentUser.userID) { [weak self] (profilePic, userID) in
+                
+                profilePicture.profilePic = profilePic
+                
+                self?.navigationItem.titleView = profilePicture
+            }
+        }
     }
+
     
     
     //MARK: - Configure Conversation Name Function
@@ -325,14 +379,10 @@ class MessagingViewController: UIViewController {
             conversationNameLabel.text = name
         }
         
-        else {
+        else if conversation.currentMembers.count > 1 {
             
-            var organizedMembers = conversation.members.sorted(by: { $0.firstName < $1.firstName })
-            
-            if let currentUserIndex = organizedMembers.firstIndex(where: { $0.userID == currentUser.userID }) {
-                
-                organizedMembers.remove(at: currentUserIndex)
-            }
+            var organizedMembers = conversation.currentMembers.sorted(by: { $0.firstName < $1.firstName })
+            organizedMembers.removeAll(where: { $0.userID == currentUser.userID })
             
             var name: String = ""
             
@@ -356,6 +406,11 @@ class MessagingViewController: UIViewController {
             
             conversationNameLabel.text = name
         }
+        
+        else {
+            
+            conversationNameLabel.text = "Just You"
+        }
     }
     
     
@@ -364,6 +419,8 @@ class MessagingViewController: UIViewController {
     private func configureNoMessagesAnimation() {
         
         //Configuring the container
+        noMessagesAnimationContainer.alpha = noMessagesAnimationContainer.superview == nil ? 0 : 1
+        
         self.view.addSubview(noMessagesAnimationContainer)
         noMessagesAnimationContainer.translatesAutoresizingMaskIntoConstraints = false
         
@@ -375,6 +432,11 @@ class MessagingViewController: UIViewController {
             noMessagesAnimationContainer.heightAnchor.constraint(equalToConstant: self.view.frame.width)
             
         ].forEach({ $0.isActive = true })
+        
+        UIView.animate(withDuration: 0.2) {
+            
+            self.noMessagesAnimationContainer.alpha = 1
+        }
         
         //Configuring the animationView
         noMessagesAnimationContainer.addSubview(noMessagesAnimationView)
@@ -440,167 +502,6 @@ class MessagingViewController: UIViewController {
     }
     
     
-    //MARK: - Copied Animation Functions
-    
-    private func configureCopiedAnimation () {
-        
-        if let keyWindow = UIApplication.shared.keyWindow {
-            
-            keyWindow.addSubview(copiedAnimationContainer)
-            copiedAnimationContainer.translatesAutoresizingMaskIntoConstraints = false
-            
-            [
-            
-                copiedAnimationContainer.centerXAnchor.constraint(equalTo: keyWindow.centerXAnchor),
-                copiedAnimationContainer.topAnchor.constraint(equalTo: keyWindow.topAnchor, constant: -40/*120*/),
-                copiedAnimationContainer.widthAnchor.constraint(equalToConstant: 120),
-                copiedAnimationContainer.heightAnchor.constraint(equalToConstant: 32)
-            
-            ].forEach({ $0.isActive = true })
-            
-            copiedAnimationContainer.backgroundColor = UIColor.white
-            copiedAnimationContainer.alpha = 0
-            
-            copiedAnimationContainer.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
-            copiedAnimationContainer.layer.shadowOpacity = 0.5
-            copiedAnimationContainer.layer.shadowRadius = 2
-            copiedAnimationContainer.layer.shadowOffset = CGSize(width: 0, height: 1)
-            
-            copiedAnimationContainer.layer.cornerRadius = 16
-            
-            if #available(iOS 13.0, *) {
-                copiedAnimationContainer.layer.cornerCurve = .continuous
-            }
-            
-            let copiedAnimationTitle = UILabel()
-            
-            copiedAnimationContainer.addSubview(copiedAnimationTitle)
-            copiedAnimationTitle.translatesAutoresizingMaskIntoConstraints = false
-            
-            [
-            
-                copiedAnimationTitle.topAnchor.constraint(equalTo: copiedAnimationContainer.topAnchor, constant: 0),
-                copiedAnimationTitle.bottomAnchor.constraint(equalTo: copiedAnimationContainer.bottomAnchor, constant: 0),
-                copiedAnimationTitle.leadingAnchor.constraint(equalTo: copiedAnimationContainer.leadingAnchor, constant: 13),
-                copiedAnimationTitle.widthAnchor.constraint(equalToConstant: 65)
-                
-            ].forEach({ $0.isActive = true })
-            
-            copiedAnimationTitle.text = "Copied"
-            copiedAnimationTitle.textAlignment = .center
-            copiedAnimationTitle.font = UIFont(name: "Poppins-SemiBold", size: 16)
-            
-            let copiedAnimationView = AnimationView(name: "scissor-cutting-animated")
-            
-            copiedAnimationContainer.addSubview(copiedAnimationView)
-            copiedAnimationView.translatesAutoresizingMaskIntoConstraints = false
-            
-            [
-            
-                copiedAnimationView.trailingAnchor.constraint(equalTo: copiedAnimationContainer.trailingAnchor, constant: 0),
-                copiedAnimationView.centerYAnchor.constraint(equalTo: copiedAnimationContainer.centerYAnchor),
-                copiedAnimationView.widthAnchor.constraint(equalToConstant: 50),
-                copiedAnimationView.heightAnchor.constraint(equalToConstant: 50)
-            
-            ].forEach({ $0.isActive = true })
-            
-            copiedAnimationView.animationSpeed = 2
-            copiedAnimationView.loopMode = .loop
-        }
-    }
-    
-    private func presentCopiedAnimationContainer () {
-        
-        dismissAnimationContainerWorkItem?.cancel() //Cancels the workItem that would've dismissed the container
-        
-        for subview in copiedAnimationContainer.subviews {
-            
-            if let animationView = subview as? AnimationView {
-
-                animationView.stop() //To allow for the animation to be appear to be restarted if it is already ongoing
-            }
-        }
-        
-        UIApplication.shared.keyWindow?.constraints.forEach { (constraint) in
-            
-            if constraint.firstAttribute == .top {
-                
-                constraint.constant = conversationNameLabel.frame.maxY + 5
-            }
-        }
-        
-        UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseInOut, animations: {
-            
-            UIApplication.shared.keyWindow?.layoutIfNeeded()
-            
-        })
-        
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
-            
-            self.copiedAnimationContainer.alpha = 1
-            
-        }) { (finished: Bool) in
-            
-            for subview in self.copiedAnimationContainer.subviews {
-                
-                if let animationView = subview as? AnimationView {
-
-                    animationView.play()
-                }
-            }
-            
-            //Schedules the workItem that will dismiss the container
-            self.dismissAnimationContainerWorkItem = DispatchWorkItem(block: {
-                
-                self.dismissCopiedAnimationContainer()
-            })
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: self.dismissAnimationContainerWorkItem!)
-        }
-    }
-    
-    private func dismissCopiedAnimationContainer () {
-        
-        for subview in self.copiedAnimationContainer.subviews {
-            
-            if let animationView = subview as? AnimationView {
-
-                animationView.stop()
-            }
-        }
-        
-        UIApplication.shared.keyWindow?.constraints.forEach { (constraint) in
-            
-            if constraint.firstAttribute == .top {
-                
-                constraint.constant = -40
-            }
-        }
-        
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
-            
-            UIApplication.shared.keyWindow?.layoutIfNeeded()
-            
-            self.copiedAnimationContainer.alpha = 0
-        })
-    }
-    
-    private func removeCopiedAnimationContainer () {
-        
-        dismissAnimationContainerWorkItem?.cancel() //Cancels the workItem that would've dismissed the container
-        dismissCopiedAnimationContainer()
-        
-        //If the user is returning home, signifying that this view will be deallocated
-        if !infoViewBeingPresented {
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                
-                self.copiedAnimationContainer.removeFromSuperview()
-            }
-        }
-    }
-    
-    
     //MARK: Add and Remove Observor Functions
     
     private func addObservors () {
@@ -609,10 +510,11 @@ class MessagingViewController: UIViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingDismissed), name: UIResponder.keyboardWillHideNotification, object: nil)
         
-        
         NotificationCenter.default.addObserver(self, selector: #selector(setUserActiveStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(setUserInactiveStatus), name: UIApplication.willResignActiveNotification, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(saveMessageDraft), name: UIApplication.willTerminateNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(sendMessage), name: .userDidSendMessage, object: nil)
         
@@ -632,7 +534,7 @@ class MessagingViewController: UIViewController {
         //Required for smoothness
         if !(imageViewBeingZoomed ?? false) && messageInputAccesoryView.textViewContainer.messageTextView.isFirstResponder {
             
-            inputAccesoryViewMethods.keyboardBeingPresented(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0, tableViewBottomInset: tableViewBottomInset)
+            inputAccesoryViewMethods.keyboardBeingPresented(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0)
         }
     }
 
@@ -642,7 +544,7 @@ class MessagingViewController: UIViewController {
         //Required for smoothness
         if !(imageViewBeingZoomed ?? false) {
             
-            inputAccesoryViewMethods.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, tableViewBottomInset: tableViewBottomInset, messagesCount: messages?.count ?? 0, textViewText: messageTextViewText)
+            inputAccesoryViewMethods.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0, textViewText: messageTextViewText)
         }
     }
     
@@ -666,11 +568,20 @@ class MessagingViewController: UIViewController {
                     if messages.count == 0 {
                         
                         self?.configureNoMessagesAnimation()
+                        
+                        self?.dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(self?.dismissKeyboard))
+                        self?.view.addGestureRecognizer((self?.dismissKeyboardGesture)!)
                     }
                     
                     else {
                         
                         self?.removeNoMessagesAnimation()
+                        
+                        if let gesture = self?.dismissKeyboardGesture {
+                            
+                            self?.view.removeGestureRecognizer(gesture)
+                            self?.dismissKeyboardGesture = nil
+                        }
                     }
                     
                     for message in messages {
@@ -712,11 +623,20 @@ class MessagingViewController: UIViewController {
                     if messages.count == 0 {
                         
                         self?.configureNoMessagesAnimation()
+                        
+                        self?.dismissKeyboardGesture = UITapGestureRecognizer(target: self, action: #selector(self?.dismissKeyboard))
+                        self?.view.addGestureRecognizer((self?.dismissKeyboardGesture)!)
                     }
                     
                     else {
                         
                         self?.removeNoMessagesAnimation()
+                        
+                        if let gesture = self?.dismissKeyboardGesture {
+                            
+                            self?.view.removeGestureRecognizer(gesture)
+                            self?.dismissKeyboardGesture = nil
+                        }
                     }
                     
                     for message in messages {
@@ -748,7 +668,7 @@ class MessagingViewController: UIViewController {
     private func monitorPersonalConversation (_ personalConversation: Conversation?) {
         
         guard let conversation = personalConversation else { return }
-            
+        
             firebaseMessaging.monitorPersonalConversation(conversationID: conversation.conversationID) { [weak self] (updatedConvo) in
                 
                 if let error = updatedConvo["error"] {
@@ -785,7 +705,7 @@ class MessagingViewController: UIViewController {
                             
                             else {
                                 
-                                self?.configureNavBarTitleViewWithMembers(self?.personalConversation?.members ?? [])
+                                self?.configureNavBarTitleViewWithMembers(self?.personalConversation)
                             }
                         }
                     }
@@ -799,36 +719,33 @@ class MessagingViewController: UIViewController {
                         }
                     }
                     
-                    //Conversation members have been changed
-                    if updatedConvo.contains(where: { $0.key == "members" }) {
+                    if updatedConvo.contains(where: { $0.key == "currentMembersIDs" }) {
                         
-                        if let members = updatedConvo["members"] as? [Member] {
+                        //Current members may have been updated
+                        if let memberIDs = updatedConvo["currentMembersIDs"] as? [String] {
                             
-                            if self?.personalConversation?.members.count != members.count {
+                            self?.personalConversation?.currentMembersIDs = memberIDs
+                        }
+                    }
+                    
+                    //Conversation members have been changed
+                    if updatedConvo.contains(where: { $0.key == "historicMembers" }) && updatedConvo.contains(where: { $0.key == "currentMembers" }) {
+                        
+                        if let historicMembers = updatedConvo["historicMembers"] as? [Member], let currentMembers = updatedConvo["currentMembers"] as? [Member] {
+                            
+                            self?.personalConversation?.historicMembers = historicMembers
+                            self?.personalConversation?.currentMembers = currentMembers
+                            
+                            if self?.personalConversation?.coverPhotoID == nil {
                                 
-                                self?.personalConversation?.members = members
-                                
-                                if self?.personalConversation?.coverPhotoID == nil {
-                                    
-                                    self?.configureNavBarTitleViewWithMembers(self?.personalConversation?.members ?? [])
-                                }
+                                self?.configureNavBarTitleViewWithMembers(self?.personalConversation)
                             }
                             
                             else {
                                 
-                                for member in members {
+                                if let conversation = self?.personalConversation {
                                     
-                                    if members.contains(where: { $0.userID == member.userID }) == false {
-                                        
-                                        self?.personalConversation?.members = members
-                                        
-                                        if self?.personalConversation?.coverPhotoID == nil {
-                                            
-                                            self?.configureNavBarTitleViewWithMembers(self?.personalConversation?.members ?? [])
-                                        }
-                                        
-                                        break
-                                    }
+                                    self?.configureConversationNameLabel(conversation: conversation)
                                 }
                             }
                         }
@@ -879,7 +796,7 @@ class MessagingViewController: UIViewController {
                                 
                                 else {
                                     
-                                    self?.configureNavBarTitleViewWithMembers(self?.collabConversation?.members ?? [])
+                                    self?.configureNavBarTitleViewWithMembers(self?.collabConversation)
                                 }
                             }
                         }
@@ -893,36 +810,34 @@ class MessagingViewController: UIViewController {
                             }
                         }
                         
-                        //Collab members have been changed
-                        if updatedConvo.contains(where: { $0.key == "members" }) {
+                        if updatedConvo.contains(where: { $0.key == "currentMembersIDs" }) {
                             
-                            if let members = updatedConvo["members"] as? [Member] {
+                            //Current members may have been updated
+                            if let memberIDs = updatedConvo["currentMembersIDs"] as? [String] {
                                 
-                                if self?.collabConversation?.members.count != members.count {
+                                self?.collabConversation?.currentMembersIDs = memberIDs
+                            }
+                        }
+                        
+                        //Collab members have been changed
+                        if updatedConvo.contains(where: { $0.key == "historicMembers" }) && updatedConvo.contains(where: { $0.key == "currentMembers" }) {
+                            
+                            if let historicMembers = updatedConvo["historicMembers"] as? [Member], let currentMembers = updatedConvo["currentMembers"] as? [Member] {
+                                
+
+                                self?.collabConversation?.historicMembers = historicMembers
+                                self?.collabConversation?.currentMembers = currentMembers
+                                
+                                if self?.collabConversation?.coverPhotoID == nil {
                                     
-                                    self?.collabConversation?.members = members
-                                    
-                                    if self?.collabConversation?.coverPhotoID == nil {
-                                        
-                                        self?.configureNavBarTitleViewWithMembers(self?.collabConversation?.members ?? [])
-                                    }
+                                    self?.configureNavBarTitleViewWithMembers(self?.collabConversation)
                                 }
                                 
                                 else {
                                     
-                                    for member in members {
+                                    if let conversation = self?.collabConversation {
                                         
-                                        if members.contains(where: { $0.userID == member.userID }) == false {
-                                            
-                                            self?.collabConversation?.members = members
-                                            
-                                            if self?.collabConversation?.coverPhotoID == nil {
-                                                
-                                                self?.configureNavBarTitleViewWithMembers(self?.collabConversation?.members ?? [])
-                                            }
-                                            
-                                            break
-                                        }
+                                        self?.configureConversationNameLabel(conversation: conversation)
                                     }
                                 }
                             }
@@ -930,6 +845,59 @@ class MessagingViewController: UIViewController {
                     }
                 }
             }
+    }
+    
+    
+    //MARK: - Save Message Draft Function
+    
+    @objc private func saveMessageDraft () {
+        
+        if messageTextViewText.leniantValidationOfTextEntered() && inputAccesoryViewMethods.validateTextChange() && !infoViewBeingPresented {
+            
+            let defaults = UserDefaults.standard
+            
+            if let conversationID = personalConversation?.conversationID {
+                
+                defaults.setValue(messageTextViewText, forKey: "messageDraftForConvo: " + conversationID)
+            }
+            
+            else if let collabID = collabConversation?.conversationID {
+                
+                defaults.setValue(messageTextViewText, forKey: "messageDraftForConvo: " + collabID)
+            }
+        }
+    }
+    
+    
+    //MARK: - Retrieve Message Draft Function
+    
+    private func retrieveMessageDraft () {
+        
+        let defaults = UserDefaults.standard
+        
+        if let conversationID = personalConversation?.conversationID {
+            
+            if let messageDraft = defaults.value(forKey: "messageDraftForConvo: " + conversationID) as? String {
+                
+                messageInputAccesoryView.textViewContainer.messageTextView.text = messageDraft
+                messageInputAccesoryView.textViewContainer.messageTextView.textColor = inputAccesoryViewMethods.textViewTextColor
+                messageTextViewText = messageDraft
+                
+                defaults.setValue(nil, forKey: "messageDraftForConvo: " + conversationID)
+            }
+        }
+        
+        else if let collabID = collabConversation?.conversationID {
+            
+            if let messageDraft = defaults.value(forKey: "messageDraftForConvo: " + collabID) as? String {
+                
+                messageInputAccesoryView.textViewContainer.messageTextView.text = messageDraft
+                messageInputAccesoryView.textViewContainer.messageTextView.textColor = inputAccesoryViewMethods.textViewTextColor
+                messageTextViewText = messageDraft
+                
+                defaults.setValue(nil, forKey: "messageDraftForConvo: " + collabID)
+            }
+        }
     }
     
     
@@ -1014,19 +982,15 @@ class MessagingViewController: UIViewController {
     }
     
     @objc private func setUserInactiveStatus () {
+            
+        if let conversation = personalConversation {
+            
+            firebaseMessaging.setActivityStatus(conversationID: conversation.conversationID, Date())
+        }
         
-        //Checks if the user isn't just moving to the conversationInfoViewController
-        if !infoViewBeingPresented {
+        else if let collab = collabConversation {
             
-            if let conversation = personalConversation {
-                
-                firebaseMessaging.setActivityStatus(conversationID: conversation.conversationID, Date())
-            }
-            
-            else if let collab = collabConversation {
-                
-                firebaseMessaging.setActivityStatus(collabID: collab.conversationID, Date())
-            }
+            firebaseMessaging.setActivityStatus(collabID: collab.conversationID, Date())
         }
     }
     
@@ -1270,6 +1234,13 @@ class MessagingViewController: UIViewController {
         }
     }
     
+
+    //MARK: - Dismiss Keyboard Function
+    
+    @objc private func dismissKeyboard () {
+        
+        messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
+    }
     
     //MARK: Prepare for Segue Method
     
@@ -1302,6 +1273,7 @@ class MessagingViewController: UIViewController {
             convoInfoVC.photoMessages = firebaseMessaging.filterPhotoMessages(messages: messages)
             
             convoInfoVC.moveToConversationWithFriendDelegate = self
+            convoInfoVC.reconfigureViewDelegate = self
             
             infoViewBeingPresented = true
             
@@ -1323,7 +1295,7 @@ extension MessagingViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let members = personalConversation != nil ? personalConversation?.members : collabConversation?.members
+        let members = personalConversation != nil ? personalConversation?.historicMembers : collabConversation?.historicMembers
         
         return messagingMethods.cellForRowAt(indexPath: indexPath, messages: messages, members: members)
     }
@@ -1416,15 +1388,21 @@ extension MessagingViewController: UIImagePickerControllerDelegate, UINavigation
 }
 
 
-//MARK: - ReconfigureView Protocol Extension
+//MARK: - ReconfigureView Protocols Extension
 
-extension MessagingViewController: ReconfigureView {
+extension MessagingViewController: ReconfigureMessagingViewFromSendPhotoVC, ReconfigureMessagingViewFromConvoInfoVC {
     
     func reconfigureView () {
         
         addObservors()
         
         self.becomeFirstResponder()
+    }
+    
+    func reconfigureView(personalConversation: Conversation?, collabConversation: Conversation?) {
+        
+        self.personalConversation = personalConversation
+        self.collabConversation = collabConversation
     }
 }
 
@@ -1460,7 +1438,7 @@ extension MessagingViewController: PresentCopiedAnimationProtocol {
     
     func presentCopiedAnimation() {
         
-        presentCopiedAnimationContainer()
+        copiedAnimationView?.presentCopiedAnimation(topAnchor: conversationNameLabel.frame.maxY + 5)
     }
 }
 

@@ -9,7 +9,7 @@
 import UIKit
 import SVProgressHUD
 
-protocol ReconfigureView: AnyObject {
+protocol ReconfigureMessagingViewFromSendPhotoVC: AnyObject {
     
     func reconfigureView ()
 }
@@ -39,7 +39,7 @@ class SendPhotoMessageViewController: UIViewController {
     
     var messageTextViewText: String = ""
     
-    weak var reconfigureViewDelegate: ReconfigureView?
+    weak var reconfigureViewDelegate: ReconfigureMessagingViewFromSendPhotoVC?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,11 +61,13 @@ class SendPhotoMessageViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         addObservors()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
         removeObservors()
     }
@@ -136,13 +138,13 @@ class SendPhotoMessageViewController: UIViewController {
     
     @objc internal func keyboardBeingPresented (notification: NSNotification) {
         
-        inputAccesoryViewMethods.keyboardBeingPresented(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: 0, tableViewBottomInset: nil)
+        inputAccesoryViewMethods.keyboardBeingPresented(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: 0)
     }
 
     
     @objc internal func keyboardBeingDismissed (notification: NSNotification) {
 
-        inputAccesoryViewMethods.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, tableViewBottomInset: nil, messagesCount: 0, textViewText: messageTextViewText)
+        inputAccesoryViewMethods.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: 0, textViewText: messageTextViewText)
     }
     
     

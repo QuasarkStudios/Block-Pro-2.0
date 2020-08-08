@@ -24,5 +24,23 @@ extension UIView {
         layer.masksToBounds = false
         clipsToBounds = clip
     }
+    
+    func performCopyAnimationOnView () {
+        
+        let vibrateMethods = VibrateMethods()
+        vibrateMethods.quickVibration()
+        
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
+            
+            self.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
+            
+        }) { (finished: Bool) in
+            
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
+                
+                self.transform = .identity
+            })
+        }
+    }
 
 }

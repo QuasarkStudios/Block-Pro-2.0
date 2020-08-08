@@ -24,12 +24,13 @@ class ProfilePicture: UIView {
     var shadowOpacity: Float
 
     var borderColor: CGColor
+    var borderWidth: CGFloat
     
     var extraMembers: Int
     
     var intiallyConfiguredConstraints: Bool = false
     
-    init(profilePic: UIImage? = nil, shadowRadius: CGFloat = 2.5, shadowColor: CGColor = UIColor(hexString: "39434A")!.cgColor, shadowOpacity: Float = 0.75, borderColor: CGColor = UIColor(hexString: "F4F4F4", withAlpha: 0.05)!.cgColor, extraMembers: Int = 0) {
+    init(profilePic: UIImage? = nil, shadowRadius: CGFloat = 2.5, shadowColor: CGColor = UIColor(hexString: "39434A")!.cgColor, shadowOpacity: Float = 0.75, borderColor: CGColor = UIColor(hexString: "F4F4F4", withAlpha: 0.05)!.cgColor, borderWidth: CGFloat = 1, extraMembers: Int = 0) {
         
         self.profilePic = profilePic
         
@@ -38,6 +39,7 @@ class ProfilePicture: UIView {
         self.shadowOpacity = shadowOpacity
         
         self.borderColor = borderColor
+        self.borderWidth = borderWidth
         
         self.extraMembers = extraMembers
         
@@ -120,7 +122,7 @@ extension ProfilePicture {
         layer.shadowOffset = shadowOffset
         layer.shadowOpacity = shadowOpacity
         
-        layer.borderWidth = 1
+        layer.borderWidth = borderWidth
         layer.borderColor = borderColor
         
         self.constraints.forEach({ (constraint) in

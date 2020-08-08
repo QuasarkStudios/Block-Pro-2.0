@@ -14,12 +14,19 @@ protocol MoveToConversationWithFriendProtcol: AnyObject {
     func moveToConversationWithFriend (_ friend: Friend)
 }
 
+protocol ReconfigureMessagingViewFromConvoInfoVC: AnyObject {
+    
+    func reconfigureView (personalConversation: Conversation?, collabConversation: Conversation?)
+}
+
 class ConversationInfoViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet weak var backgroundView: UIView!
     @IBOutlet weak var backgroundViewHeightConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var messagingInfoTableView: UITableView!
+    
+    var copiedAnimationView: CopiedAnimationView?
     
     var editCoverButton: UIButton?
     var deleteCoverButton: UIButton?
@@ -38,6 +45,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     var selectedMember: Member?
     
     weak var moveToConversationWithFriendDelegate: MoveToConversationWithFriendProtcol?
+    weak var reconfigureViewDelegate: ReconfigureMessagingViewFromConvoInfoVC?
     
     var viewInitiallyLoaded: Bool = false
     var membersExpanded: Bool = false
@@ -68,8 +76,9 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white)
+        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
         
         viewInitiallyLoaded = true
         
@@ -81,26 +90,53 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         monitorCollabConversation()
         monitorCollabConversationMessages()
         
+        //Initializing here allows the animationView to be removed and readded multiple times
+        copiedAnimationView = CopiedAnimationView()
+        
         NotificationCenter.default.addObserver(self, selector: #selector(setUserActiveStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(setUserInactiveStatus), name: UIApplication.willResignActiveNotification, object: nil)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
         updateConversationName(name: convoName)
         
-        firebaseMessaging.conversationListener?.remove()
+        firebaseMessaging.personalConversationListener?.remove()
+        firebaseMessaging.collabConversationListener?.remove()
+        
         firebaseMessaging.messageListener?.remove()
+        
+        copiedAnimationView?.removeCopiedAnimation(remove: true)
+        
+        reconfigureViewDelegate?.reconfigureView(personalConversation: self.personalConversation, collabConversation: self.collabConversation)
         
         NotificationCenter.default.removeObserver(self)
     }
-
     
     //MARK: - TableView DataSource Methods
     
     func numberOfSections(in tableView: UITableView) -> Int {
         
-        return 4
+        if let conversation = personalConversation {
+            
+            //Checking to see if membersCount is equal to one signifying that the conversation was a group chat that now only has one member
+            //Or that this conversation is a group chat
+            if conversation.historicMembers.count  > 2 {
+                
+                return 5
+            }
+            
+            else {
+                
+                return 4
+            }
+        }
+        
+        else {
+            
+            return 4
+        }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -119,23 +155,55 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             if let conversation = personalConversation {
                 
-                //The "Member" header cell, all the members minus the current user, and the seperator cells
-                return ((conversation.members.count - 1) * 2) + 1
+                //If this conversation has 6/6 members added
+                if conversation.currentMembers.count == 6 {
+                    
+                    //The "Member" header cell, all the members minus the current user, and the seperator cells
+                    return ((conversation.currentMembers.count - 1) * 2) + 1
+                }
+                  
+                //If this conversation doesn't have 6/6 members added
+                else if conversation.currentMembers.count > 1 && conversation.currentMembers.count < 6 {
+                    
+                    //If this isn't just a personal conversation
+                    if conversation.historicMembers.count > 2 {
+                        
+                        return ((conversation.currentMembers.count - 1) * 2) + 3
+                    }
+                    
+                    //If this is a personal conversation
+                    else {
+                        
+                        //The "Member" header cell, all the members minus the current user, and the seperator cells
+                        return ((conversation.currentMembers.count - 1) * 2) + 1
+                    }
+                }
+                
+                //If this conversation was a group chat with only the current user remaining
+                else {
+                    
+                    return 3
+                }
             }
             
             else if let conversation = collabConversation {
                 
                 //The "Member" header cell, all the members minus the current user, and the seperator cells
-                return ((conversation.members.count - 1) * 2) + 1
+                return ((conversation.currentMembers.count - 1) * 2) + 1
             }
-                
+
             return 0
+        }
+        
+        else if section == 3 {
+            
+            //The "Photos" header cell, the seperator cell, and the collectionView cell
+            return 3
         }
         
         else {
             
-            //The "Photos" header cell, the seperator cell, and the collectionView cell
-            return 3
+            return 1
         }
     }
     
@@ -148,10 +216,10 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             if let conversation = personalConversation {
                 
-                var filteredMembers = conversation.members
+                var filteredMembers = conversation.currentMembers
                 filteredMembers.removeAll(where: { $0.userID == currentUser.userID })
                 
-                if filteredMembers.count == 1 {
+                if filteredMembers.count == 1 && conversation.historicMembers.count == 2 {
                     
                     cell.conversationMember = filteredMembers.first //Lets the cell know that this conversation only has one member
                 }
@@ -159,6 +227,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             cell.personalConversation = personalConversation
             cell.collabConversation = collabConversation
+            cell.presentCopiedAnimationDelegate = self
     
             return cell
         }
@@ -168,7 +237,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             if let conversation = personalConversation {
                 
                 //If this is a conversation between only two people, then there's no need for the conversationName cell
-                if conversation.members.count == 2 {
+                if conversation.currentMembers.count == 2 && conversation.historicMembers.count == 2 {
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "seperatorCell", for: indexPath)
                     cell.isUserInteractionEnabled = false
@@ -216,7 +285,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 
                 if let conversation = personalConversation {
                     
-                    if conversation.members.count == 2 {
+                    if conversation.currentMembers.count == 2 {
                         
                         cell.membersLabel.text = "Member"
                     }
@@ -226,16 +295,18 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                         cell.membersLabel.text = "Members"
                     }
                     
+                    cell.membersExpanded = membersExpanded
+                    
                     //If there is less than 3 additional members, hide the "seeAllLabel" and "arrowIndicator"
-                    cell.seeAllLabel.isHidden = (conversation.members.count - 1) > 3 ? false : true
-                    cell.arrowIndicator.isHidden = (conversation.members.count - 1) > 3 ? false : true
+                    cell.seeAllLabel.isHidden = (conversation.currentMembers.count - 1) > 3 ? false : true
+                    cell.arrowIndicator.isHidden = (conversation.currentMembers.count - 1) > 3 ? false : true
                 }
                 
                 else if let conversation = collabConversation {
                     
                     //If there is less than 3 additional members, hide the "seeAllLabel" and "arrowIndicator"
-                    cell.seeAllLabel.isHidden = (conversation.members.count - 1) > 3 ? false : true
-                    cell.arrowIndicator.isHidden = (conversation.members.count - 1) > 3 ? false : true
+                    cell.seeAllLabel.isHidden = (conversation.currentMembers.count - 1) > 3 ? false : true
+                    cell.arrowIndicator.isHidden = (conversation.currentMembers.count - 1) > 3 ? false : true
                 }
                 
                 return cell
@@ -243,18 +314,57 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 
             else if indexPath.row % 2 == 0 {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "convoMemberInfoCell", for: indexPath) as! ConvoMemberInfoCell
-                cell.conversateWithFriendDelegate = self
+                //The add member cell
+                if let conversationMembers = personalConversation?.currentMembers, indexPath.row / 2 == conversationMembers.count {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "convoAddMemberInfoCell", for: indexPath) as! ConvoAddMemberInfoCell
+                    cell.selectionStyle = .none
+                    cell.members = conversationMembers
+                    
+                    return cell
+                }
                 
-                if let conversation = personalConversation {
+                else {
                     
-                    var filteredMembers = conversation.members
-                    filteredMembers.removeAll(where: { $0.userID == currentUser.userID })
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "convoMemberInfoCell", for: indexPath) as! ConvoMemberInfoCell
+                    cell.conversateWithFriendDelegate = self
                     
-                    cell.member = filteredMembers[(indexPath.row / 2) - 1]
-                    cell.memberActivity = conversation.memberActivity?[filteredMembers[(indexPath.row / 2) - 1].userID]
+                    if let conversation = personalConversation {
+                        
+                        var filteredMembers = conversation.currentMembers
+                        filteredMembers.removeAll(where: { $0.userID == currentUser.userID })
+                        
+                        cell.member = filteredMembers[(indexPath.row / 2) - 1]
+                        cell.memberActivity = conversation.memberActivity?[filteredMembers[(indexPath.row / 2) - 1].userID]
+                        
+                        //If this is a group chat
+                        if conversation.historicMembers.count > 2 {
+                            
+                            //If this member isn't friends with the currentUser
+                            if firebaseCollab.friends.contains(where: { $0.userID == filteredMembers[(indexPath.row / 2) - 1].userID}) {
+                                
+                                cell.messageButton.isHidden = false
+                            }
+                            
+                            else {
+                                
+                                cell.messageButton.isHidden = true
+                            }
+                        }
+                        
+                        else {
+                            
+                            cell.messageButton.isHidden = true
+                        }
+                    }
                     
-                    if filteredMembers.count > 1 {
+                    else if let conversation = collabConversation {
+                        
+                        var filteredMembers = conversation.currentMembers
+                        filteredMembers.removeAll(where: { $0.userID == currentUser.userID })
+                        
+                        cell.member = filteredMembers[(indexPath.row / 2) - 1]
+                        cell.memberActivity = conversation.memberActivity?[filteredMembers[(indexPath.row / 2) - 1].userID]
                         
                         //If this member isn't friends with the currentUser
                         if firebaseCollab.friends.contains(where: { $0.userID == filteredMembers[(indexPath.row / 2) - 1].userID}) {
@@ -268,33 +378,10 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                         }
                     }
                     
-                    else {
-                        
-                        cell.messageButton.isHidden = true
-                    }
+                    cell.selectionStyle = .none
+                    
+                    return cell
                 }
-                
-                else if let conversation = collabConversation {
-                    
-                    var filteredMembers = conversation.members
-                    filteredMembers.removeAll(where: { $0.userID == currentUser.userID })
-                    
-                    cell.member = filteredMembers[(indexPath.row / 2) - 1]
-                    cell.memberActivity = conversation.memberActivity?[filteredMembers[(indexPath.row / 2) - 1].userID]
-                    
-                    //If this member isn't friends with the currentUser
-                    if firebaseCollab.friends.contains(where: { $0.userID == filteredMembers[(indexPath.row / 2) - 1].userID}) {
-                        
-                        cell.messageButton.isHidden = false
-                    }
-                    
-                    else {
-                        
-                        cell.messageButton.isHidden = true
-                    }
-                }
-                
-                return cell
             }
             
             else {
@@ -305,7 +392,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             }
         }
         
-        else {
+        else if indexPath.section == 3 {
             
             if indexPath.row == 0 {
                 
@@ -319,17 +406,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 let cell = tableView.dequeueReusableCell(withIdentifier: "convoPhotosHeaderInfoCell", for: indexPath) as! ConvoPhotosHeaderInfoCell
                 cell.selectionStyle = .none
                 
-                if photoMessages.count <= 6 {
-                    
-                    cell.seeAllLabel.isHidden = true
-                    cell.seeAllArrow.isHidden = true
-                }
-                
-                else {
-                    
-                    cell.seeAllLabel.isHidden = false
-                    cell.seeAllArrow.isHidden = false
-                }
+                cell.photoMessageCount = photoMessages.count
                 
                 return cell
             }
@@ -346,9 +423,20 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 
                 cell.cachePhotoDelegate = self
                 cell.zoomInDelegate = self
+                cell.presentCopiedAnimationDelegate = self
                 
                 return cell
             }
+        }
+        
+        else {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "leaveConvoCell", for: indexPath) as! LeaveConvoCell
+            cell.selectionStyle = .none
+            
+            cell.leaveConversationDelegate = self
+            
+            return cell
         }
     }
     
@@ -364,7 +452,13 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             else {
                 
                 //If this conversation has a coverPhoto or this is a conversation between only 2 people, fully expand cell
-                if personalConversation?.coverPhotoID != nil || personalConversation?.members.count == 2 {
+                if personalConversation?.coverPhotoID != nil {
+                    
+                    return 305
+                }
+                    
+                //If this is a true personal conversation
+                else if personalConversation?.currentMembers.count == 2 && personalConversation?.historicMembers.count == 2 {
                     
                     return 305
                 }
@@ -375,6 +469,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                     return 305
                 }
                 
+                //If this conversation doesn't have a cover photo
                 else {
                     
                     return 250
@@ -386,7 +481,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             if let conversation = personalConversation {
                 
-                if conversation.members.count == 2 {
+                if conversation.currentMembers.count == 2 && conversation.historicMembers.count == 2 {
                     
                     return viewInitiallyLoaded ? 10 : 50 //Will be a seperator cell
                 }
@@ -416,7 +511,15 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 //If this is one of the first 3 cells
                 if (indexPath.row / 2) - 1 < 3 {
                     
-                    return 70
+                    if let conversationMembers = personalConversation?.currentMembers, indexPath.row / 2 == conversationMembers.count {
+                        
+                        return 50
+                    }
+                    
+                    else {
+                        
+                        return 70
+                    }
                 }
                 
                 else {
@@ -424,12 +527,28 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                     //If all members should be shown
                     if membersExpanded {
                         
-                        return 70
+                        if let conversationMembers = personalConversation?.currentMembers, indexPath.row / 2 == conversationMembers.count {
+                            
+                            return 50
+                        }
+                        
+                        else {
+                            
+                            return 70
+                        }
                     }
                     
                     else {
                         
-                        return 0
+                        if let conversationMembers = personalConversation?.currentMembers, indexPath.row / 2 == conversationMembers.count {
+                            
+                            return 50
+                        }
+                        
+                        else {
+                            
+                            return 0
+                        }
                     }
                 }
             }
@@ -444,12 +563,31 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 
                 else {
                     
-                    return 10
+                    //Seperator cell before the add member cell
+                    if let conversationMembers = personalConversation?.currentMembers, ((indexPath.row + 1) / 2) == conversationMembers.count {
+                        
+                        return 5
+                    }
+                    
+                    else {
+                        
+                        //Seperator cells in between memberInfo cells
+                        if indexPath.row <= 5 || (indexPath.row > 5 && membersExpanded) {
+                            
+                            return 10
+                        }
+                        
+                        //Seperator cell if the conversation has 6/6 members
+                        else {
+                            
+                            return 0
+                        }
+                    }
                 }
             }
         }
         
-        else {
+        else if indexPath.section == 3 {
             
             if indexPath.row == 0 {
                 
@@ -476,6 +614,11 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 }
             }
         }
+        
+        else {
+            
+            return 80
+        }
     }
     
     
@@ -484,9 +627,6 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if indexPath.section == 0 {
-            
-            let vibrateMethods = VibrateMethods()
-            vibrateMethods.quickVibrate()
             
             if let conversation = personalConversation {
                 
@@ -503,14 +643,14 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                     }
                 }
                     
-                else if conversation.members.count == 2 {
+                else if conversation.historicMembers.count == 2 {
                     
                     let cell = messagingInfoTableView.cellForRow(at: indexPath) as! ConvoCoverInfoCell
                     
                     performZoomOnCoverImageView(coverImageView: cell.coverPhotoImageView)
                 }
                 
-                else if conversation.members.count > 2 {
+                else if conversation.historicMembers.count > 2 {
                     
                     addCoverPhoto()
                 }
@@ -529,11 +669,15 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 membersExpanded = !membersExpanded
                 
                 let cell = tableView.cellForRow(at: indexPath) as! ConvoMemberHeaderInfoCell
-                cell.seeAllLabel.text = membersExpanded ? "See less" : "See all"
-                cell.transformArrow(expand: membersExpanded)
+                cell.membersExpanded = membersExpanded
                 
                 messagingInfoTableView.beginUpdates()
                 messagingInfoTableView.endUpdates()
+            }
+                
+            else if let conversationMembers = personalConversation?.currentMembers, indexPath.row / 2 == conversationMembers.count {
+                    
+                performSegue(withIdentifier: "moveToAddMembersView", sender: self)
             }
             
             else {
@@ -566,7 +710,11 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             backgroundViewHeightConstraint.constant = abs(scrollView.contentOffset.y)
         }
+        
+        adjustStatusBarStyle(scrollView)
     }
+    
+    
     
     //MARK: - Configuration Functions
     
@@ -577,15 +725,21 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         
         tableView.separatorStyle = .none
         
+        tableView.estimatedRowHeight = 0 //Fixes animation glitches
+        
         tableView.contentInset = UIEdgeInsets(top: -topBarHeight, left: 0, bottom: 0, right: 0)
         tableView.scrollIndicatorInsets = UIEdgeInsets(top: -topBarHeight, left: 0, bottom: 0, right: 0)
+        
+        tableView.delaysContentTouches = false
         
         tableView.register(UINib(nibName: "ConvoCoverInfoCell", bundle: nil), forCellReuseIdentifier: "convoCoverInfoCell")
         tableView.register(UINib(nibName: "ConvoNameInfoCell", bundle: nil), forCellReuseIdentifier: "convoNameInfoCell")
         tableView.register(UINib(nibName: "ConvoMemberHeaderInfoCell", bundle: nil), forCellReuseIdentifier: "convoMemberHeaderInfoCell")
         tableView.register(UINib(nibName: "ConvoMemberInfoCell", bundle: nil), forCellReuseIdentifier: "convoMemberInfoCell")
+        tableView.register(UINib(nibName: "ConvoAddMemberInfoCell", bundle: nil), forCellReuseIdentifier: "convoAddMemberInfoCell")
         tableView.register(UINib(nibName: "ConvoPhotosHeaderInfoCell", bundle: nil), forCellReuseIdentifier: "convoPhotosHeaderInfoCell")
         tableView.register(UINib(nibName: "ConvoPhotoInfoCell", bundle: nil), forCellReuseIdentifier: "convoPhotoInfoCell")
+        tableView.register(UINib(nibName: "LeaveConvoCell", bundle: nil), forCellReuseIdentifier: "leaveConvoCell")
     }
     
     private func configureEditCoverButton () -> UIButton {
@@ -628,6 +782,9 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         view.addGestureRecognizer(dismissKeyboardTap)
     }
     
+    
+    //MARK: - Animate Cover Photo Cell Function
+    
     private func animateCoverPhotoCell () {
         
         if let cell = self.messagingInfoTableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? ConvoNameInfoCell {
@@ -644,6 +801,77 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         messagingInfoTableView.endUpdates()
     }
     
+    
+    //MARK: - Adjust Status Bar Style Function
+    
+    private func adjustStatusBarStyle (_ scrollView: UIScrollView) {
+        
+        if viewInitiallyLoaded {
+            
+            if let conversation = personalConversation {
+                
+                //If the cover cell has a cover photo or a profile picture
+                if conversation.historicMembers.count == 2 || conversation.coverPhotoID != nil {
+                    
+                    if scrollView.contentOffset.y > 175 {
+                        
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .default)
+                    }
+                    
+                    else {
+                        
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+                    }
+                }
+                
+                //If the cover cell doesn't have a cover photo or a profile picture
+                else {
+                    
+                    if scrollView.contentOffset.y > 200 {
+                        
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .default)
+                    }
+                    
+                    else {
+                        
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+                    }
+                }
+            }
+            
+            else if let conversation = collabConversation {
+                
+                //If the cover cell has a cover photo
+                if conversation.coverPhotoID != nil {
+                    
+                    if scrollView.contentOffset.y > 175 {
+                        
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .default)
+                    }
+                    
+                    else {
+                        
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+                    }
+                }
+                
+                //If the cover cell doesn't have a cover photo
+                else {
+                    
+                    if scrollView.contentOffset.y > 200 {
+                        
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .default)
+                    }
+                    
+                    else {
+                        
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+                    }
+                }
+            }
+        }
+    }
+    
     //MARK: - Personal Conversation Monitoring Functions
     
     private func monitorPersonalConversation () {
@@ -652,9 +880,9 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             firebaseMessaging.monitorPersonalConversation(conversationID: conversation.conversationID) { [weak self] (updatedConvo) in
                 
-                if let error = updatedConvo["error"] {
+                if let error = updatedConvo["error"] as? Error {
                     
-                    print(error as Any)
+                    SVProgressHUD.showError(withStatus: error.localizedDescription)
                 }
                 
                 else {
@@ -666,7 +894,19 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                             
                             self?.personalConversation?.conversationName = updatedConvo["conversationName"] as? String
                             
-                            self?.messagingInfoTableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .fade)
+                            if let cell = self?.messagingInfoTableView.cellForRow(at: IndexPath(row: 0, section: 1)) as? ConvoNameInfoCell {
+                                
+                                //Check to see if the currentUser is editing the conversation name
+                                if !cell.nameTextField.isFirstResponder {
+                                    
+                                    self?.messagingInfoTableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .fade)
+                                }
+                            }
+                            
+                            else {
+                                
+                                self?.messagingInfoTableView.reloadRows(at: [IndexPath(row: 0, section: 1)], with: .fade)
+                            }
                         }
                     }
                     
@@ -702,7 +942,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                                     if status.value as? Date != self?.personalConversation?.memberActivity?[status.key] as? Date {
                                         
                                         self?.personalConversation?.memberActivity = updatedConvo["memberActivity"] as? [String : Any]
-
+                                        
                                         self?.messagingInfoTableView.reloadSections([2], with: .none)
 
                                         break
@@ -712,30 +952,40 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                         }
                     }
                     
-                    //Conversation members have been changed
-                    if updatedConvo.contains(where: { $0.key == "members" }) {
-
-                        if let members = updatedConvo["members"] as? [Member] {
+                    if updatedConvo.contains(where: { $0.key == "currentMembersIDs" }) {
+                        
+                        //Current members may have been updated
+                        if let memberIDs = updatedConvo["currentMembersIDs"] as? [String] {
                             
-                            if self?.personalConversation?.members.count != members.count {
-                                
-                                self?.personalConversation?.members = members
+                            self?.personalConversation?.currentMembersIDs = memberIDs
+                        }
+                    }
+                    
+                    //Conversation members have been changed
+                    if updatedConvo.contains(where: { $0.key == "historicMembers" }) && updatedConvo.contains(where: { $0.key == "currentMembers" }){
+                        
+                        if let historicMembers = updatedConvo["historicMembers"] as? [Member], let currentMembers = updatedConvo["currentMembers"] as? [Member] {
+                            
+                            self?.personalConversation?.historicMembers = historicMembers
+                            self?.personalConversation?.currentMembers = currentMembers
+                            
+                            self?.membersExpanded = currentMembers.count > 3 ? true : false
+                            
+                            if self?.membersExpanded ?? false {
                                 
                                 self?.messagingInfoTableView.reloadSections([2], with: .fade)
                             }
                             
                             else {
                                 
-                                for member in members {
+                                if currentMembers.count > 3 {
                                     
-                                    if members.contains(where: { $0.userID == member.userID }) == false {
-                                        
-                                        self?.personalConversation?.members = members
-                                        
-                                        self?.messagingInfoTableView.reloadSections([2], with: .fade)
-                                        
-                                        break
-                                    }
+                                    self?.messagingInfoTableView.reloadSections([2], with: .none)
+                                }
+                                
+                                else {
+                                    
+                                    self?.messagingInfoTableView.reloadSections([2], with: .fade)
                                 }
                             }
                         }
@@ -818,7 +1068,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                                 
                                 for status in activity {
                                     
-                                    if status.value as? Date != self?.personalConversation?.memberActivity?[status.key] as? Date {
+                                    if status.value as? Date != self?.collabConversation?.memberActivity?[status.key] as? Date {
                                         
                                         self?.collabConversation?.memberActivity = updatedConvo["memberActivity"] as? [String : Any]
 
@@ -831,30 +1081,40 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                         }
                     }
                     
-                    //Collab members have been changed
-                    if updatedConvo.contains(where: { $0.key == "members" }) {
+                    if updatedConvo.contains(where: { $0.key == "currentMembersIDs" }) {
                         
-                        if let members = updatedConvo["members"] as? [Member] {
+                        //Current members may have been updated
+                        if let memberIDs = updatedConvo["currentMembersIDs"] as? [String] {
                             
-                            if self?.collabConversation?.members.count != members.count {
-                                
-                                self?.collabConversation?.members = members
+                            self?.collabConversation?.currentMembersIDs = memberIDs
+                        }
+                    }
+                    
+                    //Conversation members have been changed
+                    if updatedConvo.contains(where: { $0.key == "historicMembers" }) && updatedConvo.contains(where: { $0.key == "currentMembers" }){
+                        
+                        if let historicMembers = updatedConvo["historicMembers"] as? [Member], let currentMembers = updatedConvo["currentMembers"] as? [Member] {
+                            
+                            self?.collabConversation?.historicMembers = historicMembers
+                            self?.collabConversation?.currentMembers = currentMembers
+                            
+                            self?.membersExpanded = currentMembers.count > 3 ? true : false
+                            
+                            if self?.membersExpanded ?? false {
                                 
                                 self?.messagingInfoTableView.reloadSections([2], with: .fade)
                             }
                             
                             else {
                                 
-                                for member in members {
+                                if currentMembers.count > 3 {
                                     
-                                    if members.contains(where: { $0.userID == member.userID }) == false {
-                                        
-                                        self?.collabConversation?.members = members
-                                        
-                                        self?.messagingInfoTableView.reloadSections([2], with: .fade)
-                                        
-                                        break
-                                    }
+                                    self?.messagingInfoTableView.reloadSections([2], with: .none)
+                                }
+                                
+                                else {
+                                    
+                                    self?.messagingInfoTableView.reloadSections([2], with: .fade)
                                 }
                             }
                         }
@@ -887,7 +1147,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     private func retrieveNewPhotoMessages (_ updatedPhotoMessages: [Message]?) {
         
         //New photo messages have been recieved
-        if updatedPhotoMessages?.count != photoMessages.count {
+        if updatedPhotoMessages?.count ?? 0 > photoMessages.count {
             
             for message in updatedPhotoMessages ?? [] {
                 
@@ -897,22 +1157,9 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 }
             }
             
-            photoMessages = photoMessages.sorted(by: { $0.timestamp < $1.timestamp })
+            photoMessages = photoMessages.sorted(by: { $0.timestamp > $1.timestamp })
                 
-            var indexPathsToReload: [IndexPath] = []
-            
-            //If the "seeAll" indicator should now be shown
-            if photoMessages.count == 7 {
-                
-                indexPathsToReload = [IndexPath(row: 1, section: 3), IndexPath(row: 2, section: 3)]
-            }
-            
-            else {
-                
-                indexPathsToReload = [IndexPath(row: 2, section: 3)]
-            }
-            
-            messagingInfoTableView.reloadRows(at: indexPathsToReload, with: .fade)
+            messagingInfoTableView.reloadSections([3], with: .fade)
         }
     }
     
@@ -960,7 +1207,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             //New name has been entered
             if name?.leniantValidationOfTextEntered() ?? false && name != conversation.conversationName {
                 
-                firebaseMessaging.updateConversationName(conversationID: conversation.conversationID, members: conversation.members, name: name!) { (error) in
+                firebaseMessaging.updateConversationName(conversationID: conversation.conversationID, name: name!) { (error) in
                     
                     if error != nil {
                         
@@ -972,7 +1219,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             //Name has been removed
             else if name?.leniantValidationOfTextEntered() == false && name != conversation.conversationName {
                 
-                firebaseMessaging.updateConversationName(conversationID: conversation.conversationID, members: conversation.members, name: nil) { (error) in
+                firebaseMessaging.updateConversationName(conversationID: conversation.conversationID, name: nil) { (error) in
                     
                     if error != nil {
                         
@@ -1066,6 +1313,44 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     }
     
     
+    //MARK: - Leave Conversation Functions
+    
+    private func presentLeaveConversationAlert () {
+        
+        let leaveConversationAlert = UIAlertController(title: "Leave this Conversation?", message: "You will also lose access to all the messages from this conversation", preferredStyle: .actionSheet)
+        
+        let leaveAction = UIAlertAction(title: "Leave", style: .destructive) { (leaveAction) in
+            
+            self.leaveConversation()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        leaveConversationAlert.addAction(leaveAction)
+        leaveConversationAlert.addAction(cancelAction)
+        
+        present(leaveConversationAlert, animated: true, completion: nil)
+    }
+    
+    private func leaveConversation () {
+        
+        guard let conversation = personalConversation else { return }
+        
+        firebaseMessaging.leaveConversation(conversationID: conversation.conversationID) { [weak self] (error) in
+            
+            if error != nil {
+                
+                SVProgressHUD.showError(withStatus: error?.localizedDescription)
+            }
+            
+            else {
+                
+                self?.navigationController?.popToRootViewController(animated: true)
+            }
+        }
+    }
+    
+    
     //MARK: - Prepare for Segue
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -1074,6 +1359,14 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             let memberVC = segue.destination as! FriendProfileViewController
             memberVC.member = selectedMember
+        }
+            
+        else if segue.identifier == "moveToAddMembersView" {
+            
+            let addMembersVC = segue.destination as! AddMembersViewController
+            addMembersVC.membersAddedDelegate = self
+            addMembersVC.previouslyAddedMembers = personalConversation?.currentMembers
+            addMembersVC.headerLabelText = "Add Members"
         }
         
         else if segue.identifier == "moveToConvoPhotoView" {
@@ -1202,6 +1495,30 @@ extension ConversationInfoViewController: ConversateWithFriendProtcol {
     }
 }
 
+extension ConversationInfoViewController: MembersAdded {
+    
+    func membersAdded(members: [Friend]) {
+        
+        if let conversationID = personalConversation?.conversationID {
+            
+            firebaseMessaging.addNewConversationMembers(conversationID: conversationID, membersToBeAdded: members) { [weak self] (error, fullConversation) in
+                
+                if error != nil {
+                    
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                }
+                
+                else if fullConversation {
+                    
+                    SVProgressHUD.showError(withStatus: "Sorry, this conversation has too many members")
+                }
+                
+                self?.dismiss(animated: true, completion: nil)
+            }
+        }
+    }
+}
+
 
 //MARK: - CachePhotoProtocol Extension
 
@@ -1245,7 +1562,7 @@ extension ConversationInfoViewController {
         
         if let conversation = personalConversation {
             
-            if conversation.members.count > 2 {
+            if conversation.historicMembers.count > 2 {
                 
                 editCoverButton = configureEditCoverButton()
                 deleteCoverButton = configureDeleteCoverButton()
@@ -1615,5 +1932,25 @@ extension ConversationInfoViewController {
                 imageView.frame = imageViewFrame
             })
         }
+    }
+}
+
+//MARK: - PresentCopiedAnimation Protocol Extension
+
+extension ConversationInfoViewController: PresentCopiedAnimationProtocol {
+    
+    func presentCopiedAnimation() {
+        
+        copiedAnimationView?.presentCopiedAnimation(topAnchor: 50)
+    }
+}
+
+//MARK: - LeaveConversation Protocol Extension
+
+extension ConversationInfoViewController: LeaveConversationProtocol {
+    
+    func leaveConversationButtonPressed() {
+        
+        presentLeaveConversationAlert()
     }
 }

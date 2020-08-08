@@ -40,9 +40,9 @@ class MessageCell: UITableViewCell {
     var message: Message? {
         didSet {
             
-            configureCell(message: message)
             configureProfilePic(message: message)
             configureNameLabel(message: message)
+            configureMessageBubble(message: message)
         }
     }
     
@@ -50,78 +50,41 @@ class MessageCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
- 
-        messageBubbleView.layer.cornerRadius = 10
-        
-        if #available(iOS 13.0, *) {
-            messageBubbleView.layer.cornerCurve = .continuous
-        }
-        
-        messageTextView.backgroundColor = .clear
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
         longPressGesture.minimumPressDuration = 0.3
         self.addGestureRecognizer(longPressGesture)
     }
     
-    private func configureCell (message: Message?) {
+    private func configureProfilePic (message: Message?) {
         
-        if message != nil {
+        if message?.sender == currentUser.userID {
             
-            messageTextView.text = message!.message
+            picContainerTopAnchor.constant = 3
+            profilePicContainer.isHidden = true
+            return
+        }
+        
+        else if previousMessage?.sender == message?.sender {
             
-            messageBubbleWidthConstraint.constant = message!.message!.estimateFrameForMessageCell().width + 30
-            
-            if message!.sender != currentUser.userID {
+            if previousMessage?.memberJoiningConversation == nil && previousMessage?.memberUpdatedConversationCover == nil && previousMessage?.memberUpdatedConversationName == nil {
                 
-                messageBubbleTrailingAnchor.isActive = false
-                
-                messageBubbleLeadingAnchor.constant = 10
-                messageBubbleLeadingAnchor.isActive = true
-                
-                messageBubbleView.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.50)
-                messageTextView.textColor = .black
+                picContainerTopAnchor.constant = 3
+                profilePicContainer.isHidden = true
+                return
             }
             
             else {
                 
-                messageBubbleLeadingAnchor.isActive = false
-                messageBubbleTrailingAnchor.isActive = true
-
-                messageBubbleView.backgroundColor = UIColor(hexString: "282828", withAlpha: 0.85)
-                messageTextView.textColor = .white
+                picContainerTopAnchor.constant = 15
+                profilePicContainer.isHidden = false
             }
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                
-                let numberOfLines = ((self.messageTextView.frame.height - 15) / self.messageTextView.font!.lineHeight)
-
-                if floor(numberOfLines) == 1 {
-
-                    self.messageTextView.textAlignment = .center
-                }
-
-                else {
-
-                    self.messageTextView.textAlignment = .left
-                }
-            }
-        }
-    }
-    
-    private func configureProfilePic (message: Message?) {
-        
-        if previousMessage?.sender == message?.sender {
-            
-            profilePicContainer.isHidden = true
-            nameLabel.isHidden = true
-            return
         }
         
         else {
             
-            nameLabel.isHidden = false
-            messageBubbleTopAnchor.constant = 15
+            picContainerTopAnchor.constant = 15
+            profilePicContainer.isHidden = false
         }
         
         if message != nil && members != nil {
@@ -176,33 +139,119 @@ class MessageCell: UITableViewCell {
     
     private func configureNameLabel (message: Message?) {
         
-        if previousMessage?.sender == message?.sender {
+        if message!.sender == currentUser.userID {
             
             nameLabel.isHidden = true
-            picContainerTopAnchor.constant = 3
-            messageBubbleTopAnchor.constant = 0
+            return
         }
+        
+        else if previousMessage?.sender == message?.sender {
             
-        else if message!.sender == currentUser.userID {
+            if previousMessage?.memberJoiningConversation == nil && previousMessage?.memberUpdatedConversationCover == nil && previousMessage?.memberUpdatedConversationName == nil {
+                
+                nameLabel.isHidden = true
+                return
+            }
             
-            nameLabel.isHidden = true
-            picContainerTopAnchor.constant = 3
-            messageBubbleTopAnchor.constant = 0
+            else {
+                
+                nameLabel.isHidden = false
+            }
         }
         
         else {
             
             nameLabel.isHidden = false
-            picContainerTopAnchor.constant = 15
-            messageBubbleTopAnchor.constant = 15
+        }
+        
+        for member in members ?? [] {
             
-            for member in members ?? [] {
+            if member.userID == message?.sender {
                 
-                if member.userID == message?.sender {
+                if members?.contains(where: { $0.firstName == member.firstName && $0.userID != member.userID}) ?? false {
                     
                     let lastInitial = Array(member.lastName)
                     
                     nameLabel.text = "\(member.firstName) \(lastInitial[0])."
+                }
+                
+                else {
+                    
+                    nameLabel.text = member.firstName
+                }
+                
+                break
+            }
+        }
+    }
+    
+    private func configureMessageBubble (message: Message?) {
+        
+        if message != nil {
+            
+            messageBubbleWidthConstraint.constant = message!.message!.estimateFrameForMessageCell().width + 30
+            
+            messageBubbleView.layer.cornerRadius = 10
+            
+            if #available(iOS 13.0, *) {
+                messageBubbleView.layer.cornerCurve = .continuous
+            }
+            
+            messageTextView.backgroundColor = .clear
+            messageTextView.text = message!.message
+            
+            if message?.sender == currentUser.userID {
+                
+                messageBubbleTopAnchor.constant = 0
+                
+                messageBubbleLeadingAnchor.isActive = false
+                messageBubbleTrailingAnchor.isActive = true
+
+                messageBubbleView.backgroundColor = UIColor(hexString: "282828", withAlpha: 0.85)
+                messageTextView.textColor = .white
+            }
+            
+            else {
+                
+                if previousMessage?.sender == message?.sender {
+                    
+                    if previousMessage?.memberJoiningConversation == nil && previousMessage?.memberUpdatedConversationCover == nil && previousMessage?.memberUpdatedConversationName == nil {
+                        
+                        messageBubbleTopAnchor.constant = 0
+                    }
+                    
+                    else {
+                        
+                        messageBubbleTopAnchor.constant = 15
+                    }
+                }
+                
+                else {
+                    
+                    messageBubbleTopAnchor.constant = 15
+                }
+                
+                messageBubbleTrailingAnchor.isActive = false
+                
+                messageBubbleLeadingAnchor.constant = 10
+                messageBubbleLeadingAnchor.isActive = true
+                
+                messageBubbleView.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.50)
+                messageTextView.textColor = .black
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                
+                let numberOfLines = ((self.messageTextView.frame.height - 15) / self.messageTextView.font!.lineHeight)
+
+                if floor(numberOfLines) == 1 {
+
+                    self.messageTextView.textAlignment = .center
+                }
+
+                else {
+
+                    self.messageTextView.textAlignment = .left
                 }
             }
         }
@@ -210,32 +259,20 @@ class MessageCell: UITableViewCell {
     
     @objc func handleLongPress (gesture: UILongPressGestureRecognizer) {
         
+        let pressedLocation = gesture.location(in: self.contentView)
+        let messageTextViewLocation = messageTextView.superview?.convert(messageTextView.frame, to: self)
+        
         if gesture.state == .began {
             
-            let pasteboard = UIPasteboard.general
-            pasteboard.string = messageTextView.text
-            
-            animateMessageTextView()
-        }
-    }
-    
-    private func animateMessageTextView () {
-        
-        let vibrateMethods = VibrateMethods()
-        vibrateMethods.quickVibrate()
-        
-        self.presentCopiedAnimationDelegate?.presentCopiedAnimation()
-        
-        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
-            
-            self.messageBubbleView.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-            
-        }) { (finished: Bool) in
-            
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
+            if messageTextViewLocation?.contains(pressedLocation) ?? false {
                 
-                self.messageBubbleView.transform = .identity
-            })
+                let pasteboard = UIPasteboard.general
+                pasteboard.string = messageTextView.text
+                
+                messageBubbleView.performCopyAnimationOnView()
+                
+                presentCopiedAnimationDelegate?.presentCopiedAnimation()
+            }
         }
     }
 }

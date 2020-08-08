@@ -18,10 +18,9 @@ struct Message {
     
     var messagePhoto: [String : Any]?
     
-//    var photoID: String?
-//    var photo: UIImage? = nil
-//    var photoWidth: CGFloat?
-//    var photoHeight: CGFloat?
+    var memberUpdatedConversationCover: Bool?
+    var memberUpdatedConversationName: Bool?
+    var memberJoiningConversation: Bool?
     
     var timestamp: Date!
 }

@@ -56,16 +56,13 @@ class InputAccesoryViewMethods {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func keyboardBeingPresented (notification: NSNotification, keyboardHeight: inout CGFloat?, messagesCount: Int, tableViewBottomInset: CGFloat?) {
+    func keyboardBeingPresented (notification: NSNotification, keyboardHeight: inout CGFloat?, messagesCount: Int) {
         
         let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
-        
         keyboardHeight = keyboardFrame.cgRectValue.height
-            
-        let bottomInset: CGFloat = keyboardHeight! - (accesoryView.configureSize().height - (tableViewBottomInset ?? 0))
         
-        tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+        tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight!, right: 0)
+        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight!, right: 0)
     
         if messagesCount > 0 {
 
@@ -73,30 +70,16 @@ class InputAccesoryViewMethods {
         }
     }
     
-    func keyboardBeingDismissed (notification: NSNotification, keyboardHeight: inout CGFloat?, tableViewBottomInset: CGFloat?, messagesCount: Int, textViewText: String) {
+    func keyboardBeingDismissed (notification: NSNotification, keyboardHeight: inout CGFloat?, messagesCount: Int, textViewText: String) {
         
-        let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
         let keyboardAnimationDuration = notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSValue
+
+        let messageViewHeight = (textViewContainer.frame.height + abs(setTextViewBottomAnchor())) + 5
         
-        keyboardHeight = keyboardFrame.cgRectValue.height
+        tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: messageViewHeight + 5, right: 0)
+        tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: messageViewHeight, right: 0)
         
-        if textViewText == "" || textViewText == textViewPlaceholderText {
-            
-            tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: tableViewBottomInset ?? 0, right: 0)
-            tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: tableViewBottomInset ?? 0, right: 0)
-            
-            accesoryView.size = accesoryView.configureSize()
-        }
-        
-        else {
-            
-            let messageViewHeight = (textViewContainer.frame.height + abs(setTextViewBottomAnchor())) + 5
-            
-            tableView?.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: messageViewHeight, right: 0)
-            tableView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: messageViewHeight, right: 0)
-            
-            accesoryView.size = CGSize(width: 0, height: messageViewHeight)
-        }
+        accesoryView.size = CGSize(width: 0, height: messageViewHeight)
         
         accesoryView.constraints.forEach { (constraint) in
             

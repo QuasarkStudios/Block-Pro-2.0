@@ -10,19 +10,45 @@ import Foundation
 
 class VibrateMethods {
     
-    func quickVibrate () {
+    func quickVibration () {
         
-        let generator: UIImpactFeedbackGenerator?
+//        let generator: UIImpactFeedbackGenerator?
+//
+//        if #available(iOS 13.0, *) {
+//
+//            generator = UIImpactFeedbackGenerator(style: .rigid)
+//
+//        } else {
+//
+//            generator = UIImpactFeedbackGenerator(style: .medium)
+//        }
+//
+//        generator?.impactOccurred()
         
-        if #available(iOS 13.0, *) {
-
-            generator = UIImpactFeedbackGenerator(style: .rigid)
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
         
-        } else {
-            
-            generator = UIImpactFeedbackGenerator(style: .medium)
-        }
+    }
+    
+    func warningVibration () {
         
-        generator?.impactOccurred()
+//        let generator = UINotificationFeedbackGenerator()
+//        generator.notificationOccurred(.error)
+        
+                let generator: UIImpactFeedbackGenerator?
+        
+//                if #available(iOS 13.0, *) {
+//
+//                    generator = UIImpactFeedbackGenerator(style: .rigid)
+//
+//                } else {
+//
+//                    generator = UIImpactFeedbackGenerator(style: .medium)
+                //}
+        
+        generator = UIImpactFeedbackGenerator(style: .heavy)
+        
+                generator?.impactOccurred()
+        
     }
 }

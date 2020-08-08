@@ -14,6 +14,8 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
     @IBOutlet weak var navBar: UINavigationBar!
     @IBOutlet weak var photosCollectionView: UICollectionView!
     
+    var copiedAnimationView: CopiedAnimationView?
+    
     let firebaseMessaging = FirebaseMessaging.sharedInstance
     
     var conversationID: String?
@@ -29,13 +31,20 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
         configureCollectionView(collectionView: photosCollectionView)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         monitorPersonalConversationMessages()
         monitorCollabConversationMessages()
+        
+        //Initializing here allows the animationView to be removed and readded multiple times 
+        copiedAnimationView = CopiedAnimationView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        copiedAnimationView?.removeCopiedAnimation(remove: true)
         
         firebaseMessaging.messageListener?.remove()
     }
@@ -89,6 +98,7 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
         cell.imageViewCornerRadius = 0
         
         cell.cachePhotoDelegate = self
+        cell.presentCopiedAnimationDelegate = self
         
         return cell
     }
@@ -351,5 +361,18 @@ extension ConversationPhotosViewController: CachePhotoProtocol {
             
             photoMessages[messageIndex].messagePhoto?["photo"] = photo
         }
+    }
+}
+
+//MARK: - PresentCopiedAnimation Protocol Extension
+
+extension ConversationPhotosViewController: PresentCopiedAnimationProtocol {
+    
+    func presentCopiedAnimation() {
+        
+        let navBarFrame = navBar.convert(navBar.frame, to: UIApplication.shared.keyWindow)
+        
+        //20 is equal to 10 point top anchor the photosCollectionView has from the navBar plus an extra 10 point buffer
+        copiedAnimationView?.presentCopiedAnimation(topAnchor: navBarFrame.maxY + 20)
     }
 }

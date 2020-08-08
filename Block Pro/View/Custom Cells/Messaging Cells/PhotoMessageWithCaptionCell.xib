@@ -32,7 +32,6 @@
                                 <rect key="frame" x="0.0" y="0.0" width="28" height="28"/>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBrownColor" red="0.63529411759999999" green="0.51764705879999995" blue="0.36862745099999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="PfK-cM-aGf" secondAttribute="bottom" id="BP7-Dk-zhf"/>
                             <constraint firstAttribute="trailing" secondItem="PfK-cM-aGf" secondAttribute="trailing" id="TAx-A2-FjN"/>

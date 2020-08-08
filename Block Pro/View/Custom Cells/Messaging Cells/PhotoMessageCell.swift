@@ -53,9 +53,9 @@ class PhotoMessageCell: UITableViewCell {
     var message: Message? {
         didSet {
             
-            configureCell(message: message!)
             configureProfilePic(message: message!)
             configureNameLabel(message: message!)
+            configureImageViewContainer(message: message!)
             configureImageView(message: message!)
         }
     }
@@ -67,48 +67,40 @@ class PhotoMessageCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        imageViewContainer.layer.cornerRadius = 10
-        imageViewContainer.clipsToBounds = true
-        
-        if #available(iOS 13.0, *) {
-            imageViewContainer.layer.cornerCurve = .continuous
-        }
-        
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
         longPressGesture.minimumPressDuration = 0.3
         self.contentView.addGestureRecognizer(longPressGesture)
     }
     
-    private func configureCell (message: Message) {
-        
-        if message.sender != currentUser.userID {
-            
-            imageViewContainerTrailingAnchor.isActive = false
-            
-            imageViewContainerLeadingAnchor.constant = 10
-            imageViewContainerLeadingAnchor.isActive = true
-        }
-        
-        else {
-            
-            imageViewContainerLeadingAnchor.isActive = false
-            
-            imageViewContainerTrailingAnchor.isActive = true
-        }
-    }
-    
     private func configureProfilePic (message: Message) {
         
-        if previousMessage?.sender == message.sender {
+        if message.sender == currentUser.userID {
             
+            picContainerTopAnchor.constant = 3
             profilePicContainer.isHidden = true
-            nameLabel.isHidden = true
             return
         }
         
+        else if previousMessage?.sender == message.sender {
+            
+            if previousMessage?.memberJoiningConversation == nil && previousMessage?.memberUpdatedConversationCover == nil && previousMessage?.memberUpdatedConversationName == nil {
+                
+                picContainerTopAnchor.constant = 3
+                profilePicContainer.isHidden = true
+                return
+            }
+            
+            else {
+                
+                picContainerTopAnchor.constant = 15
+                profilePicContainer.isHidden = false
+            }
+        }
+        
         else {
             
-            nameLabel.isHidden = false
+            picContainerTopAnchor.constant = 15
+            profilePicContainer.isHidden = false
         }
         
         if members != nil {
@@ -161,130 +153,168 @@ class PhotoMessageCell: UITableViewCell {
         }
     }
     
-    private func configureNameLabel (message: Message) {
+    private func configureNameLabel (message: Message?) {
         
-        if previousMessage?.sender == message.sender {
+        if message!.sender == currentUser.userID {
             
             nameLabel.isHidden = true
-            picContainerTopAnchor.constant = 3
-            imageViewContainerTopAnchor.constant = 0
+            return
         }
+        
+        else if previousMessage?.sender == message?.sender {
             
-        else if message.sender == currentUser.userID {
+            if previousMessage?.memberJoiningConversation == nil && previousMessage?.memberUpdatedConversationCover == nil && previousMessage?.memberUpdatedConversationName == nil {
+                
+                nameLabel.isHidden = true
+                return
+            }
             
-            nameLabel.isHidden = true
-            picContainerTopAnchor.constant = 3
-            imageViewContainerTopAnchor.constant = 0
+            else {
+                
+                nameLabel.isHidden = false
+            }
         }
         
         else {
             
             nameLabel.isHidden = false
-            picContainerTopAnchor.constant = 15
-            imageViewContainerTopAnchor.constant = 15
+        }
+        
+        for member in members ?? [] {
             
-            for member in members ?? [] {
+            if member.userID == message?.sender {
                 
-                if member.userID == message.sender {
+                if members?.contains(where: { $0.firstName == member.firstName && $0.userID != member.userID}) ?? false {
                     
                     let lastInitial = Array(member.lastName)
                     
                     nameLabel.text = "\(member.firstName) \(lastInitial[0])."
                 }
+                
+                else {
+                    
+                    nameLabel.text = member.firstName
+                }
+                
+                break
             }
         }
     }
     
-    func configureImageView (message: Message) {
+    private func configureImageViewContainer (message: Message) {
         
         guard let messagePhoto = message.messagePhoto else { return }
-       
+        
             imageViewContainerHeightConstraint.constant = calculatePhotoMessageCellHeight(messagePhoto: messagePhoto)
         
-            photoImageView.isUserInteractionEnabled = false
-            photoImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomIn)))
+            imageViewContainer.layer.cornerRadius = 10
+            imageViewContainer.clipsToBounds = true
             
+            if #available(iOS 13.0, *) {
+                imageViewContainer.layer.cornerCurve = .continuous
+            }
         
-            if let photo = message.messagePhoto?["photo"] as? UIImage {
+            if message.sender == currentUser.userID {
                 
-                photoImageView.image = photo
-                photoImageView.isUserInteractionEnabled = true
+                imageViewContainerTopAnchor.constant = 0
                 
-                iProgressView.isHidden = true
+                imageViewContainerLeadingAnchor.isActive = false
+                
+                imageViewContainerTrailingAnchor.isActive = true
             }
             
-            else if let photoID = message.messagePhoto?["photoID"] as? String {
+            else {
                 
-                photoImageView.image = nil
-                
-                configureLoadingPhotoIndicator()
-                
-                if let conversation = conversationID {
+                if previousMessage?.sender == message.sender {
                     
-                    firebaseStorage.retrievePersonalMessagePhoto(conversationID: conversation, photoID: photoID) { (photo, error) in
-
-                        if error != nil {
-
-                            print(error as Any)
-                        }
-
-                        else {
-
-                            self.photoImageView.image = photo
-                            self.photoImageView.isUserInteractionEnabled = true
-                            
-                            self.imageViewContainer.backgroundColor = .white
-                            self.iProgressView.dismissProgress()
-                            self.iProgressView.isHidden = true
-
-                            self.cachePhotoDelegate?.cachePhoto(messageID: message.messageID, photo: photo)
-                        }
+                    if previousMessage?.memberJoiningConversation == nil && previousMessage?.memberUpdatedConversationCover == nil && previousMessage?.memberUpdatedConversationName == nil {
+                        
+                        imageViewContainerTopAnchor.constant = 0
+                    }
+                    
+                    else {
+                        
+                       imageViewContainerTopAnchor.constant = 15
                     }
                 }
                 
-                else if let collab = collabID {
+                else {
                     
-                    firebaseStorage.retrieveCollabMessagePhoto(collabID: collab, photoID: photoID) { (photo, error) in
-                        
-                        if error != nil {
-                            
-                            print(error as Any)
-                        }
-                        
-                        else {
-                            
-                            self.photoImageView.image = photo
-                            self.photoImageView.isUserInteractionEnabled = true
-                            
-                            self.imageViewContainer.backgroundColor = .white
-                            self.iProgressView.dismissProgress()
-                            self.iProgressView.isHidden = true
-                            
-                            self.cachePhotoDelegate?.cachePhoto(messageID: message.messageID, photo: photo)
-                        }
-                    }
+                    imageViewContainerTopAnchor.constant = 15
                 }
+                
+                imageViewContainerTrailingAnchor.isActive = false
+                
+                imageViewContainerLeadingAnchor.constant = 10
+                imageViewContainerLeadingAnchor.isActive = true
             }
     }
     
-    private func calculatePhotoMessageCellHeight (messagePhoto: [String : Any]) -> CGFloat {
+    private func configureImageView (message: Message) {
         
-        let photoWidth = messagePhoto["photoWidth"] as! CGFloat
-        let photoHeight = messagePhoto["photoHeight"] as! CGFloat
-        let height = (photoHeight / photoWidth) * 200
-        
-        return height
-    }
+        photoImageView.isUserInteractionEnabled = false
+        photoImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomIn)))
     
-    private func configureLoadingPhotoIndicator () {
+        if let photo = message.messagePhoto?["photo"] as? UIImage {
+            
+            photoImageView.image = photo
+            photoImageView.isUserInteractionEnabled = true
+            
+            iProgressView.isHidden = true
+        }
         
-        imageViewContainer.backgroundColor = UIColor(hexString: "F4F4F4")?.darken(byPercentage: 0.1)
-        
-        iProgressView.isHidden = false
-        
-        configureProgressHUD()
-        
-        iProgressView.showProgress()
+        else if let photoID = message.messagePhoto?["photoID"] as? String {
+            
+            photoImageView.image = nil
+            
+            configureLoadingPhotoIndicator()
+            
+            if let conversation = conversationID {
+                
+                firebaseStorage.retrievePersonalMessagePhoto(conversationID: conversation, photoID: photoID) { (photo, error) in
+
+                    if error != nil {
+
+                        print(error as Any)
+                    }
+
+                    else {
+
+                        self.photoImageView.image = photo
+                        self.photoImageView.isUserInteractionEnabled = true
+                        
+                        self.imageViewContainer.backgroundColor = .white
+                        self.iProgressView.dismissProgress()
+                        self.iProgressView.isHidden = true
+
+                        self.cachePhotoDelegate?.cachePhoto(messageID: message.messageID, photo: photo)
+                    }
+                }
+            }
+            
+            else if let collab = collabID {
+                
+                firebaseStorage.retrieveCollabMessagePhoto(collabID: collab, photoID: photoID) { (photo, error) in
+                    
+                    if error != nil {
+                        
+                        print(error as Any)
+                    }
+                    
+                    else {
+                        
+                        self.photoImageView.image = photo
+                        self.photoImageView.isUserInteractionEnabled = true
+                        
+                        self.imageViewContainer.backgroundColor = .white
+                        self.iProgressView.dismissProgress()
+                        self.iProgressView.isHidden = true
+                        
+                        self.cachePhotoDelegate?.cachePhoto(messageID: message.messageID, photo: photo)
+                    }
+                }
+            }
+        }
     }
     
     private func configureProgressHUD () {
@@ -310,6 +340,26 @@ class PhotoMessageCell: UITableViewCell {
         }
     }
     
+    private func configureLoadingPhotoIndicator () {
+        
+        imageViewContainer.backgroundColor = UIColor(hexString: "F4F4F4")?.darken(byPercentage: 0.1)
+        
+        iProgressView.isHidden = false
+        
+        configureProgressHUD()
+        
+        iProgressView.showProgress()
+    }
+    
+    private func calculatePhotoMessageCellHeight (messagePhoto: [String : Any]) -> CGFloat {
+        
+        let photoWidth = messagePhoto["photoWidth"] as! CGFloat
+        let photoHeight = messagePhoto["photoHeight"] as! CGFloat
+        let height = (photoHeight / photoWidth) * 200
+        
+        return height
+    }
+    
     @objc private func handleZoomIn (tapGesture: UITapGestureRecognizer) {
         
         if let imageView = tapGesture.view as? UIImageView {
@@ -320,32 +370,20 @@ class PhotoMessageCell: UITableViewCell {
     
     @objc func handleLongPress (gesture: UILongPressGestureRecognizer) {
         
+        let pressedLocation = gesture.location(in: self.contentView)
+        let photoImageViewLocation = photoImageView.superview?.convert(photoImageView.frame, to: self)
+        
         if gesture.state == .began {
             
-            let pasteboard = UIPasteboard.general
-            pasteboard.image = photoImageView.image
-            
-            animatePhotoImageView()
-        }
-    }
-    
-    private func animatePhotoImageView () {
-        
-        let vibrateMethods = VibrateMethods()
-        vibrateMethods.quickVibrate()
-        
-        self.presentCopiedAnimationDelegate?.presentCopiedAnimation()
-        
-        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
-            
-            self.imageViewContainer.transform = CGAffineTransform(scaleX: 0.9, y: 0.9)
-            
-        }) { (finished: Bool) in
-            
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
+            if photoImageViewLocation?.contains(pressedLocation) ?? false {
                 
-                self.imageViewContainer.transform = .identity
-            })
+                let pasteboard = UIPasteboard.general
+                pasteboard.image = photoImageView.image
+                
+                imageViewContainer.performCopyAnimationOnView()
+                
+                presentCopiedAnimationDelegate?.presentCopiedAnimation()
+            }
         }
     }
 }

@@ -10,7 +10,7 @@ import Foundation
 
 extension UINavigationBar {
     
-    func configureNavBar (barBackgroundColor: UIColor = .white, barTintColor: UIColor = .black) {
+    func configureNavBar (barBackgroundColor: UIColor = .white, barTintColor: UIColor = .black, barStyleColor: UIBarStyle = .default) {
         
         setBackgroundImage(UIImage(), for: .default)
         shadowImage = UIImage()
@@ -18,5 +18,7 @@ extension UINavigationBar {
         
         tintColor = barTintColor//.black
         titleTextAttributes = [.foregroundColor : tintColor as Any]
+        
+        barStyle = barStyleColor
     }
 }

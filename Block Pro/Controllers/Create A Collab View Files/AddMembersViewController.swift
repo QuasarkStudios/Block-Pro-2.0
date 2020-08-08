@@ -27,14 +27,27 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
     
     @IBOutlet weak var addMembersTableView: UITableView!
     
-    var friends: [Friend] = []
-    var filteredFriends: [Friend] = []
-    
-    var previouslyAddedMembers: [Friend]?
-    
-    var newlyAddedMembers: [String : Friend] = [:]
+    let currentUser = CurrentUser.sharedInstance
     
     let firebaseCollab = FirebaseCollab.sharedInstance
+    
+    lazy var friends: [Friend] = firebaseCollab.friends
+    var filteredFriends: [Friend] = []
+    
+    var previouslyAddedFriends: [Friend]?
+    var newlyAddedFriends: [String : Friend] = [:]
+    
+    var previouslyAddedMembers: [Member]? {
+        didSet {
+            
+            previouslyAddedMembers?.removeAll(where: { $0.userID == currentUser.userID })
+            
+            for member in previouslyAddedMembers ?? [] {
+                
+                friends.removeAll(where: { $0.userID == member.userID })
+            }
+        }
+    }
     
     weak var membersAddedDelegate: MembersAdded?
     
@@ -50,11 +63,13 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
         headerLabel.adjustsFontSizeToFitWidth = true
         headerLabel.text = headerLabelText
         
+        membersCountLabel.text = "\(previouslyAddedMembers?.count ?? 0)/5"
+        
         configureSearchBar()
         
         configureTableView()
         
-        friends = firebaseCollab.friends
+        //friends = firebaseCollab.friends
         
         if #available(iOS 13.0, *) {
             isModalInPresentation = true
@@ -67,7 +82,7 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
     
     override func viewDidAppear(_ animated: Bool) {
         
-        previouslyAddedMembers = nil
+        previouslyAddedFriends = nil
     }
     
 
@@ -96,7 +111,7 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
                 cell.nameLabel.text = friends[indexPath.row / 2].firstName + " " + friends[indexPath.row / 2].lastName
                 cell.profilePicImageView.configureProfileImageView(profileImage: friends[indexPath.row / 2].profilePictureImage)
                 
-                if let addedMembers = previouslyAddedMembers {
+                if let addedMembers = previouslyAddedFriends {
                     
                     for member in addedMembers {
                         
@@ -104,16 +119,16 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
                             
                             cell.addedIndicator.isHidden = false
                             
-                            newlyAddedMembers[member.userID] = member
+                            newlyAddedFriends[member.userID] = member
                             
-                            membersCountLabel.text = "\(newlyAddedMembers.count)/5"
+                            membersCountLabel.text = "\(newlyAddedFriends.count)/5"
                         }
                     }
                 }
                 
                 else {
                     
-                    if newlyAddedMembers[friends[indexPath.row / 2].userID] != nil {
+                    if newlyAddedFriends[friends[indexPath.row / 2].userID] != nil {
                         
                         cell.addedIndicator.isHidden = false
                     }
@@ -136,7 +151,7 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
                 cell.nameLabel.text = filteredFriends[indexPath.row / 2].firstName + " " + filteredFriends[indexPath.row / 2].lastName
                 cell.profilePicImageView.configureProfileImageView(profileImage: filteredFriends[indexPath.row / 2].profilePictureImage)
                 
-                if let addedMembers = previouslyAddedMembers {
+                if let addedMembers = previouslyAddedFriends {
                     
                     for member in addedMembers {
                         
@@ -144,16 +159,16 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
                             
                             cell.addedIndicator.isHidden = false
                             
-                            newlyAddedMembers[member.userID] = member
+                            newlyAddedFriends[member.userID] = member
                             
-                            membersCountLabel.text = "\(newlyAddedMembers.count)/5"
+                            membersCountLabel.text = "\(newlyAddedFriends.count)/5"
                         }
                     }
                 }
                 
                 else {
                     
-                    if newlyAddedMembers[filteredFriends[indexPath.row / 2].userID] != nil {
+                    if newlyAddedFriends[filteredFriends[indexPath.row / 2].userID] != nil {
                         
                         cell.addedIndicator.isHidden = false
                     }
@@ -196,25 +211,25 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
         let cell = tableView.cellForRow(at: indexPath) as! MembersTableViewCell
         tableView.deselectRow(at: indexPath, animated: true)
         
-        if newlyAddedMembers.count < 5 {
+        if (newlyAddedFriends.count + (previouslyAddedMembers?.count ?? 0)) < 5 {
             
             cell.addedIndicator.isHidden = !cell.addedIndicator.isHidden
             
             if cell.addedIndicator.isHidden {
                 
-                newlyAddedMembers.removeValue(forKey: cell.memberUserID)
+                newlyAddedFriends.removeValue(forKey: cell.memberUserID)
             }
             
             else {
                 
                 if !searchBeingConducted {
                     
-                    newlyAddedMembers[cell.memberUserID] = friends[indexPath.row / 2]
+                    newlyAddedFriends[cell.memberUserID] = friends[indexPath.row / 2]
                 }
                 
                 else {
                     
-                    newlyAddedMembers[cell.memberUserID] = filteredFriends[indexPath.row / 2]
+                    newlyAddedFriends[cell.memberUserID] = filteredFriends[indexPath.row / 2]
                 }
             }
         }
@@ -225,7 +240,7 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
                 
                 cell.addedIndicator.isHidden = true
                 
-                newlyAddedMembers.removeValue(forKey: cell.memberUserID)
+                newlyAddedFriends.removeValue(forKey: cell.memberUserID)
             }
             
             else {
@@ -234,7 +249,15 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
             }
         }
         
-        membersCountLabel.text = "\(newlyAddedMembers.count)/5"
+        if let membersCount = previouslyAddedMembers?.count{
+            
+            membersCountLabel.text = "\(newlyAddedFriends.count + membersCount)/5"
+        }
+        
+        else {
+            
+            membersCountLabel.text = "\(newlyAddedFriends.count)/5"
+        }
     }
     
     private func configureSearchBar () {
@@ -302,7 +325,7 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
     
     @IBAction func doneButton(_ sender: Any) {
         
-        if newlyAddedMembers.count == 0 {
+        if newlyAddedFriends.count == 0 {
             
             ProgressHUD.showError("Please add at least 1 member")
         }
@@ -311,7 +334,7 @@ class AddMembersViewController: UIViewController, UITableViewDataSource, UITable
             
             friends.removeAll()
             
-            for member in newlyAddedMembers {
+            for member in newlyAddedFriends {
                 
                 friends.append(member.value)
             }

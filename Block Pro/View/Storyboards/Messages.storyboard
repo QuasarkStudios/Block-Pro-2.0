@@ -128,7 +128,7 @@
                 <viewControllerPlaceholder storyboardName="AddMembers" id="tuQ-ms-kDI" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VpX-8l-FNW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1030" y="598"/>
+            <point key="canvasLocation" x="1086" y="848"/>
         </scene>
         <!--Conversation Info View Controller-->
         <scene sceneID="uBe-XL-jhX">
@@ -178,6 +178,7 @@
                         <outlet property="messagingInfoTableView" destination="7Et-Xh-rJD" id="Wtj-Ma-ynE"/>
                         <segue destination="fGj-Gb-LZJ" kind="presentation" identifier="moveToFriendProfileView" id="S3o-JF-z2M"/>
                         <segue destination="3re-Lx-1xx" kind="presentation" identifier="moveToConvoPhotoView" id="Ttw-se-Aq5"/>
+                        <segue destination="tuQ-ms-kDI" kind="showDetail" identifier="moveToAddMembersView" id="kji-sU-rQE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lYR-U3-7ue" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -279,12 +280,12 @@
         <!--Messaging View Controller-->
         <scene sceneID="WwS-WL-FUN">
             <objects>
-                <viewController id="K7R-7c-5DO" customClass="MessagingViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="K7R-7c-5DO" customClass="MessagingViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Cki-l1-ReW">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Akv-qA-kTT">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Akv-qA-kTT">
                                 <rect key="frame" x="0.0" y="113" width="414" height="783"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
@@ -311,7 +312,7 @@
                                     <constraint firstAttribute="height" constant="30" id="P4R-Yx-r7N"/>
                                     <constraint firstAttribute="width" constant="200" id="U2S-qC-Swj"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="12"/>
+                                <fontDescription key="fontDescription" name="Poppins-Regular" family="Poppins" pointSize="12.5"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -330,6 +331,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="WXi-5l-vNA"/>
                     </view>
+                    <extendedEdge key="edgesForExtendedLayout" top="YES"/>
                     <navigationItem key="navigationItem" id="veG-YE-8KN">
                         <barButtonItem key="rightBarButtonItem" title="Item" image="info" id="pXg-pC-Z9B">
                             <connections>
@@ -337,6 +339,7 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="conversationNameLabel" destination="Fpb-LQ-wbI" id="LZS-Rg-upG"/>
                         <outlet property="messagesTableView" destination="Akv-qA-kTT" id="MKE-3e-yHI"/>
@@ -408,6 +411,9 @@
             <point key="canvasLocation" x="2886.9565217391305" y="158.70535714285714"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="kji-sU-rQE"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="icons8-mail-filter-24" width="24" height="24"/>
         <image name="info" width="30" height="30"/>

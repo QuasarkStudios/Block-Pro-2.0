@@ -58,6 +58,8 @@ class ConvoCoverInfoCell: UITableViewCell {
     var visualEffectView = UIVisualEffectView(effect: nil)
     var animator = UIViewPropertyAnimator(duration: 0, curve: .linear, animations: nil)
     
+    weak var presentCopiedAnimationDelegate: PresentCopiedAnimationProtocol?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -71,6 +73,10 @@ class ConvoCoverInfoCell: UITableViewCell {
         
         self.ovalBackgroundView.addSubview(visualEffectView)
         configureVisualEffect()
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
+        longPressGesture.minimumPressDuration = 0.3
+        self.addGestureRecognizer(longPressGesture)
     }
     
     private func verifyCoverPhoto (personalConversation: Conversation? = nil, collabConversation: Conversation? = nil) {
@@ -291,6 +297,53 @@ class ConvoCoverInfoCell: UITableViewCell {
             
             coverPhotoImageView.layer.cornerRadius = 0
             coverPhotoImageView.clipsToBounds = true
+        }
+    }
+    
+    @objc func handleLongPress (gesture: UILongPressGestureRecognizer) {
+        
+        let pressedLocation = gesture.location(in: self.contentView)
+        let coverPhotoContainerLocation = coverPhotoContainer.superview?.convert(coverPhotoContainer.frame, to: self)
+        let ovalBackgroundViewLocation = ovalBackgroundView.superview?.convert(ovalBackgroundView.frame, to: self)
+        
+        if gesture.state == .began {
+            
+            if let conversation = personalConversation {
+                
+                if conversation.coverPhotoID != nil && conversationMember == nil {
+                    
+                    let pasteboard = UIPasteboard.general
+                    
+                    if coverPhotoContainerLocation?.contains(pressedLocation) ?? false {
+                        
+                        pasteboard.image = coverPhotoImageView.image
+                        
+                        coverPhotoContainer.performCopyAnimationOnView()
+                        
+                        presentCopiedAnimationDelegate?.presentCopiedAnimation()
+                    }
+                    
+                    else if ovalBackgroundViewLocation?.contains(pressedLocation) ?? false {
+                        
+                        pasteboard.image = coverPhotoImageView.image
+                        
+                        coverPhotoContainer.performCopyAnimationOnView()
+                        
+                        presentCopiedAnimationDelegate?.presentCopiedAnimation()
+                    }
+                }
+                
+                else {
+                    
+                    let vibrateMethods = VibrateMethods()
+                    vibrateMethods.warningVibration()
+                }
+            }
+            
+            else if let conversation = collabConversation {
+                
+                
+            }
         }
     }
 }

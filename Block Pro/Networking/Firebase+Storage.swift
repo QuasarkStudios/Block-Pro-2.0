@@ -64,6 +64,7 @@ class FirebaseStorage {
         }
     }
     
+    //delete later
     private func saveProfilePictureToDatabase (_ profilePicURL: String) {
         
         let db = Firestore.firestore()
@@ -71,49 +72,61 @@ class FirebaseStorage {
         db.collection("Users").document(Auth.auth().currentUser!.uid).setData(["profilePicture": profilePicURL], merge: true)
     }
     
-    func retrieveCurrentUsersProfilePicFromStorage (profilePicURL: String, completion: @escaping (() -> Void)) {
-        
-        let url = NSURL(string: profilePicURL)
-        
-        URLSession.shared.dataTask(with: url! as URL) { (data, response, error) in
-            
-            if error != nil {
-                
-                print(error?.localizedDescription)
-            }
-            
-            else {
-                
-                DispatchQueue.main.async {
-                    
-                    let currentUser = CurrentUser.sharedInstance
-                    currentUser.profilePictureImage = UIImage(data: data!)
-                    
-                    completion()
-                    
-                    NotificationCenter.default.post(name: .didDownloadProfilePic, object: nil)
-                }
-            }
-        }.resume()
-    }
+//    func retrieveCurrentUsersProfilePicFromStorage (profilePicURL: String, completion: @escaping (() -> Void)) {
+//
+//        let url = NSURL(string: profilePicURL)
+//
+//        URLSession.shared.dataTask(with: url! as URL) { (data, response, error) in
+//
+//            if error != nil {
+//
+//                print(error?.localizedDescription)
+//            }
+//
+//            else {
+//
+//                DispatchQueue.main.async {
+//
+//                    let currentUser = CurrentUser.sharedInstance
+//                    currentUser.profilePictureImage = UIImage(data: data!)
+//
+//                    completion()
+//
+//                    NotificationCenter.default.post(name: .didDownloadProfilePic, object: nil)
+//                }
+//            }
+//        }.resume()
+//    }
     
     func retrieveUserProfilePicFromStorage (userID: String, completion: @escaping ((_ profilePic: UIImage?, _ userID: String) -> Void)) {
         
         profilePicturesRef.child("\(userID).jpeg").getData(maxSize: 3 * 1048576) { (data, error) in
             
-            if error == nil {
+            if error != nil {
                 
-                if let imageData = data {
+                if userID == self.currentUser.userID {
                     
-                    completion(UIImage(data: imageData), userID)
+                    self.currentUser.profilePictureImage = UIImage(named: "DefaultProfilePic")!
+                    
+                    NotificationCenter.default.post(name: .didDownloadProfilePic, object: nil)
                 }
                 
-
+                completion(UIImage(named: "DefaultProfilePic"), userID)
             }
             
             else {
                 
-                print(error)
+                if let imageData = data {
+                    
+                    if userID == self.currentUser.userID {
+                        
+                        self.currentUser.profilePictureImage = UIImage(data: data!)
+                        
+                        NotificationCenter.default.post(name: .didDownloadProfilePic, object: nil)
+                    }
+                    
+                    completion(UIImage(data: imageData), userID)
+                }
             }
         }
         

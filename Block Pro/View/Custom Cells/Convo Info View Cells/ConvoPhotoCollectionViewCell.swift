@@ -38,6 +38,7 @@ class ConvoPhotoCollectionViewCell: UICollectionViewCell {
     }
     
     weak var cachePhotoDelegate: CachePhotoProtocol?
+    weak var presentCopiedAnimationDelegate: PresentCopiedAnimationProtocol?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -51,6 +52,10 @@ class ConvoPhotoCollectionViewCell: UICollectionViewCell {
         
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
+        longPressGesture.minimumPressDuration = 0.3
+        self.addGestureRecognizer(longPressGesture)
     }
     
     private func configureImageView (message: Message) {
@@ -140,5 +145,18 @@ class ConvoPhotoCollectionViewCell: UICollectionViewCell {
         configureProgressHUD()
         
         iProgressView.showProgress()
+    }
+    
+    @objc func handleLongPress (gesture: UILongPressGestureRecognizer) {
+        
+        if gesture.state == .began {
+            
+            let pasteboard = UIPasteboard.general
+            pasteboard.image = imageView.image
+            
+            imageView.performCopyAnimationOnView()
+            
+            presentCopiedAnimationDelegate?.presentCopiedAnimation()
+        }
     }
 }

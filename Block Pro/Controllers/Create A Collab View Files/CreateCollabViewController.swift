@@ -337,7 +337,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
             
             if newCollab.members.count > 0 {
                 
-                addMembersVC.previouslyAddedMembers = newCollab.members
+                addMembersVC.previouslyAddedFriends = newCollab.members
             }
         }
         

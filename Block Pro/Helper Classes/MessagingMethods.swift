@@ -39,12 +39,23 @@ class MessagingMethods {
     
     //MARK: - Configure Table View Function
     
-    func configureTableView (bottomInset: CGFloat) {
+    func configureTableView () {
         
         if let viewController = parentViewController as? MessagingViewController {
             
             tableView.dataSource = viewController
             tableView.delegate = viewController
+            
+            let inputAccesoryView = viewController.messageInputAccesoryView
+            
+            tableView.contentInsetAdjustmentBehavior = .never
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: inputAccesoryView.configureSize().height + 5, right: 0)
+            
+            if #available(iOS 13.0, *) {
+                tableView.automaticallyAdjustsScrollIndicatorInsets = false
+            }
+            
+            tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: inputAccesoryView.configureSize().height, right: 0)
         }
         
         tableView.separatorStyle = .none
@@ -53,12 +64,10 @@ class MessagingMethods {
         
         tableView.scrollsToTop = false
         
-        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-        
         tableView.register(UINib(nibName: "MessageCell", bundle: nil), forCellReuseIdentifier: "messageCell")
         tableView.register(UINib(nibName: "PhotoMessageCell", bundle: nil), forCellReuseIdentifier: "photoMessageCell")
         tableView.register(UINib(nibName: "PhotoMessageWithCaptionCell", bundle: nil), forCellReuseIdentifier: "photoMessageWithCaptionCell")
+        tableView.register(UINib(nibName: "ConvoUpdatedMessageCell", bundle: nil), forCellReuseIdentifier: "convoUpdatedMessageCell")
     }
     
     
@@ -73,47 +82,9 @@ class MessagingMethods {
         
         if indexPath.row % 2 == 0 {
             
-            if messages?[indexPath.row / 2].messagePhoto == nil {
+            if messages?[indexPath.row / 2].messagePhoto != nil {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell", for: indexPath) as! MessageCell
-                cell.members = members
-                cell.previousMessage = (indexPath.row / 2) - 1 >= 0 ? messages![(indexPath.row / 2) - 1] : nil
-                cell.message = messages?[indexPath.row / 2]
-                
-                if let viewController = parentViewController as? MessagingViewController {
-                    
-                    cell.presentCopiedAnimationDelegate = viewController
-                }
-                
-                cell.selectionStyle = .none
-                
-                return cell
-            }
-            
-            else {
-                
-                if messages?[indexPath.row / 2].message == nil {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "photoMessageCell", for: indexPath) as! PhotoMessageCell
-                    cell.conversationID = conversationID
-                    cell.collabID = collabID
-                    cell.members = members
-                    cell.previousMessage = (indexPath.row / 2) - 1 >= 0 ? messages![(indexPath.row / 2) - 1] : nil
-                    cell.message = messages?[indexPath.row / 2]
-                    
-                    if let viewController = parentViewController as? MessagingViewController {
-                        
-                        cell.cachePhotoDelegate = viewController
-                        cell.zoomInDelegate = viewController
-                        cell.presentCopiedAnimationDelegate = viewController
-                    }
-                    
-                    cell.selectionStyle = .none
-                    
-                    return cell
-                }
-                
-                else {
+                if messages?[indexPath.row / 2].message != nil {
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "photoMessageWithCaptionCell", for: indexPath) as! PhotoMessageWithCaptionCell
                     cell.conversationID = conversationID != nil ? conversationID : nil
@@ -133,6 +104,66 @@ class MessagingMethods {
 
                     return cell
                 }
+                
+                else {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "photoMessageCell", for: indexPath) as! PhotoMessageCell
+                    cell.conversationID = conversationID
+                    cell.collabID = collabID
+                    cell.members = members
+                    cell.previousMessage = (indexPath.row / 2) - 1 >= 0 ? messages![(indexPath.row / 2) - 1] : nil
+                    cell.message = messages?[indexPath.row / 2]
+                    
+                    if let viewController = parentViewController as? MessagingViewController {
+                        
+                        cell.cachePhotoDelegate = viewController
+                        cell.zoomInDelegate = viewController
+                        cell.presentCopiedAnimationDelegate = viewController
+                    }
+                    
+                    cell.selectionStyle = .none
+                    
+                    return cell
+                }
+            }
+            
+            else if messages?[indexPath.row / 2].message != nil {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell", for: indexPath) as! MessageCell
+                cell.members = members
+                cell.previousMessage = (indexPath.row / 2) - 1 >= 0 ? messages![(indexPath.row / 2) - 1] : nil
+                cell.message = messages?[indexPath.row / 2]
+                
+                if let viewController = parentViewController as? MessagingViewController {
+                    
+                    cell.presentCopiedAnimationDelegate = viewController
+                }
+                
+                cell.selectionStyle = .none
+                
+                return cell
+            }
+            
+            else if let message = messages?[(indexPath.row / 2)], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "convoUpdatedMessageCell", for: indexPath) as! ConvoUpdatedMessageCell
+                cell.member = members?.first(where: { $0.userID == messages?[indexPath.row / 2].sender })
+                
+                cell.coverUpdated = messages?[indexPath.row / 2].memberUpdatedConversationCover
+                cell.nameUpdated = messages?[indexPath.row / 2].memberUpdatedConversationName
+                cell.memberJoining = messages?[indexPath.row / 2].memberJoiningConversation
+                
+                cell.isUserInteractionEnabled = false
+                
+                return cell
+            }            
+                
+            //If this type of cell can't be handled 
+            else {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "seperatorCell", for: indexPath)
+                cell.isUserInteractionEnabled = false
+                return cell
             }
         }
         
@@ -157,7 +188,6 @@ class MessagingMethods {
         }
     }
     
-    
     //MARK: - Determine Message Row Height Function
     
     private func determineMessageRowHeight (indexPath: IndexPath, messages: [Message]?) -> CGFloat {
@@ -179,10 +209,22 @@ class MessagingMethods {
                     return imageViewHeight + textViewHeight + 16 //16 (15 + 1 for the bottom anchor of the photoImageView) is a height increase to the cell to improve it aesthetically
                 }
                     
-                //If this message doesn't have a photo
+                //If this is just a simple message
+                else if let message = messages?[indexPath.row].message {
+                    
+                    return message.estimateFrameForMessageCell().height + 15 //15 is a height increase to the cell to improve it aesthetically
+                }
+                   
+                //If this is a convo update message
+                else if let message = messages?[indexPath.row], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                    
+                    return 20
+                }
+                
+                //If this message is unable to be handled
                 else {
                     
-                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 15 //15 is a height increase to the cell to improve it aesthetically
+                    return 0
                 }
             }
             
@@ -197,9 +239,19 @@ class MessagingMethods {
                     return imageViewHeight + textViewHeight + 31 //16 (15 + 1 for the bottom anchor of the photoImageView) to improve the aesthetics of the cell + an extra 15 to allow for the nameLabel that will be shown in this cell
                 }
                 
+                else if let message = messages?[indexPath.row / 2].message {
+                    
+                    return message.estimateFrameForMessageCell().height + 30 //15 to improve the aesthetics of the cell + an extra 15 to allow for the nameLabel that will be shown in this cell
+                }
+                    
+                else if let message = messages?[indexPath.row / 2], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                    
+                    return 20
+                }
+                
                 else {
                     
-                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 30 //15 to improve the aesthetics of the cell + an extra 15 to allow for the nameLabel that will be shown in this cell
+                    return 0
                 }
             }
         }
@@ -218,9 +270,19 @@ class MessagingMethods {
                     return imageViewHeight + textViewHeight + 16
                 }
                 
+                else if let message = messages?[indexPath.row / 2].message {
+                    
+                    return message.estimateFrameForMessageCell().height + 15
+                }
+                 
+                else if let message = messages?[indexPath.row / 2], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                    
+                    return 20
+                }
+                
                 else {
                     
-                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 15
+                    return 0
                 }
             }
             
@@ -235,9 +297,19 @@ class MessagingMethods {
                     return imageViewHeight + textViewHeight + 31
                 }
                 
+                else if let message = messages?[indexPath.row / 2].message {
+                    
+                    return message.estimateFrameForMessageCell().height + 30
+                }
+                
+                else if let message = messages?[indexPath.row / 2], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                    
+                    return 20
+                }
+                
                 else {
                     
-                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 30
+                    return 0
                 }
             }
             
@@ -246,15 +318,47 @@ class MessagingMethods {
                 
                 if let messagePhoto = messages?[indexPath.row / 2].messagePhoto {
                     
-                    let imageViewHeight = calculatePhotoMessageCellHeight(messagePhoto: messagePhoto)
-                    let textViewHeight = messages?[indexPath.row / 2].message?.estimateFrameForMessageCell().height ?? -16
+                    //If the last message was a convo update message, this cell should show the user's profile pic and name
+                    if let message = messages?[(indexPath.row / 2) - 1], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                        
+                        let imageViewHeight = calculatePhotoMessageCellHeight(messagePhoto: messagePhoto)
+                        let textViewHeight = messages?[indexPath.row / 2].message?.estimateFrameForMessageCell().height ?? -16
+                        
+                        return imageViewHeight + textViewHeight + 31
+                    }
                     
-                    return imageViewHeight + textViewHeight + 16
+                    else {
+                        
+                        let imageViewHeight = calculatePhotoMessageCellHeight(messagePhoto: messagePhoto)
+                        let textViewHeight = messages?[indexPath.row / 2].message?.estimateFrameForMessageCell().height ?? -16
+                        
+                        return imageViewHeight + textViewHeight + 16
+                    }
+                }
+                
+                else if let message = messages?[indexPath.row / 2].message {
+                    
+                    //If the last message was a convo update message, this cell should show the user's profile pic and name
+                    if let message = messages?[(indexPath.row / 2) - 1], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                        
+                        
+                        return messages![indexPath.row / 2].message!.estimateFrameForMessageCell().height + 30
+                    }
+                    
+                    else {
+                        
+                        return message.estimateFrameForMessageCell().height + 15
+                    }
+                }
+                
+                else if let message = messages?[indexPath.row / 2], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                    
+                    return 20
                 }
                 
                 else {
                     
-                    return (messages?[indexPath.row / 2].message!.estimateFrameForMessageCell().height)! + 15
+                    return 0
                 }
             }
         }
@@ -267,11 +371,28 @@ class MessagingMethods {
         
         if (indexPath.row / 2) + 1 < messages!.count {
             
+            //If the same user sent the message before and after the seperator cell
             if messages![indexPath.row / 2].sender == messages![(indexPath.row / 2) + 1].sender {
                 
-                return 2
+                //If the message before the seperator cell is a convo update message
+                if let message = messages?[(indexPath.row / 2)], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                    
+                    return 8
+                }
+                    
+                //If the message after the seperator cell is a convo update message
+                else if let message = messages?[(indexPath.row / 2) + 1], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                    
+                    return 8
+                }
+                
+                else {
+                    
+                    return 2
+                }
             }
             
+            //If the same user didn't send the message before and after the seperator cell
             else {
                 
                 return 8
@@ -307,15 +428,34 @@ class MessagingMethods {
             let messageCellIndexPath = IndexPath(row: ((messages?.count ?? 0) * 2) - 1, section: 0)
 
             let lastMessageIndex = messages?.count ?? 0 > 0 ? (messages?.count ?? 0) - 1 : 0
+            let newMessageIndex = (messages?.count ?? 0) - 1
             
             if messages?[lastMessageIndex].sender == self.currentUser.userID {
 
-                tableView.insertRows(at: [seperatorCellIndexPath, messageCellIndexPath], with: .right)
+                //If the new message is a convo update message
+                if let message = messages?[newMessageIndex], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                    
+                    tableView.insertRows(at: [seperatorCellIndexPath, messageCellIndexPath], with: .fade)
+                }
+                
+                else {
+                    
+                    tableView.insertRows(at: [seperatorCellIndexPath, messageCellIndexPath], with: .right)
+                }
             }
 
             else {
 
-                tableView.insertRows(at: [seperatorCellIndexPath, messageCellIndexPath], with: .left)
+                //If the new message is a convo update message
+                if let message = messages?[newMessageIndex], message.memberUpdatedConversationCover != nil || message.memberUpdatedConversationName != nil || message.memberJoiningConversation != nil {
+                    
+                    tableView.insertRows(at: [seperatorCellIndexPath, messageCellIndexPath], with: .fade)
+                }
+                
+                else {
+                    
+                    tableView.insertRows(at: [seperatorCellIndexPath, messageCellIndexPath], with: .left)
+                }
             }
             
             //Scrolls to the last row in the tableView, and animates it
@@ -327,8 +467,11 @@ class MessagingMethods {
             
             tableView.reloadData()
             
-            //Scrolls to the last row in the tableView, but doesn't animate it
-            tableView.scrollToRow(at: IndexPath(row: ((messages?.count ?? 0) * 2) - 1, section: 0), at: .bottom, animated: false)
+            if messages?.count ?? 0 > 0 {
+                
+                //Scrolls to the last row in the tableView, but doesn't animate it
+                tableView.scrollToRow(at: IndexPath(row: ((messages?.count ?? 0) * 2) - 1, section: 0), at: .bottom, animated: false)
+            }
         }
     }
 }

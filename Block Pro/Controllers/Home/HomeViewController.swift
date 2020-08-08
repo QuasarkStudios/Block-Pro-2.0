@@ -349,16 +349,27 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         animateProfilePic(true)
         
-        firebaseStorage.retrieveCurrentUsersProfilePicFromStorage(profilePicURL: currentUser.profilePictureURL!) {
-            
+        firebaseStorage.retrieveUserProfilePicFromStorage(userID: currentUser.userID) { (profilePic, nil) in
+
             self.animateProfilePic(false)
-            
+
             UIView.transition(with: self.profilePicContainer, duration: 0.3, options: .curveLinear, animations: {
-                
+
                 self.profilePicImageView.image = self.currentUser.profilePictureImage
-                
+
             }, completion: nil)
         }
+        
+//        firebaseStorage.retrieveCurrentUsersProfilePicFromStorage(profilePicURL: currentUser.profilePictureURL!) {
+//
+//            self.animateProfilePic(false)
+//
+//            UIView.transition(with: self.profilePicContainer, duration: 0.3, options: .curveLinear, animations: {
+//
+//                self.profilePicImageView.image = self.currentUser.profilePictureImage
+//
+//            }, completion: nil)
+//        }
     }
     
     private func animateProfilePic (_ animate: Bool) {
