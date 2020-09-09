@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UjF-Qj-xnX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UjF-Qj-xnX">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -11,9 +10,6 @@
     <customFonts key="customFonts">
         <array key="Poppins-Regular.ttf">
             <string>Poppins-Regular</string>
-        </array>
-        <array key="Poppins-SemiBold.ttf">
-            <string>Poppins-SemiBold</string>
         </array>
     </customFonts>
     <scenes>
@@ -25,95 +21,40 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eiS-sd-aLx">
-                                <rect key="frame" x="25" y="108" width="364" height="37"/>
-                                <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Search" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="NVa-O7-MdA">
-                                        <rect key="frame" x="50" y="0.0" width="304" height="37"/>
-                                        <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="15"/>
-                                        <textInputTraits key="textInputTraits" returnKeyType="search"/>
-                                        <connections>
-                                            <action selector="searchTextChanged:" destination="hhG-v6-xwH" eventType="editingChanged" id="eSI-1B-l9r"/>
-                                        </connections>
-                                    </textField>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search" translatesAutoresizingMaskIntoConstraints="NO" id="qkN-wZ-nGt">
-                                        <rect key="frame" x="5" y="7" width="35" height="23"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="35" id="ikb-1R-uVj"/>
-                                        </constraints>
-                                    </imageView>
-                                </subviews>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstItem="qkN-wZ-nGt" firstAttribute="top" secondItem="eiS-sd-aLx" secondAttribute="top" constant="7" id="0IC-zE-bpk"/>
-                                    <constraint firstItem="NVa-O7-MdA" firstAttribute="leading" secondItem="qkN-wZ-nGt" secondAttribute="trailing" constant="10" id="1Hf-cI-Oio"/>
-                                    <constraint firstItem="qkN-wZ-nGt" firstAttribute="leading" secondItem="eiS-sd-aLx" secondAttribute="leading" constant="5" id="JoS-fM-ZRb"/>
-                                    <constraint firstAttribute="bottom" secondItem="NVa-O7-MdA" secondAttribute="bottom" id="QNM-tr-CoZ"/>
-                                    <constraint firstAttribute="height" constant="37" id="Qib-Qv-cMl"/>
-                                    <constraint firstAttribute="trailing" secondItem="NVa-O7-MdA" secondAttribute="trailing" constant="10" id="a0w-J6-HYE"/>
-                                    <constraint firstItem="NVa-O7-MdA" firstAttribute="top" secondItem="eiS-sd-aLx" secondAttribute="top" id="pA3-Yp-lgG"/>
-                                    <constraint firstAttribute="bottom" secondItem="qkN-wZ-nGt" secondAttribute="bottom" constant="7" id="xc6-WS-FU4"/>
-                                </constraints>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lh4-EY-OrS">
-                                <rect key="frame" x="25" y="170" width="90" height="30"/>
-                                <color key="backgroundColor" red="0.76470588235294112" green="0.76862745098039209" blue="0.78431372549019607" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="Eor-Of-KKg"/>
-                                    <constraint firstAttribute="width" constant="90" id="w4l-vG-PaM"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="13"/>
-                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <state key="normal" title="Collab"/>
-                                <connections>
-                                    <action selector="personal_collabButtonPressed:" destination="hhG-v6-xwH" eventType="touchUpInside" id="XPk-g0-gUM"/>
-                                </connections>
-                            </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="0HE-7b-ugV">
-                                <rect key="frame" x="0.0" y="220" width="414" height="676"/>
+                                <rect key="frame" x="0.0" y="213" width="414" height="683"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yh1-LP-kAN">
-                                <rect key="frame" x="130" y="170" width="90" height="30"/>
-                                <color key="backgroundColor" red="0.76470588235294112" green="0.76862745098039209" blue="0.78431372549019607" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="90" id="Szb-33-sRV"/>
-                                    <constraint firstAttribute="height" constant="30" id="oMM-cV-Tb7"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" name="Poppins-SemiBold" family="Poppins" pointSize="14"/>
-                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <inset key="titleEdgeInsets" minX="0.0" minY="0.0" maxX="29" maxY="0.0"/>
-                                <inset key="imageEdgeInsets" minX="62" minY="7" maxX="12" maxY="7"/>
-                                <state key="normal" title="Sort" image="icons8-mail-filter-24"/>
-                                <connections>
-                                    <action selector="sortButtonPressed" destination="hhG-v6-xwH" eventType="touchUpInside" id="jM0-W9-lEP"/>
-                                </connections>
-                            </button>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2EB-nw-1U7">
+                                <rect key="frame" x="0.0" y="88" width="414" height="125"/>
+                                <color key="backgroundColor" systemColor="systemTealColor" red="0.35294117650000001" green="0.7843137255" blue="0.98039215690000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="0HE-7b-ugV" firstAttribute="top" secondItem="lh4-EY-OrS" secondAttribute="bottom" constant="20" id="1bp-04-cE1"/>
+                            <constraint firstItem="2EB-nw-1U7" firstAttribute="top" secondItem="YVK-2O-YgW" secondAttribute="top" id="Hpx-6D-qCL"/>
                             <constraint firstItem="YVK-2O-YgW" firstAttribute="trailing" secondItem="0HE-7b-ugV" secondAttribute="trailing" id="LOL-9v-6dQ"/>
-                            <constraint firstItem="lh4-EY-OrS" firstAttribute="leading" secondItem="YVK-2O-YgW" secondAttribute="leading" constant="25" id="Tfd-d6-OQh"/>
+                            <constraint firstItem="0HE-7b-ugV" firstAttribute="top" secondItem="YVK-2O-YgW" secondAttribute="top" constant="125" id="QHB-VU-Ish"/>
+                            <constraint firstItem="0HE-7b-ugV" firstAttribute="top" secondItem="2EB-nw-1U7" secondAttribute="bottom" id="U4G-gB-a7v"/>
                             <constraint firstAttribute="bottom" secondItem="0HE-7b-ugV" secondAttribute="bottom" id="Uc1-lY-9Lh"/>
+                            <constraint firstItem="YVK-2O-YgW" firstAttribute="trailing" secondItem="2EB-nw-1U7" secondAttribute="trailing" id="Xb0-oB-rMF"/>
                             <constraint firstItem="0HE-7b-ugV" firstAttribute="leading" secondItem="YVK-2O-YgW" secondAttribute="leading" id="Yw0-yv-uMM"/>
-                            <constraint firstItem="eiS-sd-aLx" firstAttribute="leading" secondItem="YVK-2O-YgW" secondAttribute="leading" constant="25" id="eWH-5I-yJv"/>
-                            <constraint firstItem="eiS-sd-aLx" firstAttribute="top" secondItem="YVK-2O-YgW" secondAttribute="top" constant="20" id="gjQ-zQ-4BH"/>
-                            <constraint firstItem="lh4-EY-OrS" firstAttribute="top" secondItem="eiS-sd-aLx" secondAttribute="bottom" constant="25" id="lMm-H2-VHX"/>
-                            <constraint firstItem="Yh1-LP-kAN" firstAttribute="leading" secondItem="lh4-EY-OrS" secondAttribute="trailing" constant="15" id="oQR-Ys-RAA"/>
-                            <constraint firstItem="Yh1-LP-kAN" firstAttribute="top" secondItem="eiS-sd-aLx" secondAttribute="bottom" constant="25" id="vRV-ZN-MPO"/>
-                            <constraint firstItem="YVK-2O-YgW" firstAttribute="trailing" secondItem="eiS-sd-aLx" secondAttribute="trailing" constant="25" id="ynG-GV-ZmM"/>
+                            <constraint firstItem="2EB-nw-1U7" firstAttribute="leading" secondItem="YVK-2O-YgW" secondAttribute="leading" id="ldm-eo-Txu"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="YVK-2O-YgW"/>
                     </view>
-                    <navigationItem key="navigationItem" id="XuG-lY-vkZ"/>
+                    <navigationItem key="navigationItem" id="XuG-lY-vkZ">
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="line.horizontal.3.decrease.circle.fill" catalog="system" id="S4z-dv-X1z">
+                            <connections>
+                                <action selector="sortButtonPressed" destination="hhG-v6-xwH" id="on1-Xu-DL0"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="messagingHomeTableView" destination="0HE-7b-ugV" id="SuR-Kj-j03"/>
-                        <outlet property="personal_collabButton" destination="lh4-EY-OrS" id="gNx-AA-CFM"/>
-                        <outlet property="searchBarContainer" destination="eiS-sd-aLx" id="mea-09-XWD"/>
-                        <outlet property="searchImageView" destination="qkN-wZ-nGt" id="WPp-vY-ASy"/>
-                        <outlet property="searchTextField" destination="NVa-O7-MdA" id="Hel-eM-3nE"/>
-                        <outlet property="sortButton" destination="Yh1-LP-kAN" id="A5p-fr-keS"/>
+                        <outlet property="messagingTableViewTopAnchor" destination="QHB-VU-Ish" id="4Pi-1Q-71G"/>
+                        <outlet property="navBarExtensionBottomAnchor" destination="U4G-gB-a7v" id="x7E-vR-E7x"/>
+                        <outlet property="navBarExtensionView" destination="2EB-nw-1U7" id="C2w-fK-lOC"/>
                         <segue destination="tuQ-ms-kDI" kind="presentation" identifier="moveToAddMembersView" id="y10-by-iSs"/>
                         <segue destination="K7R-7c-5DO" kind="show" identifier="moveToMessagesView" id="bjq-GK-5vE"/>
                     </connections>
@@ -249,6 +190,28 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Epj-Ca-6pL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2886.9565217391305" y="847.76785714285711"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="Cy8-NT-X8o">
+            <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OMb-V3-bKA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <viewController id="zU4-oy-b1n" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SID-bc-zEd">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OAL-em-jUD">
+                                <rect key="frame" x="166" y="355" width="182" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button" image="line"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="xKe-Px-bBp"/>
+                    </view>
+                </viewController>
+            </objects>
+            <point key="canvasLocation" x="3873.913043478261" y="775.44642857142856"/>
         </scene>
         <!--FriendProfile-->
         <scene sceneID="c3y-ol-luH">
@@ -412,11 +375,11 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="kji-sU-rQE"/>
+        <segue reference="y10-by-iSs"/>
     </inferredMetricsTieBreakers>
     <resources>
-        <image name="icons8-mail-filter-24" width="24" height="24"/>
         <image name="info" width="30" height="30"/>
-        <image name="search" width="30" height="30"/>
+        <image name="line" width="128" height="128"/>
+        <image name="line.horizontal.3.decrease.circle.fill" catalog="system" width="128" height="121"/>
     </resources>
 </document>

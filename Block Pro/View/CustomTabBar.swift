@@ -59,23 +59,45 @@ class CustomTabBar: UIView {
     
     var popped: Bool = false  //Tracks to see if the user popped back to the root view controller
     
+    //REMOVE THIS WHEN TABBAR IS OVERHAULED; QUICK WORK AROUND CAUSE YOU OF THE PAST IS FEELING LAZY
+    func bottomInset () -> CGFloat {
+        
+        //iPhone XS Max & iPhone XR
+        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+            
+            return 34
+        }
+            
+        //iPhone XS
+        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+            
+            return 34
+        }
+            
+        //Errythang else
+        else {
+            
+            //Random inset; normally 0 for all phone with bezels
+            return 15
+        }
+    }
+    
     static let sharedInstance = CustomTabBar()
     
     override init (frame: CGRect) {
         super.init(frame: frame)
-        
+
         configureTabBar()
         configureButtons()
-        
     }
-    
+
     convenience init () {
         self.init(frame: .zero)
-        
+
         configureTabBar()
         configureButtons()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -84,10 +106,13 @@ class CustomTabBar: UIView {
     private func configureTabBar () {
         
         let centeredXCoord = (UIScreen.main.bounds.width / 2) - 112.5
-        let yCoord = UIScreen.main.bounds.height - 95
+        //let yCoord = UIScreen.main.bounds.height - (61 + bottomInset()) //95
+        
+        //Height of the tabBar + 15 point buffer + bottom inset of the phone/view
+        let yCoord = UIScreen.main.bounds.height - (45 + 15 + bottomInset())
         
         frame = CGRect(x: centeredXCoord, y: yCoord, width: 225, height: 45)
-        backgroundColor = UIColor(hexString: "282828")
+        backgroundColor = UIColor(hexString: "222222")//UIColor(hexString: "282828")
         layer.cornerRadius = 28.5
         
         if #available(iOS 13.0, *) {

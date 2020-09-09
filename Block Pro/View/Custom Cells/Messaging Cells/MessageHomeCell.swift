@@ -43,20 +43,26 @@ class MessageHomeCell: UITableViewCell {
     var personalConversation: Conversation? {
         didSet {
             
-            configureConversationPicContainers(members: personalConversation?.currentMembers)
-            configureConversationName(conversation: personalConversation, members: personalConversation?.currentMembers)
-            configureMessagePreview(conversation: personalConversation)
-            configureUnreadMessageIndicator(conversation: personalConversation)
+            if personalConversation != nil {
+                
+                configureConversationPicContainers(members: personalConversation?.currentMembers)
+                configureConversationName(conversation: personalConversation, members: personalConversation?.currentMembers)
+                configureMessagePreview(conversation: personalConversation)
+                configureUnreadMessageIndicator(conversation: personalConversation)
+            }
         }
     }
     
     var collabConversation: Conversation? {
         didSet {
             
-            configureConversationPicContainers(members: collabConversation?.currentMembers)
-            configureConversationName(conversation: collabConversation, members: collabConversation?.currentMembers)
-            configureMessagePreview(conversation: collabConversation)
-            configureUnreadMessageIndicator(conversation: collabConversation)
+            if collabConversation != nil {
+                
+                configureConversationPicContainers(members: collabConversation?.currentMembers)
+                configureConversationName(conversation: collabConversation, members: collabConversation?.currentMembers)
+                configureMessagePreview(conversation: collabConversation)
+                configureUnreadMessageIndicator(conversation: collabConversation)
+            }
         }
     }
     
@@ -106,13 +112,17 @@ class MessageHomeCell: UITableViewCell {
         }
 
         else if let conversation = collabConversation, conversation.coverPhotoID != nil {
-
+            
             configureConvoCoverContainer(collabConversation: conversation)
         }
 
         //If profile pictures should be used
         else {
 
+            if collabConversation != nil {
+                
+            }
+            
             //If only a single profilePicture should be displayed
             if (members?.count ?? 0) <= 2 {
 
@@ -417,8 +427,17 @@ class MessageHomeCell: UITableViewCell {
                     
                     if memberJoiningConversation {
                         
-                        attributedString.append(NSAttributedString(string: "\(memberName) joined the conversation", attributes: italicText))
-                        messagePreviewLabel.attributedText = attributedString
+                        if messagePreview.sender == currentUser.userID {
+                            
+                            attributedString.append(NSAttributedString(string: "You joined the conversation", attributes: italicText))
+                            messagePreviewLabel.attributedText = attributedString
+                        }
+                        
+                        else {
+                            
+                            attributedString.append(NSAttributedString(string: "\(memberName) joined the conversation", attributes: italicText))
+                            messagePreviewLabel.attributedText = attributedString
+                        }
                     }
                     
                     else {

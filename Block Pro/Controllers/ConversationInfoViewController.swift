@@ -102,8 +102,8 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         
         updateConversationName(name: convoName)
         
-        firebaseMessaging.personalConversationListener?.remove()
-        firebaseMessaging.collabConversationListener?.remove()
+        firebaseMessaging.monitorPersonalConversationListener?.remove()
+        firebaseMessaging.monitorCollabConversationListener?.remove()
         
         firebaseMessaging.messageListener?.remove()
         
@@ -1336,18 +1336,20 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         
         guard let conversation = personalConversation else { return }
         
-        firebaseMessaging.leaveConversation(conversationID: conversation.conversationID) { [weak self] (error) in
-            
-            if error != nil {
+            firebaseMessaging.monitorPersonalConversationListener?.remove() //Removing here will fix a array out of bounds error in the monitorPersonalConversation func
+        
+            firebaseMessaging.leaveConversation(conversationID: conversation.conversationID) { [weak self] (error) in
                 
-                SVProgressHUD.showError(withStatus: error?.localizedDescription)
-            }
-            
-            else {
+                if error != nil {
+                    
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                }
                 
-                self?.navigationController?.popToRootViewController(animated: true)
+                else {
+                    
+                    self?.navigationController?.popToRootViewController(animated: true)
+                }
             }
-        }
     }
     
     
@@ -1432,7 +1434,7 @@ extension ConversationInfoViewController: UIImagePickerControllerDelegate, UINav
                 
                 let coverPhotoID = UUID().uuidString
                 
-                firebaseMessaging.saveConversationCoverPhoto(conversationID: conversation.conversationID, coverPhotoID: coverPhotoID, coverPhoto: selectedImage) { [weak self] (error) in
+                firebaseMessaging.savePersonalConversationCoverPhoto(conversationID: conversation.conversationID, coverPhotoID: coverPhotoID, coverPhoto: selectedImage) { [weak self] (error) in
                     
                     if error != nil {
                         

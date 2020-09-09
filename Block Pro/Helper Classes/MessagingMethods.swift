@@ -419,10 +419,10 @@ class MessagingMethods {
     
     //MARK: - Reload TableView Function
     
-    func reloadTableView (messages: [Message]?) {
-
-        //If the "messages" array only has one new message that the tableView hasn't yet created a cell for; eveident that the tableView has already been previously loaded
-        if (((messages?.count ?? 0) * 2) - 2) == self.tableView.numberOfRows(inSection: 0) {
+    func reloadTableView (messages: [Message]?, _ animate: Bool = true) {
+        
+        //If the "messages" array only has one new message that the tableView hasn't yet created a cell for and the animation parameter is equal to true
+        if (((messages?.count ?? 0) * 2) - 2) == self.tableView.numberOfRows(inSection: 0) && animate {
             
             let seperatorCellIndexPath = IndexPath(row: ((messages?.count ?? 0) * 2) - 2, section: 0)
             let messageCellIndexPath = IndexPath(row: ((messages?.count ?? 0) * 2) - 1, section: 0)
@@ -462,7 +462,7 @@ class MessagingMethods {
             tableView.scrollToRow(at: IndexPath(row: ((messages?.count ?? 0) * 2) - 1, section: 0), at: .bottom, animated: true)
         }
         
-        //The tableView hasn't been loaded
+        //The tableView hasn't been loaded or if the animation parameter is false
         else {
             
             tableView.reloadData()

@@ -250,8 +250,6 @@ class FirebaseCollab {
                     
                     for document in snapshot!.documents {
                         
-                        print("check")
-                        
                         let member: [String : Any] = ["userID" : document.data()["userID"] as! String, "firstName" : document.data()["firstName"] as! String, "lastName" : document.data()["lastName"] as! String, "username" : document.data()["username"] as! String, "role" : document.data()["role"] as! String]
                         
                         batch.setData(member, forDocument: self.userRef.collection("Collabs").document(collab.collabID).collection("Members").document(member["userID"] as! String))

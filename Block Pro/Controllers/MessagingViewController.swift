@@ -53,7 +53,7 @@ class MessagingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         messageInputAccesoryView.parentViewController = self
         
         //Initializing MessagingMethods
@@ -73,12 +73,16 @@ class MessagingViewController: UIViewController {
         inputAccesoryViewMethods = InputAccesoryViewMethods(accesoryView: messageInputAccesoryView, textViewPlaceholderText: "Send a message", tableView: messagesTableView)
         
         setUserActiveStatus()
+        
+        self.navigationItem.largeTitleDisplayMode = .never
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         configureNavBar(navBar: navigationController?.navigationBar)
+        
+//        self.navigationItem.largeTitleDisplayMode = .never
         
         retrievePersonalMessages(personalConversation)
         retrieveCollabMessages(collabConversation)
@@ -110,7 +114,7 @@ class MessagingViewController: UIViewController {
 //        monitorPersonalConversation(personalConversation)
 //        monitorCollabConversation(collabConversation)
 
-//        setUserActiveStatus()
+        //setUserActiveStatus()
 
 //        self.becomeFirstResponder()
     }
@@ -118,8 +122,8 @@ class MessagingViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        firebaseMessaging.personalConversationListener?.remove()
-        firebaseMessaging.collabConversationListener?.remove()
+        firebaseMessaging.monitorPersonalConversationListener?.remove()
+        firebaseMessaging.monitorCollabConversationListener?.remove()
         
         firebaseMessaging.messageListener?.remove()
         
@@ -127,15 +131,22 @@ class MessagingViewController: UIViewController {
         
         saveMessageDraft()
         
+        setUserInactiveStatus()
+        
         //If the infoView is not being presented, then the copiedAnimationContainer should be removed; otherwise just dismissed if present
         copiedAnimationView?.removeCopiedAnimation(remove: !infoViewBeingPresented)
     }
     
-    deinit {
+    override func didReceiveMemoryWarning() {
         
-        setUserInactiveStatus()
+        var count = 0
         
-        print("view denit")
+        while count < messages?.count ?? 0 {
+            
+            messages?[count].messagePhoto?["photo"] = nil
+            
+            count += 1
+        }
     }
     
     override var inputAccessoryView: UIView? {
@@ -555,6 +566,8 @@ class MessagingViewController: UIViewController {
         
         guard let conversation = personalConversation else { return }
         
+        var animate: Bool = false //Fixes bug that caused bad configuration of the tableView when only two messages had been sent
+        
             firebaseMessaging.retrieveAllPersonalMessages(conversationID: conversation.conversationID) { [weak self] (messages, error) in
                 
                 if error != nil {
@@ -601,7 +614,12 @@ class MessagingViewController: UIViewController {
                     //Sorts messages by date sent
                     self?.messages = self?.messages?.sorted(by: { $0.timestamp < $1.timestamp })
                     
-                    self?.messagingMethods.reloadTableView(messages: self?.messages)
+                    self?.messagingMethods.reloadTableView(messages: self?.messages, animate)
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                        
+                        animate = true //Allows new messages to be animated after it's been intially loaded
+                    }
                 }
             }
     }
@@ -609,6 +627,8 @@ class MessagingViewController: UIViewController {
     private func retrieveCollabMessages (_ collabConversation: Conversation?) {
         
         guard let collab = collabConversation else { return }
+        
+        var animate: Bool = false //Fixes bug that caused bad configuration of the tableView when only two messages had been sent
         
         firebaseMessaging.retrieveAllCollabMessages(collabID: collab.conversationID) { [weak self] (messages, error) in
                 
@@ -656,8 +676,12 @@ class MessagingViewController: UIViewController {
                     //Sorts messages by date sent
                     self?.messages = self?.messages?.sorted(by: { $0.timestamp < $1.timestamp })
                     
-                    self?.messagingMethods.reloadTableView(messages: self?.messages)
-
+                    self?.messagingMethods.reloadTableView(messages: self?.messages, animate)
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                        
+                        animate = true //Allows new messages to be animated after it's been intially loaded
+                    }
                 }
             }
     }
@@ -982,15 +1006,18 @@ class MessagingViewController: UIViewController {
     }
     
     @objc private func setUserInactiveStatus () {
+          
+        if !infoViewBeingPresented {
             
-        if let conversation = personalConversation {
+            if let conversation = personalConversation {
+                
+                firebaseMessaging.setActivityStatus(conversationID: conversation.conversationID, Date())
+            }
             
-            firebaseMessaging.setActivityStatus(conversationID: conversation.conversationID, Date())
-        }
-        
-        else if let collab = collabConversation {
-            
-            firebaseMessaging.setActivityStatus(collabID: collab.conversationID, Date())
+            else if let collab = collabConversation {
+                
+                firebaseMessaging.setActivityStatus(collabID: collab.conversationID, Date())
+            }
         }
     }
     
@@ -1278,7 +1305,7 @@ class MessagingViewController: UIViewController {
             infoViewBeingPresented = true
             
             let backItem = UIBarButtonItem()
-            backItem.title = nil
+            backItem.title = ""
             navigationItem.backBarButtonItem = backItem
         }
     }

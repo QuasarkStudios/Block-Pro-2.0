@@ -93,7 +93,15 @@ class ConvoUpdatedMessageCell: UITableViewCell {
             
             if memberJoining {
                 
-                convoUpdatedLabel.text = member.firstName + " joined the conversation"
+                if member.userID == currentUser.userID {
+                    
+                    convoUpdatedLabel.text = "You joined the conversation"
+                }
+                
+                else {
+                    
+                    convoUpdatedLabel.text = member.firstName + " joined the conversation"
+                }
             }
             
             else {

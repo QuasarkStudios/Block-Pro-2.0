@@ -13,10 +13,6 @@ extension Notification.Name {
     
     static let didDownloadProfilePic = Notification.Name("didDownloadProfilePic")
     
-    static let didRetrieveConversationMembers = Notification.Name("didRetrieveConversationMembers")
-    
-    static let didRetrieveConversationPreview = Notification.Name("didRetrieveConversationPreview")
-    
     static let userDidSendMessage = Notification.Name("userDidSendMessage")
     
     static let userDidAddMessageAttachment = Notification.Name("userDidAddMessageAttachment")

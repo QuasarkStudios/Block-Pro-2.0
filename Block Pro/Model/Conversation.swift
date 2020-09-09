@@ -14,19 +14,19 @@ struct Conversation {
     var conversationID: String = ""
     var conversationName: String?
     
-    //var conversationHasCoverPhoto: Bool?
     var coverPhotoID: String?
     var conversationCoverPhoto: UIImage?
     
     var dateCreated: Date?
     
     var messagePreview: Message?
+    var messagePreviewLoaded: Bool = false
     
     var currentMembersIDs: [String] = []
     var currentMembers: [Member] = []
     var historicMembers: [Member] = []
+    var membersLoaded: Bool = false
     
-    //var memberGainedAccessOn: [String : Date]?
     var memberGainedAccessOn: [String : Any]?
     var memberActivity: [String : Any]?
     
