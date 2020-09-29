@@ -8,11 +8,6 @@
 
 import UIKit
 
-protocol PresentCopiedAnimationProtocol: AnyObject {
-    
-    func presentCopiedAnimation ()
-}
-
 class MessageCell: UITableViewCell {
     
     @IBOutlet weak var profilePicContainer: UIView!

@@ -23,7 +23,7 @@ class MessagingViewController: UIViewController {
     
     var messagingMethods: MessagingMethods!
     
-    let messageInputAccesoryView = InputAccesoryView(showsAddButton: true, textViewPlaceholderText: "Send a message")
+    let messageInputAccesoryView = InputAccesoryView(textViewPlaceholderText: "Send a message", showsAddButton: true)
     var inputAccesoryViewMethods: InputAccesoryViewMethods!
     
     let currentUser = CurrentUser.sharedInstance
@@ -82,12 +82,8 @@ class MessagingViewController: UIViewController {
         
         configureNavBar(navBar: navigationController?.navigationBar)
         
-//        self.navigationItem.largeTitleDisplayMode = .never
-        
         retrievePersonalMessages(personalConversation)
         retrieveCollabMessages(collabConversation)
-
-        //Experimenting with calling these functions here instead of viewDidAppear
         
         monitorPersonalConversation(personalConversation)
         monitorCollabConversation(collabConversation)
@@ -102,21 +98,6 @@ class MessagingViewController: UIViewController {
         
         //Initializing here allows the animationView to be removed and readded multiple times
         copiedAnimationView = CopiedAnimationView()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        //Testing placing all these functions in viewWillAppear
-        
-//        addObservors()
-
-//        monitorPersonalConversation(personalConversation)
-//        monitorCollabConversation(collabConversation)
-
-        //setUserActiveStatus()
-
-//        self.becomeFirstResponder()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -1276,17 +1257,17 @@ class MessagingViewController: UIViewController {
         if segue.identifier == "moveToSendPhotoView" {
             
             let sendPhotoVC = segue.destination as! SendPhotoMessageViewController
-            sendPhotoVC.reconfigureViewDelegate = self
+            sendPhotoVC.reconfigureMessagingViewDelegate = self
             sendPhotoVC.selectedPhoto = selectedPhoto
             
             if let conversation = personalConversation {
                 
-                sendPhotoVC.personalConversation = conversation
+                sendPhotoVC.personalConversationID = conversation.conversationID
             }
             
             else if let conversation = collabConversation {
                 
-                sendPhotoVC.collabConversation = conversation
+                sendPhotoVC.collabConversationID = conversation.conversationID
             }
             
             removeObservors()

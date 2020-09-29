@@ -58,6 +58,23 @@ class MessagingMethods {
             tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: inputAccesoryView.configureSize().height, right: 0)
         }
         
+        else if let viewController = parentViewController as? CollabViewController {
+            
+            tableView.dataSource = viewController
+            tableView.delegate = viewController
+            
+            let inputAccesoryView = viewController.messageInputAccesoryView
+            
+            tableView.contentInsetAdjustmentBehavior = .never
+            tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: inputAccesoryView.configureSize().height + 5, right: 0)
+            
+            if #available(iOS 13.0, *) {
+                tableView.automaticallyAdjustsScrollIndicatorInsets = false
+            }
+            
+            tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: inputAccesoryView.configureSize().height, right: 0)
+        }
+        
         tableView.separatorStyle = .none
         
         tableView.estimatedRowHeight = 0
@@ -100,6 +117,13 @@ class MessagingMethods {
                         cell.presentCopiedAnimationDelegate = viewController
                     }
                     
+                    else if let viewController = parentViewController as? CollabViewController {
+                        
+                        cell.cachePhotoDelegate = viewController
+                        cell.zoomInDelegate = viewController
+                        cell.presentCopiedAnimationDelegate = viewController
+                    }
+                    
                     cell.selectionStyle = .none
 
                     return cell
@@ -121,6 +145,13 @@ class MessagingMethods {
                         cell.presentCopiedAnimationDelegate = viewController
                     }
                     
+                    else if let viewController = parentViewController as? CollabViewController {
+                        
+                        cell.cachePhotoDelegate = viewController
+                        cell.zoomInDelegate = viewController
+                        cell.presentCopiedAnimationDelegate = viewController
+                    }
+                    
                     cell.selectionStyle = .none
                     
                     return cell
@@ -135,6 +166,11 @@ class MessagingMethods {
                 cell.message = messages?[indexPath.row / 2]
                 
                 if let viewController = parentViewController as? MessagingViewController {
+                    
+                    cell.presentCopiedAnimationDelegate = viewController
+                }
+                
+                else if let viewController = parentViewController as? CollabViewController {
                     
                     cell.presentCopiedAnimationDelegate = viewController
                 }

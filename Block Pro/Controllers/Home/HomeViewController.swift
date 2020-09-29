@@ -105,7 +105,6 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         configureTabBar()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -278,10 +277,12 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     private func configureNavBar () {
         
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
-        //self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationController?.view.backgroundColor = .clear
+//        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+//        self.navigationController?.navigationBar.shadowImage = UIImage()
+//        //self.navigationController?.navigationBar.isTranslucent = true
+//        self.navigationController?.view.backgroundColor = .clear
+        
+        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black)
         
         let profileButton: UIButton = UIButton(type: .system)
         profileButton.frame = CGRect(x: 0, y: 0, width: 79, height: 50)

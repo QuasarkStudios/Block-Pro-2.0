@@ -14,6 +14,11 @@ protocol ReconfigureMessagingViewFromSendPhotoVC: AnyObject {
     func reconfigureView ()
 }
 
+protocol ReconfigureCollabViewFromSendPhotoVC: AnyObject {
+    
+    func reconfigureView ()
+}
+
 class SendPhotoMessageViewController: UIViewController {
 
     @IBOutlet weak var backgroundView: UIView!
@@ -23,15 +28,15 @@ class SendPhotoMessageViewController: UIViewController {
     @IBOutlet weak var imageViewTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var imageViewBottomAnchor: NSLayoutConstraint!
     
-    let messageInputAccesoryView = InputAccesoryView(showsAddButton: false, textViewPlaceholderText: "Add a caption", textViewPlaceholderTextColor: .white)
+    let messageInputAccesoryView = InputAccesoryView(textViewPlaceholderText: "Add a caption", textViewPlaceholderTextColor: .white, showsAddButton: false)
     var inputAccesoryViewMethods: InputAccesoryViewMethods!
     
     let currentUser = CurrentUser.sharedInstance
     
     let firebaseMessaging = FirebaseMessaging()
     
-    var personalConversation: Conversation?
-    var collabConversation: Conversation?
+    var personalConversationID: String?
+    var collabConversationID: String?
     
     var selectedPhoto: UIImage?
     
@@ -39,7 +44,8 @@ class SendPhotoMessageViewController: UIViewController {
     
     var messageTextViewText: String = ""
     
-    weak var reconfigureViewDelegate: ReconfigureMessagingViewFromSendPhotoVC?
+    weak var reconfigureMessagingViewDelegate: ReconfigureMessagingViewFromSendPhotoVC?
+    weak var reconfigureCollabViewDelegate: ReconfigureCollabViewFromSendPhotoVC?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -185,27 +191,27 @@ class SendPhotoMessageViewController: UIViewController {
     
     @objc private func setUserActiveStatus () {
         
-        if let conversation = personalConversation {
+        if let conversationID = personalConversationID {
             
-            firebaseMessaging.setActivityStatus(conversationID: conversation.conversationID, "now")
+            firebaseMessaging.setActivityStatus(conversationID: conversationID, "now")
         }
         
-        else if let collab = collabConversation {
+        else if let collabID = collabConversationID {
             
-            firebaseMessaging.setActivityStatus(collabID: collab.conversationID, "now")
+            firebaseMessaging.setActivityStatus(collabID: collabID, "now")
         }
     }
     
     @objc private func setUserInactiveStatus () {
         
-        if let conversation = personalConversation {
+        if let conversationID = personalConversationID {
             
-            firebaseMessaging.setActivityStatus(conversationID: conversation.conversationID, Date())
+            firebaseMessaging.setActivityStatus(conversationID: conversationID, Date())
         }
         
-        else if let collab = collabConversation {
+        else if let collabID = collabConversationID {
             
-            firebaseMessaging.setActivityStatus(collabID: collab.conversationID, Date())
+            firebaseMessaging.setActivityStatus(collabID: collabID, Date())
         }
     }
     
@@ -231,7 +237,7 @@ class SendPhotoMessageViewController: UIViewController {
             message.message = messageTextViewText
         }
         
-        if let conversationID = personalConversation?.conversationID {
+        if let conversationID = personalConversationID {
             
             firebaseMessaging.sendPersonalMessage(conversationID: conversationID, message) { (error) in
 
@@ -244,14 +250,14 @@ class SendPhotoMessageViewController: UIViewController {
 
                     SVProgressHUD.dismiss()
                     
-                    self.reconfigureViewDelegate?.reconfigureView()
+                    self.reconfigureMessagingViewDelegate?.reconfigureView()
                     
                     self.dismiss(animated: true)
                 }
             }
         }
             
-        else if let collabID = collabConversation?.conversationID {
+        else if let collabID = collabConversationID {
             
             firebaseMessaging.sendCollabMessage(collabID: collabID, message) { (error) in
                 
@@ -264,7 +270,8 @@ class SendPhotoMessageViewController: UIViewController {
                     
                     SVProgressHUD.dismiss()
                     
-                    self.reconfigureViewDelegate?.reconfigureView()
+                    self.reconfigureMessagingViewDelegate?.reconfigureView()
+                    self.reconfigureCollabViewDelegate?.reconfigureView()
                     
                     self.dismiss(animated: true)
                 }
@@ -284,7 +291,8 @@ class SendPhotoMessageViewController: UIViewController {
     
     @IBAction func exitButton(_ sender: Any) {
         
-        reconfigureViewDelegate?.reconfigureView()
+        reconfigureMessagingViewDelegate?.reconfigureView()
+        reconfigureCollabViewDelegate?.reconfigureView()
         
         dismiss(animated: true, completion: nil)
     }

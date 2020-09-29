@@ -22,6 +22,11 @@ class MessageTextView: UITextView, UITextViewDelegate {
                 
                 delegate = textViewDelegate
             }
+            
+            else if let textViewDelegate = parentViewController as? CollabViewController {
+                
+                delegate = textViewDelegate
+            }
         }
     }
     

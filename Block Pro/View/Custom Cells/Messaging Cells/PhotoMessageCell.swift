@@ -9,11 +9,6 @@
 import UIKit
 import iProgressHUD
 
-protocol CachePhotoProtocol: AnyObject {
-
-    func cachePhoto (messageID: String, photo: UIImage?)
-}
-
 protocol ZoomInProtocol: AnyObject {
 
     func zoomInOnPhotoImageView (photoImageView: UIImageView)

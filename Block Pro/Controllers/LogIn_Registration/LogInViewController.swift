@@ -32,7 +32,7 @@ class LogInViewController: UIViewController, UITextFieldDelegate, BEMCheckBoxDel
     
     let defaults = UserDefaults.standard
     
-    let userAuth = UserAuthentication()
+    let userAuth = FirebaseAuthentication()
     
     var iProgressAttached: Bool = false
     

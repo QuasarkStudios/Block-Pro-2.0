@@ -26,6 +26,7 @@ class ProfileSidebarViewController: UIViewController {
     
     @IBOutlet weak var dismissButton: UIButton!
     
+    let firebaseAuthentication = FirebaseAuthentication()
     let currentUser = CurrentUser.sharedInstance
     
     var viewInitiallyLoaded: Bool = false
@@ -196,19 +197,32 @@ class ProfileSidebarViewController: UIViewController {
         
         ProgressHUD.show()
         
-        do {
+        firebaseAuthentication.logOutUser { (error) in
             
-            try Auth.auth().signOut()
+            if error != nil {
+                
+                ProgressHUD.showError(error?.localizedDescription)
+            }
             
-            ProgressHUD.showSuccess("Signed Out")
-            //print("user signed out")
-            
-        } catch let signOutError as NSError {
-            
-            ProgressHUD.showError(signOutError.localizedDescription)
-            
-            print(signOutError.localizedDescription)
+            else {
+                
+                ProgressHUD.showSuccess("Signed Out")
+            }
         }
+        
+//        do {
+//
+//            try Auth.auth().signOut()
+//
+//            ProgressHUD.showSuccess("Signed Out")
+//            //print("user signed out")
+//
+//        } catch let signOutError as NSError {
+//
+//            ProgressHUD.showError(signOutError.localizedDescription)
+//
+//            print(signOutError.localizedDescription)
+//        }
     }
     
     

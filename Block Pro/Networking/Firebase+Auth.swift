@@ -7,10 +7,12 @@
 //
 
 import Foundation
+import Firebase
 import FirebaseAuth
 import FirebaseFirestore
+import FirebaseMessaging
 
-class UserAuthentication {
+class FirebaseAuthentication {
     
     //MARK: - Log In User Function
     
@@ -30,6 +32,25 @@ class UserAuthentication {
                     completion(error)
                 }
             }
+        }
+    }
+    
+    public func logOutUser (completion: ((_ error: Error?) -> Void)) {
+        
+        do {
+            
+            try Auth.auth().signOut()
+            
+            let currentUser = CurrentUser.sharedInstance
+            currentUser.userSignedIn = false
+            
+            deleteFCMToken()
+            
+            completion(nil)
+            
+        } catch let signOutError as NSError {
+            
+            completion(signOutError)
         }
     }
     
@@ -62,6 +83,27 @@ class UserAuthentication {
                         currentUser.lastName = snapshot?["lastName"] as! String
                         currentUser.username = snapshot?["username"] as! String
                         currentUser.accountCreated = snapshot?["accountCreated"] as! String
+                        
+                        InstanceID.instanceID().instanceID(handler: { (result, error) in
+
+                            if error != nil {
+
+                                print(error?.localizedDescription as Any)
+                            }
+
+                            else if let result = result {
+
+                                if let fcmToken = snapshot?["fcmToken"] as? String, fcmToken == result.token {
+
+                                    currentUser.fcmToken = fcmToken
+                                }
+
+                                else {
+
+                                    self.setNewFCMToken(fcmToken: result.token)
+                                }
+                            }
+                        })
                         
                         currentUser.profilePictureURL = snapshot?["profilePicture"] as? String
                         
@@ -145,8 +187,64 @@ class UserAuthentication {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM d, yyyy"
         
-        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : formatter.string(from: Date())])
+//        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : formatter.string(from: Date())])
+        
+        #warning("not tested yet, it honestly looks like this whole function needs more testing.... where is the currentUser singleton set")
+        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : formatter.string(from: Date())]) { (error) in
+            
+            if error == nil {
+                
+                InstanceID.instanceID().instanceID(handler: { (result, error) in
+
+                    if error != nil {
+
+                        print(error?.localizedDescription as Any)
+                    }
+
+                    else if let result = result {
+
+                        db.collection("Users").document(userID).setData(["fcmToken" : result.token], merge: true)
+                    }
+                })
+                
+//                InstanceID.instanceID().getID { (fcmToken, error) in
+//
+//                    if error != nil {
+//
+//                        print(error?.localizedDescription as Any)
+//                    }
+//
+//                    else if let token = fcmToken {
+//
+//                        db.collection("Users").document(userID).setData(["fcmToken" : token], merge: true)
+//                    }
+//                }
+            }
+        }
         
         completion()
+    }
+    
+    func setNewFCMToken (fcmToken: String) {
+        
+        let currentUser = CurrentUser.sharedInstance
+        currentUser.fcmToken = fcmToken
+        
+        Firestore.firestore().collection("Users").document(currentUser.userID).setData(["fcmToken" : fcmToken], merge: true)
+    }
+    
+    func deleteFCMToken () {
+        
+        let currentUser = CurrentUser.sharedInstance
+        
+        Firestore.firestore().collection("Users").document(currentUser.userID).updateData(["fcmToken" : FieldValue.delete()])
+        
+        InstanceID.instanceID().deleteID { (error) in
+            
+            if error != nil {
+                
+                print("error deleting fcm instance id: ", error?.localizedDescription as Any)
+            }
+        }
     }
 }

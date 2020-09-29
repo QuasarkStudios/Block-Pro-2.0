@@ -167,6 +167,7 @@
 		0D7CE24023C43AF6005BB8EE /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CE23F23C43AF6005BB8EE /* CardView.swift */; };
 		0D7E1B78247435AC00BB8E58 /* MessageHomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7E1B76247435AC00BB8E58 /* MessageHomeCell.swift */; };
 		0D7E1B79247435AC00BB8E58 /* MessageHomeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D7E1B77247435AC00BB8E58 /* MessageHomeCell.xib */; };
+		0D8096A0250AABBA00469934 /* PresentCopiedAnimationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D80969F250AABBA00469934 /* PresentCopiedAnimationProtocol.swift */; };
 		0D82281224D3B8CF00D0BBA0 /* LeaveConvoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D82281024D3B8CF00D0BBA0 /* LeaveConvoCell.swift */; };
 		0D82281324D3B8CF00D0BBA0 /* LeaveConvoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D82281124D3B8CF00D0BBA0 /* LeaveConvoCell.xib */; };
 		0D82282424D76D5300D0BBA0 /* ConvoAddMemberInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D82282224D76D5300D0BBA0 /* ConvoAddMemberInfoCell.swift */; };
@@ -253,6 +254,9 @@
 		0DE31E15244BA97800DE6EE3 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */; };
 		0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD7235FDD3A005255A1 /* Cards.swift */; };
 		0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD9235FDD49005255A1 /* Tasks.swift */; };
+		0DE728C3250881F800581048 /* CollabView+Messages2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE728C2250881F800581048 /* CollabView+Messages2.swift */; };
+		0DE728C52509751B00581048 /* CachePhotoProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE728C42509751B00581048 /* CachePhotoProtocol.swift */; };
+		0DE728C82509BB7400581048 /* SendPhoto.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DE728C72509BB7400581048 /* SendPhoto.storyboard */; };
 		0DE79A1C244E41BB00F25440 /* TimeSelectorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE79A1A244E41BB00F25440 /* TimeSelectorCell.swift */; };
 		0DE79A1D244E41BB00F25440 /* TimeSelectorCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DE79A1B244E41BB00F25440 /* TimeSelectorCell.xib */; };
 		0DE79A1F244E467600F25440 /* BarCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DE79A1E244E467600F25440 /* BarCell.xib */; };
@@ -431,6 +435,8 @@
 		0D7CE23F23C43AF6005BB8EE /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		0D7E1B76247435AC00BB8E58 /* MessageHomeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageHomeCell.swift; sourceTree = "<group>"; };
 		0D7E1B77247435AC00BB8E58 /* MessageHomeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageHomeCell.xib; sourceTree = "<group>"; };
+		0D80969F250AABBA00469934 /* PresentCopiedAnimationProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentCopiedAnimationProtocol.swift; sourceTree = "<group>"; };
+		0D8096A1250B432700469934 /* Block Pro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Block Pro.entitlements"; sourceTree = "<group>"; };
 		0D82281024D3B8CF00D0BBA0 /* LeaveConvoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveConvoCell.swift; sourceTree = "<group>"; };
 		0D82281124D3B8CF00D0BBA0 /* LeaveConvoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LeaveConvoCell.xib; sourceTree = "<group>"; };
 		0D82282224D76D5300D0BBA0 /* ConvoAddMemberInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoAddMemberInfoCell.swift; sourceTree = "<group>"; };
@@ -519,6 +525,9 @@
 		0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		0DE3CDD7235FDD3A005255A1 /* Cards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cards.swift; sourceTree = "<group>"; };
 		0DE3CDD9235FDD49005255A1 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
+		0DE728C2250881F800581048 /* CollabView+Messages2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabView+Messages2.swift"; sourceTree = "<group>"; };
+		0DE728C42509751B00581048 /* CachePhotoProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachePhotoProtocol.swift; sourceTree = "<group>"; };
+		0DE728C72509BB7400581048 /* SendPhoto.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SendPhoto.storyboard; sourceTree = "<group>"; };
 		0DE79A1A244E41BB00F25440 /* TimeSelectorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectorCell.swift; sourceTree = "<group>"; };
 		0DE79A1B244E41BB00F25440 /* TimeSelectorCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TimeSelectorCell.xib; sourceTree = "<group>"; };
 		0DE79A1E244E467600F25440 /* BarCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BarCell.xib; sourceTree = "<group>"; };
@@ -553,6 +562,7 @@
 			children = (
 				0D72D24A2453FE7B00C11D5F /* CollabView.swift */,
 				0D72D24C2456932800C11D5F /* CollabView+Messages.swift */,
+				0DE728C2250881F800581048 /* CollabView+Messages2.swift */,
 			);
 			path = Collab;
 			sourceTree = "<group>";
@@ -755,12 +765,14 @@
 		0D2CECEE228FB55600CC9180 /* Block Pro */ = {
 			isa = PBXGroup;
 			children = (
+				0D8096A1250B432700469934 /* Block Pro.entitlements */,
 				0D2CECEF228FB55600CC9180 /* AppDelegate.swift */,
 				0D93300B22927C9100B6191D /* Model */,
 				0D2CED02228FC75B00CC9180 /* View */,
 				0D2CED01228FC73A00CC9180 /* Controllers */,
 				0D3213D524CA10AF00BC46F5 /* Helper Classes */,
 				0D78659A23F5BBD700BD4C4D /* Networking */,
+				0DE728C62509752E00581048 /* Protocols */,
 				0DD636D2241447940026B623 /* Notification Scheduler */,
 				0D13AC01232DDBD40025EDC3 /* Assets.xcassets */,
 				0D417391242E8C7B006076A5 /* giphy.gif */,
@@ -777,18 +789,14 @@
 		0D2CED01228FC73A00CC9180 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0D0102A82468F49D00A5FF28 /* MessagesHomeViewController.swift */,
-				0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */,
-				0D3F29312485ED9900C7763F /* SendPhotoMessageViewController.swift */,
-				0D86013A2499377F0027F043 /* ConversationInfoViewController.swift */,
-				0D52A5B124B969680039F893 /* ConversationPhotosViewController.swift */,
-				0D879ACA24B828140037C880 /* FriendProfileViewController.swift */,
 				0D7868532446ABD400A92DD1 /* LogIn_Registration */,
 				0D7868522446ABC900A92DD1 /* Home */,
 				0D7868542446ABF700A92DD1 /* TimeBlock */,
 				0D0102A72468F47D00A5FF28 /* Collab */,
 				0D02C2422443744C00D255D7 /* Create A Collab View Files */,
+				0DE728C1250872A200581048 /* Messaging */,
 				0D589DE92458C519005AC7BC /* NotificationsViewController.swift */,
+				0D879ACA24B828140037C880 /* FriendProfileViewController.swift */,
 				0D02C23F2443740D00D255D7 /* 1.0 Files */,
 				0DD9D89124437E30006AA8AB /* Extensions */,
 			);
@@ -1163,6 +1171,7 @@
 				0D72D2482453FB6E00C11D5F /* Collab2.storyboard */,
 				0D02C23D2443709B00D255D7 /* CreateACollab.storyboard */,
 				0D0102A52468853600A5FF28 /* Messages.storyboard */,
+				0DE728C72509BB7400581048 /* SendPhoto.storyboard */,
 				0D879ACC24B828820037C880 /* FriendProfile.storyboard */,
 				0D44BA892476F76300647E06 /* AddMembers.storyboard */,
 				0D589DE72458C3E5005AC7BC /* Notifications.storyboard */,
@@ -1258,6 +1267,27 @@
 				0D035328235D634E00BB79B4 /* FreeTimeViewController.swift */,
 			);
 			path = "FreeTime Controller Files";
+			sourceTree = "<group>";
+		};
+		0DE728C1250872A200581048 /* Messaging */ = {
+			isa = PBXGroup;
+			children = (
+				0D0102A82468F49D00A5FF28 /* MessagesHomeViewController.swift */,
+				0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */,
+				0D3F29312485ED9900C7763F /* SendPhotoMessageViewController.swift */,
+				0D86013A2499377F0027F043 /* ConversationInfoViewController.swift */,
+				0D52A5B124B969680039F893 /* ConversationPhotosViewController.swift */,
+			);
+			path = Messaging;
+			sourceTree = "<group>";
+		};
+		0DE728C62509752E00581048 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				0DE728C42509751B00581048 /* CachePhotoProtocol.swift */,
+				0D80969F250AABBA00469934 /* PresentCopiedAnimationProtocol.swift */,
+			);
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 		0DEB9727241CB7FC004F7422 /* TimeBlock View Cells */ = {
@@ -1430,6 +1460,7 @@
 				0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */,
 				0DAD3B5F24A7C66F00607579 /* ConvoCoverInfoCell.xib in Resources */,
 				0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */,
+				0DE728C82509BB7400581048 /* SendPhoto.storyboard in Resources */,
 				0D78658C23E6928000BD4C4D /* PersonalCell.xib in Resources */,
 				0D78657823E4B56B00BD4C4D /* Poppins-Light.ttf in Resources */,
 				0DE79A1F244E467600F25440 /* BarCell.xib in Resources */,
@@ -1573,6 +1604,7 @@
 				0D0C8D97244222CA00EB51F7 /* CollabPhotosCell.swift in Sources */,
 				0D23076F22D3B31D00A12393 /* FriendsViewController.swift in Sources */,
 				0D23076322D299DC00A12393 /* UpcomingCollabViewController.swift in Sources */,
+				0DE728C52509751B00581048 /* CachePhotoProtocol.swift in Sources */,
 				0DD9D88D24437A64006AA8AB /* MembersTableViewCell.swift in Sources */,
 				0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */,
 				0D112836234C2BF00080774C /* InfoViewController.swift in Sources */,
@@ -1634,6 +1666,7 @@
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
 				0D2707FC2326DF9000592EC8 /* PomodoroViewController.swift in Sources */,
 				0D0C8D922441A1FE00EB51F7 /* CollabRemindersCell.swift in Sources */,
+				0D8096A0250AABBA00469934 /* PresentCopiedAnimationProtocol.swift in Sources */,
 				0D52A5B224B969680039F893 /* ConversationPhotosViewController.swift in Sources */,
 				0D70F91F2429BF0800407E4A /* LogInViewController.swift in Sources */,
 				0D44BA862476EF8D00647E06 /* Firebase+Messaging.swift in Sources */,
@@ -1694,6 +1727,7 @@
 				0DD636CA2412F3300026B623 /* ReminderCell.swift in Sources */,
 				0D879ACB24B828140037C880 /* FriendProfileViewController.swift in Sources */,
 				0D7655D62452915D00707867 /* NewCollab.swift in Sources */,
+				0DE728C3250881F800581048 /* CollabView+Messages2.swift in Sources */,
 				0D589DE52458A0D9005AC7BC /* MessageCell.swift in Sources */,
 				0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */,
 				0D02C2412443744600D255D7 /* AddMembersViewController.swift in Sources */,
@@ -1849,7 +1883,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = "Block Pro/Block Pro.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6YUNA7374D;
@@ -1877,7 +1911,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = "Block Pro/Block Pro.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6YUNA7374D;

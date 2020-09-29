@@ -27,9 +27,9 @@ class InputAccesoryView: UIView {
     }
 
     
-    init(showsAddButton: Bool, textViewPlaceholderText: String, textViewPlaceholderTextColor: UIColor? = nil) {
+    init(textViewPlaceholderText: String, textViewPlaceholderTextColor: UIColor? = nil, showsAddButton: Bool) {
         super.init(frame: .zero)
-
+        
         configureView(showsAddButton)
         
         textViewContainer.messageTextView.placeholderText = textViewPlaceholderText

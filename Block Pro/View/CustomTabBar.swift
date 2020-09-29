@@ -400,6 +400,7 @@ extension CustomTabBar: UITabBarControllerDelegate {
                 
                 else if selectedIndex == 2 {
                     
+                    #warning("stop force unwrapping here; was crashing and tho it was caused by the simulator its still probably not the best practice")
                     let messagesViewController = selectedNavigationController.visibleViewController as! MessagesHomeViewController
                     messagesViewController.configureTabBar()
                 }

@@ -21,5 +21,7 @@ class CurrentUser {
     var profilePictureURL: String?
     var profilePictureImage: UIImage?
     
+    var fcmToken: String = ""
+    
     static let sharedInstance = CurrentUser()
 }

@@ -33,7 +33,7 @@ class RegistrationViewController: UIViewController, UICollectionViewDataSource, 
     
     @IBOutlet weak var backToSignInButton: UIButton!
     
-    let userAuth = UserAuthentication()
+    let userAuth = FirebaseAuthentication()
     
     var newUser = NewUser()
     

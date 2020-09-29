@@ -213,7 +213,6 @@ class InputAccesoryViewMethods {
                 textView.isScrollEnabled = false
                 
                 accesoryView.size = CGSize(width: 0, height: estimatedSize.height + 15) //15 is equal to the 10 point bottom anchor and a 5 point buffer on top
-
             }
         }
         

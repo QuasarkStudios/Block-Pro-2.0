@@ -19,6 +19,7 @@ extension UINavigationBar {
         tintColor = barTintColor//.black
         titleTextAttributes = [.foregroundColor : tintColor as Any]
         
+        //Controls the status bar color
         barStyle = barStyleColor
     }
 }
