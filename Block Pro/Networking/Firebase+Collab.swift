@@ -113,12 +113,100 @@ class FirebaseCollab {
         }
     }
     
+    func saveCollabCoverPhoto (collabID: String, coverPhotoID: String, coverPhoto: UIImage, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        self.firebaseStorage.saveCollabCoverPhoto(collabID: collabID, coverPhoto: coverPhoto) { (error) in
+            
+            if error != nil {
+                
+                completion(error)
+            }
+            
+            else {
+                
+                let batch = self.db.batch()
+                
+                batch.setData(["coverPhotoID" : coverPhotoID], forDocument: self.db.collection("Collaborations").document(collabID), merge: true)
+                
+                let messageDict: [String : Any] = ["sender" : self.currentUser.userID, "memberUpdatedConversationCover" : true, "timestamp" : Date()]
+                batch.setData(messageDict, forDocument: self.db.collection("Collaborations").document(collabID).collection("Messages").document(UUID().uuidString))
+                
+                batch.commit { (error) in
+                    
+                    if error != nil {
+                        
+                        completion(error)
+                    }
+                    
+                    else {
+                        
+                        if let collabIndex = self.collabs.firstIndex(where: { $0.collabID == collabID }) {
+                            
+                            self.collabs[collabIndex].coverPhotoID = coverPhotoID
+                            self.collabs[collabIndex].coverPhoto = coverPhoto
+                            
+                            print("check")
+                            
+                            completion(nil)
+                        }
+                        
+                        else {
+                            
+                            print("fuck")
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    func deleteCollabCoverPhoto (collabID: String, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        firebaseStorage.deleteCollabCoverPhoto(collabID: collabID) { (error) in
+            
+            if error != nil {
+                
+                completion(error)
+            }
+            
+            else {
+                
+                let batch = self.db.batch()
+                
+                batch.updateData(["coverPhotoID" : FieldValue.delete()], forDocument: self.db.collection("Collaborations").document(collabID))
+                
+                //Creating a message notifying the conversation that a user deleted the cover photo
+                let messageDict: [String : Any] = ["sender" : self.currentUser.userID, "memberUpdatedConversationCover" : false, "timestamp" : Date()]
+                batch.setData(messageDict, forDocument: self.db.collection("Collaborations").document(collabID).collection("Messages").document(UUID().uuidString))
+                
+                batch.commit { (error) in
+                    
+                    if error != nil {
+                        
+                        completion(error)
+                    }
+                    
+                    else {
+                        
+                        if let collabIndex = self.collabs.firstIndex(where: { $0.collabID == collabID }) {
+
+                            self.collabs[collabIndex].coverPhotoID = nil
+                            self.collabs[collabIndex].coverPhoto = nil
+                        }
+
+                        completion(nil)
+                    }
+                }
+            }
+        }
+    }
+    
     func retrieveCollabs () {
         
         //userRef.collection("Collabs").addSnapshotListener { (snapshot, error) in
         db.collection("Collaborations").whereField("Members", arrayContains: currentUser.userID).addSnapshotListener { (snapshot, error) in
         
-            self.collabs.removeAll()
+//            self.collabs.removeAll()
             
             if error != nil {
                 
@@ -140,11 +228,17 @@ class FirebaseCollab {
                         
                         collab.collabID = document.data()["collabID"] as! String
                         collab.name = document.data()["collabName"] as! String
-                        collab.objective = document.data()["collabObjective"] as! String
+                        collab.objective = document.data()["collabObjective"] as? String
+                        
+                        collab.coverPhotoID = document.data()["coverPhotoID"] as? String
+                        
 //                        collab.photoIDs = document.data()["photos"] as! [String]
                         
                         let startTime = document.data()["startTime"] as! Timestamp
                         collab.dates["startTime"] = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))
+                        
+                        let memberActivity: [String : Any]? = document.data()["memberActivity"] as? [String : Any]
+                        collab.memberActivity = self.parseCollabActivity(memberActivity: memberActivity)
                         
                         let deadline = document.data()["deadline"] as! Timestamp
                         collab.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
@@ -270,6 +364,7 @@ class FirebaseCollab {
         }
     }
     
+    //doesnt handle errors soooo add that eventually
     private func commitBatch (batch: WriteBatch, completion: @escaping (() -> Void)) {
         
         batch.commit { (error) in
@@ -354,6 +449,31 @@ class FirebaseCollab {
 //
 //            friendsProfileImageCache.setObject(UIImage(named: "DefaultProfilePic")!, forKey: friendID as AnyObject)
 //        }
+    }
+    
+    private func parseCollabActivity (memberActivity: [String : Any]?) -> [String : Any]? {
+        
+        var memberActivityDict: [String : Any] = [:]
+        
+        if let activities = memberActivity {
+            
+            for status in activities {
+                
+                //Evident the user was active some time in the past
+                if let statusTimestamp = status.value as? Timestamp {
+                    
+                    memberActivityDict[status.key] = Date(timeIntervalSince1970: TimeInterval(statusTimestamp.seconds))
+                }
+                
+                //Evident the user is current active
+                else {
+                    
+                    memberActivityDict[status.key] = status.value
+                }
+            }
+        }
+        
+        return !memberActivityDict.isEmpty ? memberActivityDict : nil
     }
     
     func cacheMemberProfilePics (userID: String, profilePic: UIImage?) {

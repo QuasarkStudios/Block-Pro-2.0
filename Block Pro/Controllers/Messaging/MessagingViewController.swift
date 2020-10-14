@@ -45,6 +45,10 @@ class MessagingViewController: UIViewController {
     
     var infoViewBeingPresented: Bool = false
     
+    var zoomingMethods: ZoomingImageViewMethods?
+    var imageViewBeingZoomed: Bool?
+    var keyboardWasPresent: Bool?
+    
     var dismissKeyboardGesture: UITapGestureRecognizer?
     
     var dismissAnimationContainerWorkItem: DispatchWorkItem?
@@ -521,17 +525,17 @@ class MessagingViewController: UIViewController {
     
     //MARK: - Keyboard Notification Handlers
     
-    @objc internal func keyboardBeingPresented (notification: NSNotification) {
+    @objc private func keyboardBeingPresented (notification: NSNotification) {
         
         //Required for smoothness
         if !(imageViewBeingZoomed ?? false) && messageInputAccesoryView.textViewContainer.messageTextView.isFirstResponder {
-            
+
             inputAccesoryViewMethods.keyboardBeingPresented(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0)
         }
     }
 
     
-    @objc internal func keyboardBeingDismissed (notification: NSNotification) {
+    @objc private func keyboardBeingDismissed (notification: NSNotification) {
         
         //Required for smoothness
         if !(imageViewBeingZoomed ?? false) {
@@ -1058,12 +1062,14 @@ class MessagingViewController: UIViewController {
     var zoomedInImageView: UIImageView?
     var zoomedInImageViewFrame: CGRect?
 
-    var imageViewBeingZoomed: Bool?
-    var keyboardWasPresent: Bool?
+//    var imageViewBeingZoomed: Bool?
+//    var keyboardWasPresent: Bool?
     
     var panGesture: UIPanGestureRecognizer?
     
     func performZoomOnPhotoImageView (photoImageView: UIImageView) {
+        
+        print("check")
         
         self.zoomedOutImageView = photoImageView
         imageViewBeingZoomed = true
@@ -1242,6 +1248,29 @@ class MessagingViewController: UIViewController {
         }
     }
     
+    
+    //MARK: - Prep View for Zooming Function
+    
+    private func prepViewForImageViewZooming (completion: (() -> Void)) {
+        
+        imageViewBeingZoomed = true
+
+        if messageInputAccesoryView.textViewContainer.messageTextView.isFirstResponder {
+
+            keyboardWasPresent = true
+        }
+
+        else {
+
+            keyboardWasPresent = false
+        }
+        
+        self.messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
+        self.resignFirstResponder()
+        
+        completion()
+    }
+    
 
     //MARK: - Dismiss Keyboard Function
     
@@ -1304,7 +1333,7 @@ extension MessagingViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let members = personalConversation != nil ? personalConversation?.historicMembers : collabConversation?.historicMembers
-        
+
         return messagingMethods.cellForRowAt(indexPath: indexPath, messages: messages, members: members)
     }
     
@@ -1436,6 +1465,26 @@ extension MessagingViewController: ZoomInProtocol {
     func zoomInOnPhotoImageView(photoImageView: UIImageView) {
         
         performZoomOnPhotoImageView(photoImageView: photoImageView)
+        
+//        prepViewForImageViewZooming { [weak self] in
+//
+//            self?.zoomingMethods = ZoomingImageViewMethods(on: photoImageView, cornerRadius: 10, completion: {
+//
+//                self?.becomeFirstResponder()
+//
+//                if self?.keyboardWasPresent ?? false {
+//
+//                    self?.messageInputAccesoryView.textViewContainer.messageTextView.becomeFirstResponder()
+//                }
+//
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//
+//                    self?.imageViewBeingZoomed = false
+//                }
+//            })
+//
+//            zoomingMethods?.performZoom()
+//        }
     }
 }
 

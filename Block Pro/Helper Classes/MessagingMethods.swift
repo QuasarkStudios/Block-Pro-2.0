@@ -47,14 +47,14 @@ class MessagingMethods {
             tableView.delegate = viewController
             
             let inputAccesoryView = viewController.messageInputAccesoryView
-            
+
             tableView.contentInsetAdjustmentBehavior = .never
             tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: inputAccesoryView.configureSize().height + 5, right: 0)
-            
+
             if #available(iOS 13.0, *) {
                 tableView.automaticallyAdjustsScrollIndicatorInsets = false
             }
-            
+
             tableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: inputAccesoryView.configureSize().height, right: 0)
         }
         

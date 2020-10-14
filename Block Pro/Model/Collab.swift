@@ -14,8 +14,14 @@ struct Collab {
     var name: String = ""
     var dateCreated: Date?
     
-    var objective: String = ""
+    var coverPhotoID: String?
+    var coverPhoto: UIImage?
+    
+    var objective: String?
+    
     var members: [Member] = []
+    var memberActivity: [String : Any]?
+    
     var dates: [String : Date] = [:]
     var reminders: [String : Date] = [:]
     

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17503.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17502"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="CollabHomeLocationsCell" customModule="Block_Pro" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="210"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="210"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <pageControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="vOG-OV-7dk">
+                        <rect key="frame" x="125" y="182.5" width="125" height="27.5"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="125" id="DaY-it-VVF"/>
+                        </constraints>
+                        <color key="currentPageIndicatorTintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </pageControl>
+                    <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="L39-h9-H66">
+                        <rect key="frame" x="20" y="0.0" width="335" height="180"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="180" id="cHK-Ec-YxT"/>
+                        </constraints>
+                    </mapView>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="vOG-OV-7dk" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="70L-8E-6hq"/>
+                    <constraint firstItem="L39-h9-H66" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="Kw1-mb-ht2"/>
+                    <constraint firstItem="L39-h9-H66" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="Pgp-GO-9iW"/>
+                    <constraint firstAttribute="bottom" secondItem="vOG-OV-7dk" secondAttribute="bottom" id="hUR-SU-mx7"/>
+                    <constraint firstAttribute="trailing" secondItem="L39-h9-H66" secondAttribute="trailing" constant="20" id="tTo-5m-uB3"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="locationPageControl" destination="vOG-OV-7dk" id="scc-AB-Prb"/>
+                <outlet property="mapView" destination="L39-h9-H66" id="BMb-WT-2oi"/>
+            </connections>
+            <point key="canvasLocation" x="139.85507246376812" y="107.8125"/>
+        </tableViewCell>
+    </objects>
+</document>

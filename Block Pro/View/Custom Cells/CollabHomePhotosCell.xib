@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17503.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17502"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="collabHomePhotosCell" id="KGk-i7-Jjw" customClass="CollabHomePhotosCell" customModule="Block_Pro" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="235"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="375" height="235"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LwO-G5-why">
+                        <rect key="frame" x="20" y="10" width="335" height="215"/>
+                        <subviews>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="ElW-Mi-NUP">
+                                <rect key="frame" x="1" y="1" width="333" height="213"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="CRa-la-aMt">
+                                    <size key="itemSize" width="128" height="128"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="linkColor"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="ElW-Mi-NUP" secondAttribute="trailing" constant="1" id="0Z8-rm-RTO"/>
+                            <constraint firstAttribute="bottom" secondItem="ElW-Mi-NUP" secondAttribute="bottom" constant="1" id="WxV-5z-G6I"/>
+                            <constraint firstItem="ElW-Mi-NUP" firstAttribute="top" secondItem="LwO-G5-why" secondAttribute="top" constant="1" id="rm8-T3-zFb"/>
+                            <constraint firstItem="ElW-Mi-NUP" firstAttribute="leading" secondItem="LwO-G5-why" secondAttribute="leading" constant="1" id="xcD-dY-ofm"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="LwO-G5-why" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="1d3-eV-nDI"/>
+                    <constraint firstAttribute="bottom" secondItem="LwO-G5-why" secondAttribute="bottom" constant="10" id="6YR-J0-dP7"/>
+                    <constraint firstItem="LwO-G5-why" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="82I-jw-qqu"/>
+                    <constraint firstAttribute="trailing" secondItem="LwO-G5-why" secondAttribute="trailing" constant="20" id="kJZ-yT-tOV"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="collectionViewContainer" destination="LwO-G5-why" id="pI1-Lh-Ac9"/>
+                <outlet property="photosCollectionView" destination="ElW-Mi-NUP" id="EkW-m3-3wZ"/>
+            </connections>
+            <point key="canvasLocation" x="139.85507246376812" y="107.47767857142857"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <systemColor name="linkColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

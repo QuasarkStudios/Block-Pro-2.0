@@ -131,16 +131,16 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
         
         //If the view hasn't been loaded up at least once before
         if viewIntiallyLoaded == false {
-            
+
             configureConstraints()
-            
+
             configurePomodoroProgressAnimation()
             configureiProgress()
             configurePomodoro()
-            
+
             viewIntiallyLoaded = true
         }
-            
+
         //If the view has already been loaded up before
         else {
             configurePomodoro()

@@ -24,7 +24,7 @@ class FirebaseStorage {
         
         //let profilePicName = UUID().uuidString
         
-        let profilePicJPEGData = profilePicture.jpegData(compressionQuality: 0.1)
+        let profilePicJPEGData = profilePicture.jpegData(compressionQuality: 0.2)
         
         if let data = profilePicJPEGData {
             
@@ -147,6 +147,64 @@ class FirebaseStorage {
 //                }
 //            }
 //        }.resume()
+    }
+    
+    func saveCollabCoverPhoto (collabID: String, coverPhoto: UIImage, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        let photoData = coverPhoto.jpegData(compressionQuality: 0.2)
+        
+        if let data = photoData {
+            
+            let uploadTask = collabStorageRef.child(collabID).child("CoverPhoto.jpeg").putData(data)
+            
+            uploadTask.observe(.failure) { (snapshot) in
+                
+                if let error = snapshot.error {
+                    
+                    completion(error)
+                }
+            }
+            
+            uploadTask.observe(.success) { (snapshot) in
+                
+                completion(nil)
+            }
+        }
+    }
+    
+    func retrieveCollabCoverPhoto (collabID: String, completion: @escaping ((_ coverPhoto: UIImage?, _ error: Error?) -> Void)) {
+        
+        collabStorageRef.child(collabID).child("CoverPhoto.jpeg").getData(maxSize: 1048576) { (data, error) in
+            
+            if error != nil {
+                
+                completion(nil, error)
+            }
+            
+            else {
+                
+                if let photoData = data {
+                    
+                    completion(UIImage(data: photoData), nil)
+                }
+            }
+        }
+    }
+    
+    func deleteCollabCoverPhoto (collabID: String, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        collabStorageRef.child(collabID).child("CoverPhoto.jpeg").delete { (error) in
+            
+            if error != nil {
+                
+                completion(error)
+            }
+            
+            else {
+                
+                completion(nil)
+            }
+        }
     }
     
     func saveNewCollabPhotosToStorage (collabID: String, collabPhoto: [String : Any])  {

@@ -50,19 +50,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     var viewInitiallyLoaded: Bool = false
     var membersExpanded: Bool = false
     
-    var zoomedOutImageView: UIImageView?
-    var zoomedOutImageViewFrame: CGRect?
-    
-    var blackBackground: UIView?
-    var zoomedInImageView: UIImageView?
-    var zoomedInImageViewFrame: CGRect?
-    
-    var panGesture: UIPanGestureRecognizer?
-    
-    var topBarHeight: CGFloat {
-
-        return (UIApplication.shared.statusBarFrame.height) + (self.navigationController?.navigationBar.frame.height ?? 0.0)
-    }
+    var zoomingMethods: ZoomingImageViewMethods?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -417,7 +405,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 cell.selectionStyle = .none
                 
                 cell.messages = photoMessages.sorted(by: { $0.timestamp > $1.timestamp })
-                
+
                 cell.conversationID = personalConversation?.conversationID
                 cell.collabID = collabConversation?.conversationID
                 
@@ -1260,14 +1248,38 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     }
     
     
+    //MARK: - Perform Zoom on Cover Function
+    
+    private func performZoomOnCoverImageView (coverImageView: UIImageView) {
+
+        if let conversation = personalConversation {
+
+            if conversation.historicMembers.count > 2 {
+
+                editCoverButton = configureEditCoverButton()
+                deleteCoverButton = configureDeleteCoverButton()
+            }
+        }
+
+        else {
+
+            editCoverButton = configureEditCoverButton()
+            deleteCoverButton = configureDeleteCoverButton()
+        }
+
+        zoomingMethods = ZoomingImageViewMethods(on: coverImageView, cornerRadius: 100, with: [editCoverButton, deleteCoverButton])
+
+        zoomingMethods?.performZoom()
+    }
+    
+    
     //MARK: - Edit and Delete Button Actions
     
     @objc private func editCoverButtonPressed () {
         
-        handleZoomOutOnCoverImageViewWithCompletion {
-            
-            self.addCoverPhoto()
-        }
+        zoomingMethods?.handleZoomOutOnImageView()
+
+        addCoverPhoto()
     }
     
     @objc private func deleteCoverButtonPressed () {
@@ -1291,21 +1303,19 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                     self?.personalConversation?.conversationCoverPhoto = nil
                     self?.messagingInfoTableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
                     
-                    self?.zoomedOutImageView?.isHidden = false
+                    self?.zoomingMethods?.zoomedOutImageView?.isHidden = false
                     
-                    UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
-                        
-                        self?.blackBackground?.backgroundColor = .clear
-                        self?.editCoverButton?.alpha = 0
-                        self?.deleteCoverButton?.alpha = 0
-                        self?.zoomedInImageView?.alpha = 0
-                        
-                    }) { (finished: Bool) in
-                        
-                        self?.blackBackground?.removeFromSuperview()
-                        self?.editCoverButton?.removeFromSuperview()
-                        self?.deleteCoverButton?.removeFromSuperview()
-                        self?.zoomedInImageView?.removeFromSuperview()
+                    UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+
+                        self?.zoomingMethods?.blackBackground?.backgroundColor = .clear
+                        self?.zoomingMethods?.optionalButtons.forEach({ $0?.alpha = 0 })
+                        self?.zoomingMethods?.zoomedInImageView?.alpha = 0
+
+                    } completion: { (finished: Bool) in
+
+                        self?.zoomingMethods?.blackBackground?.removeFromSuperview()
+                        self?.zoomingMethods?.optionalButtons.forEach({ $0?.removeFromSuperview() })
+                        self?.zoomingMethods?.zoomedInImageView?.removeFromSuperview()
                     }
                 }
             }
@@ -1542,400 +1552,11 @@ extension ConversationInfoViewController: ZoomInProtocol {
     
     func zoomInOnPhotoImageView(photoImageView: UIImageView) {
         
-        performZoomOnPhotoImageView(photoImageView: photoImageView)
+        zoomingMethods = ZoomingImageViewMethods(on: photoImageView, cornerRadius: 10)
+        zoomingMethods?.performZoom()
     }
 }
 
-
-//MARK: - Zooming and Panning CoverImageView Functions
-
-extension ConversationInfoViewController {
-    
-    @objc private func performZoomOnCoverImageView (coverImageView: UIImageView) {
-            
-        self.zoomedOutImageView = coverImageView
-        
-        blackBackground = UIView(frame: self.view.frame)
-        blackBackground?.backgroundColor = .clear
-        
-        blackBackground?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOutOnCoverImageView)))
-        
-        UIApplication.shared.keyWindow?.addSubview(blackBackground!)
-        
-        if let conversation = personalConversation {
-            
-            if conversation.historicMembers.count > 2 {
-                
-                editCoverButton = configureEditCoverButton()
-                deleteCoverButton = configureDeleteCoverButton()
-                
-                UIApplication.shared.keyWindow?.addSubview(editCoverButton!)
-                UIApplication.shared.keyWindow?.addSubview(deleteCoverButton!)
-            }
-        }
-        
-        else {
-            
-            editCoverButton = configureEditCoverButton()
-            deleteCoverButton = configureDeleteCoverButton()
-            
-            UIApplication.shared.keyWindow?.addSubview(editCoverButton!)
-            UIApplication.shared.keyWindow?.addSubview(deleteCoverButton!)
-        }
-        
-        if let startingFrame = coverImageView.superview?.convert(coverImageView.frame, to: self.view) {
-            
-            zoomedOutImageViewFrame = startingFrame
-            
-            let zoomingImageView = UIImageView(frame: zoomedOutImageViewFrame!)
-            zoomingImageView.contentMode = .scaleAspectFill
-            zoomingImageView.image = coverImageView.image
-            zoomingImageView.layer.cornerRadius = 100
-            zoomingImageView.clipsToBounds = true
-            
-            zoomingImageView.isUserInteractionEnabled = true
-            zoomingImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOutOnCoverImageView)))
-            
-            UIApplication.shared.keyWindow?.addSubview(zoomingImageView)
-            zoomedInImageView = zoomingImageView
-            
-            coverImageView.isHidden = true
-            
-            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                
-                self.blackBackground?.backgroundColor = .black
-                self.editCoverButton?.alpha = 1
-                self.deleteCoverButton?.alpha = 1
-                
-                let height = (startingFrame.height / startingFrame.width) * self.view.frame.width
-                zoomingImageView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: height)
-                zoomingImageView.center = self.view.center
-                
-                zoomingImageView.layer.cornerRadius = 0
-                
-            }) { (finished: Bool) in
-                
-                self.zoomedInImageViewFrame = self.zoomedInImageView?.frame
-                
-                self.addCoverImageViewPanGesture(view: self.zoomedInImageView)
-                self.addCoverImageViewPanGesture(view: self.blackBackground)
-            }
-        }
-    }
-    
-    @objc private func handleZoomOutOnCoverImageView () {
-        
-        if let imageView = zoomedInImageView {
-            
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                
-                self.blackBackground?.backgroundColor = .clear
-                self.editCoverButton?.alpha = 0
-                self.deleteCoverButton?.alpha = 0
-                
-                imageView.frame = self.zoomedOutImageViewFrame!
-                imageView.layer.cornerRadius = 100
-                imageView.clipsToBounds = true
-                
-            }) { (finished: Bool) in
-                
-                self.zoomedOutImageView?.isHidden = false
-                self.blackBackground?.removeFromSuperview()
-                self.editCoverButton?.removeFromSuperview()
-                self.deleteCoverButton?.removeFromSuperview()
-                imageView.removeFromSuperview()
-            }
-        }
-    }
-    
-    func handleZoomOutOnCoverImageViewWithCompletion (completion: @escaping (() -> Void)) {
-        
-        if let imageView = zoomedInImageView {
-            
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                
-                self.blackBackground?.backgroundColor = .clear
-                self.editCoverButton?.alpha = 0
-                self.deleteCoverButton?.alpha = 0
-                
-                imageView.frame = self.zoomedOutImageViewFrame!
-                imageView.layer.cornerRadius = 100
-                imageView.clipsToBounds = true
-                
-            }) { (finished: Bool) in
-                
-                self.zoomedOutImageView?.isHidden = false
-                self.blackBackground?.removeFromSuperview()
-                self.editCoverButton?.removeFromSuperview()
-                self.deleteCoverButton?.removeFromSuperview()
-                imageView.removeFromSuperview()
-                
-                completion()
-            }
-        }
-    }
-    
-    private func addCoverImageViewPanGesture (view: UIView?) {
-        
-        if view != nil {
-            
-            panGesture = UIPanGestureRecognizer(target: self, action: #selector(handleCoverImageViewPan(sender:)))
-            
-            view?.addGestureRecognizer(panGesture!)
-        }
-    }
-    
-    @objc private func handleCoverImageViewPan (sender: UIPanGestureRecognizer) {
-        
-        switch sender.state {
-            
-        case .began, .changed:
-            
-            moveCoverImageViewWithPan(sender: sender)
-            
-        case .ended:
-            
-            if (zoomedInImageView?.frame.minY ?? 0 > (self.view.frame.height / 2)) {
-                
-                handleZoomOutOnCoverImageView()
-            }
-            
-            else if (zoomedInImageView?.frame.maxY ?? 0 < (self.view.frame.height / 2)) {
-                
-                handleZoomOutOnCoverImageView()
-            }
-            
-            else {
-                
-                returnCoverImageViewToOrigin()
-            }
-            
-        default:
-            break
-        }
-    }
-    
-    private func moveCoverImageViewWithPan (sender: UIPanGestureRecognizer) {
-        
-        let translation = sender.translation(in: self.view)
-        
-        if let imageView = zoomedInImageView {
-
-            let translatedMinYCoord = imageView.frame.minY + translation.y
-            let translatedMinXCoord = imageView.frame.minX + translation.x
-            let translatedMaxYCoord = imageView.frame.maxY + translation.y
-            
-            imageView.frame = CGRect(x: translatedMinXCoord, y: translatedMinYCoord, width: imageView.frame.width, height: imageView.frame.height)
-            
-            if let backgroundView = blackBackground, let zoomedInMinYCoord =  zoomedInImageViewFrame?.minY, let zoomedInMaxYCoord = zoomedInImageViewFrame?.maxY {
-                    
-                if translatedMinYCoord > zoomedInMinYCoord {
-                    
-                    let originalMinYDistanceToBottom = view.frame.height - zoomedInMinYCoord
-                    let adjustedMinYDistanceToBottom = abs((translatedMinYCoord - (view.frame.height - originalMinYDistanceToBottom)) - originalMinYDistanceToBottom) //tricky but it works
-                    let alphaPart = (1 / originalMinYDistanceToBottom)
-                    
-                    backgroundView.backgroundColor = UIColor.black.withAlphaComponent(alphaPart * adjustedMinYDistanceToBottom)
-                    editCoverButton?.alpha = alphaPart * adjustedMinYDistanceToBottom
-                    deleteCoverButton?.alpha = alphaPart * adjustedMinYDistanceToBottom
-                }
-                
-                else if translatedMinYCoord < zoomedInMinYCoord {
-                    
-                    let alphaPart = (1 / zoomedInMaxYCoord)
-                    
-                    backgroundView.backgroundColor = UIColor.black.withAlphaComponent(alphaPart * translatedMaxYCoord)
-                    editCoverButton?.alpha = alphaPart * translatedMaxYCoord
-                    deleteCoverButton?.alpha = alphaPart * translatedMaxYCoord
-                }
-            }
-            
-            sender.setTranslation(CGPoint.zero, in: self.view)
-        }
-    }
-    
-    private func returnCoverImageViewToOrigin () {
-        
-        if let imageView = zoomedInImageView, let imageViewFrame = zoomedInImageViewFrame {
-            
-            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                
-                self.blackBackground?.backgroundColor = .black
-                self.editCoverButton?.alpha = 1
-                self.deleteCoverButton?.alpha = 1
-                
-                imageView.frame = imageViewFrame
-            })
-        }
-    }
-}
-
-
-//MARK: - Zooming and Panning PhotoImageView Functions
-
-extension ConversationInfoViewController {
-    
-    private func performZoomOnPhotoImageView (photoImageView: UIImageView) {
-        
-        self.zoomedOutImageView = photoImageView
-        
-        blackBackground = UIView(frame: self.view.frame)
-        blackBackground?.backgroundColor = .clear
-        
-        blackBackground?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOutOnPhotoImageView)))
-        
-        UIApplication.shared.keyWindow?.addSubview(blackBackground!)
-        
-        if let startingFrame = photoImageView.superview?.convert(photoImageView.frame, to: self.view) {
-            
-            zoomedOutImageViewFrame = startingFrame
-            
-            let zoomingImageView = UIImageView(frame: zoomedOutImageViewFrame!)
-            zoomingImageView.contentMode = .scaleAspectFill
-            zoomingImageView.image = photoImageView.image
-            zoomingImageView.layer.cornerRadius = 8
-            zoomingImageView.clipsToBounds = true
-            
-            zoomingImageView.isUserInteractionEnabled = true
-            zoomingImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOutOnPhotoImageView)))
-            
-            UIApplication.shared.keyWindow?.addSubview(zoomingImageView)
-            zoomedInImageView = zoomingImageView
-            
-            photoImageView.isHidden = true
-            
-            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                
-                self.blackBackground?.backgroundColor = .black
-                
-                let photoWidth = photoImageView.image?.size.width
-                let photoHeight = photoImageView.image?.size.height
-                let height = (photoHeight! / photoWidth!) * self.view.frame.width
-                
-                zoomingImageView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: height)
-                zoomingImageView.center = self.view.center
-                
-                zoomingImageView.layer.cornerRadius = 0
-                
-            }) { (finished: Bool) in
-                
-                self.zoomedInImageViewFrame = self.zoomedInImageView?.frame
-                
-                self.addPhotoImageViewPanGesture(view: self.zoomedInImageView)
-                
-                self.addPhotoImageViewPanGesture(view: self.blackBackground)
-            }
-        }
-    }
-    
-    @objc private func handleZoomOutOnPhotoImageView () {
-        
-        if let imageView = zoomedInImageView {
-            
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                
-                self.blackBackground?.backgroundColor = .clear
-                
-                imageView.frame = self.zoomedOutImageViewFrame!
-                imageView.layer.cornerRadius = 8
-                imageView.clipsToBounds = true
-                
-            }) { (finished: Bool) in
-                
-                self.zoomedOutImageView?.isHidden = false
-                self.blackBackground?.removeFromSuperview()
-                imageView.removeFromSuperview()
-            }
-        }
-    }
-    
-    private func addPhotoImageViewPanGesture (view: UIView?) {
-        
-        if view != nil {
-            
-            panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePhotoImageViewPan(sender:)))
-            
-            view?.addGestureRecognizer(panGesture!)
-        }
-    }
-    
-    @objc private func handlePhotoImageViewPan (sender: UIPanGestureRecognizer) {
-        
-        switch sender.state {
-            
-        case .began, .changed:
-            
-            movePhotoImageViewWithPan(sender: sender)
-            
-        case .ended:
-            
-            if (zoomedInImageView?.frame.minY ?? 0 > (self.view.frame.height / 2)) {
-                
-                handleZoomOutOnPhotoImageView()
-            }
-            
-            else if (zoomedInImageView?.frame.maxY ?? 0 < (self.view.frame.height / 2)) {
-                
-                handleZoomOutOnPhotoImageView()
-            }
-            
-            else {
-                
-                returnPhotoImageViewToOrigin()
-            }
-            
-        default:
-            break
-        }
-    }
-    
-    private func movePhotoImageViewWithPan (sender: UIPanGestureRecognizer) {
-        
-        let translation = sender.translation(in: self.view)
-        
-        if let imageView = zoomedInImageView {
-            
-            let translatedMinYCoord = imageView.frame.minY + translation.y
-            let translatedMinXCoord = imageView.frame.minX + translation.x
-            let translatedMaxYCoord = imageView.frame.maxY + translation.y
-            
-            imageView.frame = CGRect(x: translatedMinXCoord, y: translatedMinYCoord, width: imageView.frame.width, height: imageView.frame.height)
-            
-            if let backgroundView = blackBackground, let zoomedInMinYCoord = zoomedInImageViewFrame?.minY, let zoomedInMaxYCoord = zoomedInImageViewFrame?.maxY {
-                    
-                if translatedMinYCoord > zoomedInMinYCoord {
-                    
-                    let originalMinYDistanceToBottom = view.frame.height - zoomedInMinYCoord
-                    let adjustedMinYDistanceToBottom = abs((translatedMinYCoord - (view.frame.height - originalMinYDistanceToBottom)) - originalMinYDistanceToBottom) //tricky but it works
-                    let alphaPart = (1 / originalMinYDistanceToBottom)
-                    
-                    backgroundView.backgroundColor = UIColor.black.withAlphaComponent(alphaPart * adjustedMinYDistanceToBottom)
-                }
-                
-                else if translatedMinYCoord < zoomedInMinYCoord {
-                    
-                    let alphaPart = (1 / zoomedInMaxYCoord)
-                    backgroundView.backgroundColor = UIColor.black.withAlphaComponent(alphaPart * translatedMaxYCoord)
-                }
-            }
-            
-            sender.setTranslation(CGPoint.zero, in: self.view)
-        }
-    }
-    
-    private func returnPhotoImageViewToOrigin () {
-        
-        if let imageView = zoomedInImageView, let imageViewFrame = zoomedInImageViewFrame {
-            
-            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                
-                self.blackBackground?.backgroundColor = .black
-                
-                imageView.frame = imageViewFrame
-            })
-        }
-    }
-}
 
 //MARK: - PresentCopiedAnimation Protocol Extension
 

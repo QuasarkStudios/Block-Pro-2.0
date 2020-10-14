@@ -744,14 +744,12 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         homeTableView.reloadData()
         homeTableView.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
     }
-    
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        let item = UIBarButtonItem()
+        let item: UIBarButtonItem = UIBarButtonItem()
         item.title = ""
         navigationItem.backBarButtonItem = item
-        
         
         if segue.identifier == "moveToTimeBlockView" {
             

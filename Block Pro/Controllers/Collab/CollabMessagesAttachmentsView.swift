@@ -1,24 +1,23 @@
 //
-//  ConversationPhotosViewController.swift
+//  CollabMessagesAttachmentsView.swift
 //  Block Pro
 //
-//  Created by Nimat Azeez on 7/10/20.
+//  Created by Nimat Azeez on 10/5/20.
 //  Copyright © 2020 Nimat Azeez. All rights reserved.
 //
 
 import UIKit
 import SVProgressHUD
 
-class ConversationPhotosViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
-
+class CollabMessagesAttachmentsView: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+    
     @IBOutlet weak var navBar: UINavigationBar!
-    @IBOutlet weak var photosCollectionView: UICollectionView!
+    @IBOutlet weak var photos_schedulesCollectionView: UICollectionView!
     
     var copiedAnimationView: CopiedAnimationView?
     
     let firebaseMessaging = FirebaseMessaging.sharedInstance
     
-    var conversationID: String?
     var collabID: String?
     
     var photoMessages: [Message] = []
@@ -27,28 +26,24 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         navBar.configureNavBar()
         
-        configureCollectionView(collectionView: photosCollectionView)
+        configureCollectionView(collectionView: photos_schedulesCollectionView)
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         
-        monitorPersonalConversationMessages()
-        monitorCollabConversationMessages()
+        monitorCollabMessages()
         
-        //Initializing here allows the animationView to be removed and readded multiple times 
         copiedAnimationView = CopiedAnimationView()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        copiedAnimationView?.removeCopiedAnimation(remove: true)
         
         firebaseMessaging.messageListener?.remove()
+        
+        copiedAnimationView?.removeCopiedAnimation(remove: true)
     }
     
     override func didReceiveMemoryWarning() {
@@ -72,7 +67,6 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "convoPhotoCollectionViewCell", for: indexPath) as! ConvoPhotoCollectionViewCell
         
-        cell.conversationID = conversationID
         cell.collabID = collabID
         
         cell.message = photoMessages[indexPath.row]
@@ -88,7 +82,7 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let cell = collectionView.cellForItem(at: indexPath) as! ConvoPhotoCollectionViewCell
-        
+    
         zoomingMethods = ZoomingImageViewMethods(on: cell.imageView, cornerRadius: 0)
         zoomingMethods?.performZoom()
     }
@@ -113,76 +107,48 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
         collectionView.register(UINib(nibName: "ConvoPhotoCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "convoPhotoCollectionViewCell")
     }
     
-    private func monitorPersonalConversationMessages () {
+    private func monitorCollabMessages () {
         
-        guard let conversation = conversationID else { return }
+        guard let collabID = collabID else { return }
         
-            firebaseMessaging.retrieveAllPersonalMessages(conversationID: conversation) { [weak self] (messages, error) in
+        firebaseMessaging.retrieveAllCollabMessages(collabID: collabID) { [weak self] (messages, error) in
+            
+            if error != nil {
                 
-                if error != nil {
-                    
-                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
-                }
+                SVProgressHUD.showError(withStatus: error?.localizedDescription)
+            }
+            
+            else {
                 
-                else {
+                let photoMessages = self?.firebaseMessaging.filterPhotoMessages(messages: messages)
+                
+                if photoMessages?.count != self?.photoMessages.count ?? 0 {
                     
-                    let photoMessages = self?.firebaseMessaging.filterPhotoMessages(messages: messages)
+                    for message in photoMessages ?? [] {
+                        
+                        if self?.photoMessages.contains(where: { $0.messageID == message.messageID }) == false {
+                            
+                            self?.photoMessages.append(message)
+                        }
+                    }
                     
-                    if photoMessages?.count != self?.photoMessages.count ?? 0 {
+                    if let sortedMessages = self?.photoMessages.sorted(by: { $0.timestamp > $1.timestamp }) {
                         
-                        for message in photoMessages ?? [] {
-                            
-                            if self?.photoMessages.contains(where: { $0.messageID == message.messageID }) == false {
-                                
-                                self?.photoMessages.append(message)
-                            }
-                        }
+                        self?.photoMessages = sortedMessages
                         
-                        if let sortedMessages = self?.photoMessages.sorted(by: { $0.timestamp > $1.timestamp }) {
-                            
-                            self?.photoMessages = sortedMessages
-                            
-                            self?.photosCollectionView.reloadData()
-                        }
+                        self?.photos_schedulesCollectionView.reloadData()
                     }
                 }
             }
+        }
     }
     
-    private func monitorCollabConversationMessages () {
+    @IBAction func photos_schedulesSegmentedControl(_ sender: Any) {
         
-        guard let conversation = collabID else { return }
+        if let segmentedControl = sender as? UISegmentedControl {
         
-            firebaseMessaging.retrieveAllCollabMessages(collabID: conversation) { [weak self] (messages, error) in
-                
-                if error != nil {
-                    
-                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
-                }
-                
-                else {
-                    
-                    let photoMessages = self?.firebaseMessaging.filterPhotoMessages(messages: messages)
-                    
-                    if photoMessages?.count != self?.photoMessages.count ?? 0 {
-                        
-                        for message in photoMessages ?? [] {
-                            
-                            if self?.photoMessages.contains(where: { $0.messageID == message.messageID }) == false {
-                                
-                                self?.photoMessages.append(message)
-                            }
-                        }
-                        
-                        if let sortedMessages = self?.photoMessages.sorted(by: { $0.timestamp > $1.timestamp }) {
-                            
-                            self?.photoMessages = sortedMessages
-                            
-                            self?.photosCollectionView.reloadData()
-                        }
-                    }
-                }
-            }
+            print(segmentedControl.selectedSegmentIndex)
+        }
     }
     
     @IBAction func doneButton(_ sender: Any) {
@@ -191,7 +157,7 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
     }
 }
 
-extension ConversationPhotosViewController: CachePhotoProtocol {
+extension CollabMessagesAttachmentsView: CachePhotoProtocol {
     
     func cachePhoto(messageID: String, photo: UIImage?) {
         
@@ -202,9 +168,7 @@ extension ConversationPhotosViewController: CachePhotoProtocol {
     }
 }
 
-//MARK: - PresentCopiedAnimation Protocol Extension
-
-extension ConversationPhotosViewController: PresentCopiedAnimationProtocol {
+extension CollabMessagesAttachmentsView: PresentCopiedAnimationProtocol {
     
     func presentCopiedAnimation() {
         
