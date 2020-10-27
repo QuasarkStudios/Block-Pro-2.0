@@ -1448,12 +1448,15 @@ extension MessagingViewController: ReconfigureMessagingViewFromSendPhotoVC, Reco
 
 extension MessagingViewController: CachePhotoProtocol {
     
-    func cachePhoto (messageID: String, photo: UIImage?) {
+    func cacheMessagePhoto (messageID: String, photo: UIImage?) {
         
         if let messageIndex = messages?.firstIndex(where: { $0.messageID == messageID }) {
             
             messages?[messageIndex].messagePhoto?["photo"] = photo
         }
+    }
+    
+    func cacheCollabPhoto(photoID: String, photo: UIImage?) {
     }
 }
 
@@ -1466,25 +1469,25 @@ extension MessagingViewController: ZoomInProtocol {
         
         performZoomOnPhotoImageView(photoImageView: photoImageView)
         
-//        prepViewForImageViewZooming { [weak self] in
-//
-//            self?.zoomingMethods = ZoomingImageViewMethods(on: photoImageView, cornerRadius: 10, completion: {
-//
-//                self?.becomeFirstResponder()
-//
-//                if self?.keyboardWasPresent ?? false {
-//
-//                    self?.messageInputAccesoryView.textViewContainer.messageTextView.becomeFirstResponder()
-//                }
-//
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//
-//                    self?.imageViewBeingZoomed = false
-//                }
-//            })
-//
-//            zoomingMethods?.performZoom()
-//        }
+        prepViewForImageViewZooming { [weak self] in
+
+            self?.zoomingMethods = ZoomingImageViewMethods(on: photoImageView, cornerRadius: 10, completion: {
+
+                self?.becomeFirstResponder()
+
+                if self?.keyboardWasPresent ?? false {
+
+                    self?.messageInputAccesoryView.textViewContainer.messageTextView.becomeFirstResponder()
+                }
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+
+                    self?.imageViewBeingZoomed = false
+                }
+            })
+
+            zoomingMethods?.performZoom()
+        }
     }
 }
 

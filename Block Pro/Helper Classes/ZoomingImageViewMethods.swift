@@ -20,9 +20,9 @@ class ZoomingImageViewMethods {
     
     var optionalButtons: [UIButton?] = []
     
-    var panGesture: UIPanGestureRecognizer?
-    
     var zoomOutCompletion: (() -> Void)
+    
+    var panGesture: UIPanGestureRecognizer?
     
     init (on imageView: UIImageView, cornerRadius: CGFloat, with buttons: [UIButton?] = [], completion: @escaping (() -> Void) = {}) {
         

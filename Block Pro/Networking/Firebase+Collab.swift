@@ -34,7 +34,12 @@ class FirebaseCollab {
         let batch = db.batch()
         
         let collabID = UUID().uuidString
-        let photoIDs: [String] = Array(repeating: UUID().uuidString, count: collabInfo.photos.count)
+        var photoIDs: [String] = []
+        
+        for _ in collabInfo.photos ?? [] {
+            
+            photoIDs.append(UUID().uuidString)
+        }
         
         let collabData: [String : Any] = ["collabID" : collabID, "collabName" : collabInfo.name, "dateCreated" : Date(), "collabObjective" : collabInfo.objective, "startTime" : collabInfo.dates["startTime"]!, "deadline" : collabInfo.dates["deadline"]!, "reminders" : "will be set up later", "photos" : photoIDs]
         let memberCollabData: [String : Any] = ["collabID" : collabID, "collabName" : collabInfo.name,  "dateCreated" : Date(), "collabObjective" : collabInfo.objective, "startTime" : collabInfo.dates["startTime"]!, "deadline" : collabInfo.dates["deadline"]!, "reminders" : "will be set up later"]
@@ -100,11 +105,9 @@ class FirebaseCollab {
 
             var count = 0
 
-            for photo in collabInfo.photos {
+            for photo in collabInfo.photos ?? [] {
 
-                let photoDict: [String : Any] = ["photoID" : photoIDs[count], "photo" : photo]
-
-                self.firebaseStorage.saveNewCollabPhotosToStorage(collabID: collabID, collabPhoto: photoDict)
+                self.firebaseStorage.saveNewCollabPhotosToStorage(collabID, photoIDs[count], photo)
 
                 count += 1
             }
@@ -232,7 +235,7 @@ class FirebaseCollab {
                         
                         collab.coverPhotoID = document.data()["coverPhotoID"] as? String
                         
-//                        collab.photoIDs = document.data()["photos"] as! [String]
+                        collab.photoIDs = document.data()["photos"] as? [String] ?? []
                         
                         let startTime = document.data()["startTime"] as! Timestamp
                         collab.dates["startTime"] = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))

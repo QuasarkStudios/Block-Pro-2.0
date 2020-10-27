@@ -9,7 +9,7 @@
 import UIKit
 import SVProgressHUD
 
-extension CollabViewController: UITextViewDelegate, CachePhotoProtocol {
+extension CollabViewController: UITextViewDelegate {
     
     internal func retrieveMessages () {
         
@@ -88,14 +88,6 @@ extension CollabViewController: UITextViewDelegate, CachePhotoProtocol {
         if !(imageViewBeingZoomed ?? false) {
             
             inputAccesoryViewMethods?.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0, textViewText: messageTextViewText)
-        }
-    }
-    
-    internal func cachePhoto(messageID: String, photo: UIImage?) {
-        
-        if let messageIndex = messages?.firstIndex(where: { $0.messageID == messageID }) {
-            
-            messages?[messageIndex].messagePhoto?["photo"] = photo
         }
     }
     

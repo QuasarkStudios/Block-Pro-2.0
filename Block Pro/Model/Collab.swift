@@ -26,5 +26,5 @@ struct Collab {
     var reminders: [String : Date] = [:]
     
     var photoIDs: [String] = []
-    var photos: [UIImage] = []
+    var photos: [String : UIImage?] = [:]
 }

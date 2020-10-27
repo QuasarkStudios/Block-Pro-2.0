@@ -12,14 +12,17 @@ import SVProgressHUD
 class CollabViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     lazy var collabHeaderView = CollabHeaderView(collab)
+    lazy var collabHeaderViewHeightConstraint = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
     
     let collabNavigationView = CollabNavigationView()
     let presentCollabNavigationViewButton = UIButton(type: .system)
     
+    var editCollabBarButton: UIBarButtonItem?
+    
     let collabHomeTableView = UITableView()
     
-    lazy var editCoverButton: UIButton = configureEditCoverButton()
-    lazy var deleteCoverButton: UIButton = configureDeleteCoverButton()
+    lazy var editCoverButton: UIButton = configureEditButton()
+    lazy var deleteCoverButton: UIButton = configureDeleteButton()
     
     let addBlockButton = UIButton(type: .system)
     
@@ -128,7 +131,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         if tableView == collabHomeTableView {
             
-            return 3
+            return 4
         }
         
         else {
@@ -151,9 +154,14 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 return 4
             }
             
-            else {
+            else if section == 2 {
                 
                 return 3
+            }
+            
+            else {
+                
+                return 1
             }
         }
         
@@ -242,7 +250,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 }
             }
             
-            else {
+            else if indexPath.section == 2 {
                 
                 if indexPath.row == 0 {
                     
@@ -263,8 +271,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomePhotosCell", for: indexPath) as! CollabHomePhotosCell
                     cell.selectionStyle = .none
                     
-                    cell.collabID = collab?.collabID
-                    cell.photoIDs = collab?.photoIDs
+//                    cell.collabID = collab?.collabID
+//                    cell.photoIDs = collab?.photoIDs
+                    
+                    cell.collab = collab
 
                     cell.cachePhotoDelegate = self
                     cell.zoomInDelegate = self
@@ -272,6 +282,13 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     
                     return cell
                 }
+            }
+            
+            else {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "leaveCollabCell", for: indexPath) as! LeaveCollabCell
+                cell.selectionStyle = .none
+                return cell
             }
         }
         
@@ -346,7 +363,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 }
             }
             
-            else {
+            else if indexPath.section == 2 {
                 
                 if indexPath.row == 0 {
                     
@@ -373,6 +390,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     }
                 }
             }
+            
+            else {
+                
+                return 80
+            }
         }
         
         else {
@@ -394,9 +416,115 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if indexPath.section == 3 {
+            
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                
+//                self.collabHomeTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//                self.collabHomeTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                
+                self.presentCollabNavigationViewButton.alpha = 0
+                self.tabBar.alpha = 0
+            }
+        }
+        
+        else {
+            
+            
+        }
+        
+//        let tableViewExpandedHeight = self.view.frame.height - topBarHeight
+//
+//        if tableView.contentSize.height > tableViewExpandedHeight {
+//
+//            if indexPath.section == 3 {
+//
+//                print("check")
+//
+//                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+//
+//                    self.collabHomeTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//                    self.collabHomeTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//
+//                    self.presentCollabNavigationViewButton.alpha = 0
+//                    self.tabBar.alpha = 0
+//                }
+//            }
+//
+//            else {
+//
+//
+//            }
+//        }
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if indexPath.section == 3 {
+            
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                
+                self.presentCollabNavigationViewButton.alpha = 1
+                self.tabBar.alpha = 1
+            }
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if scrollView == collabHomeTableView {
+            
+            if scrollView.contentOffset.y >= 0 {
+                
+                if ((collabHeaderViewHeightConstraint?.constant ?? 0) - scrollView.contentOffset.y) > topBarHeight {
+                    
+                    collabHeaderViewHeightConstraint?.constant -= scrollView.contentOffset.y
+                    scrollView.contentOffset.y = 0
+                    
+                    let alphaPart = 1 / (collabHeaderView.configureViewHeight() - 80 - topBarHeight)
+                    collabHeaderView.alpha = alphaPart * (collabHeaderViewHeightConstraint!.constant - topBarHeight)
+                }
+                
+                else {
+                    
+                    collabHeaderViewHeightConstraint?.constant = topBarHeight
+                    collabHeaderView.alpha = 0
+                    
+                    self.title = collab?.name
+                    navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black, barStyleColor: .default)
+                }
+            }
+            
+            else {
+                
+                self.title = nil
+                navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+                
+                if (collabHeaderViewHeightConstraint?.constant ?? 0) < collabHeaderView.configureViewHeight() - 80 {
+                    
+                    collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight() - 80
+                    
+                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+
+                        self.view.layoutIfNeeded()
+                    })
+                }
+
+                else {
+                    
+//                    collabHeaderViewHeightConstraint?.constant = (collabHeaderView.configureViewHeight() - 80) + abs(scrollView.contentOffset.y)
+                }
+            }
+        }
+    }
+    
     private func configureNavBar () {
         
         self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+        
+        editCollabBarButton = UIBarButtonItem(title: "Edit", style: .done, target: self, action: #selector(editCollabButtonPressed))
     }
     
     private func configureHeaderView () {
@@ -419,13 +547,13 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         ].forEach({ $0.isActive = true })
         
-//        collabHomeTableView.backgroundColor = .blue
-        
         collabHomeTableView.dataSource = self
         collabHomeTableView.delegate = self
         
-        collabHomeTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 200, right: 0)
+//        collabHomeTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 200, right: 0)
         collabHomeTableView.separatorStyle = .none
+        collabHomeTableView.showsVerticalScrollIndicator = false
+        collabHomeTableView.delaysContentTouches = false
         
         collabHomeTableView.register(UINib(nibName: "CollabHomeMembersHeaderCell", bundle: nil), forCellReuseIdentifier: "collabHomeMembersHeaderCell")
         collabHomeTableView.register(UINib(nibName: "CollabHomeMembersCell", bundle: nil), forCellReuseIdentifier: "collabHomeMembersCell")
@@ -433,6 +561,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabHomeTableView.register(UINib(nibName: "CollabHomeLocationsCell", bundle: nil), forCellReuseIdentifier: "collabHomeLocationsCell")
         collabHomeTableView.register(UINib(nibName: "CollabHomePhotosHeaderCell", bundle: nil), forCellReuseIdentifier: "collabHomePhotosHeaderCell")
         collabHomeTableView.register(UINib(nibName: "CollabHomePhotosCell", bundle: nil), forCellReuseIdentifier: "collabHomePhotosCell")
+        collabHomeTableView.register(UINib(nibName: "LeaveCollabCell", bundle: nil), forCellReuseIdentifier: "leaveCollabCell")
     }
     
     private func configureCollabNavigationView () {
@@ -484,14 +613,13 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         presentCollabNavigationViewButton.translatesAutoresizingMaskIntoConstraints = false
         
         [
-        
+            
             presentCollabNavigationViewButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-//            presentCollabNavigationViewButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 40),
             presentCollabNavigationViewButton.widthAnchor.constraint(equalToConstant: 37.5),
             presentCollabNavigationViewButton.heightAnchor.constraint(equalToConstant: 37.5)
         
         ].forEach({ $0.isActive = true })
-
+        
         presentCollabNavigationViewButton.tag = 1
         
         presentCollabNavigationViewButton.tintColor = UIColor(hexString: "222222")
@@ -500,9 +628,19 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         presentCollabNavigationViewButton.contentHorizontalAlignment = .fill
         
         presentCollabNavigationViewButton.addTarget(self, action: #selector(presentNavViewButtonPressed), for: .touchUpInside)
+        
+        let buttonBackgroundView = UIView(frame: CGRect(x: 5, y: 5, width: 27.5, height: 27.5))
+        buttonBackgroundView.backgroundColor = .white
+        buttonBackgroundView.isUserInteractionEnabled = false
+        
+        buttonBackgroundView.layer.cornerRadius = 27.5 * 0.5
+        buttonBackgroundView.clipsToBounds = true
+        
+        presentCollabNavigationViewButton.addSubview(buttonBackgroundView)
+        presentCollabNavigationViewButton.bringSubviewToFront(presentCollabNavigationViewButton.imageView!)
     }
     
-    private func configureEditCoverButton () -> UIButton {
+    private func configureEditButton () -> UIButton {
         
         let button = UIButton(type: .system)
         
@@ -518,7 +656,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         return button
     }
     
-    private func configureDeleteCoverButton () -> UIButton {
+    private func configureDeleteButton () -> UIButton {
         
         let button = UIButton(type: .system)
         
@@ -671,6 +809,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+
+    
     @objc private func handlePan (sender: UIPanGestureRecognizer) {
         
         switch sender.state {
@@ -752,27 +892,32 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         sender.setTranslation(CGPoint.zero, in: view)
     }
     
-    @objc private func returnToOrigin (scrollTableView: Bool = true) {
+    @objc private func returnToOrigin (animateCollabHeaderView: Bool = true, scrollTableView: Bool = true) {
         
-        let collabHeaderViewHeightConstraint = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
+//        self.navigationItem.rightBarButtonItem = nil
+        
         let collabNavigationViewTopAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .top })
         let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
         let presentNavViewButtonBottomAnchor = self.view.constraints.first(where: { $0.firstItem?.tag == 1 && $0.firstAttribute == .bottom })
         let collabTableViewTopAnchor = collabNavigationView.constraints.first(where: { $0.firstItem as? UITableView != nil && $0.firstAttribute == .top })
         
-//        let distanceFromOrigin = abs((collabHeaderView.configureViewHeight() - 80) - (collabNavigationViewTopAnchor?.constant ?? 0))
-//        let duration = TimeInterval(distanceFromOrigin * 0.001)
-//        print(collabNavigationViewTopAnchor?.constant, duration)
-        
-        collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight()
+        if animateCollabHeaderView {
+            
+            collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight()
+        }
+    
         collabNavigationViewTopAnchor?.constant = collabHeaderView.configureViewHeight() - 80
-        collabNavigationViewBottomAnchor?.constant = 0
+//        collabNavigationViewBottomAnchor?.constant = 0
         presentNavViewButtonBottomAnchor?.constant = 40
         collabTableViewTopAnchor?.constant = 10
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.65, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
 
             self.view.layoutIfNeeded()
+            
+            self.collabHeaderView.alpha = 1
+            
+            self.collabHomeTableView.contentOffset.y = 0
 
             self.collabNavigationView.layer.cornerRadius = 27.5
             self.collabNavigationView.panGestureIndicator.alpha = 1
@@ -781,6 +926,14 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             self.tabBar.alpha = self.selectedTab != "Messages" ? 1 : 0
             self.addBlockButton.alpha = self.selectedTab == "Blocks" ? 1 : 0
         })
+        
+        collabNavigationViewBottomAnchor?.constant = 0
+        
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+            
+            self.view.layoutIfNeeded()
+        }
+
         
         if selectedTab == "Messages" && self.messages?.count ?? 0 > 0 && scrollTableView {
             
@@ -791,6 +944,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     private func shrinkView () {
         
         self.resignFirstResponder()
+        
+//        self.navigationItem.rightBarButtonItem = editCollabBarButton
         
         let collabHeaderViewHeightAnchor = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
         let collabNavigationViewTopAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .top })
@@ -984,6 +1139,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    @objc private func editCollabButtonPressed () {
+        
+        print("edit")
+    }
+    
     @objc private func infoButtonPressed () {
         
     }
@@ -995,14 +1155,14 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     
     
-    @objc private func editCoverButtonPressed () {
+    @objc func editCoverButtonPressed () {
         
         zoomingMethods?.handleZoomOutOnImageView()
         
-        presentAddPhotoAlert(tracker: "coverAlert")
+        presentAddPhotoAlert(tracker: "coverAlert", shrinkView: false)
     }
     
-    @objc private func deleteCoverButtonPressed () {
+    @objc func deleteCoverButtonPressed () {
         
         SVProgressHUD.show()
         
@@ -1036,12 +1196,16 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             }
         }
     }
+
     
     //MARK: - Add Cover Photo Function
     
-    func presentAddPhotoAlert (tracker: String) {
+    func presentAddPhotoAlert (tracker: String, shrinkView: Bool) {
         
-        shrinkView()
+        if shrinkView {
+            
+            self.shrinkView()
+        }
         
         alertTracker = tracker
         
@@ -1148,9 +1312,23 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     @objc private func presentNavViewButtonPressed () {
         
-        returnToOrigin()
+        returnToOrigin(animateCollabHeaderView: false)
         
         self.becomeFirstResponder()
+        
+        self.title = nil
+        navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+        
+        self.collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight()
+        
+        UIView.animate(withDuration: 0.275, delay: 0, options: .curveEaseInOut) {
+            
+            self.view.layoutIfNeeded()
+            
+            self.collabHeaderView.alpha = 1
+            
+            self.collabHomeTableView.contentOffset.y = 0
+        }
         
         if selectedTab == "Messages" {
             
@@ -1174,6 +1352,22 @@ extension CollabViewController: UIGestureRecognizerDelegate {
         }
 
         return false
+    }
+}
+
+extension CollabViewController: CachePhotoProtocol {
+    
+    internal func cacheMessagePhoto(messageID: String, photo: UIImage?) {
+        
+        if let messageIndex = messages?.firstIndex(where: { $0.messageID == messageID }) {
+            
+            messages?[messageIndex].messagePhoto?["photo"] = photo
+        }
+    }
+    
+    func cacheCollabPhoto(photoID: String, photo: UIImage?) {
+        
+        collab?.photos[photoID] = photo
     }
 }
 

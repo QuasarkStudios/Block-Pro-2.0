@@ -10,5 +10,8 @@ import Foundation
 
 protocol CachePhotoProtocol: AnyObject {
     
-    func cachePhoto (messageID: String, photo: UIImage?)
+    func cacheMessagePhoto (messageID: String, photo: UIImage?)
+    
+    func cacheCollabPhoto (photoID: String, photo: UIImage?)
+    
 }

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17503.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17502"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="CollabPhotoCollectionViewCell" customModule="Block_Pro" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZS3-jG-st8">
+                        <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+                    </imageView>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GGE-Y9-FEt">
+                        <rect key="frame" x="0.0" y="0.0" width="90" height="90"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="90" id="xdy-R4-3vK"/>
+                            <constraint firstAttribute="width" constant="90" id="zo9-nQ-lwC"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="GGE-Y9-FEt" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="1OQ-NW-cQL"/>
+                <constraint firstItem="ZS3-jG-st8" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="GFs-6r-OY9"/>
+                <constraint firstAttribute="bottom" secondItem="ZS3-jG-st8" secondAttribute="bottom" id="I0i-6U-hrK"/>
+                <constraint firstAttribute="trailing" secondItem="ZS3-jG-st8" secondAttribute="trailing" id="VYS-eV-Cvn"/>
+                <constraint firstItem="ZS3-jG-st8" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="sKC-sB-ThT"/>
+                <constraint firstItem="GGE-Y9-FEt" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="y5h-33-WVw"/>
+            </constraints>
+            <connections>
+                <outlet property="iProgressView" destination="GGE-Y9-FEt" id="OBC-Xo-jNM"/>
+                <outlet property="imageView" destination="ZS3-jG-st8" id="GFl-UT-qHA"/>
+            </connections>
+            <point key="canvasLocation" x="52" y="107"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

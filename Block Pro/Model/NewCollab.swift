@@ -13,10 +13,10 @@ struct NewCollab {
     var collabID: String = ""
     
     var name: String = ""
-    var objective: String = ""
+    var objective: String?
     var members: [Friend] = []
     var dates: [String : Date] = [:]
     var reminders: [String : Date] = [:]
     
-    var photos: [UIImage] = []
+    var photos: [UIImage]?
 }

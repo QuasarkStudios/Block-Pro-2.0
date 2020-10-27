@@ -71,10 +71,14 @@ class SearchBar: UIView {
         
         ].forEach({ $0.isActive = true })
         
+        searchTextField.delegate = self
+        
         searchTextField.borderStyle = .none
         searchTextField.font = UIFont(name: "Poppins-Medium", size: 15.5)
         searchTextField.placeholder = placeholderText
-        searchTextField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSAttributedString.Key.foregroundColor: UIColor(hexString: "AAAAAA") as Any])
+        searchTextField.attributedPlaceholder = NSAttributedString(string: placeholderText, attributes: [NSAttributedString.Key.foregroundColor: UIColor(hexString: "AAAAAA") as Any])
+        
+        searchTextField.returnKeyType = .done
         
         searchTextField.addTarget(self, action: #selector(searchTextChanged), for: .editingChanged)
     }
@@ -85,6 +89,35 @@ class SearchBar: UIView {
             
             messagesHomeVC.searchTextChanged(searchText: searchTextField.text ?? "")
         }
+        
+        else if let addLocationVC = parentViewController as? AddLocationViewController {
+            
+            addLocationVC.searchTextChanged(searchText: searchTextField.text ?? "")
+        }
     }
+}
 
+extension SearchBar: UITextFieldDelegate {
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        if let addLocationVC = parentViewController as? AddLocationViewController {
+            
+            addLocationVC.searchBegan()
+        }
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField, reason: UITextField.DidEndEditingReason) {
+        
+        if let addLocationVC = parentViewController as? AddLocationViewController {
+            
+            addLocationVC.searchEnded()
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        searchTextField.resignFirstResponder()
+        return true
+    }
 }

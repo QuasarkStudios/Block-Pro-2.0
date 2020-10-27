@@ -16,12 +16,21 @@ class CollabHomePhotosCell: UITableViewCell, UICollectionViewDataSource, UIColle
     let noPhotosImageView = UIImageView()
     let noPhotosLabel = UILabel()
     
-    var collabID: String?
+//    var collabID: String?
+//
+//    var photoIDs: [String]? {
+//        didSet {
+//
+//            configureNoPhotosIndicator(photoIDs)
+//
+//            photosCollectionView.reloadData()
+//        }
+//    }
     
-    var photoIDs: [String]? {
+    var collab: Collab? {
         didSet {
             
-            configureNoPhotosIndicator(photoIDs)
+            configureNoPhotosIndicator(collab?.photoIDs)
             
             photosCollectionView.reloadData()
         }
@@ -48,30 +57,45 @@ class CollabHomePhotosCell: UITableViewCell, UICollectionViewDataSource, UIColle
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return photoIDs?.count ?? 0
+        return collab?.photoIDs.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "convoPhotoCollectionViewCell", for: indexPath) as! ConvoPhotoCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collabPhotoCollectionViewCell", for: indexPath) as! CollabPhotoCollectionViewCell
         
 //        cell.conversationID = conversationID
 //        cell.collabID = collabID
 //
 //        cell.message = messages?[indexPath.row]
         
+        cell.collabID = collab?.collabID
+        cell.photoID = collab?.photoIDs[indexPath.row]
+        cell.photo = collab?.photos[collab!.photoIDs[indexPath.row]] ?? nil
+        
         cell.imageViewCornerRadius = 8
         
         cell.cachePhotoDelegate = cachePhotoDelegate
         cell.presentCopiedAnimationDelegate = presentCopiedAnimationDelegate
         
-        return UICollectionViewCell()//cell
+        return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        let cell = collectionView.cellForItem(at: indexPath) as! ConvoPhotoCollectionViewCell
-        zoomInDelegate?.zoomInOnPhotoImageView(photoImageView: cell.imageView)
+        let cell = collectionView.cellForItem(at: indexPath) as! CollabPhotoCollectionViewCell
+        
+        if let viewController = zoomInDelegate as? CollabViewController {
+            
+//            viewController.editCoverButton.removeTarget(nil, action: nil, for: .allEvents)
+//            viewController.deleteCoverButton.removeTarget(nil, action: nil, for: .allEvents)
+//            
+//            viewController.editCoverButton.addTarget(viewController, action: #selector(viewController.editCollabPhotoButtonPressed), for: .touchUpInside)
+//            viewController.deleteCoverButton.addTarget(viewController, action: #selector(viewController.deleteCollabPhotoButtonPressed), for: .touchUpInside)
+            
+            viewController.zoomingMethods = ZoomingImageViewMethods(on: cell.imageView, cornerRadius: 8)
+            viewController.zoomingMethods?.performZoom()
+        }
     }
     
     private func configureCollectionView (_ collectionView: UICollectionView) {
@@ -92,7 +116,7 @@ class CollabHomePhotosCell: UITableViewCell, UICollectionViewDataSource, UIColle
         
         collectionView.collectionViewLayout = layout
         
-//        collectionView.register(UINib(nibName: "ConvoPhotoCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "convoPhotoCollectionViewCell")
+        collectionView.register(UINib(nibName: "CollabPhotoCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "collabPhotoCollectionViewCell")
     }
     
     private func configureNoPhotosIndicator (_ photoIDs: [String]?) {

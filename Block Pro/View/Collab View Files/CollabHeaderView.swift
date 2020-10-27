@@ -351,13 +351,19 @@ class CollabHeaderView: UIView {
         
         if let viewController = collabViewController as? CollabViewController {
             
-            viewController.presentAddPhotoAlert(tracker: "coverAlert")
+            viewController.presentAddPhotoAlert(tracker: "coverAlert", shrinkView: true)
         }
     }
     
     @objc private func coverPhotoPressed () {
         
         if let viewController = collabViewController as? CollabViewController {
+//
+//            viewController.editCoverButton.removeTarget(nil, action: nil, for: .allEvents)
+//            viewController.deleteCoverButton.removeTarget(nil, action: nil, for: .allEvents)
+//
+//            viewController.editCoverButton.addTarget(viewController, action: #selector(viewController.editCoverButtonPressed), for: .touchUpInside)
+//            viewController.deleteCoverButton.addTarget(viewController, action: #selector(viewController.deleteCoverButtonPressed), for: .touchUpInside)
             
             if let imageView = coverPhoto?.profilePicImageView {
                 

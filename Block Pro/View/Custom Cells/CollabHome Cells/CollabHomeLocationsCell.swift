@@ -20,6 +20,9 @@ class CollabHomeLocationsCell: UITableViewCell {
         mapView.layer.cornerRadius = 15
         mapView.clipsToBounds = true
         
+        mapView.isScrollEnabled = false
+        mapView.isZoomEnabled = false
+        
         locationPageControl.pageIndicatorTintColor = UIColor(hexString: "D8D8D8")
         locationPageControl.currentPageIndicatorTintColor = UIColor(hexString: "222222")
     }

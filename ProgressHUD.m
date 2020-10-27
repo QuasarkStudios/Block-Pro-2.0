@@ -202,7 +202,7 @@
 	//---------------------------------------------------------------------------------------------------------------------------------------------
 	if (spinner == nil)
 	{
-		spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleLarge];
 		spinner.color = self.spinnerColor;
 		spinner.hidesWhenStopped = YES;
 	}

@@ -32,6 +32,11 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
     
     @IBOutlet weak var details_attachmentsTableView: UITableView!
     
+    lazy var editPhotoButton: UIButton = configureEditButton()
+    lazy var deletePhotoButton: UIButton = configureDeleteButton()
+    
+    var copiedAnimationView: CopiedAnimationView?
+    
     let firebaseCollab = FirebaseCollab()
     
     let formatter = DateFormatter()
@@ -45,14 +50,16 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
     var selectedMember: Friend?
     var selectedPhoto: UIImage?
     
-    var photosCellCollectionViewPresent: Bool = false
+    var zoomingMethods: ZoomingImageViewMethods?
     
     weak var collabCreatedDelegate: CollabCreated?
+    
+    var photoEditing: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureNavBar()
+        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: UIColor.white.withAlphaComponent(0.9))
         
         configureTableView()
         
@@ -63,6 +70,19 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         if #available(iOS 13.0, *) {
             isModalInPresentation = true
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        //Initializing here allows the animationView to be removed and readded multiple times
+        copiedAnimationView = CopiedAnimationView()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        copiedAnimationView?.removeCopiedAnimation(remove: true)
     }
     
     override func viewDidLayoutSubviews() {
@@ -84,7 +104,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         else {
             
-            return 1
+            return 3
         }
     }
     
@@ -161,9 +181,24 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
             
             if indexPath.row == 0 {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "collabPhotosCell", for: indexPath) as! CollabPhotosCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "createCollabPhotosCell", for: indexPath) as! CreateCollabPhotosCell
                 cell.selectionStyle = .none
-                cell.collabPhotosCellDelegate = self
+                
+                cell.selectedPhotos = newCollab.photos
+                cell.createCollabPhotosCellDelegate = self
+                cell.zoomInDelegate = self
+                cell.presentCopiedAnimationDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 2 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "createCollabLocationsCell", for: indexPath) as! CreateCollabLocationsCell
+                cell.selectionStyle = .none
+                
+                cell.createCollabLocationsCellDelegate = self
+                
                 return cell
             }
         }
@@ -208,7 +243,51 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
             case 0:
                 
-                return photosCellCollectionViewPresent ? 210 : 80
+                if newCollab.photos?.count ?? 0 > 0 {
+                    
+                    let heightOfPhotosLabelAndBottomAnchor: CGFloat = 25
+                    let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
+                    
+                    if newCollab.photos?.count ?? 0 <= 3 {
+                        
+                        //The item size plus the top and bottom edge insets, i.e. 20
+                        let heightOfCollectionView: CGFloat = itemSize + 20
+                        
+                        //The height of the "attach" button plus a 10 point buffer on the top annd bottom
+                        let heightOfAttachButton: CGFloat = 40 + 20
+                        
+                        return heightOfPhotosLabelAndBottomAnchor + heightOfCollectionView + heightOfAttachButton
+                        
+                    }
+                    
+                    else if newCollab.photos?.count ?? 0 < 6 {
+                        
+                        //The height of the two rows of items that'll be displayed, the edge insets, i.e. 20, and the line spacing i.e. 5
+                        let heightOfCollectionView: CGFloat = (itemSize * 2) + 20 + 5
+                        
+                        //The height of the "attach" button plus a 10 point buffer on the top annd bottom
+                        let heightOfAttachButton: CGFloat = 40 + 20
+                        
+                        return heightOfPhotosLabelAndBottomAnchor + heightOfCollectionView + heightOfAttachButton
+                    }
+                    
+                    else {
+                        
+                        //The height of the two rows of items that'll be displayed, the edge insets, i.e. 20, and the line spacing i.e. 5
+                        let heightOfCollectionView: CGFloat = (itemSize * 2) + 20 + 5
+                        
+                        return heightOfPhotosLabelAndBottomAnchor + heightOfCollectionView
+                    }
+                }
+                
+                else {
+                    
+                    return 85
+                }
+                
+            case 2:
+                
+                return 85
                 
             default:
                 
@@ -217,13 +296,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
             }
         }
     }
-    
-    private func configureNavBar () {
-        
-        navBar.setBackgroundImage(UIImage(), for: .default)
-        navBar.shadowImage = UIImage()
-        navBar.backgroundColor = .clear
-    }
+
     
     private func configureSegmentedControl () {
         
@@ -266,7 +339,42 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         details_attachmentsTableView.register(UINib(nibName: "CollabRemindersCell", bundle: nil), forCellReuseIdentifier: "collabRemindersCell")
         
-        details_attachmentsTableView.register(UINib(nibName: "CollabPhotosCell", bundle: nil), forCellReuseIdentifier: "collabPhotosCell")
+        details_attachmentsTableView.register(UINib(nibName: "CreateCollabPhotosCell", bundle: nil), forCellReuseIdentifier: "createCollabPhotosCell")
+        
+        details_attachmentsTableView.register(UINib(nibName: "CreateCollabLocationsCell", bundle: nil), forCellReuseIdentifier: "createCollabLocationsCell")
+    }
+    
+    private func configureEditButton () -> UIButton {
+        
+        let button = UIButton(type: .system)
+        
+        button.frame = CGRect(x: 15, y: 50, width: 75, height: 35)
+        
+        button.setTitle("Edit", for: .normal)
+        button.titleLabel?.font = UIFont(name: "Poppins-SemiBold", size: 16)
+        button.contentHorizontalAlignment = .center
+        button.tintColor = .white
+        button.alpha = 0
+        button.addTarget(self, action: #selector(editPhotoButtonPressed), for: .touchUpInside)
+        
+        return button
+    }
+    
+    private func configureDeleteButton () -> UIButton {
+        
+        let button = UIButton(type: .system)
+        
+        let xCoord = self.view.frame.width - (75 + 20)
+        button.frame = CGRect(x: xCoord, y: 50, width: 75, height: 35)
+        
+        button.setTitle("Delete", for: .normal)
+        button.titleLabel?.font = UIFont(name: "Poppins-SemiBold", size: 16)
+        button.contentHorizontalAlignment = .center
+        button.tintColor = .systemRed
+        button.alpha = 0
+        button.addTarget(self, action: #selector(deletePhotoButtonPressed), for: .touchUpInside)
+        
+        return button
     }
     
     private func fetchCollabData () {
@@ -307,17 +415,77 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         generator.notificationOccurred(.warning)
     }
     
+    private func photoEdited (newImage: UIImage) {
+        
+        var count = 0
+        
+        for photo in newCollab.photos ?? [] {
+            
+            if photo == selectedPhoto {
+                
+                newCollab.photos?[count] = newImage
+                selectedPhoto = nil
+                break
+            }
+            
+            count += 1
+        }
+        
+        photoEditing = false
+    }
+    
     private func createCollab () {
         
         SVProgressHUD.show()
         
-        firebaseCollab.createCollab(collabInfo: newCollab) {
+        firebaseCollab.createCollab(collabInfo: newCollab) { [weak self] in
             
-            self.collabCreatedDelegate?.reloadData()
+            self?.collabCreatedDelegate?.reloadData()
             
             SVProgressHUD.dismiss()
             
-            self.dismiss(animated: true, completion: nil)
+            self?.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    @objc private func editPhotoButtonPressed () {
+        
+        zoomingMethods?.handleZoomOutOnImageView()
+        
+        photoEditing = true
+        
+        presentAddPhotoAlert()
+    }
+    
+    @objc private func deletePhotoButtonPressed () {
+        
+        var count = 0
+        
+        for photo in newCollab.photos ?? [] {
+            
+            if photo == selectedPhoto {
+                
+                newCollab.photos?.remove(at: count)
+                selectedPhoto = nil
+                break
+            }
+            
+            count += 1
+        }
+        
+        details_attachmentsTableView.reloadSections([0], with: .none)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+            
+            self.zoomingMethods?.blackBackground?.backgroundColor = .clear
+            self.zoomingMethods?.optionalButtons.forEach({ $0?.alpha = 0 })
+            self.zoomingMethods?.zoomedInImageView?.alpha = 0
+            
+        } completion: { (finished: Bool) in
+            
+            self.zoomingMethods?.blackBackground?.removeFromSuperview()
+            self.zoomingMethods?.optionalButtons.forEach({ $0?.removeFromSuperview() })
+            self.zoomingMethods?.zoomedInImageView?.removeFromSuperview()
         }
     }
     
@@ -371,12 +539,19 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
             }
         }
         
-        else if segue.identifier == "moveToSelectedPhotoView" {
+        else if segue.identifier == "moveToAddLocationsView" {
             
-            let selectedPhotoVC = segue.destination as! SelectedPhotoViewController
-            selectedPhotoVC.selectedPhoto = selectedPhoto
-            selectedPhotoVC.photoEditedDelegate = self
+            let item: UIBarButtonItem = UIBarButtonItem()
+            item.title = ""
+            navigationItem.backBarButtonItem = item
         }
+//        
+//        else if segue.identifier == "moveToSelectedPhotoView" {
+//            
+//            let selectedPhotoVC = segue.destination as! SelectedPhotoViewController
+//            selectedPhotoVC.selectedPhoto = selectedPhoto
+//            selectedPhotoVC.photoEditedDelegate = self
+//        }
     }
     
     @IBAction func exitButton(_ sender: Any) {
@@ -426,6 +601,12 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
             }) { (finished: Bool) in
                 
+                let tableViewLeadingAnchor = self.view.constraints.first(where: { $0.firstAttribute == .leading && $0.firstItem as? UITableView != nil })
+                let tableViewTrailingAnchor = self.view.constraints.first(where: { $0.firstAttribute == .trailing && $0.secondItem as? UITableView != nil })
+                
+                tableViewLeadingAnchor?.constant = 40
+                tableViewTrailingAnchor?.constant = 40
+                
                 self.selectedTableView = "details"
                 self.details_attachmentsTableView.reloadData()
                 
@@ -459,6 +640,12 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
             }) { (finished: Bool) in
                 
+                let tableViewLeadingAnchor = self.view.constraints.first(where: { $0.firstAttribute == .leading && $0.firstItem as? UITableView != nil })
+                let tableViewTrailingAnchor = self.view.constraints.first(where: { $0.firstAttribute == .trailing && $0.secondItem as? UITableView != nil })
+                
+                tableViewLeadingAnchor?.constant = 0
+                tableViewTrailingAnchor?.constant = 0
+                
                 self.selectedTableView = "attachments"
                 self.details_attachmentsTableView.reloadData()
                 
@@ -487,7 +674,7 @@ extension CreateCollabViewController: CollabObjectiveEntered {
     
     func objectiveEntered (_ objective: String) {
         
-        newCollab.objective = objective
+        newCollab.objective = objective.leniantValidationOfTextEntered() == true ? objective : nil
     }
 }
 
@@ -588,14 +775,21 @@ extension CreateCollabViewController: CollabDatesSelected {
     }
 }
 
-extension CreateCollabViewController: CollabPhotosCellProtocol, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension CreateCollabViewController: CreateCollabLocationsCellProtocol {
     
-    func attachPhotosButtonPressed () {
+    func attachLocationSelected () {
         
-        let photoAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        photoAlert.view.tintColor = .black
+        performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
+    }
+}
 
-        let takePhotoAction = UIAlertAction(title: "Take Photo", style: .default) { (takePhoto) in
+extension CreateCollabViewController: CreateCollabPhotosCellProtocol, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func presentAddPhotoAlert () {
+        
+        let addPhotoAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        let takePhotoAction = UIAlertAction(title: "    Take a Photo", style: .default) { (takePhoto) in
 
             let imagePicker = UIImagePickerController()
             imagePicker.navigationBar.configureNavBar()
@@ -605,8 +799,12 @@ extension CreateCollabViewController: CollabPhotosCellProtocol, UIImagePickerCon
             
             self.present(imagePicker, animated: true, completion: nil)
         }
+        
+        let cameraImage = UIImage(named: "camera2")
+        takePhotoAction.setValue(cameraImage, forKey: "image")
+        takePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
 
-        let chooseFromLibraryAction = UIAlertAction(title: "Choose From Library", style: .default) { (chooseFromLibrary) in
+        let choosePhotoAction = UIAlertAction(title: "    Choose a Photo", style: .default) { (chooseFromLibrary) in
 
             let imagePicker = UIImagePickerController()
             imagePicker.navigationBar.configureNavBar()
@@ -616,14 +814,21 @@ extension CreateCollabViewController: CollabPhotosCellProtocol, UIImagePickerCon
             
             self.present(imagePicker, animated: true, completion: nil)
         }
+        
+        let photoImage = UIImage(named: "image")
+        choosePhotoAction.setValue(photoImage, forKey: "image")
+        choosePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
 
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
+            
+            self.photoEditing = false
+        }
 
-        photoAlert.addAction(takePhotoAction)
-        photoAlert.addAction(chooseFromLibraryAction)
-        photoAlert.addAction(cancelAction)
+        addPhotoAlert.addAction(takePhotoAction)
+        addPhotoAlert.addAction(choosePhotoAction)
+        addPhotoAlert.addAction(cancelAction)
 
-        present(photoAlert, animated: true)
+        present(addPhotoAlert, animated: true)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
@@ -642,23 +847,44 @@ extension CreateCollabViewController: CollabPhotosCellProtocol, UIImagePickerCon
         
         if let selectedImage = selectedImageFromPicker {
             
-            newCollab.photos.append(selectedImage)
+            if !photoEditing {
+                
+                if newCollab.photos == nil {
+                    
+                    newCollab.photos = []
+                    newCollab.photos?.append(selectedImage)
+                }
+                
+                else {
+                    
+                    newCollab.photos?.append(selectedImage)
+                }
+            }
             
-            guard let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CollabPhotosCell else { return }
-
-                photosCellCollectionViewPresent = true
-                details_attachmentsTableView.reloadData()
- 
-                cell.reconfigureAttachmentContainer(collectionViewPresent: true)
+            else {
+                
+                photoEdited(newImage: selectedImage)
+            }
             
-                cell.selectedPhotos.append(selectedImage)
-                cell.photosCollectionView.reloadData()
+            details_attachmentsTableView.reloadSections([0], with: .none)
+            
+//            if let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CreateCollabPhotosCell {
+//
+//                print("check")
+//            }
         }
         
         else {
             
             SVProgressHUD.showError(withStatus: "Sorry, something went wrong selecting this photo")
         }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        
+        photoEditing = false
         
         dismiss(animated: true, completion: nil)
     }
@@ -671,64 +897,31 @@ extension CreateCollabViewController: CollabPhotosCellProtocol, UIImagePickerCon
     }
 }
 
-extension CreateCollabViewController: PhotoEdited {
-    
-    func photoChanged (changedPhoto: UIImage) {
-        
-        var count = 0
-        
-        for photo in newCollab.photos {
-            
-            if photo == selectedPhoto {
-                
-                newCollab.photos[count] = changedPhoto
-                selectedPhoto = nil
-                break
-            }
-            
-            count += 1
-        }
-        
-        guard let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CollabPhotosCell else { return }
-        
-        cell.selectedPhotos = newCollab.photos
-        cell.photosCollectionView.reloadData()
-    }
-    
-    func photoDeleted (deletedPhoto: UIImage) {
-        
-        var count = 0
-        
-        for photo in newCollab.photos {
-            
-            if photo == deletedPhoto {
-                
-                newCollab.photos.remove(at: count)
-                selectedPhoto = nil
-                break
-            }
-            
-            count += 1
-        }
-        
-        guard let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CollabPhotosCell else { return }
-        
-        cell.selectedPhotos = newCollab.photos
-        cell.photosCollectionView.reloadData()
-        
-        if newCollab.photos.count == 0 {
-            
-            cell.reconfigureAttachmentContainer(collectionViewPresent: false)
-            
-            photosCellCollectionViewPresent = false
-            details_attachmentsTableView.reloadData()
-        }
-    }
-}
-
 extension CreateCollabViewController: UIGestureRecognizerDelegate {
 
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
+    }
+}
+
+extension CreateCollabViewController: ZoomInProtocol {
+    
+    func zoomInOnPhotoImageView(photoImageView: UIImageView) {
+        
+        selectedPhoto = photoImageView.image
+        
+        zoomingMethods = ZoomingImageViewMethods(on: photoImageView, cornerRadius: 8, with: [editPhotoButton, deletePhotoButton])
+        zoomingMethods?.performZoom()
+    }
+}
+
+extension CreateCollabViewController: PresentCopiedAnimationProtocol {
+    
+    func presentCopiedAnimation() {
+        
+        let navBarFrame = navBar.convert(navBar.frame, to: UIApplication.shared.keyWindow)
+        
+        //12.5 is equal to 10 point top anchor the photosCollectionView has from the navBar plus an extra 10 point buffer
+        copiedAnimationView?.presentCopiedAnimation(topAnchor: navBarFrame.minY + 10)
     }
 }

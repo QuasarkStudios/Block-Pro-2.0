@@ -207,13 +207,13 @@ class FirebaseStorage {
         }
     }
     
-    func saveNewCollabPhotosToStorage (collabID: String, collabPhoto: [String : Any])  {
+    func saveNewCollabPhotosToStorage (_ collabID: String, _ photoID: String, _ photo: UIImage)  {
         
-        let photoData = UIImage.pngData(collabPhoto["photo"] as! UIImage)()
+        let photoData = photo.jpegData(compressionQuality: 0.2)
         
         if let data = photoData {
             
-            collabStorageRef.child(collabID).child("photos").child("\(collabPhoto["photoID"]!).png").putData(data, metadata: nil) { (metadata, error) in
+            collabStorageRef.child(collabID).child("photos").child("\(photoID).jpeg").putData(data, metadata: nil) { (metadata, error) in
                 
                 if error != nil {
                     
@@ -223,24 +223,20 @@ class FirebaseStorage {
         }
     }
     
-    func retrieveCollabPhotosFromStoage (collabID: String, completion: @escaping ((_ photos: [UIImage]) -> Void)) {
+    func retrieveCollabPhotosFromStorage (collabID: String, photoID: String, completion: @escaping ((_ photos: UIImage?, _ error: Error?) -> Void)) {
         
-        collabStorageRef.child(collabID).child("photos").getData(maxSize: 3 * 1048576) { (data, error) in
+        collabStorageRef.child(collabID).child("photos").child("\(photoID).jpeg").getData(maxSize: 1048576) { (data, error) in
             
             if error != nil {
                 
-                
+                completion(nil, error)
             }
             
             else {
                 
                 if let photoData = data {
                     
-//                    let photos: [UIImage] =
-                    
-                    print(photoData)
-                    
-//                    completion(photos)
+                    completion(UIImage(data: photoData), nil)
                 }
             }
         }

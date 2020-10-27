@@ -93,7 +93,7 @@ class ConvoPhotoCollectionViewCell: UICollectionViewCell {
                             self.iProgressView.dismissProgress()
                             self.iProgressView.isHidden = true
                             
-                            self.cachePhotoDelegate?.cachePhoto(messageID: message.messageID, photo: photo)
+                            self.cachePhotoDelegate?.cacheMessagePhoto(messageID: message.messageID, photo: photo)
                         }
                     }
                 }
@@ -107,7 +107,7 @@ class ConvoPhotoCollectionViewCell: UICollectionViewCell {
                         self.iProgressView.dismissProgress()
                         self.iProgressView.isHidden = true
                         
-                        self.cachePhotoDelegate?.cachePhoto(messageID: message.messageID, photo: photo)
+                        self.cachePhotoDelegate?.cacheMessagePhoto(messageID: message.messageID, photo: photo)
                     }
                 }
             }

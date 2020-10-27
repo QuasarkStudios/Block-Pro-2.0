@@ -159,12 +159,15 @@ class CollabMessagesAttachmentsView: UIViewController, UICollectionViewDataSourc
 
 extension CollabMessagesAttachmentsView: CachePhotoProtocol {
     
-    func cachePhoto(messageID: String, photo: UIImage?) {
+    func cacheMessagePhoto(messageID: String, photo: UIImage?) {
         
         if let messageIndex = photoMessages.firstIndex(where: { $0.messageID == messageID }) {
             
             photoMessages[messageIndex].messagePhoto?["photo"] = photo
         }
+    }
+    
+    func cacheCollabPhoto(photoID: String, photo: UIImage?) {
     }
 }
 

@@ -24,7 +24,7 @@
                         </constraints>
                         <color key="currentPageIndicatorTintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </pageControl>
-                    <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="L39-h9-H66">
+                    <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L39-h9-H66">
                         <rect key="frame" x="20" y="0.0" width="335" height="180"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="180" id="cHK-Ec-YxT"/>
