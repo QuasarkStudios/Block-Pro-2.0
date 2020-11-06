@@ -101,7 +101,9 @@
 		0D44BA862476EF8D00647E06 /* Firebase+Messaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D44BA852476EF8D00647E06 /* Firebase+Messaging.swift */; };
 		0D44BA8A2476F76300647E06 /* AddMembers.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D44BA892476F76300647E06 /* AddMembers.storyboard */; };
 		0D45DECE254694D5003E16E3 /* SelectedLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D45DECD254694D5003E16E3 /* SelectedLocationCell.swift */; };
-		0D45DED325474259003E16E3 /* SelectedLocationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D45DED225474259003E16E3 /* SelectedLocationProtocols.swift */; };
+		0D45DED325474259003E16E3 /* LocationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D45DED225474259003E16E3 /* LocationProtocols.swift */; };
+		0D45DEDB254C7FE3003E16E3 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D45DEDA254C7FE3003E16E3 /* Location.swift */; };
+		0D45DEDE254D0151003E16E3 /* MKPlacemark+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D45DEDD254D0151003E16E3 /* MKPlacemark+Extension.swift */; };
 		0D48467A2523D79A002CF201 /* CollabNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4846792523D79A002CF201 /* CollabNavigationView.swift */; };
 		0D48468125281744002CF201 /* CollabHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D48468025281744002CF201 /* CollabHeaderView.swift */; };
 		0D495225244F70A000AAD436 /* DateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D495223244F70A000AAD436 /* DateCell.xib */; };
@@ -400,7 +402,9 @@
 		0D44BA852476EF8D00647E06 /* Firebase+Messaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Firebase+Messaging.swift"; sourceTree = "<group>"; };
 		0D44BA892476F76300647E06 /* AddMembers.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AddMembers.storyboard; sourceTree = "<group>"; };
 		0D45DECD254694D5003E16E3 /* SelectedLocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedLocationCell.swift; sourceTree = "<group>"; };
-		0D45DED225474259003E16E3 /* SelectedLocationProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedLocationProtocols.swift; sourceTree = "<group>"; };
+		0D45DED225474259003E16E3 /* LocationProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProtocols.swift; sourceTree = "<group>"; };
+		0D45DEDA254C7FE3003E16E3 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		0D45DEDD254D0151003E16E3 /* MKPlacemark+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MKPlacemark+Extension.swift"; sourceTree = "<group>"; };
 		0D4846792523D79A002CF201 /* CollabNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabNavigationView.swift; sourceTree = "<group>"; };
 		0D48468025281744002CF201 /* CollabHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHeaderView.swift; sourceTree = "<group>"; };
 		0D495223244F70A000AAD436 /* DateCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateCell.xib; sourceTree = "<group>"; };
@@ -1239,6 +1243,7 @@
 				0D7655D32452909500707867 /* Member.swift */,
 				0D50A8FF24783BD700D71654 /* Conversation.swift */,
 				0D589DED24593D4A005AC7BC /* Message.swift */,
+				0D45DEDA254C7FE3003E16E3 /* Location.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1355,6 +1360,7 @@
 				0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */,
 				0D589DEF24593FB6005AC7BC /* String+Extension.swift */,
 				0D50A90124785C5700D71654 /* Notification+Extension.swift */,
+				0D45DEDD254D0151003E16E3 /* MKPlacemark+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1402,7 +1408,7 @@
 			children = (
 				0DE728C42509751B00581048 /* CachePhotoProtocol.swift */,
 				0D80969F250AABBA00469934 /* PresentCopiedAnimationProtocol.swift */,
-				0D45DED225474259003E16E3 /* SelectedLocationProtocols.swift */,
+				0D45DED225474259003E16E3 /* LocationProtocols.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -1746,7 +1752,8 @@
 				0D72D24B2453FE7B00C11D5F /* CollabViewController.swift in Sources */,
 				0D82282424D76D5300D0BBA0 /* ConvoAddMemberInfoCell.swift in Sources */,
 				0DAFFE3B25376E5200C39B69 /* CollabHomePhotosHeaderCell.swift in Sources */,
-				0D45DED325474259003E16E3 /* SelectedLocationProtocols.swift in Sources */,
+				0D45DED325474259003E16E3 /* LocationProtocols.swift in Sources */,
+				0D45DEDE254D0151003E16E3 /* MKPlacemark+Extension.swift in Sources */,
 				0D0C8D7D243FBBC500EB51F7 /* CreateCollabViewController.swift in Sources */,
 				0D2CE0FF245099B300C60F49 /* DateCell.swift in Sources */,
 				0D872F7822DEE925001D35B4 /* PendingFriend.swift in Sources */,
@@ -1827,6 +1834,7 @@
 				0D0C8D8A244116F700EB51F7 /* CollabMembersCell.swift in Sources */,
 				0D1128322349A51B0080774C /* SettingsTableViewCell.swift in Sources */,
 				0D76F844243652CF00A52386 /* RegistrationValidationMethods.swift in Sources */,
+				0D45DEDB254C7FE3003E16E3 /* Location.swift in Sources */,
 				0DAFFE2D2533A7E100C39B69 /* CollabHomeLocationsCell.swift in Sources */,
 				0D0ECF3B243E5B0E00D947F4 /* previous_nextButton.swift in Sources */,
 				0D2FDA1F25391054005DF638 /* LeaveCollabCell.swift in Sources */,

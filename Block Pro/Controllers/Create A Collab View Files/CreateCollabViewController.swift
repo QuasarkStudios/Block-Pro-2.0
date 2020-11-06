@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 import SVProgressHUD
 
 protocol CollabCreated: AnyObject {
@@ -50,6 +51,9 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
     var selectedMember: Friend?
     var selectedPhoto: UIImage?
     
+//    var selectedLocation: MKMapItem?
+    var selectedLocation: Location?
+    
     var zoomingMethods: ZoomingImageViewMethods?
     
     weak var collabCreatedDelegate: CollabCreated?
@@ -77,6 +81,12 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         //Initializing here allows the animationView to be removed and readded multiple times
         copiedAnimationView = CopiedAnimationView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        selectedLocation = nil
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -197,7 +207,11 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 let cell = tableView.dequeueReusableCell(withIdentifier: "createCollabLocationsCell", for: indexPath) as! CreateCollabLocationsCell
                 cell.selectionStyle = .none
                 
+                cell.selectedLocations = newCollab.locations
+                
                 cell.createCollabLocationsCellDelegate = self
+                cell.locationSelectedDelegate = self
+                cell.cancelLocationSelectionDelegate = self
                 
                 return cell
             }
@@ -287,7 +301,25 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
             case 2:
                 
-                return 85
+                if newCollab.locations?.count ?? 0 == 0 {
+                    
+                    return 85
+                }
+                
+                else if newCollab.locations?.count ?? 0 == 1 {
+                    
+                    return 287.5
+                }
+                
+                else if newCollab.locations?.count ?? 0 == 2 {
+                   
+                    return 315
+                }
+                
+                else {
+                    
+                    return 262.5
+                }
                 
             default:
                 
@@ -328,6 +360,8 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         details_attachmentsTableView.separatorStyle = .none
         details_attachmentsTableView.showsVerticalScrollIndicator = false
+        
+        details_attachmentsTableView.delaysContentTouches = false
         
         details_attachmentsTableView.register(UINib(nibName: "CollabNameCell", bundle: nil), forCellReuseIdentifier: "collabNameCell")
         
@@ -402,11 +436,11 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
         
-        let presentTabBar = UISwipeGestureRecognizer(target: self, action: #selector(presentDisabledTabBar))
-        presentTabBar.delegate = self
-        presentTabBar.cancelsTouchesInView = false
-        presentTabBar.direction = .left
-        view.addGestureRecognizer(presentTabBar)
+//        let presentTabBar = UISwipeGestureRecognizer(target: self, action: #selector(presentDisabledTabBar))
+//        presentTabBar.delegate = self
+//        presentTabBar.cancelsTouchesInView = false
+//        presentTabBar.direction = .left
+//        view.addGestureRecognizer(presentTabBar)
     }
     
     @objc private func presentDisabledTabBar () {
@@ -544,6 +578,18 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
             let item: UIBarButtonItem = UIBarButtonItem()
             item.title = ""
             navigationItem.backBarButtonItem = item
+            
+            let addLocationVC = segue.destination as! AddLocationViewController
+            addLocationVC.locationSavedDelegate = self
+            addLocationVC.cancelLocationSelectionDelegate = self
+            
+            addLocationVC.locationPreselected = selectedLocation != nil
+            addLocationVC.selectedLocation = selectedLocation
+            
+            if let placemark = selectedLocation?.placemark {
+                
+                addLocationVC.locationMapItem = MKMapItem(placemark: placemark)
+            }
         }
 //        
 //        else if segue.identifier == "moveToSelectedPhotoView" {
@@ -775,14 +821,6 @@ extension CreateCollabViewController: CollabDatesSelected {
     }
 }
 
-extension CreateCollabViewController: CreateCollabLocationsCellProtocol {
-    
-    func attachLocationSelected () {
-        
-        performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
-    }
-}
-
 extension CreateCollabViewController: CreateCollabPhotosCellProtocol, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func presentAddPhotoAlert () {
@@ -888,12 +926,71 @@ extension CreateCollabViewController: CreateCollabPhotosCellProtocol, UIImagePic
         
         dismiss(animated: true, completion: nil)
     }
+}
+
+extension CreateCollabViewController: CreateCollabLocationsCellProtocol {
     
-    func addedPhotoSelected (photo: UIImage) {
+    func attachLocationSelected () {
         
-        selectedPhoto = photo
+        performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
+    }
+}
+
+extension CreateCollabViewController: LocationSavedProtocol {
+    
+    func locationSaved(_ location: Location?) {
         
-        performSegue(withIdentifier: "moveToSelectedPhotoView", sender: self)
+        //If the location hasn't been added yet
+        if newCollab.locations?.first(where: { $0.locationID == location?.locationID}) == nil {
+            
+            if location != nil && newCollab.locations == nil {
+                
+                newCollab.locations = []
+                newCollab.locations?.append(location!)
+            }
+            
+            else if location != nil {
+                
+                newCollab.locations?.append(location!)
+            }
+        }
+        
+        //If the location has been added
+        else {
+            
+            newCollab.locations?.removeAll(where: { $0.locationID == location?.locationID })
+            
+            if location != nil {
+                
+                newCollab.locations?.append(location!)
+            }
+        }
+        
+        details_attachmentsTableView.reloadSections([0], with: .none)
+    }
+}
+
+extension CreateCollabViewController: LocationSelectedProtocol {
+    
+    func locationSelected (_ location: Location?) {
+        
+        selectedLocation = location
+        
+        performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
+    }
+}
+
+extension CreateCollabViewController: CancelLocationSelectionProtocol {
+    
+    func selectionCancelled(_ locationID: String?) {
+        
+        if locationID != nil {
+            
+            newCollab.locations?.removeAll(where: { $0.locationID == locationID! })
+            selectedLocation = nil
+            
+            details_attachmentsTableView.reloadSections([0], with: .fade)
+        }
     }
 }
 

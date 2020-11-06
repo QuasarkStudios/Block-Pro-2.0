@@ -19,4 +19,5 @@ struct NewCollab {
     var reminders: [String : Date] = [:]
     
     var photos: [UIImage]?
+    var locations: [Location]?
 }

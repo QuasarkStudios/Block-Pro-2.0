@@ -11,8 +11,6 @@ import UIKit
 protocol CreateCollabPhotosCellProtocol: AnyObject {
     
     func presentAddPhotoAlert ()
-//    
-//    func addedPhotoSelected (photo: UIImage)
 }
 
 class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICollectionViewDelegate {
@@ -23,7 +21,7 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
     let photosCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
     let attachPhotoButton = UIButton()
-    let attachmentImage = UIImageView(image: UIImage(named: "attach")?.withRenderingMode(.alwaysTemplate))
+    let photoImage = UIImageView(image: UIImage(named: "image")?.withRenderingMode(.alwaysTemplate))
     let attachPhotosLabel = UILabel()
     
     var selectedPhotos: [UIImage]? {
@@ -136,7 +134,7 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
         ].forEach({ $0.isActive = true })
         
         photoCountLabel.isHidden = true
-        photoCountLabel.text = "0/5"
+        photoCountLabel.text = "0/6"
         photoCountLabel.textColor = .black
         photoCountLabel.textAlignment = .right
         photoCountLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
@@ -199,11 +197,11 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
     private func configureAttachButton () {
         
         collectionViewContainer.addSubview(attachPhotoButton)
-        attachPhotoButton.addSubview(attachmentImage)
+        attachPhotoButton.addSubview(photoImage)
         attachPhotoButton.addSubview(attachPhotosLabel)
         
         attachPhotoButton.translatesAutoresizingMaskIntoConstraints = false
-        attachmentImage.translatesAutoresizingMaskIntoConstraints = false
+        photoImage.translatesAutoresizingMaskIntoConstraints = false
         attachPhotosLabel.translatesAutoresizingMaskIntoConstraints = false
         
         [
@@ -213,10 +211,10 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
             attachPhotoButton.topAnchor.constraint(equalTo: photosCollectionView.bottomAnchor, constant: 0),
             attachPhotoButton.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor, constant: 0),
             
-            attachmentImage.leadingAnchor.constraint(equalTo: attachPhotoButton.leadingAnchor, constant: 20),
-            attachmentImage.centerYAnchor.constraint(equalTo: attachPhotoButton.centerYAnchor),
-            attachmentImage.widthAnchor.constraint(equalToConstant: 25),
-            attachmentImage.heightAnchor.constraint(equalToConstant: 25),
+            photoImage.leadingAnchor.constraint(equalTo: attachPhotoButton.leadingAnchor, constant: 20),
+            photoImage.centerYAnchor.constraint(equalTo: attachPhotoButton.centerYAnchor),
+            photoImage.widthAnchor.constraint(equalToConstant: 25),
+            photoImage.heightAnchor.constraint(equalToConstant: 25),
             
             attachPhotosLabel.leadingAnchor.constraint(equalTo: attachPhotoButton.leadingAnchor, constant: 10),
             attachPhotosLabel.trailingAnchor.constraint(equalTo: attachPhotoButton.trailingAnchor, constant: -10),
@@ -228,8 +226,8 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
         attachPhotoButton.backgroundColor = .clear
         attachPhotoButton.addTarget(self, action: #selector(attachButtonPressed), for: .touchUpInside)
         
-        attachmentImage.tintColor = .black
-        attachmentImage.isUserInteractionEnabled = false
+        photoImage.tintColor = .black
+        photoImage.isUserInteractionEnabled = false
         
         attachPhotosLabel.text = "Attach Photos"
         attachPhotosLabel.textColor = .black
@@ -261,7 +259,7 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
         attachPhotoButton.layer.cornerRadius = 0
         attachPhotoButton.clipsToBounds = true
         
-        attachmentImage.tintColor = .black
+        photoImage.tintColor = .black
         
         attachPhotosLabel.text = "Attach Photos"
         attachPhotosLabel.textColor = .black
@@ -304,8 +302,8 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
         attachPhotoButton.clipsToBounds = true
         attachPhotoButton.addTarget(self, action: #selector(attachButtonPressed), for: .touchUpInside)
         
-        attachmentImage.tintColor = .white
-        attachmentImage.isUserInteractionEnabled = false
+        photoImage.tintColor = .white
+        photoImage.isUserInteractionEnabled = false
         
         attachPhotosLabel.text = "Attach"
         attachPhotosLabel.textColor = .white

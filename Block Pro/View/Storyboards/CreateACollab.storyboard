@@ -253,7 +253,7 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="onDrag" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="f2m-Z3-k8A">
-                                <rect key="frame" x="40" y="223" width="295" height="555"/>
+                                <rect key="frame" x="40" y="223" width="295" height="589"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                         </subviews>
@@ -263,8 +263,8 @@
                             <constraint firstItem="HUS-p9-JVt" firstAttribute="leading" secondItem="mEs-fC-4Xd" secondAttribute="leading" constant="50" id="1Ml-mP-V5f"/>
                             <constraint firstItem="1Iy-uV-F6f" firstAttribute="top" secondItem="J3U-QW-TmM" secondAttribute="topMargin" constant="20" id="5hc-bO-IIq"/>
                             <constraint firstItem="mEs-fC-4Xd" firstAttribute="trailing" secondItem="HUS-p9-JVt" secondAttribute="trailing" constant="50" id="G9S-Na-h6I"/>
+                            <constraint firstAttribute="bottom" secondItem="f2m-Z3-k8A" secondAttribute="bottom" id="Lp6-4s-WSf"/>
                             <constraint firstItem="1Iy-uV-F6f" firstAttribute="leading" secondItem="mEs-fC-4Xd" secondAttribute="leading" constant="30" id="O9t-Us-fAC"/>
-                            <constraint firstItem="f2m-Z3-k8A" firstAttribute="bottom" secondItem="mEs-fC-4Xd" secondAttribute="bottom" id="gAi-Fh-GqY"/>
                             <constraint firstItem="HUS-p9-JVt" firstAttribute="top" secondItem="1Iy-uV-F6f" secondAttribute="bottom" constant="15" id="oIW-TR-Nna"/>
                             <constraint firstItem="f2m-Z3-k8A" firstAttribute="top" secondItem="HUS-p9-JVt" secondAttribute="bottom" constant="20" id="qNC-1e-XFe"/>
                             <constraint firstItem="mEs-fC-4Xd" firstAttribute="trailing" secondItem="f2m-Z3-k8A" secondAttribute="trailing" constant="40" id="uNW-Q7-Ppd"/>
@@ -307,27 +307,10 @@
                     <view key="view" contentMode="scaleToFill" id="T4Q-VZ-M7p">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" translatesAutoresizingMaskIntoConstraints="NO" id="7PA-cs-2yP">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="641"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="641" id="L5G-au-Vwk"/>
-                                </constraints>
-                            </mapView>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="kNx-Cz-aXL"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="kNx-Cz-aXL" firstAttribute="trailing" secondItem="7PA-cs-2yP" secondAttribute="trailing" id="9WY-h6-dI3"/>
-                            <constraint firstItem="7PA-cs-2yP" firstAttribute="leading" secondItem="kNx-Cz-aXL" secondAttribute="leading" id="GQi-1Z-pZW"/>
-                            <constraint firstItem="7PA-cs-2yP" firstAttribute="top" secondItem="T4Q-VZ-M7p" secondAttribute="top" id="mMT-xB-kMe"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="zAo-Qc-Kg3"/>
-                    <connections>
-                        <outlet property="mapView" destination="7PA-cs-2yP" id="sLR-8h-8gS"/>
-                        <outlet property="mapViewHeightConstraint" destination="L5G-au-Vwk" id="tq7-4M-bUr"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dm4-kf-fBH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

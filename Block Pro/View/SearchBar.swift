@@ -104,6 +104,12 @@ extension SearchBar: UITextFieldDelegate {
         if let addLocationVC = parentViewController as? AddLocationViewController {
             
             addLocationVC.searchBegan()
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                
+                let endOfTextField = textField.endOfDocument
+                textField.selectedTextRange = textField.textRange(from: endOfTextField, to: endOfTextField) //Setting the cursor to the end
+            }
         }
     }
     

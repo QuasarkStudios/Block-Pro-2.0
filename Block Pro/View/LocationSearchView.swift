@@ -16,7 +16,9 @@ class LocationSearchView: UIView {
     var searchBar: SearchBar?
     let searchTableView = UITableView()
     
+    let locationImageContainer = UIView()
     let locationImageView = UIImageView(image: UIImage(named: "location-search"))
+    let locationImageTitle = UILabel()
     
     weak var parentViewController: AnyObject?
     
@@ -37,22 +39,22 @@ class LocationSearchView: UIView {
         configurePanGestureIndicator()
         configurePanGestureView()
         configureSearchBar()
+        configureLocationImageContainer()
         configureTableView(searchTableView)
-//        configureLocationImageView()
     }
     
     private func configureView () {
         
         self.translatesAutoresizingMaskIntoConstraints = false
         
-        guard let view = self.superview else { return }
+        guard let view = self.superview, let viewController = parentViewController as? AddLocationViewController else { return }
         
             [
             
                 self.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
                 self.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
                 self.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-                self.heightAnchor.constraint(equalToConstant: 120)
+                self.heightAnchor.constraint(equalToConstant: viewController.locationMapItem != nil ? 265 : 120)
             
             ].forEach({ $0.isActive = true })
             
@@ -99,15 +101,13 @@ class LocationSearchView: UIView {
             panGestureView.heightAnchor.constraint(equalToConstant: 120)
         
         ].forEach({ $0.isActive = true })
-        
-//        panGestureView.backgroundColor = UIColor.systemPink.withAlphaComponent(0.05)
     }
     
     private func configureSearchBar () {
         
         guard let viewController = parentViewController as? AddLocationViewController else { return }
         
-            searchBar = SearchBar(parentViewController: viewController, placeholderText: "Search by place or address")
+            searchBar = SearchBar(parentViewController: viewController, placeholderText: "Search for places")
         
             self.addSubview(searchBar!)
             searchBar?.translatesAutoresizingMaskIntoConstraints = false
@@ -122,6 +122,47 @@ class LocationSearchView: UIView {
             ].forEach({ $0?.isActive = true })
             
             searchBar?.searchTextField.autocorrectionType = .no
+    }
+    
+    private func configureLocationImageContainer () {
+        
+        self.addSubview(locationImageContainer)
+        locationImageContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        locationImageContainer.addSubview(locationImageView)
+        locationImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        locationImageContainer.addSubview(locationImageTitle)
+        locationImageTitle.translatesAutoresizingMaskIntoConstraints = false
+        
+        let imageViewDimensions = (UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0) > 0 ? UIScreen.main.bounds.width : UIScreen.main.bounds.width - 20
+        
+        [
+        
+            locationImageContainer.topAnchor.constraint(equalTo: searchBar!.bottomAnchor, constant: 0),
+            locationImageContainer.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
+            locationImageContainer.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            locationImageContainer.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
+            
+            locationImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0),
+            locationImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -(UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0)),
+            locationImageView.widthAnchor.constraint(equalToConstant: imageViewDimensions),
+            locationImageView.heightAnchor.constraint(equalToConstant: imageViewDimensions),
+            
+            locationImageTitle.leadingAnchor.constraint(equalTo: locationImageContainer.leadingAnchor),
+            locationImageTitle.trailingAnchor.constraint(equalTo: locationImageContainer.trailingAnchor),
+            locationImageTitle.topAnchor.constraint(equalTo: locationImageView.bottomAnchor, constant: 0),
+            locationImageTitle.heightAnchor.constraint(equalToConstant: 25)
+        
+        ].forEach({ $0.isActive = true })
+        
+        locationImageContainer.alpha = 0
+        
+        locationImageView.contentMode = .scaleAspectFit
+        
+        locationImageTitle.font = UIFont(name: "Poppins-SemiBold", size: 18)
+        locationImageTitle.text = "No Results"
+        locationImageTitle.textAlignment = .center
     }
     
     private func configureTableView (_ tableView: UITableView) {
@@ -145,31 +186,11 @@ class LocationSearchView: UIView {
         }
         
         tableView.backgroundColor = .clear
-//        tableView.alpha = 0
         tableView.separatorStyle = .none
-//        tableView.keyboardDismissMode = .onDrag
         
         tableView.delaysContentTouches = false
         
         tableView.register(LocationSearchCell.self, forCellReuseIdentifier: "locationSearchCell")
         tableView.register(SelectedLocationCell.self, forCellReuseIdentifier: "selectedLocationCell")
-    }
-    
-    private func configureLocationImageView () {
-        
-        self.addSubview(locationImageView)
-        locationImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            locationImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0),
-            locationImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0),
-            locationImageView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
-            locationImageView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
-        
-        ].forEach({ $0.isActive = true })
-        
-//        locationImageView.alpha = 0
-        locationImageView.contentMode = .scaleAspectFit
     }
 }

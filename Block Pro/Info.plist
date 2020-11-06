@@ -23,7 +23,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This lets you take new photos from your Camera or use photos from your Camera Roll.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>"Block Pro" uses your location to help you keep track of places you need to be</string>
+	<string>Allows Block Pro to find locations nearest to you</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Black.ttf</string>

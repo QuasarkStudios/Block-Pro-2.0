@@ -16,8 +16,14 @@ class SelectedLocationCell: UITableViewCell {
     let saveLocationButton = UIButton(type: .system)
     let navigateToLocationButton = UIButton(type: .system)
     
+    var locationID: String?
+    
+    weak var changeLocationNameDelegate: ChangeLocationNameProtocol?
     weak var cancelLocationSelectionDelegate: CancelLocationSelectionProtocol?
+    weak var locationSavedDelegate: LocationSavedProtocol?
     weak var navigateToLocationDelegate: NavigateToLocationProtocol?
+    
+    var animateLabelWorkItem: DispatchWorkItem?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: "selectedLocationCell")
@@ -36,6 +42,7 @@ class SelectedLocationCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     private func configureLocationNameLabel () {
         
         self.contentView.addSubview(locationNameTextField)
@@ -44,7 +51,6 @@ class SelectedLocationCell: UITableViewCell {
         [
         
             locationNameTextField.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 32.5),
-//            locationNameLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -32.5),
             locationNameTextField.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 0),
             locationNameTextField.heightAnchor.constraint(equalToConstant: 38)
         
@@ -53,15 +59,13 @@ class SelectedLocationCell: UITableViewCell {
         locationNameTextField.delegate = self
         
         locationNameTextField.borderStyle = .none
-        
-        locationNameTextField.attributedPlaceholder = NSAttributedString(string: "Enter a name", attributes: [NSAttributedString.Key.font : UIFont(name: "Poppins-SemiBold", size: 22.5) as Any, NSAttributedString.Key.foregroundColor : UIColor(hexString: "AAAAAA") as Any])
+        locationNameTextField.returnKeyType = .done
         
         locationNameTextField.textColor = .black
         locationNameTextField.font = UIFont(name: "Poppins-SemiBold", size: 25)
+        locationNameTextField.attributedPlaceholder = NSAttributedString(string: "Enter a name", attributes: [NSAttributedString.Key.font : UIFont(name: "Poppins-SemiBold", size: 22.5) as Any, NSAttributedString.Key.foregroundColor : UIColor(hexString: "AAAAAA") as Any])
         
-        
-        
-        locationNameTextField.returnKeyType = .done
+        locationNameTextField.addTarget(self, action: #selector(locationNameChanged), for: .editingChanged)
     }
     
     private func configureLocationAddressLabel () {
@@ -98,9 +102,7 @@ class SelectedLocationCell: UITableViewCell {
         
         ].forEach({ $0.isActive = true })
         
-//        cancelButton.backgroundColor =
         cancelButton.tintColor = UIColor(hexString: "222222")
-        
         cancelButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
         
         cancelButton.layer.cornerRadius = 25 * 0.5
@@ -119,7 +121,6 @@ class SelectedLocationCell: UITableViewCell {
             saveLocationButton.topAnchor.constraint(equalTo: self.locationAddressLabel.bottomAnchor, constant: 15),
             saveLocationButton.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 0),
             saveLocationButton.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 31),
-//            saveLocationButton.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -65)
         
         ].forEach({ $0.isActive = true })
         
@@ -130,6 +131,8 @@ class SelectedLocationCell: UITableViewCell {
         
         saveLocationButton.layer.cornerRadius = 12
         saveLocationButton.clipsToBounds = true
+        
+        saveLocationButton.addTarget(self, action: #selector(saveLocationButtonPressed), for: .touchUpInside)
     }
     
     private func configureNavigationToLocationButton () {
@@ -141,7 +144,6 @@ class SelectedLocationCell: UITableViewCell {
         
             navigateToLocationButton.leadingAnchor.constraint(equalTo: saveLocationButton.trailingAnchor, constant: 30),
             
-//            navigateToLocationButton.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -32.5),
             navigateToLocationButton.widthAnchor.constraint(equalToConstant: 32.5),
             navigateToLocationButton.heightAnchor.constraint(equalToConstant: 32.5),
             navigateToLocationButton.centerXAnchor.constraint(equalTo: cancelButton.centerXAnchor, constant: 1.5),
@@ -155,9 +157,39 @@ class SelectedLocationCell: UITableViewCell {
         navigateToLocationButton.addTarget(self, action: #selector(navigateButtonPressed), for: .touchUpInside)
     }
     
+    func scheduleLabelAnimationWorkItem () {
+        
+        animateLabelWorkItem = DispatchWorkItem(block: {
+            
+            UIView.transition(with: self.locationNameTextField, duration: 0.5, options: .transitionCrossDissolve) {
+                
+                self.locationNameTextField.textColor = .clear
+                
+            } completion: { (finished: Bool) in
+                
+                UIView.transition(with: self.locationNameTextField, duration: 0.5, options: .transitionCrossDissolve) {
+                    
+                    self.locationNameTextField.textColor = .black
+                }
+            }
+        })
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: animateLabelWorkItem!)
+    }
+    
+    @objc private func locationNameChanged () {
+        
+        changeLocationNameDelegate?.nameChanged(locationNameTextField.text)
+    }
+    
     @objc private func cancelButtonPressed () {
         
-        cancelLocationSelectionDelegate?.selectionCancelled()
+        cancelLocationSelectionDelegate?.selectionCancelled(locationID)
+    }
+    
+    @objc private func saveLocationButtonPressed () {
+        
+        locationSavedDelegate?.locationSaved(nil)
     }
     
     @objc private func navigateButtonPressed () {
@@ -168,10 +200,28 @@ class SelectedLocationCell: UITableViewCell {
 
 extension SelectedLocationCell: UITextFieldDelegate {
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        animateLabelWorkItem?.cancel()
+        
+        changeLocationNameDelegate?.changesBegan()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            
+            let endOfTextField = textField.endOfDocument
+            textField.selectedTextRange = textField.textRange(from: endOfTextField, to: endOfTextField) //Setting the cursor to the end
+        }
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
         textField.endEditing(true)
         
         return true
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        
+        changeLocationNameDelegate?.changesEnded(textField.text)
     }
 }
