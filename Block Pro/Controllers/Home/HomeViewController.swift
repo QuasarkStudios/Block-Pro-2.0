@@ -772,8 +772,11 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         else if segue.identifier == "moveToCreateACollabView" {
     
-//            let createCollabVC = segue.destination as! CreateCollabViewController
-//            createCollabVC.collabCreatedDelegate = self
+            if let navController = segue.destination as? UINavigationController {
+                
+                let createCollabVC = navController.viewControllers.first as! CreateCollabViewController
+                createCollabVC.collabCreatedDelegate = self
+            }
         }
         
         else if segue.identifier == "moveToCollabView" {

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17503.1" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tLE-P5-kW4">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17502"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Locations View Controller-->
+        <scene sceneID="I9z-Fd-AsS">
+            <objects>
+                <viewController id="tLE-P5-kW4" customClass="LocationsViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="PBu-sU-6qQ">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4Bc-R9-64p">
+                                <rect key="frame" x="0.0" y="44" width="414" height="56"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="56" id="SLr-5Q-1j6"/>
+                                </constraints>
+                                <items>
+                                    <navigationItem title="Locations" id="N0R-wk-Ae9">
+                                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="stop" id="Eus-Z1-MP9">
+                                            <connections>
+                                                <action selector="exitButton:" destination="tLE-P5-kW4" id="ANt-GK-R4o"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="JKn-Nx-FA8"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="4Bc-R9-64p" firstAttribute="trailing" secondItem="JKn-Nx-FA8" secondAttribute="trailing" id="Dpq-II-nY4"/>
+                            <constraint firstItem="4Bc-R9-64p" firstAttribute="leading" secondItem="JKn-Nx-FA8" secondAttribute="leading" id="OS5-SE-yLl"/>
+                            <constraint firstItem="4Bc-R9-64p" firstAttribute="top" secondItem="JKn-Nx-FA8" secondAttribute="top" id="xt8-cE-M9F"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="navBar" destination="4Bc-R9-64p" id="XrY-Ap-7IW"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BtF-z9-6nS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="263.768115942029" y="148.66071428571428"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

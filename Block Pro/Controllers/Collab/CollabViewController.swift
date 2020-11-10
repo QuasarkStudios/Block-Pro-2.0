@@ -100,7 +100,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         self.becomeFirstResponder()
         
-        configureTabBar() //Possibly animate to avoid finnicky animation when user partially leaves view on swipe dismissal then returns 
+        configureTabBar() //Possibly animate to avoid finnicky animation when user partially leaves view on swipe dismissal then returns
     }
     
     
@@ -246,6 +246,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeLocationsCell", for: indexPath) as! CollabHomeLocationsCell
                     cell.selectionStyle = .none
+                    
+                    cell.locations = collab?.locations
+                    
+                    cell.locationSelectedDelegate = self
+                    
                     return cell
                 }
             }
@@ -359,7 +364,21 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 else {
                     
-                    return 210
+                    if collab?.locations?.count ?? 0 == 0 {
+                        
+                        let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
+                        return itemSize + 20 + 20 //This is borrowed from the collabPhotos cell to allow both cells to look the same
+                    }
+                    
+                    else if collab?.locations?.count == 1 {
+                        
+                        return 200
+                    }
+                    
+                    else {
+                        
+                        return 232.5
+                    }
                 }
             }
             
@@ -1077,6 +1096,17 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             attachmentsView.collabID = collab?.collabID
             attachmentsView.photoMessages = firebaseMessaging.filterPhotoMessages(messages: messages).sorted(by: { $0.timestamp > $1.timestamp })
         }
+        
+        else if segue.identifier == "moveToLocationsView" {
+            
+            let locationVC = segue.destination as! LocationsViewController
+            locationVC.locations = collab?.locations
+            
+            if let cell = collabHomeTableView.cellForRow(at: IndexPath(row: 3, section: 1)) as? CollabHomeLocationsCell {
+                
+                locationVC.selectedLocationIndex = cell.selectedLocationIndex
+            }
+        }
     }
     
     private func prepViewForImageViewZooming () {
@@ -1503,5 +1533,13 @@ extension CollabViewController: UIImagePickerControllerDelegate, UINavigationCon
                 SVProgressHUD.showError(withStatus: "Sorry, something went wrong selecting this photo")
             }
         }
+    }
+}
+
+extension CollabViewController: LocationSelectedProtocol {
+    
+    func locationSelected(_ location: Location?) {
+        
+        performSegue(withIdentifier: "moveToLocationsView", sender: self)
     }
 }

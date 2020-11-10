@@ -20,8 +20,10 @@ class CreateCollabLocationsCell: UITableViewCell {
     let locationCountLabel = UILabel()
     let locationContainer = UIView()
     
+    let mapViewContainer = UIView()
     let mapView = MKMapView()
     let cancelButton = UIButton(type: .system)
+    let legalButton = UIButton()
     
     let attachLocationButton = UIButton()
     let mapImage = UIImageView(image: UIImage(systemName: "mappin.circle"))
@@ -148,36 +150,67 @@ class CreateCollabLocationsCell: UITableViewCell {
     
     private func configureMapView () {
         
-        if mapView.superview == nil {
+        if mapViewContainer.superview == nil {
             
-            locationContainer.addSubview(mapView)
+            locationContainer.addSubview(mapViewContainer)
+            mapViewContainer.addSubview(mapView)
         }
         
+        mapViewContainer.translatesAutoresizingMaskIntoConstraints = false
         mapView.translatesAutoresizingMaskIntoConstraints = false
         
         [
         
-            mapView.leadingAnchor.constraint(equalTo: locationContainer.leadingAnchor, constant: 10),
-            mapView.trailingAnchor.constraint(equalTo: locationContainer.trailingAnchor, constant: -10),
-            mapView.topAnchor.constraint(equalTo: locationContainer.topAnchor, constant: 10),
-            mapView.heightAnchor.constraint(equalToConstant: 180)
+            mapViewContainer.leadingAnchor.constraint(equalTo: locationContainer.leadingAnchor, constant: 10),
+            mapViewContainer.trailingAnchor.constraint(equalTo: locationContainer.trailingAnchor, constant: -10),
+            mapViewContainer.topAnchor.constraint(equalTo: locationContainer.topAnchor, constant: 10),
+            mapViewContainer.heightAnchor.constraint(equalToConstant: 180),
+            
+            mapView.leadingAnchor.constraint(equalTo: mapViewContainer.leadingAnchor),
+            mapView.trailingAnchor.constraint(equalTo: mapViewContainer.trailingAnchor),
+            mapView.topAnchor.constraint(equalTo: mapViewContainer.topAnchor),
+            mapView.bottomAnchor.constraint(equalTo: mapViewContainer.bottomAnchor)
         
         ].forEach({ $0.isActive = true })
         
+        mapViewContainer.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
+        mapViewContainer.layer.shadowOpacity = 0.3
+        mapViewContainer.layer.shadowOffset = CGSize(width: 0, height: 0)
+        mapViewContainer.layer.shadowRadius = 2.5
+        
+        mapViewContainer.layer.cornerRadius = 15
+        mapViewContainer.clipsToBounds = false
+        
         mapView.delegate = self
         
-        mapView.layer.cornerRadius = 15
-        mapView.clipsToBounds = true
-        
+        mapView.isUserInteractionEnabled = false
         mapView.isScrollEnabled = false
         mapView.isZoomEnabled = false
         
-        mapView.isUserInteractionEnabled = false
+        mapView.layer.cornerRadius = 15
+        mapView.clipsToBounds = true
         
         if let location = selectedLocations?.last {
             
             setLocation(location)
         }
+    }
+    
+    private func configureLegalButton () {
+        
+        mapViewContainer.addSubview(legalButton)
+        legalButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            legalButton.trailingAnchor.constraint(equalTo: mapView.trailingAnchor, constant: -5),
+            legalButton.bottomAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 0),
+            legalButton.widthAnchor.constraint(equalToConstant: 42.5),
+            legalButton.heightAnchor.constraint(equalToConstant: 25)
+        
+        ].forEach({ $0.isActive = true })
+        
+        legalButton.addTarget(self, action: #selector(legalButtonTapped), for: .touchUpInside)
     }
     
     private func configureAttachButton () {
@@ -193,7 +226,7 @@ class CreateCollabLocationsCell: UITableViewCell {
         attachButtonLeadingAnchor = attachLocationButton.leadingAnchor.constraint(equalTo: locationContainer.leadingAnchor, constant: 0)
         attachButtonTrailingAnchor = attachLocationButton.trailingAnchor.constraint(equalTo: locationContainer.trailingAnchor, constant: 0)
         attachButtonTopAnchorWithContainer = attachLocationButton.topAnchor.constraint(equalTo: locationContainer.topAnchor, constant: 0)
-        attachButtonTopAnchorWithMapView = attachLocationButton.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 12.5)
+        attachButtonTopAnchorWithMapView = attachLocationButton.topAnchor.constraint(equalTo: mapViewContainer.bottomAnchor, constant: 12.5)
         attachButtonTopAnchorWithPageControl = attachLocationButton.topAnchor.constraint(equalTo: locationPageControl.bottomAnchor, constant: 7.5)
         attachButtonBottomAnchor = attachLocationButton.bottomAnchor.constraint(equalTo: locationContainer.bottomAnchor, constant: 0)
         
@@ -286,7 +319,7 @@ class CreateCollabLocationsCell: UITableViewCell {
             
             [
             
-                locationPageControl.topAnchor.constraint(equalTo: mapView.bottomAnchor, constant: 7.5),
+                locationPageControl.topAnchor.constraint(equalTo: mapViewContainer.bottomAnchor, constant: 7.5),
                 locationPageControl.centerXAnchor.constraint(equalTo: locationContainer.centerXAnchor),
                 locationPageControl.widthAnchor.constraint(equalToConstant: 125),
                 locationPageControl.heightAnchor.constraint(equalToConstant: 27.5)
@@ -327,7 +360,7 @@ class CreateCollabLocationsCell: UITableViewCell {
             self.contentView.addSubview(attachLocationButton)
         }
         
-        mapView.removeFromSuperview()
+        mapViewContainer.removeFromSuperview()
         cancelButton.removeFromSuperview()
         locationPageControl.removeFromSuperview()
         
@@ -358,6 +391,8 @@ class CreateCollabLocationsCell: UITableViewCell {
         configureMapView()
         
         configureCancelButton()
+        
+        configureLegalButton()
         
         configureLocationPageControl()
         
@@ -399,6 +434,8 @@ class CreateCollabLocationsCell: UITableViewCell {
         configureMapView()
         
         configureCancelButton()
+        
+        configureLegalButton()
         
         configureLocationPageControl()
     }
@@ -538,6 +575,14 @@ class CreateCollabLocationsCell: UITableViewCell {
         }
         
         cancelLocationSelectionDelegate?.selectionCancelled(selectedLocations?[selectedLocationIndex].locationID ?? "")
+    }
+    
+    @objc private func legalButtonTapped () {
+        
+        if let url = URL(string: "https://gspe21-ssl.ls.apple.com/html/attribution-164.html") {
+            
+            UIApplication.shared.open(url)
+        }
     }
     
     @objc private func pageSelected () {

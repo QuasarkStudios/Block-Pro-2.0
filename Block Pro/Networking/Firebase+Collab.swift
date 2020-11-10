@@ -29,27 +29,27 @@ class FirebaseCollab {
     
     static let sharedInstance = FirebaseCollab()
     
-    func createCollab (collabInfo: NewCollab, completion: @escaping (() -> Void)) {
+    func createCollab (collab: NewCollab, completion: @escaping (() -> Void)) {
         
         let batch = db.batch()
         
         let collabID = UUID().uuidString
         var photoIDs: [String] = []
         
-        for _ in collabInfo.photos ?? [] {
+        for _ in collab.photos ?? [] {
             
             photoIDs.append(UUID().uuidString)
         }
         
-        let collabData: [String : Any] = ["collabID" : collabID, "collabName" : collabInfo.name, "dateCreated" : Date(), "collabObjective" : collabInfo.objective, "startTime" : collabInfo.dates["startTime"]!, "deadline" : collabInfo.dates["deadline"]!, "reminders" : "will be set up later", "photos" : photoIDs]
-        let memberCollabData: [String : Any] = ["collabID" : collabID, "collabName" : collabInfo.name,  "dateCreated" : Date(), "collabObjective" : collabInfo.objective, "startTime" : collabInfo.dates["startTime"]!, "deadline" : collabInfo.dates["deadline"]!, "reminders" : "will be set up later"]
+        let collabData: [String : Any] = ["collabID" : collabID, "collabName" : collab.name, "dateCreated" : Date(), "collabObjective" : collab.objective as Any, "startTime" : collab.dates["startTime"]!, "deadline" : collab.dates["deadline"]!, "reminders" : "will be set up later", "photos" : photoIDs]
+        let memberCollabData: [String : Any] = ["collabID" : collabID, "collabName" : collab.name,  "dateCreated" : Date(), "collabObjective" : collab.objective as Any, "startTime" : collab.dates["startTime"]!, "deadline" : collab.dates["deadline"]!, "reminders" : "will be set up later"]
         
         batch.setData(collabData, forDocument: db.collection("Collaborations").document(collabID))
         
         var memberDictArray: [[String : String]] = []
         var memberUserIDArray: [String] = []
         
-        for member in collabInfo.members {
+        for member in collab.members {
             
             var memberToBeAdded: [String : String] = [:]
             
@@ -64,7 +64,7 @@ class FirebaseCollab {
             memberUserIDArray.append(member.userID)
             
             //The person who created the collab
-            if member.userID == collabInfo.members.last?.userID {
+            if member.userID == collab.members.last?.userID {
                 
                 memberToBeAdded["userID"] = currentUser.userID
                 memberToBeAdded["firstName"] = currentUser.firstName
@@ -81,7 +81,7 @@ class FirebaseCollab {
         //Saving members userID to a memberArray
         batch.setData(["Members" : memberUserIDArray], forDocument: db.collection("Collaborations").document(collabID), merge: true)
         
-        for member in collabInfo.members {
+        for member in collab.members {
 
             batch.setData(memberCollabData, forDocument: db.collection("Users").document(member.userID).collection("CollabRequests").document(collabID))
 
@@ -91,6 +91,12 @@ class FirebaseCollab {
             }
         }
 
+        if let locations = collab.locations {
+            
+            setCollabLocations(collabID: collabID, locations: locations, batch: batch)
+        }
+        
+        
         //Sets the leader collab data
         //batch.setData(memberCollabData, forDocument: db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID))
 
@@ -105,7 +111,7 @@ class FirebaseCollab {
 
             var count = 0
 
-            for photo in collabInfo.photos ?? [] {
+            for photo in collab.photos ?? [] {
 
                 self.firebaseStorage.saveNewCollabPhotosToStorage(collabID, photoIDs[count], photo)
 
@@ -114,6 +120,33 @@ class FirebaseCollab {
 
             completion()
         }
+    }
+    
+    private func setCollabLocations (collabID: String, locations: [Location], batch: WriteBatch) {
+        
+        for location in locations {
+            
+            var locationDict: [String : Any] = [:]
+            
+            locationDict["locationID"] = location.locationID
+            
+            locationDict["coordinates"] = location.coordinates
+            
+            locationDict["name"] = location.name
+            locationDict["number"] = location.number
+            locationDict["url"] = location.url?.absoluteString
+            
+            locationDict["address"] = ["streetNumber" : location.streetNumber, "streetName" : location.streetName, "city" : location.city, "state": location.state, "zipCode" : location.zipCode, "country" : location.country]
+            
+            batch.setData(locationDict, forDocument: db.collection("Collaborations").document(collabID).collection("Locations").document(location.locationID ?? ""))
+        }
+        
+        //            locationDict["streetNumber"] = location.streetNumber
+        //            locationDict["streetName"] = location.streetName
+        //            locationDict["city"] = location.city
+        //            locationDict["state"] = location.state
+        //            locationDict["zipCode"] = location.zipCode
+        //            locationDict["country"] = location.country
     }
     
     func saveCollabCoverPhoto (collabID: String, coverPhotoID: String, coverPhoto: UIImage, completion: @escaping ((_ error: Error?) -> Void)) {
@@ -246,6 +279,10 @@ class FirebaseCollab {
                         let deadline = document.data()["deadline"] as! Timestamp
                         collab.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
                         
+                        self.collabs.append(collab)
+                        self.collabs = self.collabs.sorted(by: {$0.dates["deadline"]! > $1.dates["deadline"]!})
+                        
+                        #warning("will need to move this to seperate function as well as configure way to sort historic members from current members modeling the way I did it with conversation :) i believe in you")
                         //self.userRef.collection("Collabs").document(collab.collabID).collection("Members").getDocuments { (snapshot, error) in
                         self.db.collection("Collaborations").document(collab.collabID).collection("Members").getDocuments{ (snapshot, error) in
                         
@@ -258,6 +295,8 @@ class FirebaseCollab {
                                 
                                 if snapshot?.isEmpty != true {
                                     
+                                    var historicMembers: [Member] = []
+                                    
                                     for document in snapshot!.documents {
                                         
                                         var member = Member()
@@ -268,17 +307,72 @@ class FirebaseCollab {
                                         member.username = document.data()["username"] as! String
                                         member.role = document.data()["role"] as! String
                                         
-                                        collab.members.append(member)
+                                        historicMembers.append(member)
                                     }
                                     
-                                    self.collabs.append(collab)
-                                    self.collabs = self.collabs.sorted(by: {$0.dates["deadline"]! > $1.dates["deadline"]!})
+                                    if let collabIndex = self.collabs.firstIndex(where: { $0.collabID == collab.collabID }) {
+                                        
+                                        self.collabs[collabIndex].members = historicMembers
+                                    }
+                                    
+//                                    self.collabs.append(collab)
+//                                    self.collabs = self.collabs.sorted(by: {$0.dates["deadline"]! > $1.dates["deadline"]!})
                                 }
                                 
-                                else {
+//                                else {
+//
+//                                    self.collabs.append(collab)
+//                                    self.collabs = self.collabs.sorted(by: {$0.dates["deadline"]! > $1.dates["deadline"]!})
+//                                }
+                            }
+                        }
+                        
+                        self.db.collection("Collaborations").document(collab.collabID).collection("Locations").getDocuments { (snapshot, error) in
+                            
+                            if error != nil {
+                                
+                                print(error as Any)
+                            }
+                            
+                            else {
+                                
+                                if snapshot?.isEmpty != true {
                                     
-                                    self.collabs.append(collab)
-                                    self.collabs = self.collabs.sorted(by: {$0.dates["deadline"]! > $1.dates["deadline"]!})
+                                    var locations: [Location] = []
+                                    
+                                    for document in snapshot?.documents ?? []{
+                                        
+                                        var location = Location()
+                                        
+                                        location.locationID = document.data()["locationID"] as? String
+                                        
+                                        location.coordinates = document.data()["coordinates"] as? [String : Double]
+                                        
+                                        location.name = document.data()["name"] as? String
+                                        location.number = document.data()["number"] as? String
+                                        
+                                        if let urlString = document.data()["url"] as? String {
+                                            
+                                            location.url = URL(string: urlString)
+                                        }
+                                        
+                                        let address = document.data()["address"] as? [String : String]
+                                        location.streetNumber = address?["streetNumber"]
+                                        location.streetName = address?["streetName"]
+                                        location.city = address?["city"]
+                                        location.state = address?["state"]
+                                        location.zipCode = address?["zipCode"]
+                                        location.country = address?["country"]
+                                        
+                                        location.address = location.parseAddress()
+                                        
+                                        locations.append(location)
+                                    }
+                                    
+                                    if let collabIndex = self.collabs.firstIndex(where: { $0.collabID == collab.collabID }) {
+                                        
+                                        self.collabs[collabIndex].locations = locations
+                                    }
                                 }
                             }
                         }

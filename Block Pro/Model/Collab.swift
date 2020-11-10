@@ -27,4 +27,6 @@ struct Collab {
     
     var photoIDs: [String] = []
     var photos: [String : UIImage?] = [:]
+    
+    var locations: [Location]?
 }

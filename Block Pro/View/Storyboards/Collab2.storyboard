@@ -24,6 +24,7 @@
                     <connections>
                         <segue destination="ZQ0-Pn-r3R" kind="presentation" identifier="moveToSendPhotoView" id="ALG-0R-TeX"/>
                         <segue destination="oby-j0-d8S" kind="showDetail" identifier="moveToAttachmentsView" id="4hG-Ij-Q67"/>
+                        <segue destination="HbY-Ld-EQI" kind="presentation" identifier="moveToLocationsView" id="MzM-iI-Kld"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uV2-mK-fUT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -36,7 +37,15 @@
                 <viewControllerPlaceholder storyboardName="SendPhoto" id="ZQ0-Pn-r3R" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NpI-2o-aYb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="719" y="383"/>
+            <point key="canvasLocation" x="497" y="424"/>
+        </scene>
+        <!--Location-->
+        <scene sceneID="W6L-aa-0Q8">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Location" id="HbY-Ld-EQI" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Uhd-4h-Acc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="954" y="424"/>
         </scene>
         <!--Collab Messages Attachments View-->
         <scene sceneID="P1R-p8-IKa">
@@ -113,7 +122,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYu-hv-M9J" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1629.5999999999999" y="-4.4334975369458132"/>
+            <point key="canvasLocation" x="1668" y="-4"/>
         </scene>
     </scenes>
     <resources>

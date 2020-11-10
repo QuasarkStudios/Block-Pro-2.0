@@ -45,7 +45,7 @@ class AddLocationViewController: UIViewController {
         
         self.view.addSubview(locationSearchView)
         
-        //Controll the position of the AppleMaps logo and the legal label of the mapView
+        //Controls the position of the AppleMaps logo and the legal label of the mapView
         additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: locationPreselected ? expandedBottomSafeAreaInset : bottomSafeAreaInset, right: 0)
         
         configureLocationManager()
@@ -66,11 +66,6 @@ class AddLocationViewController: UIViewController {
         super.viewDidDisappear(animated)
         
         searchWorkItem = nil //Prevents memory leak
-    }
-    
-    deinit {
-        
-        print("deinit")
     }
     
     
@@ -817,6 +812,7 @@ extension AddLocationViewController: UITableViewDataSource, UITableViewDelegate 
                 let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
                 let region = MKCoordinateRegion(center: annotation.coordinate, span: span)
                 
+                shouldSelectAnnotation = true
                 mapView.setRegion(region, animated: true)
             }
         }
@@ -834,7 +830,7 @@ extension AddLocationViewController: ChangeLocationNameProtocol {
     
     func nameChanged (_ name: String?) {
         
-        selectedLocation?.name = name
+        selectedLocation?.name = name?.leniantValidationOfTextEntered() ?? false ? name : nil
     }
     
     func changesEnded (_ name: String?) {
@@ -905,6 +901,11 @@ extension AddLocationViewController: NavigateToLocationProtocol {
     func navigateToLocation() {
         
         guard let location = locationMapItem else { return }
+        
+            if let name = selectedLocation?.name, name.leniantValidationOfTextEntered() {
+                
+                location.name = name
+            }
         
             location.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDefault])
     }

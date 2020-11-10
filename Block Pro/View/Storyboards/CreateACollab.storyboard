@@ -277,7 +277,11 @@
                                 <action selector="exitButton:" destination="N6i-7r-muf" id="pWC-UK-f61"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="DzU-mc-BRS"/>
+                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="DzU-mc-BRS">
+                            <connections>
+                                <action selector="doneButton:" destination="N6i-7r-muf" id="hgu-Mb-8bW"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="attachmentButtonWidthConstraint" destination="Rls-E0-ewn" id="Hx6-TN-Aij"/>

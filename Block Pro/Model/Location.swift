@@ -16,6 +16,9 @@ struct Location {
     var coordinates: [String : Double]?
     
     var name: String?
+    var number: String?
+    var timeZone: TimeZone?
+    var url: URL?
     
     var placemark: MKPlacemark?
     
@@ -27,8 +30,4 @@ struct Location {
     var state: String?
     var zipCode: String?
     var country: String?
-    
-    var number: String?
-    var timeZone: TimeZone?
-    var url: URL?
 }

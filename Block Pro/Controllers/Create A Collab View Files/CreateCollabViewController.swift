@@ -472,7 +472,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         SVProgressHUD.show()
         
-        firebaseCollab.createCollab(collabInfo: newCollab) { [weak self] in
+        firebaseCollab.createCollab(collab: newCollab) { [weak self] in
             
             self?.collabCreatedDelegate?.reloadData()
             

@@ -118,6 +118,9 @@
 		0D589DEE24593D4A005AC7BC /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D589DED24593D4A005AC7BC /* Message.swift */; };
 		0D589DF024593FB6005AC7BC /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D589DEF24593FB6005AC7BC /* String+Extension.swift */; };
 		0D5BEFE723E286DA00B5DCE5 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5BEFE623E286DA00B5DCE5 /* HomeViewController.swift */; };
+		0D670D8825567316001D2634 /* Location.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D670D8725567316001D2634 /* Location.storyboard */; };
+		0D670D8B255674DD001D2634 /* LocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D8A255674DD001D2634 /* LocationsViewController.swift */; };
+		0D670D902558778F001D2634 /* Location+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D8F2558778F001D2634 /* Location+Extension.swift */; };
 		0D693A30240EB5A900CFDD2F /* BlockNameSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D693A2E240EB5A900CFDD2F /* BlockNameSettingCell.swift */; };
 		0D693A31240EB5A900CFDD2F /* BlockNameSettingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D693A2F240EB5A900CFDD2F /* BlockNameSettingCell.xib */; };
 		0D693A34240EC3CB00CFDD2F /* BlockOtherSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D693A32240EC3CB00CFDD2F /* BlockOtherSettingCell.swift */; };
@@ -419,6 +422,9 @@
 		0D589DED24593D4A005AC7BC /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		0D589DEF24593FB6005AC7BC /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		0D5BEFE623E286DA00B5DCE5 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		0D670D8725567316001D2634 /* Location.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Location.storyboard; sourceTree = "<group>"; };
+		0D670D8A255674DD001D2634 /* LocationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsViewController.swift; sourceTree = "<group>"; };
+		0D670D8F2558778F001D2634 /* Location+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Location+Extension.swift"; sourceTree = "<group>"; };
 		0D693A2E240EB5A900CFDD2F /* BlockNameSettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockNameSettingCell.swift; sourceTree = "<group>"; };
 		0D693A2F240EB5A900CFDD2F /* BlockNameSettingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockNameSettingCell.xib; sourceTree = "<group>"; };
 		0D693A32240EC3CB00CFDD2F /* BlockOtherSettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockOtherSettingCell.swift; sourceTree = "<group>"; };
@@ -875,6 +881,7 @@
 				0DE728C1250872A200581048 /* Messaging */,
 				0D589DE92458C519005AC7BC /* NotificationsViewController.swift */,
 				0D879ACA24B828140037C880 /* FriendProfileViewController.swift */,
+				0D670D8A255674DD001D2634 /* LocationsViewController.swift */,
 				0D02C23F2443740D00D255D7 /* 1.0 Files */,
 			);
 			path = Controllers;
@@ -1265,6 +1272,7 @@
 				0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */,
 				0D7865B423F7709500BD4C4D /* Home.storyboard */,
 				0D72D2482453FB6E00C11D5F /* Collab2.storyboard */,
+				0D670D8725567316001D2634 /* Location.storyboard */,
 				0D02C23D2443709B00D255D7 /* CreateACollab.storyboard */,
 				0D0102A52468853600A5FF28 /* Messages.storyboard */,
 				0DE728C72509BB7400581048 /* SendPhoto.storyboard */,
@@ -1361,6 +1369,7 @@
 				0D589DEF24593FB6005AC7BC /* String+Extension.swift */,
 				0D50A90124785C5700D71654 /* Notification+Extension.swift */,
 				0D45DEDD254D0151003E16E3 /* MKPlacemark+Extension.swift */,
+				0D670D8F2558778F001D2634 /* Location+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1579,6 +1588,7 @@
 				0D2386CC24C26F6A00876154 /* PhotoMessageCell.xib in Resources */,
 				0D78657E23E4B56B00BD4C4D /* Poppins-SemiBoldItalic.ttf in Resources */,
 				0D879AD524B834DE0037C880 /* ConvoPhotoInfoCell.xib in Resources */,
+				0D670D8825567316001D2634 /* Location.storyboard in Resources */,
 				0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */,
 				0D78658823E51C7D00BD4C4D /* HomeTableViewCell.xib in Resources */,
 				0DA9F83522A84833008BECAE /* FreeTime.storyboard in Resources */,
@@ -1705,6 +1715,7 @@
 			files = (
 				0D872F7C22E25350001D35B4 /* CurrentUser.swift in Sources */,
 				0D3213D424CA106B00BC46F5 /* MessagingMethods.swift in Sources */,
+				0D670D902558778F001D2634 /* Location+Extension.swift in Sources */,
 				0DDF79C52346AB9B00BAAD51 /* UserSettingsViewController.swift in Sources */,
 				0DC119CD24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift in Sources */,
 				0D50A90024783BD700D71654 /* Conversation.swift in Sources */,
@@ -1748,6 +1759,7 @@
 				0DADDAB42355919800E79F89 /* TimeTwentyFiveMinCell.swift in Sources */,
 				0D7CABE9252A69590045006C /* Public Variables.swift in Sources */,
 				0DB29FB42448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift in Sources */,
+				0D670D8B255674DD001D2634 /* LocationsViewController.swift in Sources */,
 				0D0102A92468F49D00A5FF28 /* MessagesHomeViewController.swift in Sources */,
 				0D72D24B2453FE7B00C11D5F /* CollabViewController.swift in Sources */,
 				0D82282424D76D5300D0BBA0 /* ConvoAddMemberInfoCell.swift in Sources */,
