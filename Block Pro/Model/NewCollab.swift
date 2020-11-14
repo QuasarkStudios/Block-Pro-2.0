@@ -20,4 +20,5 @@ struct NewCollab {
     
     var photos: [UIImage]?
     var locations: [Location]?
+    var voiceMemos: [Any]?
 }

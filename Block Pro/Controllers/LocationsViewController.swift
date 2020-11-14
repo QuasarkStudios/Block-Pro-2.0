@@ -31,6 +31,8 @@ class LocationsViewController: UIViewController {
     var urlButtonTopAnchorToNavigateButton: NSLayoutConstraint?
     var urlButtonTopAnchorToPhoneButton: NSLayoutConstraint?
     
+    var copiedAnimationView: CopiedAnimationView?
+    
     var locations: [Location]?
     
     var selectedLocationIndex: Int = 0
@@ -59,9 +61,23 @@ class LocationsViewController: UIViewController {
         configureURLButton()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        //Initializing here allows the animationView to be removed and readded multiple times
+        copiedAnimationView = CopiedAnimationView()
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         addAnnotation()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        copiedAnimationView?.removeCopiedAnimation(remove: true)
     }
     
     
@@ -320,7 +336,12 @@ class LocationsViewController: UIViewController {
     
     private func configureGestureRecognizors () {
         
-        locationInfoView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(locationViewTapped)))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(locationViewTapped))
+        locationInfoView.addGestureRecognizer(tapGesture)
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
+        longPressGesture.minimumPressDuration = 0.3
+        locationInfoView.addGestureRecognizer(longPressGesture)
         
         let locationViewSwipedLeftRecognizor = UISwipeGestureRecognizer(target: self, action: #selector(locationViewSwipedLeft))
         locationViewSwipedLeftRecognizor.direction = .left
@@ -481,6 +502,23 @@ class LocationsViewController: UIViewController {
                 configurePhoneButton()
                 configureURLButton()
             }
+        }
+    }
+    
+    @objc private func handleLongPress (gesture: UILongPressGestureRecognizer) {
+        
+        let pressedLocation = gesture.location(in: self.view)
+        let addressLabelLocation = locationAddressLabel.superview?.convert(locationAddressLabel.frame, to: self.view)
+        
+        if gesture.state == .began && addressLabelLocation?.contains(pressedLocation) ?? false {
+            
+            let pasteboard = UIPasteboard.general
+            pasteboard.string = locationAddressLabel.text
+            
+            locationAddressLabel.performCopyAnimationOnView()
+            
+            let navBarFrame = navBar.convert(navBar.frame, to: UIApplication.shared.keyWindow)
+            copiedAnimationView?.presentCopiedAnimation(topAnchor: navBarFrame.maxY + 10)
         }
     }
     

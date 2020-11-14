@@ -60,6 +60,8 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
     
     var photoEditing: Bool = false
     
+    var voiceMemoBeingRecorded: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -114,7 +116,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         else {
             
-            return 3
+            return 5//3
         }
     }
     
@@ -212,6 +214,16 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 cell.createCollabLocationsCellDelegate = self
                 cell.locationSelectedDelegate = self
                 cell.cancelLocationSelectionDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 4 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "createCollabVoiceMemoCell", for: indexPath) as! CreateCollabVoiceMemoCell
+                cell.selectionStyle = .none
+                
+                cell.createCollabVoiceMemosCellDelegate = self
                 
                 return cell
             }
@@ -321,6 +333,13 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                     return 262.5
                 }
                 
+            case 4:
+                
+//                if newCollab.voiceMemos?.count ?? 0 == 0 {
+                    
+                return voiceMemoBeingRecorded ? 200 : 85
+//                }
+                
             default:
                 
                 return 25
@@ -376,6 +395,8 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         details_attachmentsTableView.register(UINib(nibName: "CreateCollabPhotosCell", bundle: nil), forCellReuseIdentifier: "createCollabPhotosCell")
         
         details_attachmentsTableView.register(UINib(nibName: "CreateCollabLocationsCell", bundle: nil), forCellReuseIdentifier: "createCollabLocationsCell")
+        
+        details_attachmentsTableView.register(CreateCollabVoiceMemoCell.self, forCellReuseIdentifier: "createCollabVoiceMemoCell")
     }
     
     private func configureEditButton () -> UIButton {
@@ -933,6 +954,17 @@ extension CreateCollabViewController: CreateCollabLocationsCellProtocol {
     func attachLocationSelected () {
         
         performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
+    }
+}
+
+extension CreateCollabViewController: CreateCollabVoiceMemosCellProtocol {
+    
+    func attachMemoSelected () {
+        
+        voiceMemoBeingRecorded = true
+        
+        details_attachmentsTableView.beginUpdates()
+        details_attachmentsTableView.endUpdates()
     }
 }
 

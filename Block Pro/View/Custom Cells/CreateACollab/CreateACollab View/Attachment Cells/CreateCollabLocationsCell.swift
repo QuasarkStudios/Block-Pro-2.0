@@ -20,14 +20,14 @@ class CreateCollabLocationsCell: UITableViewCell {
     let locationCountLabel = UILabel()
     let locationContainer = UIView()
     
+    let attachLocationButton = UIButton()
+    let mapImage = UIImageView(image: UIImage(systemName: "mappin.circle"))
+    let attachLocationLabel = UILabel()
+    
     let mapViewContainer = UIView()
     let mapView = MKMapView()
     let cancelButton = UIButton(type: .system)
     let legalButton = UIButton()
-    
-    let attachLocationButton = UIButton()
-    let mapImage = UIImageView(image: UIImage(systemName: "mappin.circle"))
-    let attachLocationLabel = UILabel()
     
     let locationPageControl = UIPageControl()
     
@@ -99,7 +99,7 @@ class CreateCollabLocationsCell: UITableViewCell {
         
         locationsLabel.text = "Locations"
         locationsLabel.textColor = .black
-        locationsLabel.textAlignment = .center
+        locationsLabel.textAlignment = .left
         locationsLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
     }
     
@@ -146,6 +146,57 @@ class CreateCollabLocationsCell: UITableViewCell {
         locationContainer.layer.cornerRadius = 10
         locationContainer.layer.cornerCurve = .continuous
         locationContainer.clipsToBounds = true
+    }
+    
+    private func configureAttachButton () {
+        
+        locationContainer.addSubview(attachLocationButton)
+        attachLocationButton.addSubview(mapImage)
+        attachLocationButton.addSubview(attachLocationLabel)
+        
+        attachLocationButton.translatesAutoresizingMaskIntoConstraints = false
+        mapImage.translatesAutoresizingMaskIntoConstraints = false
+        attachLocationLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        attachButtonLeadingAnchor = attachLocationButton.leadingAnchor.constraint(equalTo: locationContainer.leadingAnchor, constant: 0)
+        attachButtonTrailingAnchor = attachLocationButton.trailingAnchor.constraint(equalTo: locationContainer.trailingAnchor, constant: 0)
+        attachButtonTopAnchorWithContainer = attachLocationButton.topAnchor.constraint(equalTo: locationContainer.topAnchor, constant: 0)
+        attachButtonTopAnchorWithMapView = attachLocationButton.topAnchor.constraint(equalTo: mapViewContainer.bottomAnchor, constant: 12.5)
+        attachButtonTopAnchorWithPageControl = attachLocationButton.topAnchor.constraint(equalTo: locationPageControl.bottomAnchor, constant: 7.5)
+        attachButtonBottomAnchor = attachLocationButton.bottomAnchor.constraint(equalTo: locationContainer.bottomAnchor, constant: 0)
+        
+        attachButtonLeadingAnchor?.isActive = true
+        attachButtonTrailingAnchor?.isActive = true
+        attachButtonTopAnchorWithContainer?.isActive = true
+        attachButtonTopAnchorWithMapView?.isActive = false
+        attachButtonTopAnchorWithPageControl?.isActive = false
+        attachButtonBottomAnchor?.isActive = true
+        
+        [
+
+            mapImage.leadingAnchor.constraint(equalTo: attachLocationButton.leadingAnchor, constant: 20),
+            mapImage.centerYAnchor.constraint(equalTo: attachLocationButton.centerYAnchor),
+            mapImage.widthAnchor.constraint(equalToConstant: 25),
+            mapImage.heightAnchor.constraint(equalToConstant: 25),
+
+            attachLocationLabel.leadingAnchor.constraint(equalTo: attachLocationButton.leadingAnchor, constant: 10),
+            attachLocationLabel.trailingAnchor.constraint(equalTo: attachLocationButton.trailingAnchor, constant: -10),
+            attachLocationLabel.centerYAnchor.constraint(equalTo: attachLocationButton.centerYAnchor),
+            attachLocationLabel.heightAnchor.constraint(equalToConstant: 25)
+
+        ].forEach({ $0.isActive = true })
+        
+        attachLocationButton.backgroundColor = .clear
+        attachLocationButton.addTarget(self, action: #selector(attachButtonPressed), for: .touchUpInside)
+        
+        mapImage.tintColor = .black
+        mapImage.isUserInteractionEnabled = false
+        
+        attachLocationLabel.text = "Attach Locations"
+        attachLocationLabel.textColor = .black
+        attachLocationLabel.textAlignment = .center
+        attachLocationLabel.font = UIFont(name: "Poppins-SemiBold", size: 14)
+        attachLocationLabel.isUserInteractionEnabled = false
     }
     
     private func configureMapView () {
@@ -211,57 +262,6 @@ class CreateCollabLocationsCell: UITableViewCell {
         ].forEach({ $0.isActive = true })
         
         legalButton.addTarget(self, action: #selector(legalButtonTapped), for: .touchUpInside)
-    }
-    
-    private func configureAttachButton () {
-        
-        locationContainer.addSubview(attachLocationButton)
-        attachLocationButton.addSubview(mapImage)
-        attachLocationButton.addSubview(attachLocationLabel)
-        
-        attachLocationButton.translatesAutoresizingMaskIntoConstraints = false
-        mapImage.translatesAutoresizingMaskIntoConstraints = false
-        attachLocationLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        attachButtonLeadingAnchor = attachLocationButton.leadingAnchor.constraint(equalTo: locationContainer.leadingAnchor, constant: 0)
-        attachButtonTrailingAnchor = attachLocationButton.trailingAnchor.constraint(equalTo: locationContainer.trailingAnchor, constant: 0)
-        attachButtonTopAnchorWithContainer = attachLocationButton.topAnchor.constraint(equalTo: locationContainer.topAnchor, constant: 0)
-        attachButtonTopAnchorWithMapView = attachLocationButton.topAnchor.constraint(equalTo: mapViewContainer.bottomAnchor, constant: 12.5)
-        attachButtonTopAnchorWithPageControl = attachLocationButton.topAnchor.constraint(equalTo: locationPageControl.bottomAnchor, constant: 7.5)
-        attachButtonBottomAnchor = attachLocationButton.bottomAnchor.constraint(equalTo: locationContainer.bottomAnchor, constant: 0)
-        
-        attachButtonLeadingAnchor?.isActive = true
-        attachButtonTrailingAnchor?.isActive = true
-        attachButtonTopAnchorWithContainer?.isActive = true
-        attachButtonTopAnchorWithMapView?.isActive = false
-        attachButtonTopAnchorWithPageControl?.isActive = false
-        attachButtonBottomAnchor?.isActive = true
-        
-        [
-
-            mapImage.leadingAnchor.constraint(equalTo: attachLocationButton.leadingAnchor, constant: 20),
-            mapImage.centerYAnchor.constraint(equalTo: attachLocationButton.centerYAnchor),
-            mapImage.widthAnchor.constraint(equalToConstant: 25),
-            mapImage.heightAnchor.constraint(equalToConstant: 25),
-
-            attachLocationLabel.leadingAnchor.constraint(equalTo: attachLocationButton.leadingAnchor, constant: 10),
-            attachLocationLabel.trailingAnchor.constraint(equalTo: attachLocationButton.trailingAnchor, constant: -10),
-            attachLocationLabel.centerYAnchor.constraint(equalTo: attachLocationButton.centerYAnchor),
-            attachLocationLabel.heightAnchor.constraint(equalToConstant: 25)
-
-        ].forEach({ $0.isActive = true })
-        
-        attachLocationButton.backgroundColor = .clear
-        attachLocationButton.addTarget(self, action: #selector(attachButtonPressed), for: .touchUpInside)
-        
-        mapImage.tintColor = .black
-        mapImage.isUserInteractionEnabled = false
-        
-        attachLocationLabel.text = "Attach Locations"
-        attachLocationLabel.textColor = .black
-        attachLocationLabel.textAlignment = .center
-        attachLocationLabel.font = UIFont(name: "Poppins-SemiBold", size: 14)
-        attachLocationLabel.isUserInteractionEnabled = false
     }
     
     private func configureCancelButton () {

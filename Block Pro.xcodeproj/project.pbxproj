@@ -121,6 +121,9 @@
 		0D670D8825567316001D2634 /* Location.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D670D8725567316001D2634 /* Location.storyboard */; };
 		0D670D8B255674DD001D2634 /* LocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D8A255674DD001D2634 /* LocationsViewController.swift */; };
 		0D670D902558778F001D2634 /* Location+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D8F2558778F001D2634 /* Location+Extension.swift */; };
+		0D670D93255C8E4C001D2634 /* CreateCollabVoiceMemoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D92255C8E4B001D2634 /* CreateCollabVoiceMemoCell.swift */; };
+		0D670D96255DDC0F001D2634 /* VoiceMemoRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D95255DDC0E001D2634 /* VoiceMemoRecorder.swift */; };
+		0D670D9B255E179F001D2634 /* AudioVisualizerBarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D9A255E179F001D2634 /* AudioVisualizerBarCell.swift */; };
 		0D693A30240EB5A900CFDD2F /* BlockNameSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D693A2E240EB5A900CFDD2F /* BlockNameSettingCell.swift */; };
 		0D693A31240EB5A900CFDD2F /* BlockNameSettingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D693A2F240EB5A900CFDD2F /* BlockNameSettingCell.xib */; };
 		0D693A34240EC3CB00CFDD2F /* BlockOtherSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D693A32240EC3CB00CFDD2F /* BlockOtherSettingCell.swift */; };
@@ -425,6 +428,9 @@
 		0D670D8725567316001D2634 /* Location.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Location.storyboard; sourceTree = "<group>"; };
 		0D670D8A255674DD001D2634 /* LocationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsViewController.swift; sourceTree = "<group>"; };
 		0D670D8F2558778F001D2634 /* Location+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Location+Extension.swift"; sourceTree = "<group>"; };
+		0D670D92255C8E4B001D2634 /* CreateCollabVoiceMemoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCollabVoiceMemoCell.swift; sourceTree = "<group>"; };
+		0D670D95255DDC0E001D2634 /* VoiceMemoRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemoRecorder.swift; sourceTree = "<group>"; };
+		0D670D9A255E179F001D2634 /* AudioVisualizerBarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualizerBarCell.swift; sourceTree = "<group>"; };
 		0D693A2E240EB5A900CFDD2F /* BlockNameSettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockNameSettingCell.swift; sourceTree = "<group>"; };
 		0D693A2F240EB5A900CFDD2F /* BlockNameSettingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockNameSettingCell.xib; sourceTree = "<group>"; };
 		0D693A32240EC3CB00CFDD2F /* BlockOtherSettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockOtherSettingCell.swift; sourceTree = "<group>"; };
@@ -671,6 +677,7 @@
 				0D165B6A253ABA0C00915613 /* CreateCollabPhotosCell.xib */,
 				0DDE6FD9253BCDC900A9DF71 /* CreateCollabLocationsCell.swift */,
 				0DDE6FDA253BCDC900A9DF71 /* CreateCollabLocationsCell.xib */,
+				0D670D92255C8E4B001D2634 /* CreateCollabVoiceMemoCell.swift */,
 				0D0D8EC02452463E0001643B /* CollectionView Cells */,
 			);
 			path = "Attachment Cells";
@@ -714,6 +721,7 @@
 			children = (
 				0D1B1DF52450FCF2008DA9B5 /* PhotoCell.swift */,
 				0D1B1DF62450FCF2008DA9B5 /* PhotoCell.xib */,
+				0D670D9A255E179F001D2634 /* AudioVisualizerBarCell.swift */,
 			);
 			path = "CollectionView Cells";
 			sourceTree = "<group>";
@@ -947,6 +955,7 @@
 				0D71E0152503624600CF517A /* SortingConversationsEnum.swift */,
 				0D7CABEE252CF2630045006C /* ZoomingImageViewMethods.swift */,
 				0D7CABE8252A69590045006C /* Public Variables.swift */,
+				0D670D95255DDC0E001D2634 /* VoiceMemoRecorder.swift */,
 			);
 			path = "Helper Classes";
 			sourceTree = "<group>";
@@ -1727,6 +1736,7 @@
 				0D589DF024593FB6005AC7BC /* String+Extension.swift in Sources */,
 				0D0C8D9A2442488300EB51F7 /* Collab.swift in Sources */,
 				0D37F4FD24FDBCFF00618ECD /* ConversationAnimation.swift in Sources */,
+				0D670D96255DDC0F001D2634 /* VoiceMemoRecorder.swift in Sources */,
 				0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */,
 				0D7271252460DE1B0033C196 /* MessageTextViewContainer.swift in Sources */,
 				0DDE6FDB253BCDC900A9DF71 /* CreateCollabLocationsCell.swift in Sources */,
@@ -1744,6 +1754,7 @@
 				0D82281224D3B8CF00D0BBA0 /* LeaveConvoCell.swift in Sources */,
 				0D78659923F5BBCE00BD4C4D /* PersonalRealmDatabase.swift in Sources */,
 				0D3F29392486094B00C7763F /* MessageTextView.swift in Sources */,
+				0D670D93255C8E4C001D2634 /* CreateCollabVoiceMemoCell.swift in Sources */,
 				0DE79A22244E490000F25440 /* SegmentCell.swift in Sources */,
 				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
 				0D0C8D8E24411EC200EB51F7 /* CollabDeadlineCell.swift in Sources */,
@@ -1807,6 +1818,7 @@
 				0D879AD424B834DE0037C880 /* ConvoPhotoInfoCell.swift in Sources */,
 				0D82282824DA259200D0BBA0 /* ConvoUpdatedMessageCell.swift in Sources */,
 				0D41F5BE2311E4F100B4B11E /* CollabTenMinCell.swift in Sources */,
+				0D670D9B255E179F001D2634 /* AudioVisualizerBarCell.swift in Sources */,
 				0DBAB33E242039CC0021FE35 /* CategoriesCell.swift in Sources */,
 				0D7CD51D2433067A00BE1BE6 /* Firebase+Auth.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
