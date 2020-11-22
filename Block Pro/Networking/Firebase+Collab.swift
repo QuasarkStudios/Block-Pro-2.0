@@ -403,7 +403,7 @@ class FirebaseCollab {
                         
                         collabRequest.collabID = document.data()["collabID"] as! String
                         collabRequest.name = document.data()["collabName"] as! String
-                        collabRequest.objective = document.data()["collabObjective"] as! String
+                        collabRequest.objective = document.data()["collabObjective"] as? String ?? ""
                         
                         let startTime = document.data()["startTime"] as! Timestamp
                         collabRequest.dates["startTime"] = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))

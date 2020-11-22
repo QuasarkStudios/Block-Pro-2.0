@@ -123,7 +123,6 @@
 		0D670D902558778F001D2634 /* Location+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D8F2558778F001D2634 /* Location+Extension.swift */; };
 		0D670D93255C8E4C001D2634 /* CreateCollabVoiceMemoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D92255C8E4B001D2634 /* CreateCollabVoiceMemoCell.swift */; };
 		0D670D96255DDC0F001D2634 /* VoiceMemoRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D95255DDC0E001D2634 /* VoiceMemoRecorder.swift */; };
-		0D670D9B255E179F001D2634 /* AudioVisualizerBarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D9A255E179F001D2634 /* AudioVisualizerBarCell.swift */; };
 		0D693A30240EB5A900CFDD2F /* BlockNameSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D693A2E240EB5A900CFDD2F /* BlockNameSettingCell.swift */; };
 		0D693A31240EB5A900CFDD2F /* BlockNameSettingCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D693A2F240EB5A900CFDD2F /* BlockNameSettingCell.xib */; };
 		0D693A34240EC3CB00CFDD2F /* BlockOtherSettingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D693A32240EC3CB00CFDD2F /* BlockOtherSettingCell.swift */; };
@@ -290,6 +289,8 @@
 		0DDE6FE7253E460E00A9DF71 /* LocationSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDE6FE6253E460E00A9DF71 /* LocationSearchView.swift */; };
 		0DDF79C52346AB9B00BAAD51 /* UserSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF79C42346AB9B00BAAD51 /* UserSettingsViewController.swift */; };
 		0DDF79C72346CE0500BAAD51 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF79C62346CE0500BAAD51 /* ProfileCell.swift */; };
+		0DDF87E5256210700051C8F6 /* VoiceMemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF87E4256210700051C8F6 /* VoiceMemo.swift */; };
+		0DDF87ED256248B40051C8F6 /* VoiceMemoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF87EC256248B40051C8F6 /* VoiceMemoCell.swift */; };
 		0DE31E15244BA97800DE6EE3 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */; };
 		0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD7235FDD3A005255A1 /* Cards.swift */; };
 		0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD9235FDD49005255A1 /* Tasks.swift */; };
@@ -430,7 +431,6 @@
 		0D670D8F2558778F001D2634 /* Location+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Location+Extension.swift"; sourceTree = "<group>"; };
 		0D670D92255C8E4B001D2634 /* CreateCollabVoiceMemoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCollabVoiceMemoCell.swift; sourceTree = "<group>"; };
 		0D670D95255DDC0E001D2634 /* VoiceMemoRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemoRecorder.swift; sourceTree = "<group>"; };
-		0D670D9A255E179F001D2634 /* AudioVisualizerBarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualizerBarCell.swift; sourceTree = "<group>"; };
 		0D693A2E240EB5A900CFDD2F /* BlockNameSettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockNameSettingCell.swift; sourceTree = "<group>"; };
 		0D693A2F240EB5A900CFDD2F /* BlockNameSettingCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlockNameSettingCell.xib; sourceTree = "<group>"; };
 		0D693A32240EC3CB00CFDD2F /* BlockOtherSettingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockOtherSettingCell.swift; sourceTree = "<group>"; };
@@ -600,6 +600,8 @@
 		0DDE6FE6253E460E00A9DF71 /* LocationSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchView.swift; sourceTree = "<group>"; };
 		0DDF79C42346AB9B00BAAD51 /* UserSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsViewController.swift; sourceTree = "<group>"; };
 		0DDF79C62346CE0500BAAD51 /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
+		0DDF87E4256210700051C8F6 /* VoiceMemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemo.swift; sourceTree = "<group>"; };
+		0DDF87EC256248B40051C8F6 /* VoiceMemoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemoCell.swift; sourceTree = "<group>"; };
 		0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		0DE3CDD7235FDD3A005255A1 /* Cards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cards.swift; sourceTree = "<group>"; };
 		0DE3CDD9235FDD49005255A1 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
@@ -721,7 +723,7 @@
 			children = (
 				0D1B1DF52450FCF2008DA9B5 /* PhotoCell.swift */,
 				0D1B1DF62450FCF2008DA9B5 /* PhotoCell.xib */,
-				0D670D9A255E179F001D2634 /* AudioVisualizerBarCell.swift */,
+				0DDF87EC256248B40051C8F6 /* VoiceMemoCell.swift */,
 			);
 			path = "CollectionView Cells";
 			sourceTree = "<group>";
@@ -1260,6 +1262,7 @@
 				0D50A8FF24783BD700D71654 /* Conversation.swift */,
 				0D589DED24593D4A005AC7BC /* Message.swift */,
 				0D45DEDA254C7FE3003E16E3 /* Location.swift */,
+				0DDF87E4256210700051C8F6 /* VoiceMemo.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1816,9 +1819,9 @@
 				0D93300822927C7500B6191D /* Block.swift in Sources */,
 				0D7CD51B2432FCBE00BE1BE6 /* NewUser.swift in Sources */,
 				0D879AD424B834DE0037C880 /* ConvoPhotoInfoCell.swift in Sources */,
+				0DDF87ED256248B40051C8F6 /* VoiceMemoCell.swift in Sources */,
 				0D82282824DA259200D0BBA0 /* ConvoUpdatedMessageCell.swift in Sources */,
 				0D41F5BE2311E4F100B4B11E /* CollabTenMinCell.swift in Sources */,
-				0D670D9B255E179F001D2634 /* AudioVisualizerBarCell.swift in Sources */,
 				0DBAB33E242039CC0021FE35 /* CategoriesCell.swift in Sources */,
 				0D7CD51D2433067A00BE1BE6 /* Firebase+Auth.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
@@ -1896,6 +1899,7 @@
 				0D2B5BCE24744AE800FC2536 /* ProfilePicture.swift in Sources */,
 				0D41738E242E883A006076A5 /* RegistrationViewController.swift in Sources */,
 				0D7CE24023C43AF6005BB8EE /* CardView.swift in Sources */,
+				0DDF87E5256210700051C8F6 /* VoiceMemo.swift in Sources */,
 				0DADDAAC2355915700E79F89 /* TimeFiveMinCell.swift in Sources */,
 				0D7E1B78247435AC00BB8E58 /* MessageHomeCell.swift in Sources */,
 				0DADDAB02355917C00E79F89 /* TimeFifteenMinCell.swift in Sources */,

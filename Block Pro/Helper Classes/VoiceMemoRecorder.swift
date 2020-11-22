@@ -41,14 +41,11 @@ class VoiceMemoRecorder {
         self.currentSample = 0
         
         
-        //3
-//        configureAudioSession()
-        
         verifyRecordingPermission { (granted) in
             
             if granted {
                 
-                self.configureAudioRecorder()
+                self.configureTemporaryAudioRecorder()
             }
             
             else {
@@ -59,7 +56,6 @@ class VoiceMemoRecorder {
         }
     }
     
-//    (audioSession: AVAudioSession, completion: @escaping (() -> Void))
     private func verifyRecordingPermission (completion: @escaping ((_ granted: Bool) -> Void)) {
         
         if audioSession.recordPermission == .granted {
@@ -76,26 +72,25 @@ class VoiceMemoRecorder {
         }
     }
     
-    private func configureAudioRecorder () {
-        
-        //4
-//        let url = URL(fileURLWithPath: "/dev/null", isDirectory: true)
+    private func configureTemporaryAudioRecorder () {
         
         let temporaryDirectoryURL = getDocumentsDirectory().appendingPathComponent("temporaryAudioRecording.m4a")
-//            URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
         
         let recorderSettings: [String : Any] = [
             AVFormatIDKey: NSNumber(value: kAudioFormatAppleLossless),
-            AVSampleRateKey: 44100.0,
+            AVSampleRateKey: 16000.0,//44100.0,
             AVNumberOfChannelsKey: 1,
-            AVEncoderAudioQualityKey: AVAudioQuality.medium.rawValue
+            AVEncoderAudioQualityKey: AVAudioQuality.min.rawValue
         ]
         
         do {
             self.audioRecorder = try AVAudioRecorder(url: temporaryDirectoryURL, settings: recorderSettings)
-            try self.audioSession.setCategory(.playAndRecord, mode: .default, options: [])
+            try self.audioSession.setCategory(.record, mode: .default, options: [])
             
-            self.startMonitoring()
+            audioRecorder?.isMeteringEnabled = true
+            audioRecorder?.record()
+            
+            startMonitoring()
             
         } catch {
             
@@ -112,9 +107,6 @@ class VoiceMemoRecorder {
     
     private func startMonitoring () {
         
-        audioRecorder?.isMeteringEnabled = true
-        audioRecorder?.record()
-        
         timer = Timer.scheduledTimer(withTimeInterval: 0.02, repeats: true, block: { (timer) in
             
             self.audioRecorder?.updateMeters()
@@ -128,10 +120,47 @@ class VoiceMemoRecorder {
         })
     }
     
-    func startRecording () {
+    func startRecording (_ voiceMemoID: String) {
         
         audioRecorder?.stop()
         audioRecorder?.deleteRecording() //Deletes the "temporaryAudioRecording.m4a" file
+        
+        timer?.invalidate()
+        
+        let voiceMemoDirectoryURL = getDocumentsDirectory().appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
+//            URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        
+        let recorderSettings: [String : Any] = [
+            AVFormatIDKey: NSNumber(value: kAudioFormatAppleLossless),
+            AVSampleRateKey: 12000.0,
+            AVNumberOfChannelsKey: 1,
+            AVEncoderAudioQualityKey: AVAudioQuality.low.rawValue
+        ]
+        
+        do {
+            
+            //Creates a directory called "Voice Memos" if one doesn't exist
+            if !FileManager.default.fileExists(atPath: getDocumentsDirectory().path + "/VoiceMemos") {
+                
+                try FileManager.default.createDirectory(atPath: getDocumentsDirectory().path + "/VoiceMemos", withIntermediateDirectories: true, attributes: nil)
+            }
+            
+            self.audioRecorder = try AVAudioRecorder(url: voiceMemoDirectoryURL, settings: recorderSettings)
+            try self.audioSession.setCategory(.playAndRecord, mode: .default, options: [])
+
+            audioRecorder?.isMeteringEnabled = true
+            audioRecorder?.record()
+
+//            configureTemporaryAudioRecorder()
+            
+            self.startMonitoring()
+            
+        } catch {
+            
+            print("tehee oops")
+            
+            //present alert and stop the loading of the cell
+        }
         
 //        do {
 //
@@ -149,6 +178,15 @@ class VoiceMemoRecorder {
 //
 //            print("didnt work")
 //        }
+    }
+    
+    func stopRecording () {
+        
+        audioRecorder?.stop()
+        
+        timer?.invalidate()
+        
+//        configureTemporaryAudioRecorder()
     }
     
     deinit {

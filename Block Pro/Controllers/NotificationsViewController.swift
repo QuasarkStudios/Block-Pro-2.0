@@ -15,7 +15,7 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
     lazy var firebaseCollab = FirebaseCollab()
     var collabRequests: [CollabRequest]?
     
-    let tabBar = CustomTabBar.sharedInstance
+    lazy var tabBar = CustomTabBar.sharedInstance
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -8,6 +8,8 @@
 
 import Foundation
 
+public var keyWindow = UIApplication.shared.keyWindow
+
 public var topBarHeight: CGFloat {
 
     let statusBarHeight = UIApplication.shared.keyWindow?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0

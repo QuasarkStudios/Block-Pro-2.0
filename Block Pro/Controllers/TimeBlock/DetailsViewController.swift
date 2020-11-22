@@ -13,7 +13,7 @@ class DetailsViewController: UIViewController, UITableViewDataSource, UITableVie
 
     @IBOutlet weak var detailsTableView: UITableView!
     
-    let tabBar = CustomTabBar.sharedInstance
+    lazy var tabBar = CustomTabBar.sharedInstance
     
     var categoriesCellHeight: CGFloat = 200
     

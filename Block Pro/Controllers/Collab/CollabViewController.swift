@@ -26,7 +26,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     let addBlockButton = UIButton(type: .system)
     
-    let tabBar = CustomTabBar.sharedInstance
+    lazy var tabBar = CustomTabBar.sharedInstance
     
     var copiedAnimationView: CopiedAnimationView?
     

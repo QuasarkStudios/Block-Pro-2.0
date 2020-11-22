@@ -103,7 +103,7 @@ class PomodoroViewController: UIViewController, AVAudioPlayerDelegate {
     var controlViewAnimatedPosition: CGFloat = 0 //Animated topAnchor constant of the "controlView"
     var gestureViewAnimatedPosition: CGFloat = 0 //Animate topAnchor constant of the "gestureView"
     
-    let tabBar = CustomTabBar.sharedInstance
+    lazy var tabBar = CustomTabBar.sharedInstance
     
     override func viewDidLoad() {
         super.viewDidLoad()

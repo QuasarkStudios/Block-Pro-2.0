@@ -60,26 +60,29 @@ class CustomTabBar: UIView {
     var popped: Bool = false  //Tracks to see if the user popped back to the root view controller
     
     //REMOVE THIS WHEN TABBAR IS OVERHAULED; QUICK WORK AROUND CAUSE YOU OF THE PAST IS FEELING LAZY
+    //UPDATE: CODE COMMENTED OUT IS THE OLDER VERSION, THE SIMPLE RETURN LINE IS PROBABLY SUFFICIENT AND THE FINAL ITERATION
     func bottomInset () -> CGFloat {
         
-        //iPhone XS Max & iPhone XR
-        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
-            
-            return 34
-        }
-            
-        //iPhone XS
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
-            
-            return 34
-        }
-            
-        //Errythang else
-        else {
-            
-            //Random inset; normally 0 for all phone with bezels
-            return 15
-        }
+        return keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 34 : 15
+        
+//        //iPhone XS Max & iPhone XR
+//        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+//            
+//            return 34
+//        }
+//            
+//        //iPhone XS
+//        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+//            
+//            return 34
+//        }
+//            
+//        //Errythang else
+//        else {
+//            
+//            //Random inset; normally 0 for all phone with bezels
+//            return 15
+//        }
     }
     
     static let sharedInstance = CustomTabBar()

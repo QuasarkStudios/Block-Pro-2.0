@@ -46,7 +46,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     var selectedCollab: Collab?
     
-    var tabBar = CustomTabBar.sharedInstance
+    lazy var tabBar = CustomTabBar.sharedInstance
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -104,12 +104,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             retrieveCollabs()
         }
         
-        configureTabBar()
+//        configureTabBar()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
         configureNavBar()
+        
+        configureTabBar()
     }
     
     override func viewWillDisappear(_ animated: Bool) {

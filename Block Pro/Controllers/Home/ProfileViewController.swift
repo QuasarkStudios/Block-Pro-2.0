@@ -21,7 +21,7 @@ class ProfileViewController: UIViewController {
     
     let currentUser = CurrentUser.sharedInstance
     
-    let tabBar = CustomTabBar.sharedInstance
+    lazy var tabBar = CustomTabBar.sharedInstance
     
     weak var profileViewDelegate: ProfileView?
     

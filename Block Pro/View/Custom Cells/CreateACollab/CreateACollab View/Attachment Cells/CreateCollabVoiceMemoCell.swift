@@ -11,6 +11,10 @@ import UIKit
 protocol CreateCollabVoiceMemosCellProtocol: AnyObject {
     
     func attachMemoSelected()
+    
+    func voiceMemoSaved(_ voiceMemo: VoiceMemo)
+    
+    func voiceMemoDeleted (_ voiceMemo: VoiceMemo)
 }
 
 class CreateCollabVoiceMemoCell: UITableViewCell {
@@ -19,26 +23,51 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
     let memosCountLabel = UILabel()
     let memosContainer = UIView()
     
+    let memoCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
+    
     let visualizerStackView = UIStackView()
     
     let attachMemoButton = UIButton()
     let micImage = UIImageView(image: UIImage(systemName: "mic.circle"))
     let attachMemoLabel = UILabel()
     
+    let memoLengthLabel = UILabel()
+    
     let record_stopButton = UIButton()
     let record_stopButtonIndicator = UIView()
     
     var voiceMemoRecorder: VoiceMemoRecorder?
     
-//    var voiceMemos: [Any]? {
-//        didSet {
-//
-//        }
-//    }
+    var voiceMemos: [VoiceMemo]? {
+        didSet {
+            
+            reconfigureCell()
+            
+//            setMemosCountLabel(voiceMemos)
+        }
+    }
     
+    let calendar = Calendar.current
+    var memoLengthTimer: Timer?
+    var memoStartTime: Date?
+    
+    var idForVoiceMemoBeingRecorded: String = ""
+    
+    var willBeginRecording: Bool = false
     var recording: Bool = false
     
+    var visualizerStackViewTopAnchorWithContainer: NSLayoutConstraint?
+    var visualizerStackViewTopAnchorWithCollectionView: NSLayoutConstraint?
+    
+    var attachMemoButtonLeadingAnchor: NSLayoutConstraint?
+    var attachMemoButtonTrailingAnchor: NSLayoutConstraint?
+    var attachMemoButtonTopAnchorWithContainer: NSLayoutConstraint?
+    var attachMemoButtonTopAnchorWithCollectionView: NSLayoutConstraint?
+    var attachMemoButtonBottomAnchor: NSLayoutConstraint?
+    
     weak var createCollabVoiceMemosCellDelegate: CreateCollabVoiceMemosCellProtocol?
+    
+    let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: "createCollabVoiceMemmoCell")
@@ -46,6 +75,7 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
         configureMemosLabel()
         configureMemosCountLabel()
         configureMemosContainer()
+        configureCollectionView()
         configureAttachButton()
     }
 
@@ -75,18 +105,226 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
     
     private func reconfigureCell () {
         
-//        if voiceMemos?.count ?? 0 == 0 {
-//
-//            if recording {
+        if voiceMemos?.count ?? 0 == 0 {
+
+            if willBeginRecording || recording {
                 
-                UIView.animate(withDuration: 0.3) {
+                memoCollectionView.constraints.forEach { (constraint) in
                     
-                    self.attachMemoButton.alpha = 0
+                    if constraint.firstAttribute == .height {
+                        
+                        constraint.constant = 0
+                    }
                 }
                 
-                configureRecordButton()
-//            }
-//        }
+                self.visualizerStackViewTopAnchorWithCollectionView?.isActive = false
+                
+                self.visualizerStackViewTopAnchorWithContainer?.isActive = true
+                
+                UIView.transition(with: memosContainer, duration: 0.3, options: .transitionCrossDissolve) {
+                    
+                    self.memoCollectionView.layoutIfNeeded()
+                    
+                    self.memosCountLabel.alpha = 0
+                    
+                    self.memoCollectionView.reloadData()
+                    
+                }
+            }
+            
+            else {
+                
+                configureNoMemosCell()
+            }
+        }
+        
+        else if voiceMemos?.count ?? 0 < 3 {
+            
+            if willBeginRecording || recording {
+                
+                UIView.transition(with: contentView, duration: 0.2, options: .transitionCrossDissolve) {
+                    
+                    self.memosCountLabel.text = "\(self.voiceMemos?.count ?? 0)/3"
+                    
+                    self.memoCollectionView.reloadData()
+                }
+            }
+            
+            else {
+                
+                //makes the animations prettier
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                    
+                    self.configurePartialMemoCell()
+                }
+            }
+        }
+        
+        else {
+            
+            configureFullMemoCell()
+        }
+    }
+    
+    private func configureNoMemosCell () {
+        
+        if !recording {
+            
+            visualizerStackView.removeFromSuperview()
+            memoLengthLabel.removeFromSuperview()
+            
+            memoCollectionView.alpha = 0
+            
+            memosContainer.constraints.forEach { (constraint) in
+                
+                if constraint.firstAttribute == .leading && constraint.firstItem as? UIButton != nil {
+                    
+                    constraint.constant = 0
+                }
+                
+                else if constraint.firstAttribute == .trailing && constraint.firstItem as? UIButton != nil {
+                    
+                    constraint.constant = 0
+                }
+                
+                else if constraint.firstAttribute == .top && constraint.firstItem as? UIButton != nil {
+                    
+                    constraint.constant = 0
+                }
+            }
+            
+            attachMemoButton.constraints.forEach { (constraint) in
+                
+                if constraint.firstAttribute == .height {
+                    
+                    constraint.constant = 55
+                }
+            }
+                
+            self.attachMemoButton.backgroundColor = .clear
+            
+            UIView.transition(with: memosContainer, duration: 0.3, options: .transitionCrossDissolve) {
+                
+                self.memosCountLabel.alpha = 0
+
+                self.micImage.tintColor = .black
+                self.micImage.isUserInteractionEnabled = false
+
+                self.attachMemoLabel.text = "Attach Voice Memos"
+                self.attachMemoLabel.textColor = .black
+                self.attachMemoLabel.textAlignment = .center
+                self.attachMemoLabel.font = UIFont(name: "Poppins-SemiBold", size: 14)
+                self.attachMemoLabel.isUserInteractionEnabled = false
+            }
+        }
+    }
+    
+    private func configurePartialMemoCell () {
+        
+        memosCountLabel.text = "\(voiceMemos?.count ?? 0)/3"
+        
+        attachMemoButton.alpha = attachMemoButton.superview != nil ? 1 : 0
+        
+        memosContainer.addSubview(attachMemoButton)
+        
+        memosContainer.constraints.forEach { (constraint) in
+            
+            if constraint.firstAttribute == .leading && constraint.firstItem as? UIButton != nil {
+                
+                constraint.constant = 32.5
+            }
+            
+            else if constraint.firstAttribute == .trailing && constraint.firstItem as? UIButton != nil {
+                
+                constraint.constant = -32.5
+            }
+            
+            else if constraint.firstAttribute == .top && constraint.firstItem as? UIButton != nil {
+                
+                constraint.constant = itemSize + 10 + 12.5
+            }
+        }
+        
+        attachMemoButton.constraints.forEach { (constraint) in
+            
+            if constraint.firstAttribute == .height {
+                
+                constraint.constant = 40
+            }
+        }
+        
+        attachMemoButton.backgroundColor = UIColor(hexString: "222222")
+        attachMemoButton.layer.cornerRadius = 20
+        attachMemoButton.clipsToBounds = true
+        attachMemoButton.addTarget(self, action: #selector(attachButtonPressed), for: .touchUpInside)
+        
+        micImage.tintColor = .white
+        micImage.isUserInteractionEnabled = false
+        
+        attachMemoLabel.text = "Attach"
+        attachMemoLabel.textColor = .white
+        attachMemoLabel.textAlignment = .center
+        attachMemoLabel.font = UIFont(name: "Poppins-SemiBold", size: 14)
+        attachMemoLabel.isUserInteractionEnabled = false
+        
+        memoCollectionView.reloadData()
+        
+        memoCollectionView.constraints.forEach { (constraint) in
+            
+            if constraint.firstAttribute == .height {
+                
+                constraint.constant = itemSize
+            }
+        }
+        
+        UIView.transition(with: memosContainer, duration: 0.3, options: .transitionCrossDissolve) {
+
+            self.visualizerStackView.removeFromSuperview()
+            self.memoLengthLabel.removeFromSuperview()
+            self.record_stopButton.removeFromSuperview()
+
+            self.memosCountLabel.alpha = 1
+            self.memoCollectionView.alpha = 1
+            self.attachMemoButton.alpha = 1
+
+        } completion: { (finished: Bool) in
+
+
+        }
+    }
+    
+    private func configureFullMemoCell () {
+        
+        memosCountLabel.text = "3/3"
+        
+        memoCollectionView.reloadData()
+        
+        UIView.transition(with: memosContainer, duration: 0.3, options: .transitionCrossDissolve) {
+
+            self.visualizerStackView.removeFromSuperview()
+            self.memoLengthLabel.removeFromSuperview()
+            self.record_stopButton.removeFromSuperview()
+
+        } completion: { (finished: Bool) in
+
+
+        }
+    }
+    
+    private func configureRecordingCell () {
+            
+        willBeginRecording = true
+        
+        configureAudioVisualizer()
+
+        configureMemoLengthLabel()
+
+        configureRecordButton()
+        
+        UIView.animate(withDuration: 0.3) {
+
+            self.attachMemoButton.alpha = 0
+        }
     }
     
     private func configureMemosCountLabel () {
@@ -103,7 +341,7 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
         
         ].forEach({ $0.isActive = true })
         
-        memosCountLabel.isHidden = true
+        memosCountLabel.alpha = 0
         memosCountLabel.text = "0/3"
         memosCountLabel.textColor = .black
         memosCountLabel.textAlignment = .right
@@ -134,6 +372,40 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
         memosContainer.clipsToBounds = true
     }
     
+    private func configureCollectionView () {
+        
+        memosContainer.addSubview(memoCollectionView)
+        memoCollectionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            memoCollectionView.topAnchor.constraint(equalTo: memosContainer.topAnchor, constant: 10),
+            memoCollectionView.leadingAnchor.constraint(equalTo: memosContainer.leadingAnchor, constant: 0),
+            memoCollectionView.trailingAnchor.constraint(equalTo: memosContainer.trailingAnchor, constant: 0),
+            memoCollectionView.heightAnchor.constraint(equalToConstant: voiceMemos?.count ?? 0 > 0 ? itemSize : 0)
+        
+        ].forEach({ $0.isActive = true })
+        
+        memoCollectionView.dataSource = self
+        memoCollectionView.delegate = self
+        
+        memoCollectionView.backgroundColor = .white
+        memoCollectionView.isScrollEnabled = false
+        
+        memoCollectionView.alpha = 0
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: floor(itemSize - 1), height: floor(itemSize - 1))
+        layout.minimumInteritemSpacing = 5
+        layout.minimumLineSpacing = 5
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        layout.scrollDirection = .vertical
+        
+        memoCollectionView.collectionViewLayout = layout
+        
+        memoCollectionView.register(VoiceMemoCell.self, forCellWithReuseIdentifier: "voiceMemoCell")
+    }
+    
     private func configureAttachButton () {
         
         memosContainer.addSubview(attachMemoButton)
@@ -144,26 +416,25 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
         micImage.translatesAutoresizingMaskIntoConstraints = false
         attachMemoLabel.translatesAutoresizingMaskIntoConstraints = false
         
-//        attachButtonLeadingAnchor = attachLocationButton.leadingAnchor.constraint(equalTo: locationContainer.leadingAnchor, constant: 0)
-//        attachButtonTrailingAnchor = attachLocationButton.trailingAnchor.constraint(equalTo: locationContainer.trailingAnchor, constant: 0)
-//        attachButtonTopAnchorWithContainer = attachLocationButton.topAnchor.constraint(equalTo: locationContainer.topAnchor, constant: 0)
-//        attachButtonTopAnchorWithMapView = attachLocationButton.topAnchor.constraint(equalTo: mapViewContainer.bottomAnchor, constant: 12.5)
-//        attachButtonTopAnchorWithPageControl = attachLocationButton.topAnchor.constraint(equalTo: locationPageControl.bottomAnchor, constant: 7.5)
-//        attachButtonBottomAnchor = attachLocationButton.bottomAnchor.constraint(equalTo: locationContainer.bottomAnchor, constant: 0)
+//        attachMemoButtonLeadingAnchor = attachMemoButton.leadingAnchor.constraint(equalTo: memosContainer.leadingAnchor, constant: 0)
+//        attachMemoButtonTrailingAnchor = attachMemoButton.trailingAnchor.constraint(equalTo: memosContainer.trailingAnchor, constant: 0)
+//        attachMemoButtonTopAnchorWithContainer = attachMemoButton.topAnchor.constraint(equalTo: memosContainer.topAnchor, constant: 0)
+//        attachMemoButtonTopAnchorWithCollectionView = attachMemoButton.topAnchor.constraint(equalTo: memoCollectionView.bottomAnchor, constant: 12.5)
+//        attachMemoButtonBottomAnchor = attachMemoButton.bottomAnchor.constraint(equalTo: memosContainer.bottomAnchor, constant: 0)
 //
-//        attachButtonLeadingAnchor?.isActive = true
-//        attachButtonTrailingAnchor?.isActive = true
-//        attachButtonTopAnchorWithContainer?.isActive = true
-//        attachButtonTopAnchorWithMapView?.isActive = false
-//        attachButtonTopAnchorWithPageControl?.isActive = false
-//        attachButtonBottomAnchor?.isActive = true
+//        attachMemoButtonLeadingAnchor?.isActive = true
+//        attachMemoButtonTrailingAnchor?.isActive = true
+//        attachMemoButtonTopAnchorWithContainer?.isActive = true
+//        attachMemoButtonTopAnchorWithCollectionView?.isActive = false
+//        attachMemoButtonBottomAnchor?.isActive = true
         
         [
 
             attachMemoButton.leadingAnchor.constraint(equalTo: memosContainer.leadingAnchor, constant: 0),
             attachMemoButton.trailingAnchor.constraint(equalTo: memosContainer.trailingAnchor, constant: 0),
+//            attachMemoButton.topAnchor.constraint(equalTo: memosContainer.topAnchor, constant: 0),
             attachMemoButton.topAnchor.constraint(equalTo: memosContainer.topAnchor, constant: 0),
-            attachMemoButton.bottomAnchor.constraint(equalTo: memosContainer.bottomAnchor, constant: 0),
+            attachMemoButton.heightAnchor.constraint(equalToConstant: 55),
             
             micImage.leadingAnchor.constraint(equalTo: attachMemoButton.leadingAnchor, constant: 20),
             micImage.centerYAnchor.constraint(equalTo: attachMemoButton.centerYAnchor),
@@ -195,42 +466,80 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
         memosContainer.addSubview(visualizerStackView)
         visualizerStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        [
+//        [
+//
+//            visualizerStackView.topAnchor.constraint(equalTo: memosContainer.topAnchor, constant: 25),
+//            visualizerStackView.leadingAnchor.constraint(equalTo: memosContainer.leadingAnchor, constant: 5),
+//            visualizerStackView.trailingAnchor.constraint(equalTo: memosContainer.trailingAnchor, constant: -5),
+//            visualizerStackView.heightAnchor.constraint(equalToConstant: 50)
+//
+//        ].forEach({ $0.isActive = true })
         
-            visualizerStackView.topAnchor.constraint(equalTo: memosContainer.topAnchor, constant: 25),
+        visualizerStackViewTopAnchorWithContainer = visualizerStackView.topAnchor.constraint(equalTo: memosContainer.topAnchor, constant: 25)
+        visualizerStackViewTopAnchorWithContainer?.isActive = voiceMemos?.count ?? 0 == 0  //true
+
+        
+        visualizerStackViewTopAnchorWithCollectionView = visualizerStackView.topAnchor.constraint(equalTo: memoCollectionView.bottomAnchor, constant: 10)
+        visualizerStackViewTopAnchorWithCollectionView?.isActive = voiceMemos?.count ?? 0 > 0 //false
+    
+        [
+
+//            visualizerStackView.topAnchor.constraint(equalTo: memosContainer.topAnchor, constant: 25),
             visualizerStackView.leadingAnchor.constraint(equalTo: memosContainer.leadingAnchor, constant: 5),
             visualizerStackView.trailingAnchor.constraint(equalTo: memosContainer.trailingAnchor, constant: -5),
             visualizerStackView.heightAnchor.constraint(equalToConstant: 50)
-            
+
         ].forEach({ $0.isActive = true })
         
         visualizerStackView.alignment = .center
         visualizerStackView.distribution = .equalSpacing
         visualizerStackView.axis = .horizontal
         visualizerStackView.spacing = 5
-        
-//        visualizerStackView.backgroundColor = .blue
-        
-        var count = 0
-        
-        while count < Int(memosContainer.frame.width / 8.5) - 2 {
+                
+        if visualizerStackView.arrangedSubviews.count == 0 {
             
-            let bar = UIView() //frame: CGRect(x: 0, y: 0, width: 5, height: 40)
-        
-            bar.translatesAutoresizingMaskIntoConstraints = false
+            var count = 0
             
-            bar.widthAnchor.constraint(equalToConstant: 3.5).isActive = true
-            bar.heightAnchor.constraint(equalToConstant: 10).isActive = true
+            while count < Int(memosContainer.frame.width / 8.5) - 2 {
+                
+                let bar = UIView() //frame: CGRect(x: 0, y: 0, width: 5, height: 40)
             
-            visualizerStackView.addArrangedSubview(bar)
-            
-            bar.backgroundColor = UIColor(hexString: "222222")
-            bar.layer.cornerRadius = 1.5
-            
-            
-            
-            count += 1
+                bar.translatesAutoresizingMaskIntoConstraints = false
+                
+                bar.widthAnchor.constraint(equalToConstant: 3.5).isActive = true
+                bar.heightAnchor.constraint(equalToConstant: 10).isActive = true
+                
+                visualizerStackView.addArrangedSubview(bar)
+                
+                bar.backgroundColor = UIColor(hexString: "222222")
+                bar.layer.cornerRadius = 1.5
+                
+                
+                
+                count += 1
+            }
         }
+    }
+    
+    private func configureMemoLengthLabel () {
+        
+        memosContainer.addSubview(memoLengthLabel)
+        memoLengthLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            memoLengthLabel.topAnchor.constraint(equalTo: visualizerStackView.bottomAnchor, constant: 10),
+            memoLengthLabel.leadingAnchor.constraint(equalTo: memosContainer.leadingAnchor, constant: 15),
+            memoLengthLabel.trailingAnchor.constraint(equalTo: memosContainer.trailingAnchor, constant: -15),
+            memoLengthLabel.heightAnchor.constraint(equalToConstant: 20)
+        
+        ].forEach({ $0.isActive = true })
+        
+        memoLengthLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
+        memoLengthLabel.textColor = .black
+        memoLengthLabel.textAlignment = .right
+        memoLengthLabel.text = "0:00"
+        memoLengthLabel.alpha = 0
     }
     
     private func configureRecordButton () {
@@ -273,77 +582,20 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
         record_stopButtonIndicator.isUserInteractionEnabled = false
     }
     
-    private func normalizeSoundLevel (level: Float) -> CGFloat {
-        
-        let level = max(10, CGFloat(level) + 50) / 2
-        
-        return CGFloat(level * (50 / 25))
-    }
+
     
-    @objc private func attachButtonPressed () {
-        
-        createCollabVoiceMemosCellDelegate?.attachMemoSelected()
-        
-        reconfigureCell()
-        
-        configureAudioVisualizer()
-        
-        let numberOfSamples: Int = Int(memosContainer.frame.width / 8.5) - 2
-        
-        voiceMemoRecorder = VoiceMemoRecorder(voiceMemoCell: self, numberOfSamples: numberOfSamples)
-        
-//        // 13 is equal to the width of each bar (w = 5) and the gap between the next bar (g = 8)
-//        print (numberOfSamples - 2)
-    }
-    
-    func updateAudioVisualizer (_ soundSamples: [Float]) {
-        
-        var count = 0//visualizerStackView.arrangedSubviews.count
+    private func animateAudioVisualizer () {
         
         visualizerStackView.arrangedSubviews.forEach { (subview) in
             
-//            print(normalizeSoundLevel(level: soundSamples[count]))
-            
-            subview.constraints.forEach { (constraint) in
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                 
-                if constraint.firstAttribute == .height {
-                    
-                    constraint.constant = normalizeSoundLevel(level: soundSamples[count])
-                }
+                subview.backgroundColor = self.recording ? UIColor.systemRed : UIColor(hexString: "222222")
             }
-            
-//            subview.frame = CGRect(x: 0, y: 0, width: 5, height: normalizeSoundLevel(level: soundSamples[count]))
-            
-//            subview.backgroundColor = .red
-            
-            count += 1
         }
     }
     
-    private func getDocumentsDirectory () -> URL {
-        
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
-    }
-    
-    @objc private func record_stopButtonPressed () {
-        
-        recording = !recording
-        
-        if recording {
-            
-//            do {
-//
-//                let itemURL = "\(getDocumentsDirectory().path)/temporaryAudioRecording.m4a"
-//                try FileManager.default.removeItem(at: URL(fileURLWithPath: itemURL, isDirectory: true))
-//
-//            } catch {
-//
-//                print("didnt work")
-//            }
-            
-            voiceMemoRecorder?.startRecording()
-        }
+    private func animateRecordButton () {
         
         record_stopButtonIndicator.constraints.forEach { (constraint) in
             
@@ -365,9 +617,6 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
             self.record_stopButtonIndicator.transform = CGAffineTransform(rotationAngle: self.recording ? 0 : -45)
             
             self.record_stopButtonIndicator.layer.cornerRadius = self.recording ? 4 : 16
-            
-        } completion: { (finished: Bool) in
-            
         }
         
         let borderAnimation = CABasicAnimation(keyPath: "borderColor")
@@ -378,26 +627,235 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
         borderAnimation.isRemovedOnCompletion = false
         
         record_stopButton.layer.add(borderAnimation, forKey: nil)
+    }
+
+    
+    private func normalizeSoundLevel (level: Float) -> CGFloat {
+        
+        let level = max(10, CGFloat(level) + 50) / 2
+        
+        return CGFloat(level * (50 / 25))
+    }
+    
+    @objc private func attachButtonPressed () {
+
+        createCollabVoiceMemosCellDelegate?.attachMemoSelected()
+        
+//        reconfigureCell(willBeginRecording: true)
+        
+        configureRecordingCell()
+        
+        
+        let numberOfSamples: Int = Int(memosContainer.frame.width / 8.5) - 2
+        
+        voiceMemoRecorder = VoiceMemoRecorder(voiceMemoCell: self, numberOfSamples: numberOfSamples)
+    }
+    
+    //called from audio class 
+    func updateAudioVisualizer (_ soundSamples: [Float]) {
+        
+        var count = 0//visualizerStackView.arrangedSubviews.count
         
         visualizerStackView.arrangedSubviews.forEach { (subview) in
             
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            subview.constraints.forEach { (constraint) in
                 
-                subview.backgroundColor = self.recording ? UIColor.systemRed : UIColor(hexString: "222222")
+                if constraint.firstAttribute == .height {
+                    
+                    constraint.constant = normalizeSoundLevel(level: soundSamples[count])
+                }
             }
+            
+            count += 1
+        }
+    }
+    
+    private func startMemoTimer () {
+        
+        memoStartTime = Date()
+        
+        memoLengthTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { [weak self] (timer) in
+            
+            if let time = self?.memoStartTime {
+                
+                //If at least 1 minute has passed
+                if self?.calendar.dateComponents([.minute], from: time, to: Date()).minute ?? 0 >= 1 {
+                    
+                    if let minutes = self?.calendar.dateComponents([.minute], from: time, to: Date()).minute, let seconds = self?.calendar.dateComponents([.second], from: time, to: Date()).second {
+                        
+                        //Limit for a voice memo
+                        if minutes == 5 {
+                            
+                            self?.voiceMemoRecorder?.stopRecording()
+                            self?.memoLengthTimer?.invalidate()
+                            
+                            //finish ending the recording here
+                        }
+                        
+                        //The last 10 seconds before the limit
+                        else if minutes == 4 && seconds - (minutes * 60) > 50 {
+                            
+                            let convertedSeconds = seconds - (minutes * 60)
+                            
+                            UIView.transition(with: self!.memoLengthLabel, duration: 0.2, options: .transitionCrossDissolve) {
+
+                                self?.memoLengthLabel.textColor = .clear
+
+                            } completion: { (finished: Bool) in
+                                
+                                self?.memoLengthLabel.text = "\(minutes):\(convertedSeconds)"
+
+                                UIView.transition(with: self!.memoLengthLabel, duration: 0.2, options: .transitionCrossDissolve) {
+
+                                    self?.memoLengthLabel.textColor = .black
+                                }
+                            }
+                        }
+                        
+                        else {
+                            
+                            let convertedSeconds = seconds - (minutes * 60)
+                            
+                            //If the convertedSeconds is less than 10 seconds, add a 0 before the convertedSeconds
+                            self?.memoLengthLabel.text = convertedSeconds < 10 ? "\(minutes):0\(convertedSeconds)" : "\(minutes):\(convertedSeconds)"
+                            
+                        }
+                    }
+                }
+                
+                //If 1 minute hasn't passed yet
+                else {
+                    
+                    if let seconds = self?.calendar.dateComponents([.second], from: time, to: Date()).second {
+                        
+                        //If the voice memo length is less than 10 seconds, add a 0 before the duration of the voice memo
+                        self?.memoLengthLabel.text = seconds < 10 ? "0:0\(seconds)" : "0:\(seconds)"
+                    }
+                }
+            }
+        })
+    }
+    
+    private func getDocumentsDirectory () -> URL {
+        
+        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+        return paths[0]
+    }
+    
+    @objc private func record_stopButtonPressed () {
+        
+        willBeginRecording = false
+        recording = !recording
+        
+        if recording {
+            
+            idForVoiceMemoBeingRecorded = UUID().uuidString
+            voiceMemoRecorder?.startRecording(idForVoiceMemoBeingRecorded)
+            startMemoTimer()
+            
+            //            do {
+            //
+            //                let itemURL = "\(getDocumentsDirectory().path)/temporaryAudioRecording.m4a"
+            //                try FileManager.default.removeItem(at: URL(fileURLWithPath: itemURL, isDirectory: true))
+            //
+            //            } catch {
+            //
+            //                print("didnt work")
+            //            }
         }
         
+        else {
+            
+            voiceMemoRecorder?.stopRecording()
+            memoLengthTimer?.invalidate()
+        
+            if voiceMemos == nil {
+                
+                voiceMemos = []
+            }
+            
+            var newVoiceMemo = VoiceMemo()
+            newVoiceMemo.voiceMemoID = idForVoiceMemoBeingRecorded
+            newVoiceMemo.dateCreated = Date()
+//            newVoiceMemo.length =
+            
+            voiceMemos?.append(newVoiceMemo)
+            createCollabVoiceMemosCellDelegate?.voiceMemoSaved(newVoiceMemo)
+            
+//            reconfigureCell()
+            
+//            do {
+//
+//                print("\(getDocumentsDirectory().path)/VoiceMemos")
+//
+//                let itemURL = "\(getDocumentsDirectory().path)/VoiceMemos" //+ voiceMemos!.first! + ".m4a"
+//                let items = try FileManager.default.contentsOfDirectory(atPath: itemURL)
+//
+//
+//                print(items)
+//
+//                try FileManager.default.removeItem(at: URL(fileURLWithPath: itemURL, isDirectory: true))
+//
+//            } catch {
+//
+//                print("didnt work")
+//            }
+        }
+        
+        animateAudioVisualizer()
+        animateRecordButton()
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            
+            self.memoLengthLabel.alpha = self.recording ? 1 : 0
+            
+        } completion: { (finished: Bool) in
+            
+            self.memoLengthLabel.text = "0:00"
+        }
     }
+    
+//    private func setMemosCountLabel (_ memos: [VoiceMemo]?) {
+//
+//        if memos?.count ?? 0 == 0 {
+//
+//            memosCountLabel.isHidden = true
+//        }
+//
+//        else {
+//
+//            memosCountLabel.isHidden = false
+//            memosCountLabel.text = "\(memos?.count ?? 0)/3"
+//        }
+//    }
 }
 
-//extension CreateCollabVoiceMemoCell: UICollectionViewDataSource, UICollectionViewDelegate {
-//    
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        
-//        return Int.max
-//    }
-//    
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        <#code#>
-//    }
-//}
+extension CreateCollabVoiceMemoCell: UICollectionViewDataSource, UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        return voiceMemos?.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "voiceMemoCell", for: indexPath) as! VoiceMemoCell
+        cell.voiceMemo = voiceMemos?[indexPath.row]
+        cell.createCollabVoiceMemosCellDelegate = createCollabVoiceMemosCellDelegate
+        
+        if let name = voiceMemos?[indexPath.row].name {
+            
+            cell.nameTextField.text = name
+        }
+        
+        else {
+            
+            let centeredParagraphStyle = NSMutableParagraphStyle()
+            centeredParagraphStyle.alignment = .center
+            
+            cell.nameTextField.attributedPlaceholder = NSAttributedString(string: "Memo #\(indexPath.row + 1)", attributes: [NSAttributedString.Key.foregroundColor: UIColor(hexString: "AAAAAA") as Any, NSAttributedString.Key.paragraphStyle : centeredParagraphStyle])
+        }
+        
+        return cell
+    }
+}

@@ -30,7 +30,7 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
 
     var selectedBlock: PersonalRealmDatabase.blockTuple?
     
-    let tabBar = CustomTabBar.sharedInstance
+    lazy var tabBar = CustomTabBar.sharedInstance
     
     override func viewDidLoad() {
         super.viewDidLoad()

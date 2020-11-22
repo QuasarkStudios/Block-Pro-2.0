@@ -223,6 +223,10 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 let cell = tableView.dequeueReusableCell(withIdentifier: "createCollabVoiceMemoCell", for: indexPath) as! CreateCollabVoiceMemoCell
                 cell.selectionStyle = .none
                 
+                cell.voiceMemos = newCollab.voiceMemos
+                
+//                cell.willBeginRecording = voiceMemoBeingRecorded
+                
                 cell.createCollabVoiceMemosCellDelegate = self
                 
                 return cell
@@ -320,12 +324,12 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
                 else if newCollab.locations?.count ?? 0 == 1 {
                     
-                    return 287.5
+                    return 285//287.5
                 }
                 
                 else if newCollab.locations?.count ?? 0 == 2 {
                    
-                    return 315
+                    return 312.5//315
                 }
                 
                 else {
@@ -335,10 +339,24 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
             case 4:
                 
-//                if newCollab.voiceMemos?.count ?? 0 == 0 {
+                if newCollab.voiceMemos?.count ?? 0 == 0 {
                     
-                return voiceMemoBeingRecorded ? 200 : 85
-//                }
+                    return voiceMemoBeingRecorded ? 200 : 85
+                }
+                
+                else if newCollab.voiceMemos?.count ?? 0 < 3 {
+                    
+                    let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
+                
+                    return voiceMemoBeingRecorded ? floor(itemSize) + 194 : floor(itemSize) + 105
+                }
+                
+                else {
+                    
+                    let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
+                    
+                    return floor(itemSize) + 50//20
+                }
                 
             default:
                 
@@ -965,6 +983,44 @@ extension CreateCollabViewController: CreateCollabVoiceMemosCellProtocol {
         
         details_attachmentsTableView.beginUpdates()
         details_attachmentsTableView.endUpdates()
+    }
+    
+    func voiceMemoSaved(_ voiceMemo: VoiceMemo) {
+        
+        voiceMemoBeingRecorded = false
+        
+        if newCollab.voiceMemos == nil {
+            
+            newCollab.voiceMemos = []
+        }
+        
+        newCollab.voiceMemos?.append(voiceMemo)
+        
+//        details_attachmentsTableView.reloadRows(at: [IndexPath(row: 4, section: 0)], with: .fade)
+        
+        details_attachmentsTableView.beginUpdates()
+        details_attachmentsTableView.endUpdates()
+    }
+    
+    func voiceMemoDeleted (_ voiceMemo: VoiceMemo) {
+        
+        newCollab.voiceMemos?.removeAll(where: { $0.voiceMemoID == voiceMemo.voiceMemoID })
+        
+//        if newCollab.voiceMemos?.count ?? 0 > 0 {
+            
+            if let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? CreateCollabVoiceMemoCell {
+    
+                cell.voiceMemos = newCollab.voiceMemos
+            }
+    
+            details_attachmentsTableView.beginUpdates()
+            details_attachmentsTableView.endUpdates()
+//        }
+        
+//        else {
+//
+//            details_attachmentsTableView.reloadRows(at: [IndexPath(row: 4, section: 0)], with: .fade)
+//        }
     }
 }
 

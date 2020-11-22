@@ -33,7 +33,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     let conversationsAnimationContainer = ConversationAnimation()
     
     let newConversationButton = UIButton(type: .system)
-    let tabBar = CustomTabBar.sharedInstance
+    lazy var tabBar = CustomTabBar.sharedInstance
     let deleteMessagesButton = UIButton(type: .system)
     
     let currentUser = CurrentUser.sharedInstance
