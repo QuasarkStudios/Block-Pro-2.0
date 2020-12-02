@@ -15,13 +15,15 @@ class ProgressCircles: UIView {
     
     var radius: CGFloat
     var lineWidth: CGFloat
+    var trackLayerStrokeColor: CGColor
     var strokeColor: CGColor
     var strokeEnd: CGFloat
     
-    init (radius: CGFloat, lineWidth: CGFloat, strokeColor: CGColor, strokeEnd: CGFloat) {
+    init (radius: CGFloat, lineWidth: CGFloat, trackLayerStrokeColor: CGColor = UIColor(hexString: "F1F1F1")!.cgColor, strokeColor: CGColor, strokeEnd: CGFloat) {
         
         self.radius = radius
         self.lineWidth = lineWidth
+        self.trackLayerStrokeColor = trackLayerStrokeColor
         self.strokeColor = strokeColor
         self.strokeEnd = strokeEnd
         
@@ -46,7 +48,7 @@ class ProgressCircles: UIView {
         trackLayer.lineWidth = lineWidth + 2
         trackLayer.path = circularPath.cgPath
         trackLayer.fillColor = UIColor.clear.cgColor
-        trackLayer.strokeColor = UIColor(hexString: "F1F1F1")?.cgColor
+        trackLayer.strokeColor = trackLayerStrokeColor//UIColor(hexString: "F1F1F1")?.cgColor
         
         self.layer.addSublayer(trackLayer)
         

@@ -60,7 +60,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
     
     var photoEditing: Bool = false
     
-    var voiceMemoBeingRecorded: Bool = false
+    var audioVisualizerPresent: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,6 +105,28 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
             configureSegmentedControl()
             viewIntiallyLoaded = true
         }
+    }
+    
+    deinit {
+        
+        //Should only utilized when creating a new collab, but additionally safeguards may need to be implemented when this view is configured for editing
+        newCollab.voiceMemos?.forEach({ (voiceMemo) in
+            
+            if let voiceMemoID = voiceMemo.voiceMemoID {
+                
+                //Deleting any voice memos that may have been saved
+                let url = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
+                
+                do {
+                    
+                    try FileManager.default.removeItem(at: url)
+                    
+                } catch {
+                    
+                    print(error.localizedDescription)
+                }
+            }
+        })
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -225,7 +247,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
                 cell.voiceMemos = newCollab.voiceMemos
                 
-//                cell.willBeginRecording = voiceMemoBeingRecorded
+//                cell.willBeginRecording = audioVisualizerPresent
                 
                 cell.createCollabVoiceMemosCellDelegate = self
                 
@@ -341,14 +363,14 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
                 if newCollab.voiceMemos?.count ?? 0 == 0 {
                     
-                    return voiceMemoBeingRecorded ? 200 : 85
+                    return audioVisualizerPresent ? 200 : 85
                 }
                 
                 else if newCollab.voiceMemos?.count ?? 0 < 3 {
                     
                     let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
                 
-                    return voiceMemoBeingRecorded ? floor(itemSize) + 194 : floor(itemSize) + 105
+                    return audioVisualizerPresent ? floor(itemSize) + 194 : floor(itemSize) + 105
                 }
                 
                 else {
@@ -559,6 +581,22 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
             self.zoomingMethods?.blackBackground?.removeFromSuperview()
             self.zoomingMethods?.optionalButtons.forEach({ $0?.removeFromSuperview() })
             self.zoomingMethods?.zoomedInImageView?.removeFromSuperview()
+        }
+    }
+    
+    func updateTableViewContentInset () {
+        
+        DispatchQueue.main.async {
+            
+            if self.details_attachmentsTableView.contentSize.height > self.details_attachmentsTableView.frame.height {
+                
+                self.details_attachmentsTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
+            }
+            
+            else {
+                
+                self.details_attachmentsTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            }
         }
     }
     
@@ -943,12 +981,9 @@ extension CreateCollabViewController: CreateCollabPhotosCellProtocol, UIImagePic
                 photoEdited(newImage: selectedImage)
             }
             
-            details_attachmentsTableView.reloadSections([0], with: .none)
+            details_attachmentsTableView.reloadRows(at: [IndexPath(row: 0, section: 0)], with: .none)
             
-//            if let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CreateCollabPhotosCell {
-//
-//                print("check")
-//            }
+            updateTableViewContentInset()
         }
         
         else {
@@ -972,55 +1007,6 @@ extension CreateCollabViewController: CreateCollabLocationsCellProtocol {
     func attachLocationSelected () {
         
         performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
-    }
-}
-
-extension CreateCollabViewController: CreateCollabVoiceMemosCellProtocol {
-    
-    func attachMemoSelected () {
-        
-        voiceMemoBeingRecorded = true
-        
-        details_attachmentsTableView.beginUpdates()
-        details_attachmentsTableView.endUpdates()
-    }
-    
-    func voiceMemoSaved(_ voiceMemo: VoiceMemo) {
-        
-        voiceMemoBeingRecorded = false
-        
-        if newCollab.voiceMemos == nil {
-            
-            newCollab.voiceMemos = []
-        }
-        
-        newCollab.voiceMemos?.append(voiceMemo)
-        
-//        details_attachmentsTableView.reloadRows(at: [IndexPath(row: 4, section: 0)], with: .fade)
-        
-        details_attachmentsTableView.beginUpdates()
-        details_attachmentsTableView.endUpdates()
-    }
-    
-    func voiceMemoDeleted (_ voiceMemo: VoiceMemo) {
-        
-        newCollab.voiceMemos?.removeAll(where: { $0.voiceMemoID == voiceMemo.voiceMemoID })
-        
-//        if newCollab.voiceMemos?.count ?? 0 > 0 {
-            
-            if let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? CreateCollabVoiceMemoCell {
-    
-                cell.voiceMemos = newCollab.voiceMemos
-            }
-    
-            details_attachmentsTableView.beginUpdates()
-            details_attachmentsTableView.endUpdates()
-//        }
-        
-//        else {
-//
-//            details_attachmentsTableView.reloadRows(at: [IndexPath(row: 4, section: 0)], with: .fade)
-//        }
     }
 }
 
@@ -1054,7 +1040,9 @@ extension CreateCollabViewController: LocationSavedProtocol {
             }
         }
         
-        details_attachmentsTableView.reloadSections([0], with: .none)
+        details_attachmentsTableView.reloadRows(at: [IndexPath(row: 2, section: 0)], with: .none)
+        
+        updateTableViewContentInset()
     }
 }
 
@@ -1077,8 +1065,81 @@ extension CreateCollabViewController: CancelLocationSelectionProtocol {
             newCollab.locations?.removeAll(where: { $0.locationID == locationID! })
             selectedLocation = nil
             
-            details_attachmentsTableView.reloadSections([0], with: .fade)
+            details_attachmentsTableView.reloadRows(at: [IndexPath(row: 2, section: 0)], with: .none)
+            
+            updateTableViewContentInset()
         }
+    }
+}
+
+extension CreateCollabViewController: CreateCollabVoiceMemosCellProtocol {
+    
+    func attachMemoSelected () {
+        
+        audioVisualizerPresent = true
+            
+        self.details_attachmentsTableView.beginUpdates()
+        self.details_attachmentsTableView.endUpdates()
+        
+        updateTableViewContentInset()
+    }
+    
+    func recordingCancelled () {
+        
+        audioVisualizerPresent = false
+        
+        self.details_attachmentsTableView.beginUpdates()
+        self.details_attachmentsTableView.endUpdates()
+        
+        updateTableViewContentInset()
+    }
+    
+    func voiceMemoSaved(_ voiceMemo: VoiceMemo) {
+        
+        audioVisualizerPresent = false
+        
+        if newCollab.voiceMemos == nil {
+            
+            newCollab.voiceMemos = []
+        }
+        
+        newCollab.voiceMemos?.append(voiceMemo)
+        
+        details_attachmentsTableView.beginUpdates()
+        details_attachmentsTableView.endUpdates()
+        
+        updateTableViewContentInset()
+    }
+    
+    func voiceMemoNameChanged (_ voiceMemoID: String, _ name: String?){
+        
+        if let index = newCollab.voiceMemos?.firstIndex(where: { $0.voiceMemoID == voiceMemoID }) {
+            
+            if name != nil, name!.leniantValidationOfTextEntered() {
+                
+                newCollab.voiceMemos?[index].name = name
+            }
+            
+            else {
+                
+                newCollab.voiceMemos?[index].name = nil
+            }
+        }
+    }
+    
+    func voiceMemoDeleted (_ voiceMemo: VoiceMemo) {
+        
+        newCollab.voiceMemos?.removeAll(where: { $0.voiceMemoID == voiceMemo.voiceMemoID })
+            
+        if let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 4, section: 0)) as? CreateCollabVoiceMemoCell {
+
+            cell.voiceMemos = newCollab.voiceMemos
+        }
+
+        details_attachmentsTableView.beginUpdates()
+        details_attachmentsTableView.endUpdates()
+        
+        updateTableViewContentInset()
     }
 }
 

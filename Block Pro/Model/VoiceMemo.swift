@@ -14,7 +14,7 @@ struct VoiceMemo {
     
     var name: String?
     
-    var length: Int?
+    var length: Double?
     
     var dateCreated: Date?
 }

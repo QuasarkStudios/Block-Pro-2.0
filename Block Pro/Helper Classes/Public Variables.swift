@@ -15,3 +15,10 @@ public var topBarHeight: CGFloat {
     let statusBarHeight = UIApplication.shared.keyWindow?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
     return statusBarHeight + 44
 }
+
+//URL for the user's document directory
+public var documentsDirectory: URL {
+    
+    let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    return paths[0]
+}

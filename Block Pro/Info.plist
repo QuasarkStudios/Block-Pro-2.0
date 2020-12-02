@@ -23,7 +23,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This lets you take new photos from your Camera or use photos from your Camera Roll.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allows Block Pro to find locations nearest to you</string>
+	<string>Allows "Block Pro" to find locations nearest to you</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Allows "Block Pro" to record your voice memos</string>
 	<key>UIAppFonts</key>

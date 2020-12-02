@@ -15,18 +15,25 @@ class VoiceMemoCell: UICollectionViewCell {
     let voiceMemoImage = UIImageView(image: UIImage(named: "voice-memo"))
     
     let iProgressView = UIView()
+    var progressCircles: ProgressCircles?
     
     let nameTextField = UITextField()
     
     var voiceMemo: VoiceMemo?
     
     var showCancelButton: Bool = true
-    
-    var showingProgress: Bool?// = false
+    var recordingPlaying: Bool?
     
     let itemSize = floor((UIScreen.main.bounds.width - (40 + 10 + 20)) / 3)
     
-    weak var createCollabVoiceMemosCellDelegate: CreateCollabVoiceMemosCellProtocol?
+    var playbackWorkItem: DispatchWorkItem?
+    
+    weak var parentCell: CreateCollabVoiceMemoCell? {
+        didSet {
+            
+            nameTextField.delegate = parentCell
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -35,6 +42,7 @@ class VoiceMemoCell: UICollectionViewCell {
         configureCancelButton()
         configureVoiceMemoImage()
         configureIProgressView()
+        configureProgressCircles()
         configureNameTextField()
     }
     
@@ -117,6 +125,25 @@ class VoiceMemoCell: UICollectionViewCell {
         iProgressView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(visualizerTapped)))
     }
     
+    private func configureProgressCircles () {
+        
+        progressCircles = ProgressCircles(radius: (itemSize - 50) / 2, lineWidth: 2.5, trackLayerStrokeColor: UIColor.clear.cgColor, strokeColor: UIColor.black.cgColor, strokeEnd: 0)
+        
+        self.contentView.addSubview(progressCircles!)
+        progressCircles?.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            progressCircles?.widthAnchor.constraint(equalToConstant: itemSize - 50),
+            progressCircles?.heightAnchor.constraint(equalToConstant: itemSize - 50),
+            progressCircles?.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
+            progressCircles?.centerYAnchor.constraint(equalTo: self.contentView.centerYAnchor, constant: -2)
+        
+        ].forEach({ $0?.isActive = true })
+        
+        progressCircles?.isUserInteractionEnabled = false
+    }
+    
     private func configureNameTextField () {
         
         self.contentView.addSubview(nameTextField)
@@ -135,6 +162,10 @@ class VoiceMemoCell: UICollectionViewCell {
         nameTextField.font = UIFont(name: "Poppins-SemiBold", size: 13)
         
         nameTextField.textAlignment = .center
+        
+        nameTextField.returnKeyType = .done
+        
+        nameTextField.addTarget(self, action: #selector(nameTextChanged), for: .editingChanged)
     }
     
     private func attachProgress () {
@@ -146,7 +177,6 @@ class VoiceMemoCell: UICollectionViewCell {
         iProgress.isTouchDismiss = false
         iProgress.boxColor = .clear
         iProgress.indicatorColor = .black
-        
         iProgress.indicatorSize = 100
         
         iProgress.attachProgress(toView: iProgressView)
@@ -154,47 +184,119 @@ class VoiceMemoCell: UICollectionViewCell {
         iProgressView.updateIndicator(style: .lineScalePulseOut)
     }
     
+    private func beginRecordingPlayBack () {
+        
+        self.parentCell?.stopRecordingPlaybackOfVoiceMemoCell() //Stops the recording playback of other "voiceMemoCells"
+        
+        if recordingPlaying == nil {
+            
+            attachProgress()
+        }
+        
+        iProgressView.showProgress()
+
+        recordingPlaying = true
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+
+            self.voiceMemoImage.alpha = 0
+            self.iProgressView.alpha = 1
+        }
+        
+        self.parentCell?.playbackRecording(self.voiceMemo?.voiceMemoID ?? "")
+        
+        if let recordingLength = voiceMemo?.length {
+            
+            playbackWorkItem = DispatchWorkItem(block: {
+                
+                self.stopRecordingPlayack()
+            })
+            
+            beginProgressCircleAnimation() //Calling here allows for the animation to be completed at a better time
+            DispatchQueue.main.asyncAfter(deadline: .now() + recordingLength, execute: playbackWorkItem!)
+        }
+    }
+    
+    func stopRecordingPlayack () {
+        
+        recordingPlaying = false
+        
+        self.parentCell?.stopRecordingPlayback()
+        playbackWorkItem?.cancel()
+        
+        endProgressCircleAnimation()
+        
+        UIView.transition(with: contentView, duration: 0.3, options: .transitionCrossDissolve) {
+            
+            self.voiceMemoImage.alpha = 1
+            self.iProgressView.alpha = 0
+            
+        } completion: { (finished: Bool) in
+            
+            self.iProgressView.dismissProgress()
+        }
+    }
+    
+    private func beginProgressCircleAnimation () {
+        
+        if let length = voiceMemo?.length {
+            
+            let strokeAnimation = CABasicAnimation(keyPath: "strokeEnd")
+            strokeAnimation.fromValue = 0
+            strokeAnimation.toValue = 1
+            strokeAnimation.duration = length
+            strokeAnimation.fillMode = .forwards
+            strokeAnimation.isRemovedOnCompletion = false
+            
+            progressCircles?.shapeLayer.removeAnimation(forKey: "colorAnimation")
+            progressCircles?.shapeLayer.add(strokeAnimation, forKey: nil)
+        }
+    }
+    
+    private func endProgressCircleAnimation () {
+        
+        let colorAnimation = CABasicAnimation(keyPath: "strokeColor")
+        colorAnimation.fromValue = UIColor.black.cgColor
+        colorAnimation.toValue = UIColor.clear.cgColor
+        colorAnimation.duration = 0.3
+        colorAnimation.fillMode = .forwards
+        colorAnimation.isRemovedOnCompletion = false
+        
+        progressCircles?.shapeLayer.add(colorAnimation, forKey: "colorAnimation")
+    }
+    
     @objc private func cancelButtonPressed () {
         
         if let memo = voiceMemo {
             
-            createCollabVoiceMemosCellDelegate?.voiceMemoDeleted(memo)
+            if recordingPlaying ?? false {
+                
+                parentCell?.stopRecordingPlayback()
+            }
+            
+            parentCell?.deleteVoiceMemo(memo)
         }
     }
     
     @objc private func visualizerTapped () {
         
-        if showingProgress ?? false {
+        if recordingPlaying ?? false {
             
-            showingProgress = false
-            
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                
-                self.voiceMemoImage.alpha = 1
-                self.iProgressView.alpha = 0
-                
-            } completion: { (finished: Bool) in
-    
-                self.iProgressView.dismissProgress()
-            }
-            
+            stopRecordingPlayack()
         }
         
         else {
             
-            if showingProgress == nil {
+            //Ensures that a recording isn't going to start and that a recording isn't ongoing
+            if !(parentCell?.willBeginRecording ?? false) && !(parentCell?.recording ?? false) {
                 
-                attachProgress()
-            }
-            
-            iProgressView.showProgress()
-            showingProgress = true
-            
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                
-                self.voiceMemoImage.alpha = 0
-                self.iProgressView.alpha = 1
+                beginRecordingPlayBack()
             }
         }
+    }
+    
+    @objc private func nameTextChanged () {
+        
+        parentCell?.createCollabVoiceMemosCellDelegate?.voiceMemoNameChanged(voiceMemo?.voiceMemoID ?? "", nameTextField.text)
     }
 }

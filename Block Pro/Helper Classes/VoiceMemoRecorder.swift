@@ -12,10 +12,11 @@ import SVProgressHUD
 
 class VoiceMemoRecorder {
     
-    let audioSession = AVAudioSession.sharedInstance()
+    private let audioSession = AVAudioSession.sharedInstance()
     
     private var audioRecorder: AVAudioRecorder?
-    private var timer: Timer?
+    private var audioPlayer: AVAudioPlayer?
+    private var monitoringTimer: Timer?
     
     private var currentSample: Int
     private let numberOfSamples: Int
@@ -23,67 +24,116 @@ class VoiceMemoRecorder {
     private var soundSamples: [Float]? {
         didSet {
             
-            if let cell = voiceMemoCell as? CreateCollabVoiceMemoCell, let samples = soundSamples {
-                    
+            if let cell = parentCell as? CreateCollabVoiceMemoCell, let samples = soundSamples {
+                
+                //Updates the audioVisualizer of the parentCell with the soundSamples configured in this class
                 cell.updateAudioVisualizer(samples)
             }
         }
     }
     
-    weak var voiceMemoCell: AnyObject?
+    var microphoneAccessGranted: Bool?
     
-    init(voiceMemoCell: AnyObject, numberOfSamples: Int) {
+    weak var parentCell: AnyObject?
+    
+    init(parentCell: AnyObject, numberOfSamples: Int) {
         
-        self.voiceMemoCell = voiceMemoCell
+        self.parentCell = parentCell
         
         self.numberOfSamples = numberOfSamples
         self.soundSamples = Array(repeating: .zero, count: numberOfSamples)
         self.currentSample = 0
         
-        
-        verifyRecordingPermission { (granted) in
-            
-            if granted {
-                
-                self.configureTemporaryAudioRecorder()
-            }
-            
-            else {
-                
-                //present alert
-                print("false")
-            }
-        }
+        verifyRecordingPermission()
     }
     
-    private func verifyRecordingPermission (completion: @escaping ((_ granted: Bool) -> Void)) {
+    deinit {
         
+        monitoringTimer?.invalidate()
+        audioRecorder?.stop()
+    }
+    
+    //MARK: - Verify Recording Permission
+    
+    private func verifyRecordingPermission () {
+        
+        //If the user has granted permission to use the microphone
         if audioSession.recordPermission == .granted {
             
-            completion(true)
+            microphoneAccessGranted = true
+            
+            configureTemporaryAudioRecorder()
+            
+            if let cell = parentCell as? CreateCollabVoiceMemoCell {
+                
+                //Adds the notification that will be fired when the audio is interrupted, and attaches the "handleAudioInterruption" method from the "parentCell" to it
+                NotificationCenter.default.addObserver(cell, selector: #selector(cell.handleAudioInterruption), name: AVAudioSession.interruptionNotification, object: nil)
+            }
         }
         
         else {
             
+            //If the user hasn't granted permission to use the microphone
             audioSession.requestRecordPermission { (granted) in
                 
-                completion(granted)
+                //If permission is granted
+                if granted {
+                    
+                    self.microphoneAccessGranted = true
+                    
+                    self.configureTemporaryAudioRecorder()
+                    
+                    if let cell = self.parentCell as? CreateCollabVoiceMemoCell {
+                        
+                        //Adds the notification that will be fired when the audio is interrupted, and attaches the "handleAudioInterruption" method from the "parentCell" to it
+                        NotificationCenter.default.addObserver(cell, selector: #selector(cell.handleAudioInterruption), name: AVAudioSession.interruptionNotification, object: nil)
+                        
+                        //Performs all the layout modifications on the main thread
+                        DispatchQueue.main.async {
+                            
+                            cell.attachButtonPressed()
+                        }
+                    }
+                }
+                
+                //If permission is denied
+                else {
+                    
+                    if let cell = self.parentCell as? CreateCollabVoiceMemoCell {
+                        
+                        DispatchQueue.main.async {
+                            
+                            cell.presentDeniedAlert()
+                        }
+                    }
+                }
             }
         }
     }
     
-    private func configureTemporaryAudioRecorder () {
+    
+    //MARK: - Configure Temporary Audio Recorder
+    
+    func configureTemporaryAudioRecorder () {
         
-        let temporaryDirectoryURL = getDocumentsDirectory().appendingPathComponent("temporaryAudioRecording.m4a")
+        //Temporary URL where the temporary recording will be stored
+        let temporaryDirectoryURL = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent("temporaryAudioRecording.m4a")
         
         let recorderSettings: [String : Any] = [
             AVFormatIDKey: NSNumber(value: kAudioFormatAppleLossless),
-            AVSampleRateKey: 16000.0,//44100.0,
+            AVSampleRateKey: 16000.0,
             AVNumberOfChannelsKey: 1,
             AVEncoderAudioQualityKey: AVAudioQuality.min.rawValue
         ]
         
         do {
+            
+            //Creates a directory called "Voice Memos" if one doesn't exist
+            if !FileManager.default.fileExists(atPath: documentsDirectory.path + "/VoiceMemos") {
+                
+                try FileManager.default.createDirectory(atPath: documentsDirectory.path + "/VoiceMemos", withIntermediateDirectories: true, attributes: nil)
+            }
+            
             self.audioRecorder = try AVAudioRecorder(url: temporaryDirectoryURL, settings: recorderSettings)
             try self.audioSession.setCategory(.record, mode: .default, options: [])
             
@@ -94,104 +144,164 @@ class VoiceMemoRecorder {
             
         } catch {
             
-            //present alert and stop the loading of the cell
+            print("error configuring temporary recorder: ", error.localizedDescription)
         }
 
     }
+
     
-    private func getDocumentsDirectory () -> URL {
-        
-        let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
-        return paths[0]
-    }
+    //MARK: - Monitoring Functions
     
     private func startMonitoring () {
         
-        timer = Timer.scheduledTimer(withTimeInterval: 0.02, repeats: true, block: { (timer) in
+        monitoringTimer = Timer.scheduledTimer(withTimeInterval: 0.02, repeats: true, block: { (timer) in
             
+            //Refreshes the average and peak power values for all channels of an audio recorder; allows me to get the average power for our sound channel
             self.audioRecorder?.updateMeters()
-            
-            self.currentSample = (self.currentSample + 1) % self.numberOfSamples
             
             if let power = self.audioRecorder?.averagePower(forChannel: 0) {
                 
+                //Updates soundSamples at the index cooresponding with the currentSample to be whatever averagePower give us
                 self.soundSamples?[self.currentSample] = power
             }
+            
+            self.currentSample = (self.currentSample + 1) % self.numberOfSamples
         })
     }
     
-    func startRecording (_ voiceMemoID: String) {
+    func stopMonitoring () {
         
         audioRecorder?.stop()
         audioRecorder?.deleteRecording() //Deletes the "temporaryAudioRecording.m4a" file
         
-        timer?.invalidate()
+        monitoringTimer?.invalidate()
+    }
+    
+    
+    //MARK: - Recording Functions
+    
+    func startRecording (_ voiceMemoID: String) {
         
-        let voiceMemoDirectoryURL = getDocumentsDirectory().appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
-//            URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        stopMonitoring()
+        
+        //The URL where the recording/voice memo will be stored
+        let url = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
         
         let recorderSettings: [String : Any] = [
             AVFormatIDKey: NSNumber(value: kAudioFormatAppleLossless),
             AVSampleRateKey: 12000.0,
             AVNumberOfChannelsKey: 1,
-            AVEncoderAudioQualityKey: AVAudioQuality.low.rawValue
+            AVEncoderAudioQualityKey: AVAudioQuality.medium.rawValue
         ]
         
         do {
             
             //Creates a directory called "Voice Memos" if one doesn't exist
-            if !FileManager.default.fileExists(atPath: getDocumentsDirectory().path + "/VoiceMemos") {
+            if !FileManager.default.fileExists(atPath: documentsDirectory.path + "/VoiceMemos") {
                 
-                try FileManager.default.createDirectory(atPath: getDocumentsDirectory().path + "/VoiceMemos", withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(atPath: documentsDirectory.path + "/VoiceMemos", withIntermediateDirectories: true, attributes: nil)
             }
             
-            self.audioRecorder = try AVAudioRecorder(url: voiceMemoDirectoryURL, settings: recorderSettings)
-            try self.audioSession.setCategory(.playAndRecord, mode: .default, options: [])
+            self.audioRecorder = try AVAudioRecorder(url: url, settings: recorderSettings)
+            try self.audioSession.setCategory(.record, mode: .default, options: [])
 
             audioRecorder?.isMeteringEnabled = true
             audioRecorder?.record()
-
-//            configureTemporaryAudioRecorder()
             
             self.startMonitoring()
             
         } catch {
             
-            print("tehee oops")
+            print("error starting recording: ", error.localizedDescription)
+        }
+    }
+    
+    func stopRecording (voiceMemoID: String, completion: ((_ memoLength: Float64) -> Void)) {
+        
+        audioRecorder?.stop()
+        
+        monitoringTimer?.invalidate()
+        
+        //The URL where the recording/voice memo is stored
+        let url = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
+        
+        //Calculating the duration of the recording
+        let asset = AVURLAsset(url: url)
+        let audioDuration = asset.duration
+        let audioDurationSeconds = CMTimeGetSeconds(audioDuration)
+        
+        completion(audioDurationSeconds) //For some reason you keep accidentally deleting this... so stop it
+    }
+    
+    
+    //MARK: - Recording Playback Functions
+    
+    func playbackRecording (_ voiceMemoID: String) {
+        
+        //The URL where the recording/voice memo is stored
+        let url = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
+        
+        do {
             
-            //present alert and stop the loading of the cell
+            audioPlayer = try AVAudioPlayer(contentsOf: url, fileTypeHint: AVFileType.m4a.rawValue)
+            try self.audioSession.setCategory(.playback, mode: .default, options: [])
+            
+            audioPlayer?.play()
+            
+        } catch {
+            
+            print("error stopping recording: ", error.localizedDescription)
+        }
+    }
+    
+    func stopRecordingPlayback () {
+        
+        audioPlayer?.stop()
+    }
+    
+    
+    //MARK: - Delete Recording
+    
+    func deleteRecording (_ voiceMemo: VoiceMemo) {
+        
+        if let voiceMemoID = voiceMemo.voiceMemoID {
+            
+            //The URL where the recording/voice memo is stored
+            let url = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
+            
+            do {
+                
+                try FileManager.default.removeItem(at: url)
+                
+            } catch {
+                
+                print("error deleting recording: ", error.localizedDescription)
+            }
+        }
+    }
+    
+    
+    //MARK: - Determine Audio Interuption Type
+    
+    //Used in the parentCell class
+    func determineIfAudioInteruptionBegan(_ notification: NSNotification) -> Bool {
+        
+        if let userInfo = notification.userInfo, let typeValue = userInfo[AVAudioSessionInterruptionOptionKey] as? UInt, let type = AVAudioSession.InterruptionType(rawValue: typeValue) {
+            
+            if type == .began {
+                
+                return true
+            }
+            
+            else {
+                
+                return false
+            }
         }
         
-//        do {
-//
-//            let items = try FileManager.default.contentsOfDirectory(atPath: getDocumentsDirectory().path)
-//
-//            print(items)
-//
-//
-//            
-//            //will be useful when i need to delete memos later
-////            let itemURL = "\(getDocumentsDirectory().path)/temporaryAudioRecording.m4a"
-////            try FileManager.default.removeItem(at: URL(fileURLWithPath: itemURL, isDirectory: true))
-//
-//        } catch {
-//
-//            print("didnt work")
-//        }
-    }
-    
-    func stopRecording () {
-        
-        audioRecorder?.stop()
-        
-        timer?.invalidate()
-        
-//        configureTemporaryAudioRecorder()
-    }
-    
-    deinit {
-        
-        timer?.invalidate()
-        audioRecorder?.stop()
+        else {
+            
+            return false
+        }
     }
 }

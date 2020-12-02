@@ -79,6 +79,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 print("Error signing out", signOutError.localizedDescription)
             }
         }
+        
+        //Deleting any voice memos that may have been saved
+        let url = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true)
+        
+        do {
+            
+            try FileManager.default.removeItem(at: url)
+            
+        } catch {
+            
+            print(error.localizedDescription)
+        }
     }
     
     
