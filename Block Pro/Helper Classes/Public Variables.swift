@@ -22,3 +22,6 @@ public var documentsDirectory: URL {
     let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
     return paths[0]
 }
+
+//General arithmetic used to calculate the size of cells for the photoCollectionView, voiceMemoCollectionView etc.
+public let itemSize = floor((UIScreen.main.bounds.width - (40 + 10 + 20)) / 3)

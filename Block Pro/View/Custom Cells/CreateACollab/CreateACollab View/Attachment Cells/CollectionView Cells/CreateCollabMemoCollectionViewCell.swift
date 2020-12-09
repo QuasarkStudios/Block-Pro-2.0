@@ -1,5 +1,5 @@
 //
-//  VoiceMemoCell.swift
+//  CreateCollabMemoCollectionViewCell.swift
 //  Block Pro
 //
 //  Created by Nimat Azeez on 11/15/20.
@@ -9,7 +9,7 @@
 import UIKit
 import iProgressHUD
 
-class VoiceMemoCell: UICollectionViewCell {
+class CreateCollabMemoCollectionViewCell: UICollectionViewCell {
     
     let cancelButton = UIButton(type: .system)
     let voiceMemoImage = UIImageView(image: UIImage(named: "voice-memo"))
@@ -28,10 +28,10 @@ class VoiceMemoCell: UICollectionViewCell {
     
     var playbackWorkItem: DispatchWorkItem?
     
-    weak var parentCell: CreateCollabVoiceMemoCell? {
+    weak var createCollabVoiceMemoCell: CreateCollabVoiceMemoCell? {
         didSet {
             
-            nameTextField.delegate = parentCell
+            nameTextField.delegate = createCollabVoiceMemoCell
         }
     }
     
@@ -184,9 +184,9 @@ class VoiceMemoCell: UICollectionViewCell {
         iProgressView.updateIndicator(style: .lineScalePulseOut)
     }
     
-    private func beginRecordingPlayBack () {
+    private func beginRecordingPlayback () {
         
-        self.parentCell?.stopRecordingPlaybackOfVoiceMemoCell() //Stops the recording playback of other "voiceMemoCells"
+        self.createCollabVoiceMemoCell?.stopRecordingPlaybackOfVoiceMemoCell() //Stops the recording playback of other "voiceMemoCells"
         
         if recordingPlaying == nil {
             
@@ -203,13 +203,13 @@ class VoiceMemoCell: UICollectionViewCell {
             self.iProgressView.alpha = 1
         }
         
-        self.parentCell?.playbackRecording(self.voiceMemo?.voiceMemoID ?? "")
+        self.createCollabVoiceMemoCell?.playbackRecording(self.voiceMemo?.voiceMemoID ?? "")
         
         if let recordingLength = voiceMemo?.length {
             
             playbackWorkItem = DispatchWorkItem(block: {
                 
-                self.stopRecordingPlayack()
+                self.stopRecordingPlayback()
             })
             
             beginProgressCircleAnimation() //Calling here allows for the animation to be completed at a better time
@@ -217,12 +217,13 @@ class VoiceMemoCell: UICollectionViewCell {
         }
     }
     
-    func stopRecordingPlayack () {
+    func stopRecordingPlayback () {
         
         recordingPlaying = false
         
-        self.parentCell?.stopRecordingPlayback()
+        self.createCollabVoiceMemoCell?.stopRecordingPlayback()
         playbackWorkItem?.cancel()
+        playbackWorkItem = nil
         
         endProgressCircleAnimation()
         
@@ -271,10 +272,10 @@ class VoiceMemoCell: UICollectionViewCell {
             
             if recordingPlaying ?? false {
                 
-                parentCell?.stopRecordingPlayback()
+                createCollabVoiceMemoCell?.stopRecordingPlayback()
             }
             
-            parentCell?.deleteVoiceMemo(memo)
+            createCollabVoiceMemoCell?.deleteVoiceMemo(memo)
         }
     }
     
@@ -282,21 +283,21 @@ class VoiceMemoCell: UICollectionViewCell {
         
         if recordingPlaying ?? false {
             
-            stopRecordingPlayack()
+            stopRecordingPlayback()
         }
         
         else {
             
             //Ensures that a recording isn't going to start and that a recording isn't ongoing
-            if !(parentCell?.willBeginRecording ?? false) && !(parentCell?.recording ?? false) {
+            if !(createCollabVoiceMemoCell?.willBeginRecording ?? false) && !(createCollabVoiceMemoCell?.recording ?? false) {
                 
-                beginRecordingPlayBack()
+                beginRecordingPlayback()
             }
         }
     }
     
     @objc private func nameTextChanged () {
         
-        parentCell?.createCollabVoiceMemosCellDelegate?.voiceMemoNameChanged(voiceMemo?.voiceMemoID ?? "", nameTextField.text)
+        createCollabVoiceMemoCell?.createCollabVoiceMemosCellDelegate?.voiceMemoNameChanged(voiceMemo?.voiceMemoID ?? "", nameTextField.text)
     }
 }

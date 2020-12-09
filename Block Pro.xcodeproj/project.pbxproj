@@ -104,6 +104,10 @@
 		0D45DED325474259003E16E3 /* LocationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D45DED225474259003E16E3 /* LocationProtocols.swift */; };
 		0D45DEDB254C7FE3003E16E3 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D45DEDA254C7FE3003E16E3 /* Location.swift */; };
 		0D45DEDE254D0151003E16E3 /* MKPlacemark+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D45DEDD254D0151003E16E3 /* MKPlacemark+Extension.swift */; };
+		0D4703062578732E00B6A8FA /* CollabHomeSectionHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4703052578732E00B6A8FA /* CollabHomeSectionHeaderCell.swift */; };
+		0D47030B2578773F00B6A8FA /* CollabHomeVoiceMemosCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D47030A2578773F00B6A8FA /* CollabHomeVoiceMemosCell.swift */; };
+		0D4703102578883200B6A8FA /* CollabHomeMemoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D47030F2578883200B6A8FA /* CollabHomeMemoCollectionViewCell.swift */; };
+		0D470317257B283D00B6A8FA /* VoiceMemoPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D470316257B283D00B6A8FA /* VoiceMemoPlayer.swift */; };
 		0D48467A2523D79A002CF201 /* CollabNavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D4846792523D79A002CF201 /* CollabNavigationView.swift */; };
 		0D48468125281744002CF201 /* CollabHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D48468025281744002CF201 /* CollabHeaderView.swift */; };
 		0D495225244F70A000AAD436 /* DateCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D495223244F70A000AAD436 /* DateCell.xib */; };
@@ -235,19 +239,13 @@
 		0DADDAB42355919800E79F89 /* TimeTwentyFiveMinCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAB32355919800E79F89 /* TimeTwentyFiveMinCell.swift */; };
 		0DADDAB6235591C200E79F89 /* TimeThirtyMinAndUpCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DADDAB5235591C200E79F89 /* TimeThirtyMinAndUpCell.swift */; };
 		0DADDAB823579D1500E79F89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */; };
-		0DAFFDCF2532F66700C39B69 /* CollabHomeMembersHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFFDCD2532F66700C39B69 /* CollabHomeMembersHeaderCell.swift */; };
-		0DAFFDD02532F66700C39B69 /* CollabHomeMembersHeaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAFFDCE2532F66700C39B69 /* CollabHomeMembersHeaderCell.xib */; };
 		0DAFFDD52532FAA400C39B69 /* CollabHomeMembersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFFDD32532FAA400C39B69 /* CollabHomeMembersCell.swift */; };
 		0DAFFDD62532FAA400C39B69 /* CollabHomeMembersCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAFFDD42532FAA400C39B69 /* CollabHomeMembersCell.xib */; };
 		0DAFFE002533005500C39B69 /* CollabMemberCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFFDFE2533005500C39B69 /* CollabMemberCollectionViewCell.swift */; };
 		0DAFFE012533005500C39B69 /* CollabMemberCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAFFDFF2533005500C39B69 /* CollabMemberCollectionViewCell.xib */; };
-		0DAFFE282533A2BB00C39B69 /* CollabHomeLocationsHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFFE262533A2BB00C39B69 /* CollabHomeLocationsHeaderCell.swift */; };
-		0DAFFE292533A2BB00C39B69 /* CollabHomeLocationsHeaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAFFE272533A2BB00C39B69 /* CollabHomeLocationsHeaderCell.xib */; };
 		0DAFFE2D2533A7E100C39B69 /* CollabHomeLocationsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFFE2B2533A7E100C39B69 /* CollabHomeLocationsCell.swift */; };
 		0DAFFE2E2533A7E100C39B69 /* CollabHomeLocationsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAFFE2C2533A7E100C39B69 /* CollabHomeLocationsCell.xib */; };
 		0DAFFE372537634A00C39B69 /* ProgressCircles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFFE362537634A00C39B69 /* ProgressCircles.swift */; };
-		0DAFFE3B25376E5200C39B69 /* CollabHomePhotosHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFFE3925376E5200C39B69 /* CollabHomePhotosHeaderCell.swift */; };
-		0DAFFE3C25376E5200C39B69 /* CollabHomePhotosHeaderCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAFFE3A25376E5200C39B69 /* CollabHomePhotosHeaderCell.xib */; };
 		0DAFFE402537744C00C39B69 /* CollabHomePhotosCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFFE3E2537744C00C39B69 /* CollabHomePhotosCell.swift */; };
 		0DAFFE412537744C00C39B69 /* CollabHomePhotosCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAFFE3F2537744C00C39B69 /* CollabHomePhotosCell.xib */; };
 		0DB29FB42448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB29FB32448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift */; };
@@ -290,7 +288,7 @@
 		0DDF79C52346AB9B00BAAD51 /* UserSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF79C42346AB9B00BAAD51 /* UserSettingsViewController.swift */; };
 		0DDF79C72346CE0500BAAD51 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF79C62346CE0500BAAD51 /* ProfileCell.swift */; };
 		0DDF87E5256210700051C8F6 /* VoiceMemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF87E4256210700051C8F6 /* VoiceMemo.swift */; };
-		0DDF87ED256248B40051C8F6 /* VoiceMemoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF87EC256248B40051C8F6 /* VoiceMemoCell.swift */; };
+		0DDF87ED256248B40051C8F6 /* CreateCollabMemoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF87EC256248B40051C8F6 /* CreateCollabMemoCollectionViewCell.swift */; };
 		0DE31E15244BA97800DE6EE3 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */; };
 		0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD7235FDD3A005255A1 /* Cards.swift */; };
 		0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD9235FDD49005255A1 /* Tasks.swift */; };
@@ -412,6 +410,10 @@
 		0D45DED225474259003E16E3 /* LocationProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProtocols.swift; sourceTree = "<group>"; };
 		0D45DEDA254C7FE3003E16E3 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
 		0D45DEDD254D0151003E16E3 /* MKPlacemark+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MKPlacemark+Extension.swift"; sourceTree = "<group>"; };
+		0D4703052578732E00B6A8FA /* CollabHomeSectionHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeSectionHeaderCell.swift; sourceTree = "<group>"; };
+		0D47030A2578773F00B6A8FA /* CollabHomeVoiceMemosCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeVoiceMemosCell.swift; sourceTree = "<group>"; };
+		0D47030F2578883200B6A8FA /* CollabHomeMemoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeMemoCollectionViewCell.swift; sourceTree = "<group>"; };
+		0D470316257B283D00B6A8FA /* VoiceMemoPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemoPlayer.swift; sourceTree = "<group>"; };
 		0D4846792523D79A002CF201 /* CollabNavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabNavigationView.swift; sourceTree = "<group>"; };
 		0D48468025281744002CF201 /* CollabHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHeaderView.swift; sourceTree = "<group>"; };
 		0D495223244F70A000AAD436 /* DateCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DateCell.xib; sourceTree = "<group>"; };
@@ -544,19 +546,13 @@
 		0DADDAB32355919800E79F89 /* TimeTwentyFiveMinCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTwentyFiveMinCell.swift; sourceTree = "<group>"; };
 		0DADDAB5235591C200E79F89 /* TimeThirtyMinAndUpCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeThirtyMinAndUpCell.swift; sourceTree = "<group>"; };
 		0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		0DAFFDCD2532F66700C39B69 /* CollabHomeMembersHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeMembersHeaderCell.swift; sourceTree = "<group>"; };
-		0DAFFDCE2532F66700C39B69 /* CollabHomeMembersHeaderCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollabHomeMembersHeaderCell.xib; sourceTree = "<group>"; };
 		0DAFFDD32532FAA400C39B69 /* CollabHomeMembersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeMembersCell.swift; sourceTree = "<group>"; };
 		0DAFFDD42532FAA400C39B69 /* CollabHomeMembersCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollabHomeMembersCell.xib; sourceTree = "<group>"; };
 		0DAFFDFE2533005500C39B69 /* CollabMemberCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabMemberCollectionViewCell.swift; sourceTree = "<group>"; };
 		0DAFFDFF2533005500C39B69 /* CollabMemberCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollabMemberCollectionViewCell.xib; sourceTree = "<group>"; };
-		0DAFFE262533A2BB00C39B69 /* CollabHomeLocationsHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeLocationsHeaderCell.swift; sourceTree = "<group>"; };
-		0DAFFE272533A2BB00C39B69 /* CollabHomeLocationsHeaderCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollabHomeLocationsHeaderCell.xib; sourceTree = "<group>"; };
 		0DAFFE2B2533A7E100C39B69 /* CollabHomeLocationsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeLocationsCell.swift; sourceTree = "<group>"; };
 		0DAFFE2C2533A7E100C39B69 /* CollabHomeLocationsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollabHomeLocationsCell.xib; sourceTree = "<group>"; };
 		0DAFFE362537634A00C39B69 /* ProgressCircles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCircles.swift; sourceTree = "<group>"; };
-		0DAFFE3925376E5200C39B69 /* CollabHomePhotosHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomePhotosHeaderCell.swift; sourceTree = "<group>"; };
-		0DAFFE3A25376E5200C39B69 /* CollabHomePhotosHeaderCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollabHomePhotosHeaderCell.xib; sourceTree = "<group>"; };
 		0DAFFE3E2537744C00C39B69 /* CollabHomePhotosCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomePhotosCell.swift; sourceTree = "<group>"; };
 		0DAFFE3F2537744C00C39B69 /* CollabHomePhotosCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollabHomePhotosCell.xib; sourceTree = "<group>"; };
 		0DB29FB32448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectorCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
@@ -601,7 +597,7 @@
 		0DDF79C42346AB9B00BAAD51 /* UserSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsViewController.swift; sourceTree = "<group>"; };
 		0DDF79C62346CE0500BAAD51 /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		0DDF87E4256210700051C8F6 /* VoiceMemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemo.swift; sourceTree = "<group>"; };
-		0DDF87EC256248B40051C8F6 /* VoiceMemoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemoCell.swift; sourceTree = "<group>"; };
+		0DDF87EC256248B40051C8F6 /* CreateCollabMemoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCollabMemoCollectionViewCell.swift; sourceTree = "<group>"; };
 		0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		0DE3CDD7235FDD3A005255A1 /* Cards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cards.swift; sourceTree = "<group>"; };
 		0DE3CDD9235FDD49005255A1 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
@@ -723,7 +719,7 @@
 			children = (
 				0D1B1DF52450FCF2008DA9B5 /* PhotoCell.swift */,
 				0D1B1DF62450FCF2008DA9B5 /* PhotoCell.xib */,
-				0DDF87EC256248B40051C8F6 /* VoiceMemoCell.swift */,
+				0DDF87EC256248B40051C8F6 /* CreateCollabMemoCollectionViewCell.swift */,
 			);
 			path = "CollectionView Cells";
 			sourceTree = "<group>";
@@ -958,6 +954,7 @@
 				0D7CABEE252CF2630045006C /* ZoomingImageViewMethods.swift */,
 				0D7CABE8252A69590045006C /* Public Variables.swift */,
 				0D670D95255DDC0E001D2634 /* VoiceMemoRecorder.swift */,
+				0D470316257B283D00B6A8FA /* VoiceMemoPlayer.swift */,
 			);
 			path = "Helper Classes";
 			sourceTree = "<group>";
@@ -1006,6 +1003,16 @@
 				0D45DECD254694D5003E16E3 /* SelectedLocationCell.swift */,
 			);
 			path = "Add Location View Cells";
+			sourceTree = "<group>";
+		};
+		0D47030E2578880000B6A8FA /* CollectionView Cells */ = {
+			isa = PBXGroup;
+			children = (
+				0DAFFDFE2533005500C39B69 /* CollabMemberCollectionViewCell.swift */,
+				0DAFFDFF2533005500C39B69 /* CollabMemberCollectionViewCell.xib */,
+				0D47030F2578883200B6A8FA /* CollabHomeMemoCollectionViewCell.swift */,
+			);
+			path = "CollectionView Cells";
 			sourceTree = "<group>";
 		};
 		0D78658223E4B59100BD4C4D /* Fonts */ = {
@@ -1341,24 +1348,19 @@
 		0DC5D96F253A89DD00151598 /* CollabHome Cells */ = {
 			isa = PBXGroup;
 			children = (
-				0DAFFDCD2532F66700C39B69 /* CollabHomeMembersHeaderCell.swift */,
-				0DAFFDCE2532F66700C39B69 /* CollabHomeMembersHeaderCell.xib */,
+				0D4703052578732E00B6A8FA /* CollabHomeSectionHeaderCell.swift */,
 				0DAFFDD32532FAA400C39B69 /* CollabHomeMembersCell.swift */,
 				0DAFFDD42532FAA400C39B69 /* CollabHomeMembersCell.xib */,
-				0DAFFDFE2533005500C39B69 /* CollabMemberCollectionViewCell.swift */,
-				0DAFFDFF2533005500C39B69 /* CollabMemberCollectionViewCell.xib */,
-				0DAFFE262533A2BB00C39B69 /* CollabHomeLocationsHeaderCell.swift */,
-				0DAFFE272533A2BB00C39B69 /* CollabHomeLocationsHeaderCell.xib */,
 				0DAFFE2B2533A7E100C39B69 /* CollabHomeLocationsCell.swift */,
 				0DAFFE2C2533A7E100C39B69 /* CollabHomeLocationsCell.xib */,
-				0DAFFE3925376E5200C39B69 /* CollabHomePhotosHeaderCell.swift */,
-				0DAFFE3A25376E5200C39B69 /* CollabHomePhotosHeaderCell.xib */,
 				0DAFFE3E2537744C00C39B69 /* CollabHomePhotosCell.swift */,
 				0DAFFE3F2537744C00C39B69 /* CollabHomePhotosCell.xib */,
 				0D2FDA2225393EE2005DF638 /* CollabPhotoCollectionViewCell.swift */,
 				0D2FDA2325393EE2005DF638 /* CollabPhotoCollectionViewCell.xib */,
+				0D47030A2578773F00B6A8FA /* CollabHomeVoiceMemosCell.swift */,
 				0D2FDA1D25391054005DF638 /* LeaveCollabCell.swift */,
 				0D2FDA1E25391054005DF638 /* LeaveCollabCell.xib */,
+				0D47030E2578880000B6A8FA /* CollectionView Cells */,
 			);
 			path = "CollabHome Cells";
 			sourceTree = "<group>";
@@ -1585,7 +1587,6 @@
 				0D78657A23E4B56B00BD4C4D /* Poppins-Regular.ttf in Resources */,
 				0D693A35240EC3CB00CFDD2F /* BlockOtherSettingCell.xib in Resources */,
 				0D0C8D8724410E4C00EB51F7 /* CollabObjectiveCell.xib in Resources */,
-				0DAFFE292533A2BB00C39B69 /* CollabHomeLocationsHeaderCell.xib in Resources */,
 				0D0C8D932441A1FE00EB51F7 /* CollabRemindersCell.xib in Resources */,
 				0D693A31240EB5A900CFDD2F /* BlockNameSettingCell.xib in Resources */,
 				0D0C8D8B244116F700EB51F7 /* CollabMembersCell.xib in Resources */,
@@ -1618,7 +1619,6 @@
 				0D0ECF44243E6E9300D947F4 /* CollabCell.xib in Resources */,
 				0D82282924DA259200D0BBA0 /* ConvoUpdatedMessageCell.xib in Resources */,
 				0D78657F23E4B56B00BD4C4D /* Poppins-ExtraBoldItalic.ttf in Resources */,
-				0DAFFDD02532F66700C39B69 /* CollabHomeMembersHeaderCell.xib in Resources */,
 				0D95C17A232886C400421BE0 /* Start Timer.wav in Resources */,
 				0D2CED0B2290829300CC9180 /* CustomTimeTableCell.xib in Resources */,
 				0D44BA8A2476F76300647E06 /* AddMembers.storyboard in Resources */,
@@ -1651,7 +1651,6 @@
 				0D589DE62458A0D9005AC7BC /* MessageCell.xib in Resources */,
 				0D7865B323F7313200BD4C4D /* TimeBlockCell.xib in Resources */,
 				0D78658123E4B56B00BD4C4D /* Poppins-MediumItalic.ttf in Resources */,
-				0DAFFE3C25376E5200C39B69 /* CollabHomePhotosHeaderCell.xib in Resources */,
 				0D3213D224C8F2F100BC46F5 /* scissor-cutting-animated.json in Resources */,
 				0D78657423E4B56B00BD4C4D /* Poppins-Medium.ttf in Resources */,
 				0D02C23E2443709B00D255D7 /* CreateACollab.storyboard in Resources */,
@@ -1727,6 +1726,7 @@
 			files = (
 				0D872F7C22E25350001D35B4 /* CurrentUser.swift in Sources */,
 				0D3213D424CA106B00BC46F5 /* MessagingMethods.swift in Sources */,
+				0D47030B2578773F00B6A8FA /* CollabHomeVoiceMemosCell.swift in Sources */,
 				0D670D902558778F001D2634 /* Location+Extension.swift in Sources */,
 				0DDF79C52346AB9B00BAAD51 /* UserSettingsViewController.swift in Sources */,
 				0DC119CD24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift in Sources */,
@@ -1777,7 +1777,6 @@
 				0D0102A92468F49D00A5FF28 /* MessagesHomeViewController.swift in Sources */,
 				0D72D24B2453FE7B00C11D5F /* CollabViewController.swift in Sources */,
 				0D82282424D76D5300D0BBA0 /* ConvoAddMemberInfoCell.swift in Sources */,
-				0DAFFE3B25376E5200C39B69 /* CollabHomePhotosHeaderCell.swift in Sources */,
 				0D45DED325474259003E16E3 /* LocationProtocols.swift in Sources */,
 				0D45DEDE254D0151003E16E3 /* MKPlacemark+Extension.swift in Sources */,
 				0D0C8D7D243FBBC500EB51F7 /* CreateCollabViewController.swift in Sources */,
@@ -1796,6 +1795,7 @@
 				0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */,
 				0D3213D724CAB21200BC46F5 /* VibrateMethods.swift in Sources */,
 				0D165B6B253ABA0D00915613 /* CreateCollabPhotosCell.swift in Sources */,
+				0D470317257B283D00B6A8FA /* VoiceMemoPlayer.swift in Sources */,
 				0D0C8D802440F82000EB51F7 /* CollabNameCell.swift in Sources */,
 				0D77B711240C316600AF60CC /* BigBlock.swift in Sources */,
 				0D3F29322485ED9900C7763F /* SendPhotoMessageViewController.swift in Sources */,
@@ -1817,9 +1817,10 @@
 				0DA9F84122AC7C42008BECAE /* BlockPopoverViewController.swift in Sources */,
 				0D3A9E2522F367460052BCB6 /* CollabBlock.swift in Sources */,
 				0D93300822927C7500B6191D /* Block.swift in Sources */,
+				0D4703062578732E00B6A8FA /* CollabHomeSectionHeaderCell.swift in Sources */,
 				0D7CD51B2432FCBE00BE1BE6 /* NewUser.swift in Sources */,
 				0D879AD424B834DE0037C880 /* ConvoPhotoInfoCell.swift in Sources */,
-				0DDF87ED256248B40051C8F6 /* VoiceMemoCell.swift in Sources */,
+				0DDF87ED256248B40051C8F6 /* CreateCollabMemoCollectionViewCell.swift in Sources */,
 				0D82282824DA259200D0BBA0 /* ConvoUpdatedMessageCell.swift in Sources */,
 				0D41F5BE2311E4F100B4B11E /* CollabTenMinCell.swift in Sources */,
 				0DBAB33E242039CC0021FE35 /* CategoriesCell.swift in Sources */,
@@ -1835,7 +1836,6 @@
 				0D71E0162503624600CF517A /* SortingConversationsEnum.swift in Sources */,
 				0D78684C2446844400A92DD1 /* MemberProfileViewControlller.swift in Sources */,
 				0D3F29372486027300C7763F /* SendButton.swift in Sources */,
-				0DAFFE282533A2BB00C39B69 /* CollabHomeLocationsHeaderCell.swift in Sources */,
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
 				0D2707FC2326DF9000592EC8 /* PomodoroViewController.swift in Sources */,
 				0D0C8D922441A1FE00EB51F7 /* CollabRemindersCell.swift in Sources */,
@@ -1857,7 +1857,6 @@
 				0DAFFE002533005500C39B69 /* CollabMemberCollectionViewCell.swift in Sources */,
 				0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */,
 				0D7862F3245FF65B003189AE /* InputAccesoryView.swift in Sources */,
-				0DAFFDCF2532F66700C39B69 /* CollabHomeMembersHeaderCell.swift in Sources */,
 				0D0C8D8A244116F700EB51F7 /* CollabMembersCell.swift in Sources */,
 				0D1128322349A51B0080774C /* SettingsTableViewCell.swift in Sources */,
 				0D76F844243652CF00A52386 /* RegistrationValidationMethods.swift in Sources */,
@@ -1913,6 +1912,7 @@
 				0DE728C3250881F800581048 /* CollabView+Messages.swift in Sources */,
 				0D589DE52458A0D9005AC7BC /* MessageCell.swift in Sources */,
 				0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */,
+				0D4703102578883200B6A8FA /* CollabHomeMemoCollectionViewCell.swift in Sources */,
 				0D02C2412443744600D255D7 /* AddMembersViewController.swift in Sources */,
 				0D2175DC24E9CD0F00A7AF2E /* Personal_CollabContainer.swift in Sources */,
 				0D693A34240EC3CB00CFDD2F /* BlockOtherSettingCell.swift in Sources */,

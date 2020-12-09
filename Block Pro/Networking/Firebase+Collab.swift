@@ -96,6 +96,11 @@ class FirebaseCollab {
             setCollabLocations(collabID: collabID, locations: locations, batch: batch)
         }
         
+        if let voiceMemos = collab.voiceMemos {
+            
+            setCollabVoiceMemos(collabID: collabID, voiceMemos: voiceMemos, batch: batch)
+        }
+        
         
         //Sets the leader collab data
         //batch.setData(memberCollabData, forDocument: db.collection("Users").document(currentUser.userID).collection("Collabs").document(collabID))
@@ -108,16 +113,11 @@ class FirebaseCollab {
 //        }
 
         commitBatch(batch: batch) {
+            
+            self.saveNewCollabPhotosToStorage(collabID, photoIDs, collab.photos)
 
-            var count = 0
-
-            for photo in collab.photos ?? [] {
-
-                self.firebaseStorage.saveNewCollabPhotosToStorage(collabID, photoIDs[count], photo)
-
-                count += 1
-            }
-
+            self.saveNewCollabVoiceMemosToStorage(collabID, collab.voiceMemos)
+            
             completion()
         }
     }
@@ -140,13 +140,41 @@ class FirebaseCollab {
             
             batch.setData(locationDict, forDocument: db.collection("Collaborations").document(collabID).collection("Locations").document(location.locationID ?? ""))
         }
+    }
+    
+    private func setCollabVoiceMemos (collabID: String, voiceMemos: [VoiceMemo], batch: WriteBatch) {
         
-        //            locationDict["streetNumber"] = location.streetNumber
-        //            locationDict["streetName"] = location.streetName
-        //            locationDict["city"] = location.city
-        //            locationDict["state"] = location.state
-        //            locationDict["zipCode"] = location.zipCode
-        //            locationDict["country"] = location.country
+        for memo in voiceMemos {
+            
+            var voiceMemoDict: [String : Any] = [:]
+            
+            voiceMemoDict["voiceMemoID"] = memo.voiceMemoID
+            voiceMemoDict["name"] = memo.name
+            voiceMemoDict["length"] = memo.length
+            voiceMemoDict["dateCreated"] = memo.dateCreated
+            
+            batch.setData(voiceMemoDict, forDocument: db.collection("Collaborations").document(collabID).collection("Voice Memos").document(memo.voiceMemoID ?? ""))
+        }
+    }
+    
+    private func saveNewCollabPhotosToStorage (_ collabID: String, _ photoIDs: [String], _ photos: [UIImage]?) {
+        
+        var count = 0
+
+        for photo in photos ?? [] {
+
+            self.firebaseStorage.saveNewCollabPhotosToStorage(collabID, photoIDs[count], photo)
+
+            count += 1
+        }
+    }
+    
+    private func saveNewCollabVoiceMemosToStorage (_ collabID: String, _ voiceMemos: [VoiceMemo]?) {
+        
+        for voiceMemo in voiceMemos ?? [] {
+            
+            firebaseStorage.saveNewCollabVoiceMemosToStorage(collabID, voiceMemo.voiceMemoID ?? "")
+        }
     }
     
     func saveCollabCoverPhoto (collabID: String, coverPhotoID: String, coverPhoto: UIImage, completion: @escaping ((_ error: Error?) -> Void)) {
@@ -278,9 +306,17 @@ class FirebaseCollab {
                         
                         let deadline = document.data()["deadline"] as! Timestamp
                         collab.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
+
+                        #warning("temp fix for the tableview of the home view being overpopulated with data")
+                        if let collabIndex = self.collabs.firstIndex(where: { $0.collabID == collab.collabID }) {
+                            
+                        }
                         
-                        self.collabs.append(collab)
-                        self.collabs = self.collabs.sorted(by: {$0.dates["deadline"]! > $1.dates["deadline"]!})
+                        else {
+                            
+                            self.collabs.append(collab)
+                            self.collabs = self.collabs.sorted(by: {$0.dates["deadline"]! > $1.dates["deadline"]!})
+                        }
                         
                         #warning("will need to move this to seperate function as well as configure way to sort historic members from current members modeling the way I did it with conversation :) i believe in you")
                         //self.userRef.collection("Collabs").document(collab.collabID).collection("Members").getDocuments { (snapshot, error) in
@@ -327,55 +363,100 @@ class FirebaseCollab {
                             }
                         }
                         
-                        self.db.collection("Collaborations").document(collab.collabID).collection("Locations").getDocuments { (snapshot, error) in
+                        self.retrieveCollabLocations(collab.collabID)
+                        
+                        self.retrieveCollabVoiceMemos(collab.collabID)
+                    }
+                }
+            }
+        }
+    }
+    
+    private func retrieveCollabLocations (_ collabID: String) {
+        
+        db.collection("Collaborations").document(collabID).collection("Locations").getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                
+                print(error as Any)
+            }
+            
+            else {
+                
+                if snapshot?.isEmpty != true {
+                    
+                    var locations: [Location] = []
+                    
+                    for document in snapshot?.documents ?? [] {
+                        
+                        var location = Location()
+                        
+                        location.locationID = document.data()["locationID"] as? String
+                        
+                        location.coordinates = document.data()["coordinates"] as? [String : Double]
+                        
+                        location.name = document.data()["name"] as? String
+                        location.number = document.data()["number"] as? String
+                        
+                        if let urlString = document.data()["url"] as? String {
                             
-                            if error != nil {
-                                
-                                print(error as Any)
-                            }
-                            
-                            else {
-                                
-                                if snapshot?.isEmpty != true {
-                                    
-                                    var locations: [Location] = []
-                                    
-                                    for document in snapshot?.documents ?? []{
-                                        
-                                        var location = Location()
-                                        
-                                        location.locationID = document.data()["locationID"] as? String
-                                        
-                                        location.coordinates = document.data()["coordinates"] as? [String : Double]
-                                        
-                                        location.name = document.data()["name"] as? String
-                                        location.number = document.data()["number"] as? String
-                                        
-                                        if let urlString = document.data()["url"] as? String {
-                                            
-                                            location.url = URL(string: urlString)
-                                        }
-                                        
-                                        let address = document.data()["address"] as? [String : String]
-                                        location.streetNumber = address?["streetNumber"]
-                                        location.streetName = address?["streetName"]
-                                        location.city = address?["city"]
-                                        location.state = address?["state"]
-                                        location.zipCode = address?["zipCode"]
-                                        location.country = address?["country"]
-                                        
-                                        location.address = location.parseAddress()
-                                        
-                                        locations.append(location)
-                                    }
-                                    
-                                    if let collabIndex = self.collabs.firstIndex(where: { $0.collabID == collab.collabID }) {
-                                        
-                                        self.collabs[collabIndex].locations = locations
-                                    }
-                                }
-                            }
+                            location.url = URL(string: urlString)
                         }
+                        
+                        let address = document.data()["address"] as? [String : String]
+                        location.streetNumber = address?["streetNumber"]
+                        location.streetName = address?["streetName"]
+                        location.city = address?["city"]
+                        location.state = address?["state"]
+                        location.zipCode = address?["zipCode"]
+                        location.country = address?["country"]
+                        
+                        location.address = location.parseAddress()
+                        
+                        locations.append(location)
+                    }
+                    
+                    if let collabIndex = self.collabs.firstIndex(where: { $0.collabID == collabID }) {
+                        
+                        self.collabs[collabIndex].locations = locations
+                    }
+                }
+            }
+        }
+    }
+    
+    private func retrieveCollabVoiceMemos (_ collabID: String) {
+        
+        db.collection("Collaborations").document(collabID).collection("Voice Memos").getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+            
+            else {
+                
+                if snapshot?.isEmpty != true {
+                    
+                    var voiceMemos: [VoiceMemo] = []
+                    
+                    for document in snapshot?.documents ?? [] {
+                        
+                        var voiceMemo = VoiceMemo()
+                        
+                        voiceMemo.voiceMemoID = document.data()["voiceMemoID"] as? String
+                        voiceMemo.name = document.data()["name"] as? String
+                        voiceMemo.length = document.data()["length"] as? Double
+                        
+                        let dateCreated = document.data()["dateCreated"] as! Timestamp
+                        voiceMemo.dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreated.seconds))
+                        
+                        voiceMemos.append(voiceMemo)
+                    }
+                    
+                    if let collabIndex = self.collabs.firstIndex(where: { $0.collabID == collabID }){
+                        
+                        self.collabs[collabIndex].voiceMemos = voiceMemos
                     }
                 }
             }

@@ -107,28 +107,6 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         }
     }
     
-    deinit {
-        
-        //Should only utilized when creating a new collab, but additionally safeguards may need to be implemented when this view is configured for editing
-        newCollab.voiceMemos?.forEach({ (voiceMemo) in
-            
-            if let voiceMemoID = voiceMemo.voiceMemoID {
-                
-                //Deleting any voice memos that may have been saved
-                let url = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
-                
-                do {
-                    
-                    try FileManager.default.removeItem(at: url)
-                    
-                } catch {
-                    
-                    print(error.localizedDescription)
-                }
-            }
-        })
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if selectedTableView == "details" {

@@ -36,6 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         Messaging.messaging().delegate = self
         
+        deleteSavedVoiceMemos()
+        
 //        let barButtonAppearance = UIBarButtonItem.appearance()
 //        let backButton = UIImage(named: "info")
 //        let backButtonImage = backButton?.stretchableImage(withLeftCapWidth: 0, topCapHeight: 0)
@@ -78,18 +80,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             } catch let signOutError as NSError {
                 print("Error signing out", signOutError.localizedDescription)
             }
-        }
-        
-        //Deleting any voice memos that may have been saved
-        let url = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true)
-        
-        do {
-            
-            try FileManager.default.removeItem(at: url)
-            
-        } catch {
-            
-            print(error.localizedDescription)
         }
     }
     
@@ -261,6 +251,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         Realm.Configuration.defaultConfiguration = configuration
         
         _ = try! Realm()
+    }
+    
+    private func deleteSavedVoiceMemos () {
+        
+        //Deleting any voice memos that may have been saved
+        let url = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true)
+        
+        do {
+            
+            try FileManager.default.removeItem(at: url)
+            
+        } catch {
+            
+            print(error.localizedDescription)
+        }
     }
 }
 

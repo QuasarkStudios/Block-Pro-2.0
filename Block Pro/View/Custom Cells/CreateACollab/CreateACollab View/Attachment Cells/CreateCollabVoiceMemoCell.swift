@@ -89,6 +89,16 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
     
     deinit {
         
+        for memoCell in memoCollectionView.visibleCells {
+            
+            //If a cell has had the playbackWorkItem added to the dispatchQueue, it will prevent the "CreateCollabMemoCollectionViewCell" from being deinitialized until after the playbackWorkItem was scheduled to be run. Therefore, canceling the playbackWorkItem and setting it to nil when "CreateCollabVoiceMemoCell" is denitialized is more reliable because this cell has so far always been deinitialized properly
+            if let cell = memoCell as? CreateCollabMemoCollectionViewCell {
+                
+                cell.playbackWorkItem?.cancel()
+                cell.playbackWorkItem = nil //Prevents memory leaks
+            }
+        }
+        
         NotificationCenter.default.removeObserver(self)
     }
 
@@ -394,7 +404,7 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
         
         memoCollectionView.collectionViewLayout = layout
         
-        memoCollectionView.register(VoiceMemoCell.self, forCellWithReuseIdentifier: "voiceMemoCell")
+        memoCollectionView.register(CreateCollabMemoCollectionViewCell.self, forCellWithReuseIdentifier: "createCollabMemoCollectionViewCell")
     }
     
     
@@ -919,11 +929,11 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
         
         for visibleCell in memoCollectionView.visibleCells {
             
-            if let cell = visibleCell as? VoiceMemoCell {
+            if let cell = visibleCell as? CreateCollabMemoCollectionViewCell {
                 
                 if cell.recordingPlaying ?? false {
                     
-                    cell.stopRecordingPlayack()
+                    cell.stopRecordingPlayback()
                 }
             }
         }
@@ -951,7 +961,7 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
             //Ensures that a voiceMemo cell's nameTextField is the textField that called the keyboard
             for visibleCell in memoCollectionView.visibleCells {
                     
-                if let cell = visibleCell as? VoiceMemoCell {
+                if let cell = visibleCell as? CreateCollabMemoCollectionViewCell {
                     
                     if cell.nameTextField.isFirstResponder {
                         
@@ -1133,10 +1143,10 @@ extension CreateCollabVoiceMemoCell: UICollectionViewDataSource, UICollectionVie
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "voiceMemoCell", for: indexPath) as! VoiceMemoCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "createCollabMemoCollectionViewCell", for: indexPath) as! CreateCollabMemoCollectionViewCell
         cell.voiceMemo = voiceMemos?[indexPath.row]
         
-        cell.parentCell = self
+        cell.createCollabVoiceMemoCell = self
         
         if let name = voiceMemos?[indexPath.row].name {
             

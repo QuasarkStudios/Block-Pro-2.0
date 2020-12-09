@@ -217,7 +217,7 @@ class FirebaseStorage {
                 
                 if error != nil {
                     
-                    print(error as Any)
+                    print(error?.localizedDescription as Any)
                 }
             }
         }
@@ -238,6 +238,46 @@ class FirebaseStorage {
                     
                     completion(UIImage(data: photoData), nil)
                 }
+            }
+        }
+    }
+    
+    func saveNewCollabVoiceMemosToStorage (_ collabID: String, _ voiceMemoID: String) {
+        
+        let voiceMemoURL = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
+        
+        collabStorageRef.child(collabID).child("voiceMemos").child("\(voiceMemoID).m4a").putFile(from: voiceMemoURL, metadata: nil) { (metadata, error) in
+
+            if error != nil {
+
+                print(error?.localizedDescription as Any)
+            }
+        }
+    }
+    
+    func retrieveCollabVoiceMemoFromStorage (_ collabID: String, _ voiceMemoID: String, completion: @escaping ((_ progress: Double?, _ error: Error?) -> Void)) {
+        
+//        1048576 * 10
+        
+        let voiceMemoURL = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
+        
+        let downloadTask = collabStorageRef.child(collabID).child("voiceMemos").child("\(voiceMemoID).m4a").write(toFile: voiceMemoURL)
+        
+        downloadTask.observe(.progress) { (snapshot) in
+            
+            completion(snapshot.progress?.fractionCompleted, nil)
+        }
+        
+        downloadTask.observe(.success) { (snapshot) in
+            
+            completion(nil, nil)
+        }
+        
+        downloadTask.observe(.failure) { (snapshot) in
+            
+            if let error = snapshot.error {
+                
+                completion(nil, error)
             }
         }
     }

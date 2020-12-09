@@ -131,7 +131,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         if tableView == collabHomeTableView {
             
-            return 4
+            return 5
         }
         
         else {
@@ -155,6 +155,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             }
             
             else if section == 2 {
+                
+                return 3
+            }
+            
+            else if section == 3 {
                 
                 return 3
             }
@@ -197,8 +202,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 if indexPath.row == 0 {
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeMembersHeaderCell", for: indexPath) as! CollabHomeMembersHeaderCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
                     cell.selectionStyle = .none
+                    
+                    cell.sectionNameLabel.text = "Members"
+                    
                     return cell
                 }
                 
@@ -230,8 +238,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 else if indexPath.row == 1 {
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeLocationsHeaderCell", for: indexPath) as! CollabHomeLocationsHeaderCell
-                    cell.isUserInteractionEnabled = false
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
+                    cell.selectionStyle = .none
+                    
+                    cell.sectionNameLabel.text = "Locations"
                     return cell
                 }
                 
@@ -266,8 +276,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 else if indexPath.row == 1 {
                     
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomePhotosHeaderCell", for: indexPath) as! CollabHomePhotosHeaderCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
                     cell.selectionStyle = .none
+                    
+                    cell.sectionNameLabel.text = "Photos"
                     return cell
                 }
                 
@@ -276,14 +288,40 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomePhotosCell", for: indexPath) as! CollabHomePhotosCell
                     cell.selectionStyle = .none
                     
-//                    cell.collabID = collab?.collabID
-//                    cell.photoIDs = collab?.photoIDs
-                    
                     cell.collab = collab
 
                     cell.cachePhotoDelegate = self
                     cell.zoomInDelegate = self
                     cell.presentCopiedAnimationDelegate = self
+                    
+                    return cell
+                }
+            }
+            
+            else if indexPath.section == 3 {
+                
+                if indexPath.row == 0 {
+                    
+                    let cell = UITableViewCell()
+                    cell.isUserInteractionEnabled = false
+                    return cell
+                }
+                
+                else if indexPath.row == 1 {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
+                    cell.selectionStyle = .none
+                    
+                    cell.sectionNameLabel.text = "Voice Memos"
+                    return cell
+                }
+                
+                else {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeVoiceMemosCell", for: indexPath) as! CollabHomeVoiceMemosCell
+                    cell.selectionStyle = .none
+                    
+                    cell.collab = collab
                     
                     return cell
                 }
@@ -410,6 +448,24 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 }
             }
             
+            else if indexPath.section == 3 {
+                
+                if indexPath.row == 0 {
+                    
+                    return 2.5
+                }
+                
+                else if indexPath.row == 1 {
+                    
+                    return 25
+                }
+                
+                else {
+                    
+                    return itemSize + 42
+                }
+            }
+            
             else {
                 
                 return 80
@@ -437,7 +493,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
-        if indexPath.section == 3 {
+        if indexPath.section == (tableView.numberOfSections - 1) {
             
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                 
@@ -481,7 +537,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
-        if indexPath.section == 3 {
+        if indexPath.section == (tableView.numberOfSections - 1) {
             
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                 
@@ -574,12 +630,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabHomeTableView.showsVerticalScrollIndicator = false
         collabHomeTableView.delaysContentTouches = false
         
-        collabHomeTableView.register(UINib(nibName: "CollabHomeMembersHeaderCell", bundle: nil), forCellReuseIdentifier: "collabHomeMembersHeaderCell")
+        collabHomeTableView.register(CollabHomeSectionHeaderCell.self, forCellReuseIdentifier: "collabHomeSectionHeaderCell")
         collabHomeTableView.register(UINib(nibName: "CollabHomeMembersCell", bundle: nil), forCellReuseIdentifier: "collabHomeMembersCell")
-        collabHomeTableView.register(UINib(nibName: "CollabHomeLocationsHeaderCell", bundle: nil), forCellReuseIdentifier: "collabHomeLocationsHeaderCell")
         collabHomeTableView.register(UINib(nibName: "CollabHomeLocationsCell", bundle: nil), forCellReuseIdentifier: "collabHomeLocationsCell")
-        collabHomeTableView.register(UINib(nibName: "CollabHomePhotosHeaderCell", bundle: nil), forCellReuseIdentifier: "collabHomePhotosHeaderCell")
         collabHomeTableView.register(UINib(nibName: "CollabHomePhotosCell", bundle: nil), forCellReuseIdentifier: "collabHomePhotosCell")
+        collabHomeTableView.register(CollabHomeVoiceMemosCell.self, forCellReuseIdentifier: "collabHomeVoiceMemosCell")
         collabHomeTableView.register(UINib(nibName: "LeaveCollabCell", bundle: nil), forCellReuseIdentifier: "leaveCollabCell")
     }
     

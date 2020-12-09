@@ -29,4 +29,6 @@ struct Collab {
     var photos: [String : UIImage?] = [:]
     
     var locations: [Location]?
+    
+    var voiceMemos: [VoiceMemo]?
 }

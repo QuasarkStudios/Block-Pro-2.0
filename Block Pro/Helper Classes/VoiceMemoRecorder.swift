@@ -250,7 +250,7 @@ class VoiceMemoRecorder {
             
         } catch {
             
-            print("error stopping recording: ", error.localizedDescription)
+            print("error playing back recording: ", error.localizedDescription)
         }
     }
     
