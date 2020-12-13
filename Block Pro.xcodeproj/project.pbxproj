@@ -212,6 +212,10 @@
 		0D879ADC24B853F70037C880 /* ConvoPhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D879ADA24B853F70037C880 /* ConvoPhotoCollectionViewCell.swift */; };
 		0D879ADD24B853F70037C880 /* ConvoPhotoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D879ADB24B853F70037C880 /* ConvoPhotoCollectionViewCell.xib */; };
 		0D8C40BA254661D800A09E7D /* LocationSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8C40B9254661D800A09E7D /* LocationSearchCell.swift */; };
+		0D92BB962583309600D9C561 /* CreateCollabLinksCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BB952583309600D9C561 /* CreateCollabLinksCell.swift */; };
+		0D92BB9925833C6D00D9C561 /* Link.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BB9825833C6D00D9C561 /* Link.swift */; };
+		0D92BB9C2583444100D9C561 /* CreateCollabLinkCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BB9B2583444100D9C561 /* CreateCollabLinkCollectionViewCell.swift */; };
+		0D92BB9F2585698F00D9C561 /* UITextField+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BB9E2585698F00D9C561 /* UITextField+Extension.swift */; };
 		0D93300822927C7500B6191D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300722927C7500B6191D /* Block.swift */; };
 		0D95C17A232886C400421BE0 /* Start Timer.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D95C179232886C400421BE0 /* Start Timer.wav */; };
 		0D95C17C2328923000421BE0 /* Timer Running.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D95C17B2328923000421BE0 /* Timer Running.wav */; };
@@ -307,7 +311,7 @@
 		0DF441DE24677C4200B2037B /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF441DD24677C4200B2037B /* CustomTabBar.swift */; };
 		0DF9C74724FD6B26000F689F /* conversation-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0DF9C74624FD6B25000F689F /* conversation-animation.json */; };
 		0DFE5C1C231DF7C10025B4EB /* FriendCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */; };
-		3927B5E18740A03516EB0FFD /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29070E04BA70A38100429E0D /* Pods_Block_Pro.framework */; };
+		BF3780A68B78275643E3A760 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D06DFBCF9AAEBEE0188F2376 /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -519,6 +523,10 @@
 		0D879ADA24B853F70037C880 /* ConvoPhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoPhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		0D879ADB24B853F70037C880 /* ConvoPhotoCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoPhotoCollectionViewCell.xib; sourceTree = "<group>"; };
 		0D8C40B9254661D800A09E7D /* LocationSearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchCell.swift; sourceTree = "<group>"; };
+		0D92BB952583309600D9C561 /* CreateCollabLinksCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCollabLinksCell.swift; sourceTree = "<group>"; };
+		0D92BB9825833C6D00D9C561 /* Link.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Link.swift; sourceTree = "<group>"; };
+		0D92BB9B2583444100D9C561 /* CreateCollabLinkCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCollabLinkCollectionViewCell.swift; sourceTree = "<group>"; };
+		0D92BB9E2585698F00D9C561 /* UITextField+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extension.swift"; sourceTree = "<group>"; };
 		0D93300722927C7500B6191D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
 		0D95C179232886C400421BE0 /* Start Timer.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Start Timer.wav"; sourceTree = "<group>"; };
 		0D95C17B2328923000421BE0 /* Timer Running.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Timer Running.wav"; sourceTree = "<group>"; };
@@ -616,9 +624,9 @@
 		0DF441DD24677C4200B2037B /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		0DF9C74624FD6B25000F689F /* conversation-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conversation-animation.json"; sourceTree = "<group>"; };
 		0DFE5C1B231DF7C10025B4EB /* FriendCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendCell.swift; sourceTree = "<group>"; };
-		29070E04BA70A38100429E0D /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		44F65AA9426B211DD59A2DA0 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
-		515C91DDE02FE52BFFCD8128 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
+		358073C2323396BAC00C39E3 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
+		8A4E27B57687C9C7A80E53AB /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
+		D06DFBCF9AAEBEE0188F2376 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -626,7 +634,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3927B5E18740A03516EB0FFD /* Pods_Block_Pro.framework in Frameworks */,
+				BF3780A68B78275643E3A760 /* Pods_Block_Pro.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -676,6 +684,7 @@
 				0DDE6FD9253BCDC900A9DF71 /* CreateCollabLocationsCell.swift */,
 				0DDE6FDA253BCDC900A9DF71 /* CreateCollabLocationsCell.xib */,
 				0D670D92255C8E4B001D2634 /* CreateCollabVoiceMemoCell.swift */,
+				0D92BB952583309600D9C561 /* CreateCollabLinksCell.swift */,
 				0D0D8EC02452463E0001643B /* CollectionView Cells */,
 			);
 			path = "Attachment Cells";
@@ -720,6 +729,7 @@
 				0D1B1DF52450FCF2008DA9B5 /* PhotoCell.swift */,
 				0D1B1DF62450FCF2008DA9B5 /* PhotoCell.xib */,
 				0DDF87EC256248B40051C8F6 /* CreateCollabMemoCollectionViewCell.swift */,
+				0D92BB9B2583444100D9C561 /* CreateCollabLinkCollectionViewCell.swift */,
 			);
 			path = "CollectionView Cells";
 			sourceTree = "<group>";
@@ -839,7 +849,7 @@
 				0D2CECED228FB55600CC9180 /* Products */,
 				0DBF3E9222B03D7A00E180D2 /* Supporting Files */,
 				C54E61ACB30B0D4CDBD0499A /* Pods */,
-				E778A38DBD4085027BD41670 /* Frameworks */,
+				17AB833BF888E8CFD139A727 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1270,6 +1280,7 @@
 				0D589DED24593D4A005AC7BC /* Message.swift */,
 				0D45DEDA254C7FE3003E16E3 /* Location.swift */,
 				0DDF87E4256210700051C8F6 /* VoiceMemo.swift */,
+				0D92BB9825833C6D00D9C561 /* Link.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1384,6 +1395,7 @@
 				0D50A90124785C5700D71654 /* Notification+Extension.swift */,
 				0D45DEDD254D0151003E16E3 /* MKPlacemark+Extension.swift */,
 				0D670D8F2558778F001D2634 /* Location+Extension.swift */,
+				0D92BB9E2585698F00D9C561 /* UITextField+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1490,21 +1502,21 @@
 			path = "Details View Cells";
 			sourceTree = "<group>";
 		};
+		17AB833BF888E8CFD139A727 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D06DFBCF9AAEBEE0188F2376 /* Pods_Block_Pro.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C54E61ACB30B0D4CDBD0499A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				515C91DDE02FE52BFFCD8128 /* Pods-Block Pro.debug.xcconfig */,
-				44F65AA9426B211DD59A2DA0 /* Pods-Block Pro.release.xcconfig */,
+				8A4E27B57687C9C7A80E53AB /* Pods-Block Pro.debug.xcconfig */,
+				358073C2323396BAC00C39E3 /* Pods-Block Pro.release.xcconfig */,
 			);
 			path = Pods;
-			sourceTree = "<group>";
-		};
-		E778A38DBD4085027BD41670 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				29070E04BA70A38100429E0D /* Pods_Block_Pro.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1514,11 +1526,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0D2CECFE228FB55800CC9180 /* Build configuration list for PBXNativeTarget "Block Pro" */;
 			buildPhases = (
-				B93D0708A0E5897AAAB682E0 /* [CP] Check Pods Manifest.lock */,
+				CAD5295D5873B40484051601 /* [CP] Check Pods Manifest.lock */,
 				0D2CECE8228FB55600CC9180 /* Sources */,
 				0D2CECE9228FB55600CC9180 /* Frameworks */,
 				0D2CECEA228FB55600CC9180 /* Resources */,
-				580A721193D8A14F4F07729E /* [CP] Embed Pods Frameworks */,
+				C29B3F6B569BB4FFDF9E962E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1678,7 +1690,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		580A721193D8A14F4F07729E /* [CP] Embed Pods Frameworks */ = {
+		C29B3F6B569BB4FFDF9E962E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1695,7 +1707,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B93D0708A0E5897AAAB682E0 /* [CP] Check Pods Manifest.lock */ = {
+		CAD5295D5873B40484051601 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1739,6 +1751,7 @@
 				0D589DF024593FB6005AC7BC /* String+Extension.swift in Sources */,
 				0D0C8D9A2442488300EB51F7 /* Collab.swift in Sources */,
 				0D37F4FD24FDBCFF00618ECD /* ConversationAnimation.swift in Sources */,
+				0D92BB9925833C6D00D9C561 /* Link.swift in Sources */,
 				0D670D96255DDC0F001D2634 /* VoiceMemoRecorder.swift in Sources */,
 				0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */,
 				0D7271252460DE1B0033C196 /* MessageTextViewContainer.swift in Sources */,
@@ -1747,6 +1760,7 @@
 				0DF441DE24677C4200B2037B /* CustomTabBar.swift in Sources */,
 				0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */,
 				0D86013B2499377F0027F043 /* ConversationInfoViewController.swift in Sources */,
+				0D92BB962583309600D9C561 /* CreateCollabLinksCell.swift in Sources */,
 				0DE79A1C244E41BB00F25440 /* TimeSelectorCell.swift in Sources */,
 				0DDE6FE7253E460E00A9DF71 /* LocationSearchView.swift in Sources */,
 				0DD9D89324437F4E006AA8AB /* ImageView+Extension.swift in Sources */,
@@ -1807,6 +1821,7 @@
 				0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */,
 				0D589DEC2458C7C2005AC7BC /* CollabRequest.swift in Sources */,
 				0D3A9E2222EFF81F0052BCB6 /* AUCollabBlockViewController.swift in Sources */,
+				0D92BB9F2585698F00D9C561 /* UITextField+Extension.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
 				0D879ADC24B853F70037C880 /* ConvoPhotoCollectionViewCell.swift in Sources */,
 				0DDDA64F22D7D61B00B69A4E /* LogIn_RegisterViewController.swift in Sources */,
@@ -1877,6 +1892,7 @@
 				0D1B1DF72450FCF2008DA9B5 /* PhotoCell.swift in Sources */,
 				0D41F5C423124B3700B4B11E /* CollabTwentyFiveMinCell.swift in Sources */,
 				0DD636C224102A1F0026B623 /* BlockCategoryPickerCell.swift in Sources */,
+				0D92BB9C2583444100D9C561 /* CreateCollabLinkCollectionViewCell.swift in Sources */,
 				0D5BEFE723E286DA00B5DCE5 /* HomeViewController.swift in Sources */,
 				0D7CABEF252CF2640045006C /* ZoomingImageViewMethods.swift in Sources */,
 				0DD9D89024437DC2006AA8AB /* View+Extension.swift in Sources */,
@@ -2063,7 +2079,7 @@
 		};
 		0D2CECFF228FB55800CC9180 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 515C91DDE02FE52BFFCD8128 /* Pods-Block Pro.debug.xcconfig */;
+			baseConfigurationReference = 8A4E27B57687C9C7A80E53AB /* Pods-Block Pro.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -2091,7 +2107,7 @@
 		};
 		0D2CED00228FB55800CC9180 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 44F65AA9426B211DD59A2DA0 /* Pods-Block Pro.release.xcconfig */;
+			baseConfigurationReference = 358073C2323396BAC00C39E3 /* Pods-Block Pro.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

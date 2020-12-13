@@ -222,6 +222,7 @@ PODS:
   - ChameleonFramework/Default (2.1.0)
   - ChameleonFramework/Swift (2.1.0):
     - ChameleonFramework/Default
+  - FavIcon (3.1.0)
   - Firebase/Analytics (6.34.0):
     - Firebase/Core
   - Firebase/Auth (6.34.0):
@@ -371,6 +372,7 @@ PODS:
 DEPENDENCIES:
   - BEMCheckBox
   - ChameleonFramework/Swift (from `https://github.com/ViccAlexander/Chameleon.git`)
+  - FavIcon (~> 3.1.0)
   - Firebase/Analytics
   - Firebase/Auth
   - Firebase/Core
@@ -389,6 +391,7 @@ SPEC REPOS:
     - abseil
     - BEMCheckBox
     - BoringSSL-GRPC
+    - FavIcon
     - Firebase
     - FirebaseAnalytics
     - FirebaseAuth
@@ -431,6 +434,7 @@ SPEC CHECKSUMS:
   BEMCheckBox: 5ba6e37ade3d3657b36caecc35c8b75c6c2b1a4e
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
+  FavIcon: 21651b47d8f6b33517973859f85e2cb6f9fcfaee
   Firebase: c23a36d9e4cdf7877dfcba8dd0c58add66358999
   FirebaseAnalytics: 3bb096873ee0d7fa4b6c70f5e9166b6da413cc7f
   FirebaseAuth: c92d49ada7948d1a23466e3db17bc4c2039dddc3
@@ -459,6 +463,6 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwipeCellKit: 3972254a826da74609926daf59b08d6c72e619ea
 
-PODFILE CHECKSUM: d1af7f4670a724c9a2a69a6dff962953d8f7c6db
+PODFILE CHECKSUM: f046bdc16f23817bea16db76928fd87c4d179dcd
 
 COCOAPODS: 1.8.4

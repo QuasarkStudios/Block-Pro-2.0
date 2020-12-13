@@ -116,7 +116,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         else {
             
-            return 5//3
+            return 7//3
         }
     }
     
@@ -228,6 +228,18 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
 //                cell.willBeginRecording = audioVisualizerPresent
                 
                 cell.createCollabVoiceMemosCellDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 6 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "createCollabLinksCell", for: indexPath) as! CreateCollabLinksCell
+                cell.selectionStyle = .none
+                
+                cell.createCollabLinksCellDelegate = self
+                
+                cell.links = newCollab.links
                 
                 return cell
             }
@@ -357,6 +369,28 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                     
                     return floor(itemSize) + 50//20
                 }
+             
+            case 6:
+                
+                if newCollab.links?.count ?? 0 == 0 {
+                    
+                    return 85
+                }
+                
+                else if newCollab.links?.count ?? 0 < 3 {
+                    
+                    return 185
+                }
+                
+                else if newCollab.links?.count ?? 0 < 6 {
+                    
+                    return 212.5
+                }
+                
+                else {
+                    
+                    return 162.5
+                }
                 
             default:
                 
@@ -415,6 +449,8 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         details_attachmentsTableView.register(UINib(nibName: "CreateCollabLocationsCell", bundle: nil), forCellReuseIdentifier: "createCollabLocationsCell")
         
         details_attachmentsTableView.register(CreateCollabVoiceMemoCell.self, forCellReuseIdentifier: "createCollabVoiceMemoCell")
+        
+        details_attachmentsTableView.register(CreateCollabLinksCell.self, forCellReuseIdentifier: "createCollabLinksCell")
     }
     
     private func configureEditButton () -> UIButton {
@@ -1043,7 +1079,15 @@ extension CreateCollabViewController: CancelLocationSelectionProtocol {
             newCollab.locations?.removeAll(where: { $0.locationID == locationID! })
             selectedLocation = nil
             
-            details_attachmentsTableView.reloadRows(at: [IndexPath(row: 2, section: 0)], with: .none)
+//            if let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 2, section: 0)) as? CreateCollabLocationsCell {
+//
+//                cell.selectedLocations = newCollab.locations
+//            }
+            
+            details_attachmentsTableView.reloadRows(at: [IndexPath(row: 2, section: 0)], with: .fade)
+            
+//            self.details_attachmentsTableView.beginUpdates()
+//            self.details_attachmentsTableView.endUpdates()
             
             updateTableViewContentInset()
         }
@@ -1118,6 +1162,72 @@ extension CreateCollabViewController: CreateCollabVoiceMemosCellProtocol {
         details_attachmentsTableView.endUpdates()
         
         updateTableViewContentInset()
+    }
+}
+
+extension CreateCollabViewController: CreateCollabLinksCellProtocol {
+    
+    func attachLinkSelected() {
+        
+        let link = Link()
+        link.linkID = UUID().uuidString
+        
+        if newCollab.links == nil {
+            
+            newCollab.links = [link]
+        }
+        
+        else {
+            
+            newCollab.links?.append(link)
+        }
+        
+        if let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 6, section: 0)) as? CreateCollabLinksCell {
+
+            cell.links = newCollab.links
+        }
+        
+        details_attachmentsTableView.beginUpdates()
+        details_attachmentsTableView.endUpdates()
+        
+        updateTableViewContentInset()
+    }
+    
+    func linkEntered (_ linkID: String, _ url: String) {
+        
+        if let linkIndex = newCollab.links?.firstIndex(where: { $0.linkID == linkID }) {
+            
+            newCollab.links?[linkIndex].url = url
+        }
+    }
+    
+    func linkIconSaved (_ linkID: String, _ icon: UIImage?) {
+        
+        if let linkIndex = newCollab.links?.firstIndex(where: { $0.linkID == linkID }) {
+            
+            newCollab.links?[linkIndex].icon = icon
+        }
+    }
+    
+    func linkRenamed (_ linkID: String, _ name: String) {
+        
+        if let linkIndex = newCollab.links?.firstIndex(where: { $0.linkID == linkID }) {
+            
+            newCollab.links?[linkIndex].name = name
+        }
+    }
+    
+    func linkDeleted (_ linkID: String) {
+        
+        newCollab.links?.removeAll(where: { $0.linkID == linkID })
+        
+        if let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 6, section: 0)) as? CreateCollabLinksCell {
+
+            cell.links = newCollab.links
+        }
+        
+        details_attachmentsTableView.beginUpdates()
+        details_attachmentsTableView.endUpdates()
     }
 }
 

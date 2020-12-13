@@ -404,7 +404,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     
                     if collab?.locations?.count ?? 0 == 0 {
                         
-                        let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
+//                        let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
                         return itemSize + 20 + 20 //This is borrowed from the collabPhotos cell to allow both cells to look the same
                     }
                     
@@ -434,7 +434,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 else {
                     
-                    let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
+//                    let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
                     
                     if collab?.photoIDs.count ?? 0 <= 3 {
                         

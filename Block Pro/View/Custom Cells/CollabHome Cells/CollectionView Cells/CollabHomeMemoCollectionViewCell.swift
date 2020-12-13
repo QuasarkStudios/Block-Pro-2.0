@@ -68,8 +68,6 @@ class CollabHomeMemoCollectionViewCell: UICollectionViewCell {
         ].forEach({ $0.isActive = true })
         
         voiceMemoImage.contentMode = .scaleAspectFill
-        
-        voiceMemoImage.isUserInteractionEnabled = true
     }
     
     private func configureIProgressView () {

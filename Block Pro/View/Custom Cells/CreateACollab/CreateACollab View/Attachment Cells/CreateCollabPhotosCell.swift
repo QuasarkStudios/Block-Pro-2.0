@@ -21,7 +21,7 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
     let photosCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
     let attachPhotoButton = UIButton()
-    let photoImage = UIImageView(image: UIImage(named: "image")?.withRenderingMode(.alwaysTemplate))
+    let cameraImage = UIImageView(image: UIImage(systemName: "camera.circle"))
     let attachPhotosLabel = UILabel()
     
     var selectedPhotos: [UIImage]? {
@@ -197,11 +197,11 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
     private func configureAttachButton () {
         
         collectionViewContainer.addSubview(attachPhotoButton)
-        attachPhotoButton.addSubview(photoImage)
+        attachPhotoButton.addSubview(cameraImage)
         attachPhotoButton.addSubview(attachPhotosLabel)
         
         attachPhotoButton.translatesAutoresizingMaskIntoConstraints = false
-        photoImage.translatesAutoresizingMaskIntoConstraints = false
+        cameraImage.translatesAutoresizingMaskIntoConstraints = false
         attachPhotosLabel.translatesAutoresizingMaskIntoConstraints = false
         
         [
@@ -211,10 +211,10 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
             attachPhotoButton.topAnchor.constraint(equalTo: photosCollectionView.bottomAnchor, constant: 0),
             attachPhotoButton.bottomAnchor.constraint(equalTo: collectionViewContainer.bottomAnchor, constant: 0),
             
-            photoImage.leadingAnchor.constraint(equalTo: attachPhotoButton.leadingAnchor, constant: 20),
-            photoImage.centerYAnchor.constraint(equalTo: attachPhotoButton.centerYAnchor),
-            photoImage.widthAnchor.constraint(equalToConstant: 25),
-            photoImage.heightAnchor.constraint(equalToConstant: 25),
+            cameraImage.leadingAnchor.constraint(equalTo: attachPhotoButton.leadingAnchor, constant: 20),
+            cameraImage.centerYAnchor.constraint(equalTo: attachPhotoButton.centerYAnchor),
+            cameraImage.widthAnchor.constraint(equalToConstant: 25),
+            cameraImage.heightAnchor.constraint(equalToConstant: 25),
             
             attachPhotosLabel.leadingAnchor.constraint(equalTo: attachPhotoButton.leadingAnchor, constant: 10),
             attachPhotosLabel.trailingAnchor.constraint(equalTo: attachPhotoButton.trailingAnchor, constant: -10),
@@ -226,8 +226,8 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
         attachPhotoButton.backgroundColor = .clear
         attachPhotoButton.addTarget(self, action: #selector(attachButtonPressed), for: .touchUpInside)
         
-        photoImage.tintColor = .black
-        photoImage.isUserInteractionEnabled = false
+        cameraImage.tintColor = .black
+        cameraImage.isUserInteractionEnabled = false
         
         attachPhotosLabel.text = "Attach Photos"
         attachPhotosLabel.textColor = .black
@@ -259,7 +259,7 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
         attachPhotoButton.layer.cornerRadius = 0
         attachPhotoButton.clipsToBounds = true
         
-        photoImage.tintColor = .black
+        cameraImage.tintColor = .black
         
         attachPhotosLabel.text = "Attach Photos"
         attachPhotosLabel.textColor = .black
@@ -302,8 +302,8 @@ class CreateCollabPhotosCell: UITableViewCell, UICollectionViewDataSource, UICol
         attachPhotoButton.clipsToBounds = true
         attachPhotoButton.addTarget(self, action: #selector(attachButtonPressed), for: .touchUpInside)
         
-        photoImage.tintColor = .white
-        photoImage.isUserInteractionEnabled = false
+        cameraImage.tintColor = .white
+        cameraImage.isUserInteractionEnabled = false
         
         attachPhotosLabel.text = "Attach"
         attachPhotosLabel.textColor = .white

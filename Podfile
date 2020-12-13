@@ -20,6 +20,7 @@ pod 'SwipeCellKit'
 pod 'BEMCheckBox'
 pod 'SVProgressHUD'
 pod 'lottie-ios'
+pod 'FavIcon', '~> 3.1.0'
 
 
 end
