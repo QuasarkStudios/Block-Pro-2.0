@@ -8,7 +8,7 @@
 
 import Foundation
 
-class Link {
+struct Link {
     
     var linkID: String?
     

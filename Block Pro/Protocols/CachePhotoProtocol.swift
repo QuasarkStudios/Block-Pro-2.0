@@ -13,5 +13,4 @@ protocol CachePhotoProtocol: AnyObject {
     func cacheMessagePhoto (messageID: String, photo: UIImage?)
     
     func cacheCollabPhoto (photoID: String, photo: UIImage?)
-    
 }

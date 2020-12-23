@@ -264,6 +264,8 @@ class CreateCollabLinksCell: UITableViewCell {
             linkPageControl.pageIndicatorTintColor = UIColor(hexString: "D8D8D8")
             linkPageControl.currentPageIndicatorTintColor = UIColor(hexString: "222222")
             linkPageControl.currentPage = links?.count != 0 && links != nil ? links!.count - 1 : 0
+            
+            linkPageControl.addTarget(self, action: #selector(pageSelected), for: .valueChanged)
         }
         
         else {
@@ -618,6 +620,14 @@ class CreateCollabLinksCell: UITableViewCell {
         
         createCollabLinksCellDelegate?.attachLinkSelected()
     }
+    
+    
+    //MARK: - Page Selected
+    
+    @objc private func pageSelected () {
+    
+        linkCollectionView.scrollToItem(at: IndexPath(item: linkPageControl.currentPage, section: 0), at: .centeredHorizontally, animated: true)
+    }
 }
 
 
@@ -689,6 +699,12 @@ extension CreateCollabLinksCell: UICollectionViewDataSource, UICollectionViewDel
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         
         linkPageControl.currentPage = indexPath.row
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
+        //Backup check in case the paging of collectionView wasn't completed and the collectionView returned to the index it was at before it was scrolled
+        linkPageControl.currentPage = linkCollectionView.indexPathsForVisibleItems.first?.row ?? 0
     }
 }
 

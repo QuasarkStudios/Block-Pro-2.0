@@ -1,38 +1,37 @@
 //
-//  CreateCollabLinkCollectionViewCell.swift
+//  CollabHomeLinkCollectionViewCell.swift
 //  Block Pro
 //
-//  Created by Nimat Azeez on 12/10/20.
+//  Created by Nimat Azeez on 12/13/20.
 //  Copyright © 2020 Nimat Azeez. All rights reserved.
 //
 
 import UIKit
+import FavIcon
 
-class CreateCollabLinkCollectionViewCell: UICollectionViewCell {
+class CollabHomeLinkCollectionViewCell: UICollectionViewCell {
     
     let leftLinkView = UIView()
-    let leftCancelButton = UIButton(type: .system)
     let leftImageViewContainer = UIView()
     let leftImageView = UIImageView()
-    let leftTextField = UITextField()
+    let leftLinkLabel = UILabel()
     
     let rightLinkView = UIView()
-    let rightCancelButton = UIButton(type: .system)
     let rightImageViewContainer = UIView()
     let rightImageView = UIImageView()
-    let rightTextField = UITextField()
+    let rightLinkLabel = UILabel()
     
     var leftLink: Link? {
         didSet {
             
-            reconfigureLinkView(link: leftLink, linkView: leftLinkView, imageViewContainer: leftImageViewContainer, imageView: leftImageView, textField: leftTextField)
+            reconfigureLinkView(link: leftLink, linkView: leftLinkView, imageViewContainer: leftImageViewContainer, imageView: leftImageView, label: leftLinkLabel)
         }
     }
     
     var rightLink: Link? {
         didSet {
             
-            reconfigureLinkView(link: rightLink, linkView: rightLinkView, imageViewContainer: rightImageViewContainer, imageView: rightImageView, textField: rightTextField)
+            reconfigureLinkView(link: rightLink, linkView: rightLinkView, imageViewContainer: rightImageViewContainer, imageView: rightImageView, label: rightLinkLabel)
         }
     }
     
@@ -50,14 +49,14 @@ class CreateCollabLinkCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    weak var createCollabLinksCellDelegate: CreateCollabLinksCellProtocol?
+    weak var cacheIconDelegate: CacheIconProtocol?
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
         
         configureCell()
-        configureLinkView(linkView: leftLinkView, cancelButton: leftCancelButton, imageViewContainer: leftImageViewContainer, imageView: leftImageView, textField: leftTextField)
-        configureLinkView(linkView: rightLinkView, cancelButton: rightCancelButton, imageViewContainer: rightImageViewContainer, imageView: rightImageView, textField: rightTextField)
+        configureLinkView(linkView: leftLinkView, imageViewContainer: leftImageViewContainer, imageView: leftImageView, label: leftLinkLabel)
+        configureLinkView(linkView: rightLinkView, imageViewContainer: rightImageViewContainer, imageView: rightImageView, label: rightLinkLabel)
     }
     
     required init?(coder: NSCoder) {
@@ -104,41 +103,30 @@ class CreateCollabLinkCollectionViewCell: UICollectionViewCell {
     
     //MARK: - Configure Link View
     
-    private func configureLinkView (linkView: UIView, cancelButton: UIButton, imageViewContainer: UIView, imageView: UIImageView, textField: UITextField) {
+    private func configureLinkView (linkView: UIView, imageViewContainer: UIView, imageView: UIImageView, label: UILabel) {
         
-        setLinkViewConstraints(linkView: linkView, cancelButton: cancelButton, imageViewContainer: imageViewContainer, imageView: imageView, textField: textField)
-        
-        cancelButton.tintColor = UIColor(hexString: "222222")
-        cancelButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
-        
-        addCancelButtonTarget(leftCancelButton: cancelButton == leftCancelButton)
+        setLinkViewConstraints(linkView: linkView, imageViewContainer: imageViewContainer, imageView: imageView, label: label)
         
         imageViewContainer.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.65)
         imageViewContainer.layer.cornerRadius = 22
         imageViewContainer.clipsToBounds = true
-        
-        addTapGesture(leftImageView: imageView == leftImageView)
 
+        addTapGesture(leftImageView: imageView == leftImageView)
+        
         imageView.tintColor = .black
         imageView.image = UIImage(systemName: "link")
         imageView.contentMode = .scaleAspectFill
         imageView.isUserInteractionEnabled = false
         
-        textField.borderStyle = .none
-        textField.font = UIFont(name: "Poppins-SemiBold", size: 13)
-        textField.textAlignment = .center
-        textField.keyboardType = .URL
-        textField.returnKeyType = .done
-        textField.autocapitalizationType = .none
-        textField.autocorrectionType = .no
-        
-        textField.setCustomPlaceholder(text: "Enter link", alignment: .center)
+        label.font = UIFont(name: "Poppins-SemiBold", size: 13)
+        label.textAlignment = .center
+        label.textColor = .black
     }
     
     
     //MARK: - Reconfigure Link View
     
-    private func reconfigureLinkView (link: Link?, linkView: UIView, imageViewContainer: UIView, imageView: UIImageView, textField: UITextField) {
+    private func reconfigureLinkView (link: Link?, linkView: UIView, imageViewContainer: UIView, imageView: UIImageView, label: UILabel) {
         
         if link == nil {
             
@@ -149,26 +137,27 @@ class CreateCollabLinkCollectionViewCell: UICollectionViewCell {
             
             linkView.isHidden = false
             
-            setImage(imageViewContainer: imageViewContainer, imageView: imageView, image: link?.icon)
+            retrieveIcon(link: link!) { [weak self] (icon) in
+                
+                self?.setImage(imageViewContainer: imageViewContainer, imageView: imageView, image: icon)
+            }
             
             if let name = link?.name, name.leniantValidationOfTextEntered() {
                 
-                textField.text = name
+                label.text = name
             }
             
             else {
                 
-                textField.text = link?.url
+                label.text = link?.url
             }
         }
     }
     
+    
     //MARK: - Set Link View Constraints
     
-    private func setLinkViewConstraints (linkView: UIView, cancelButton: UIButton, imageViewContainer: UIView, imageView: UIImageView, textField: UITextField) {
-        
-        linkView.addSubview(cancelButton)
-        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+    private func setLinkViewConstraints (linkView: UIView, imageViewContainer: UIView, imageView: UIImageView, label: UILabel) {
         
         linkView.addSubview(imageViewContainer)
         imageViewContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -176,15 +165,10 @@ class CreateCollabLinkCollectionViewCell: UICollectionViewCell {
         imageViewContainer.addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         
-        linkView.addSubview(textField)
-        textField.translatesAutoresizingMaskIntoConstraints = false
+        linkView.addSubview(label)
+        label.translatesAutoresizingMaskIntoConstraints = false
         
         [
-        
-            cancelButton.topAnchor.constraint(equalTo: linkView.topAnchor, constant: 3),
-            cancelButton.trailingAnchor.constraint(equalTo: linkView.trailingAnchor, constant: -3),
-            cancelButton.widthAnchor.constraint(equalToConstant: 23),
-            cancelButton.heightAnchor.constraint(equalToConstant: 23),
             
             imageViewContainer.centerXAnchor.constraint(equalTo: linkView.centerXAnchor),
             imageViewContainer.centerYAnchor.constraint(equalTo: linkView.centerYAnchor, constant: -7.5),
@@ -196,30 +180,100 @@ class CreateCollabLinkCollectionViewCell: UICollectionViewCell {
             imageView.widthAnchor.constraint(equalToConstant: 28),
             imageView.heightAnchor.constraint(equalToConstant: 28),
             
-            textField.bottomAnchor.constraint(equalTo: linkView.bottomAnchor, constant: -3),
-            textField.leadingAnchor.constraint(equalTo: linkView.leadingAnchor, constant: 5),
-            textField.trailingAnchor.constraint(equalTo: linkView.trailingAnchor, constant: -5),
-            textField.heightAnchor.constraint(equalToConstant: 15)
+            label.bottomAnchor.constraint(equalTo: linkView.bottomAnchor, constant: -3),
+            label.leadingAnchor.constraint(equalTo: linkView.leadingAnchor, constant: 5),
+            label.trailingAnchor.constraint(equalTo: linkView.trailingAnchor, constant: -5),
+            label.heightAnchor.constraint(equalToConstant: 15)
         
         ].forEach({ $0.isActive = true })
     }
     
     
+    //MARK: - Retrieve Icon
+    
+    private func retrieveIcon (link: Link, completion: @escaping ((_ icon: UIImage?) -> Void)) {
+        
+        if link.icon == nil {
+            
+            retrieveFavIcon(urlString: link.url) { [weak self] (icon) in
+                
+                completion(icon != nil ? icon : UIImage(named: "link"))
+                
+                self?.cacheIconDelegate?.cacheIcon(linkID: link.linkID ?? "", icon: icon != nil ? icon : UIImage(named: "link"))
+            }
+        }
+        
+        else {
+            
+            completion(link.icon)
+        }
+    }
+    
+    
+    //MARK: - Retrieve Fav Icon
+    
+    func retrieveFavIcon (urlString: String?, completion: @escaping ((_ image: UIImage?) -> Void)) {
+        
+        var url: String = ""
+        
+        //Attempts to ensure that all URL's entered are formatted correctly, and attempts reformat them if they aren't
+        if urlString?.localizedCaseInsensitiveContains("https:") ?? false {
+            
+            url = urlString!
+        }
+        
+        else {
+            
+            url = "https://" + urlString!
+        }
+        
+        do {
+                
+            try FavIcon.downloadPreferred(url, completion: { (result) in
+                
+                if case let .success(image) = result {
+                    
+                    //Prevents images that will be too blurry from being used
+                    if image.size.width >= 30 || image.size.height >= 30 {
+                        
+                        completion(image)
+                    }
+                    
+                    else {
+                        
+                        completion(nil)
+                    }
+                }
+                
+                //If the download failed
+                else {
+                    
+                    completion(nil)
+                }
+            })
+            
+        } catch {
+            
+            completion(nil)
+        }
+    }
+    
+    
     //MARK: - Set Image
     
-    private func setImage (imageViewContainer: UIView, imageView: UIImageView, image: UIImage? ) {
+    private func setImage (imageViewContainer: UIView, imageView: UIImageView, image: UIImage?) {
         
-        imageViewContainer.backgroundColor = image != nil ? .white : UIColor(hexString: "D8D8D8", withAlpha: 0.65)
+        imageViewContainer.backgroundColor = image != UIImage(named: "link") ? .white : UIColor(hexString: "D8D8D8", withAlpha: 0.65)
         
         imageView.constraints.forEach { (constraint) in
             
             if constraint.firstAttribute == .width || constraint.firstAttribute == .height {
                 
-                constraint.constant = image != nil ? 44 : 28
+                constraint.constant = image != UIImage(named: "link") ? 44 : 28
             }
         }
         
-        imageView.image = image != nil ? image : UIImage(systemName: "link")
+        imageView.image = image
     }
     
     
@@ -247,22 +301,6 @@ class CreateCollabLinkCollectionViewCell: UICollectionViewCell {
     }
     
     
-    //MARK: - Add Cancel Button Target
-    
-    private func addCancelButtonTarget (leftCancelButton: Bool) {
-        
-        if leftCancelButton {
-            
-            self.leftCancelButton.addTarget(self, action: #selector(leftCancelButtonPressed), for: .touchUpInside)
-        }
-        
-        else {
-            
-            rightCancelButton.addTarget(self, action: #selector(rightCancelButtonPressed), for: .touchUpInside)
-        }
-    }
-    
-    
     //MARK: - Add Link View Tap Gesture
     
     private func addTapGesture (leftImageView: Bool) {
@@ -278,21 +316,6 @@ class CreateCollabLinkCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    //MARK: - Cancel Button Pressed Functions
-    
-    @objc private func leftCancelButtonPressed () {
-        
-        createCollabLinksCellDelegate?.linkDeleted(leftLink?.linkID ?? "")
-        
-        leftTextField.setCustomPlaceholder(text: "Enter link", alignment: .center)
-    }
-    
-    @objc private func rightCancelButtonPressed () {
-        
-        createCollabLinksCellDelegate?.linkDeleted(rightLink?.linkID ?? "")
-        
-        rightTextField.setCustomPlaceholder(text: "Enter link", alignment: .center)
-    }
     
     //MARK: - Link Tapped Functions
     

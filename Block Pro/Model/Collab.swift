@@ -31,4 +31,6 @@ struct Collab {
     var locations: [Location]?
     
     var voiceMemos: [VoiceMemo]?
+    
+    var links: [Link]?
 }

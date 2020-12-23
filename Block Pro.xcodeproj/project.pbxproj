@@ -216,6 +216,9 @@
 		0D92BB9925833C6D00D9C561 /* Link.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BB9825833C6D00D9C561 /* Link.swift */; };
 		0D92BB9C2583444100D9C561 /* CreateCollabLinkCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BB9B2583444100D9C561 /* CreateCollabLinkCollectionViewCell.swift */; };
 		0D92BB9F2585698F00D9C561 /* UITextField+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BB9E2585698F00D9C561 /* UITextField+Extension.swift */; };
+		0D92BBA22586ED7600D9C561 /* CollabHomeLinksCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BBA12586ED7600D9C561 /* CollabHomeLinksCell.swift */; };
+		0D92BBA52586FADF00D9C561 /* CollabHomeLinkCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BBA42586FADF00D9C561 /* CollabHomeLinkCollectionViewCell.swift */; };
+		0D92BBA82587137E00D9C561 /* CacheIconProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BBA72587137E00D9C561 /* CacheIconProtocol.swift */; };
 		0D93300822927C7500B6191D /* Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300722927C7500B6191D /* Block.swift */; };
 		0D95C17A232886C400421BE0 /* Start Timer.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D95C179232886C400421BE0 /* Start Timer.wav */; };
 		0D95C17C2328923000421BE0 /* Timer Running.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0D95C17B2328923000421BE0 /* Timer Running.wav */; };
@@ -527,6 +530,9 @@
 		0D92BB9825833C6D00D9C561 /* Link.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Link.swift; sourceTree = "<group>"; };
 		0D92BB9B2583444100D9C561 /* CreateCollabLinkCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCollabLinkCollectionViewCell.swift; sourceTree = "<group>"; };
 		0D92BB9E2585698F00D9C561 /* UITextField+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extension.swift"; sourceTree = "<group>"; };
+		0D92BBA12586ED7600D9C561 /* CollabHomeLinksCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeLinksCell.swift; sourceTree = "<group>"; };
+		0D92BBA42586FADF00D9C561 /* CollabHomeLinkCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeLinkCollectionViewCell.swift; sourceTree = "<group>"; };
+		0D92BBA72587137E00D9C561 /* CacheIconProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheIconProtocol.swift; sourceTree = "<group>"; };
 		0D93300722927C7500B6191D /* Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block.swift; sourceTree = "<group>"; };
 		0D95C179232886C400421BE0 /* Start Timer.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Start Timer.wav"; sourceTree = "<group>"; };
 		0D95C17B2328923000421BE0 /* Timer Running.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "Timer Running.wav"; sourceTree = "<group>"; };
@@ -1021,6 +1027,7 @@
 				0DAFFDFE2533005500C39B69 /* CollabMemberCollectionViewCell.swift */,
 				0DAFFDFF2533005500C39B69 /* CollabMemberCollectionViewCell.xib */,
 				0D47030F2578883200B6A8FA /* CollabHomeMemoCollectionViewCell.swift */,
+				0D92BBA42586FADF00D9C561 /* CollabHomeLinkCollectionViewCell.swift */,
 			);
 			path = "CollectionView Cells";
 			sourceTree = "<group>";
@@ -1369,6 +1376,7 @@
 				0D2FDA2225393EE2005DF638 /* CollabPhotoCollectionViewCell.swift */,
 				0D2FDA2325393EE2005DF638 /* CollabPhotoCollectionViewCell.xib */,
 				0D47030A2578773F00B6A8FA /* CollabHomeVoiceMemosCell.swift */,
+				0D92BBA12586ED7600D9C561 /* CollabHomeLinksCell.swift */,
 				0D2FDA1D25391054005DF638 /* LeaveCollabCell.swift */,
 				0D2FDA1E25391054005DF638 /* LeaveCollabCell.xib */,
 				0D47030E2578880000B6A8FA /* CollectionView Cells */,
@@ -1442,6 +1450,7 @@
 			isa = PBXGroup;
 			children = (
 				0DE728C42509751B00581048 /* CachePhotoProtocol.swift */,
+				0D92BBA72587137E00D9C561 /* CacheIconProtocol.swift */,
 				0D80969F250AABBA00469934 /* PresentCopiedAnimationProtocol.swift */,
 				0D45DED225474259003E16E3 /* LocationProtocols.swift */,
 			);
@@ -1838,6 +1847,7 @@
 				0DDF87ED256248B40051C8F6 /* CreateCollabMemoCollectionViewCell.swift in Sources */,
 				0D82282824DA259200D0BBA0 /* ConvoUpdatedMessageCell.swift in Sources */,
 				0D41F5BE2311E4F100B4B11E /* CollabTenMinCell.swift in Sources */,
+				0D92BBA82587137E00D9C561 /* CacheIconProtocol.swift in Sources */,
 				0DBAB33E242039CC0021FE35 /* CategoriesCell.swift in Sources */,
 				0D7CD51D2433067A00BE1BE6 /* Firebase+Auth.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
@@ -1894,11 +1904,13 @@
 				0DD636C224102A1F0026B623 /* BlockCategoryPickerCell.swift in Sources */,
 				0D92BB9C2583444100D9C561 /* CreateCollabLinkCollectionViewCell.swift in Sources */,
 				0D5BEFE723E286DA00B5DCE5 /* HomeViewController.swift in Sources */,
+				0D92BBA52586FADF00D9C561 /* CollabHomeLinkCollectionViewCell.swift in Sources */,
 				0D7CABEF252CF2640045006C /* ZoomingImageViewMethods.swift in Sources */,
 				0DD9D89024437DC2006AA8AB /* View+Extension.swift in Sources */,
 				0DD9D8952443812A006AA8AB /* Firebase+Collab.swift in Sources */,
 				0DAD3B5E24A7C66F00607579 /* ConvoCoverInfoCell.swift in Sources */,
 				0DD636C6241174040026B623 /* BlockNotificationSettingCell.swift in Sources */,
+				0D92BBA22586ED7600D9C561 /* CollabHomeLinksCell.swift in Sources */,
 				0DBAB34124204E8F0021FE35 /* CategoryTrackBar.swift in Sources */,
 				0DADDAB6235591C200E79F89 /* TimeThirtyMinAndUpCell.swift in Sources */,
 				0DDE6FDF253BE4AB00A9DF71 /* AddLocationViewController.swift in Sources */,

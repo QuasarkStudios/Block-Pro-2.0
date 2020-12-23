@@ -131,7 +131,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         if tableView == collabHomeTableView {
             
-            return 5
+            return 6
         }
         
         else {
@@ -160,6 +160,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             }
             
             else if section == 3 {
+                
+                return 3
+            }
+            
+            else if section == 4 {
                 
                 return 3
             }
@@ -327,6 +332,37 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 }
             }
             
+            else if indexPath.section == 4 {
+                
+                if indexPath.row == 0 {
+                    
+                    let cell = UITableViewCell()
+                    cell.isUserInteractionEnabled = false
+                    return cell
+                }
+                
+                else if indexPath.row == 1 {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
+                    cell.selectionStyle = .none
+                    
+                    cell.sectionNameLabel.text = "Links"
+                    return cell
+                }
+                
+                else {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeLinksCell", for: indexPath) as! CollabHomeLinksCell
+                    cell.selectionStyle = .none
+                    
+                    cell.links = collab?.links//?.sorted(by: { ($0.name ?? $0.url)! < ($1.name ?? $1.url)! })
+                    
+                    cell.cacheIconDelegate = self
+                    
+                    return cell
+                }
+            }
+            
             else {
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "leaveCollabCell", for: indexPath) as! LeaveCollabCell
@@ -463,6 +499,37 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 else {
                     
                     return itemSize + 42
+                }
+            }
+            
+            else if indexPath.section == 4 {
+                
+                if indexPath.row == 0 {
+                    
+                    return 2.5
+                }
+                
+                else if indexPath.row == 1 {
+                    
+                    return 25
+                }
+                
+                else {
+                    
+                    if collab?.links?.count ?? 0 == 0 {
+                        
+                        return itemSize + 42
+                    }
+                    
+                    else if collab?.links?.count ?? 0 < 3 {
+                        
+                        return 120
+                    }
+                    
+                    else {
+                        
+                        return 147.5
+                    }
                 }
             }
             
@@ -635,6 +702,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabHomeTableView.register(UINib(nibName: "CollabHomeLocationsCell", bundle: nil), forCellReuseIdentifier: "collabHomeLocationsCell")
         collabHomeTableView.register(UINib(nibName: "CollabHomePhotosCell", bundle: nil), forCellReuseIdentifier: "collabHomePhotosCell")
         collabHomeTableView.register(CollabHomeVoiceMemosCell.self, forCellReuseIdentifier: "collabHomeVoiceMemosCell")
+        collabHomeTableView.register(CollabHomeLinksCell.self, forCellReuseIdentifier: "collabHomeLinksCell")
         collabHomeTableView.register(UINib(nibName: "LeaveCollabCell", bundle: nil), forCellReuseIdentifier: "leaveCollabCell")
     }
     
@@ -797,7 +865,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingPresented), name: UIResponder.keyboardWillShowNotification, object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingDismissed), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingDismissed), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(setUserActiveStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
 
@@ -1596,5 +1664,21 @@ extension CollabViewController: LocationSelectedProtocol {
     func locationSelected(_ location: Location?) {
         
         performSegue(withIdentifier: "moveToLocationsView", sender: self)
+    }
+}
+
+extension CollabViewController: CacheIconProtocol {
+    
+    func cacheIcon (linkID: String, icon: UIImage?) {
+        
+        if let linkIndex = collab?.links?.firstIndex(where: { $0.linkID == linkID }) {
+            
+            collab?.links?[linkIndex].icon = icon != nil ? icon : UIImage(named: "link")
+            
+            if let cell = collabHomeTableView.cellForRow(at: IndexPath(row: 2, section: 4)) as? CollabHomeLinksCell {
+                
+                cell.links = collab?.links
+            }
+        }
     }
 }

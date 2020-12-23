@@ -84,8 +84,11 @@ extension CollabViewController: UITextViewDelegate {
     
     @objc internal func keyboardBeingDismissed (notification: NSNotification) {
         
+        //keyboardWillHide notification stopped firing so this is the fix
+        let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
+        
         //Required for smoothness
-        if !(imageViewBeingZoomed ?? false) {
+        if !(imageViewBeingZoomed ?? false) && keyboardFrame.cgRectValue.height < 200 {
             
             inputAccesoryViewMethods?.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0, textViewText: messageTextViewText)
         }

@@ -66,19 +66,11 @@ class MessageTextViewContainer: UIView {
         constraints.append(trailingAnchor.constraint(equalTo: superview!.trailingAnchor, constant: proposedTrailingAnchor))
         constraints.append(heightAnchor.constraint(equalToConstant: 39))
         
-        //iPhone 11 Pro Max & iPhone 11
-        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+        if (keyWindow?.safeAreaInsets.bottom ?? 0) > 0 {
             
             constraints.append(bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: -36))
         }
-            
-        //iPhone 11 Pro
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
-            
-            constraints.append(bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: -36))
-        }
-            
-        //Every other iPhone
+        
         else {
             
             constraints.append(bottomAnchor.constraint(equalTo: superview!.bottomAnchor, constant: -10))

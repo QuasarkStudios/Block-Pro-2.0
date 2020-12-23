@@ -66,20 +66,12 @@ class InputAccesoryView: UIView {
     
     func configureSize () -> CGSize {
         
-        //iPhone 11 Pro Max & iPhone 11
-        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
-
-            return CGSize(width: 0, height: 77)
-        }
-            
-        //iPhone 11 Pro
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+        if (keyWindow?.safeAreaInsets.bottom ?? 0) > 0 {
             
             return CGSize(width: 0, height: 77)
         }
-            
-        //Every other iPhone
-        else  {
+        
+        else {
             
             return CGSize(width: 0, height: 51)
         }

@@ -288,21 +288,13 @@ class InputAccesoryViewMethods {
     
     private func setTextViewBottomAnchor () -> CGFloat {
         
-        //iPhone 11 Pro Max & iPhone 11
-        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+        if (keyWindow?.safeAreaInsets.bottom ?? 0) > 0 {
             
             return -36
         }
-            
-        //iPhone 11 Pro
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
-            
-            return -36
-        }
-            
-        //Every other iPhone
+        
         else {
-
+            
             return -10
         }
     }

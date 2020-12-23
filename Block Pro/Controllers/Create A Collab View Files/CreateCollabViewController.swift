@@ -1169,7 +1169,7 @@ extension CreateCollabViewController: CreateCollabLinksCellProtocol {
     
     func attachLinkSelected() {
         
-        let link = Link()
+        var link = Link()
         link.linkID = UUID().uuidString
         
         if newCollab.links == nil {

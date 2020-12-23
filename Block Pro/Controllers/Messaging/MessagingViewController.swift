@@ -504,7 +504,7 @@ class MessagingViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingPresented), name: UIResponder.keyboardWillShowNotification, object: nil)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingDismissed), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingDismissed), name: UIApplication.keyboardWillChangeFrameNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(setUserActiveStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
         
@@ -537,8 +537,11 @@ class MessagingViewController: UIViewController {
     
     @objc private func keyboardBeingDismissed (notification: NSNotification) {
         
+        //keyboardWillHide notification stopped firing so this is the fix
+        let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
+        
         //Required for smoothness
-        if !(imageViewBeingZoomed ?? false) {
+        if !(imageViewBeingZoomed ?? false) && keyboardFrame.cgRectValue.height < 200 {
             
             inputAccesoryViewMethods.keyboardBeingDismissed(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0, textViewText: messageTextViewText)
         }
@@ -1467,7 +1470,7 @@ extension MessagingViewController: ZoomInProtocol {
     
     func zoomInOnPhotoImageView(photoImageView: UIImageView) {
         
-        performZoomOnPhotoImageView(photoImageView: photoImageView)
+//        performZoomOnPhotoImageView(photoImageView: photoImageView)
         
         prepViewForImageViewZooming { [weak self] in
 
