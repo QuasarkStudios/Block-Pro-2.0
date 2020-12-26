@@ -518,11 +518,11 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
 //        view.addGestureRecognizer(presentTabBar)
     }
     
-    @objc private func presentDisabledTabBar () {
-        
-        let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(.warning)
-    }
+//    @objc private func presentDisabledTabBar () {
+//        
+//        let generator = UINotificationFeedbackGenerator()
+//        generator.notificationOccurred(.warning)
+//    }
     
     private func photoEdited (newImage: UIImage) {
         
@@ -1253,7 +1253,7 @@ extension CreateCollabViewController: PresentCopiedAnimationProtocol {
     
     func presentCopiedAnimation() {
         
-        let navBarFrame = navBar.convert(navBar.frame, to: UIApplication.shared.keyWindow)
+        let navBarFrame = navBar.convert(navBar.frame, to: keyWindow)
         
         //12.5 is equal to 10 point top anchor the photosCollectionView has from the navBar plus an extra 10 point buffer
         copiedAnimationView?.presentCopiedAnimation(topAnchor: navBarFrame.minY + 10)

@@ -407,11 +407,11 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
         
-        let presentTabBar = UISwipeGestureRecognizer(target: self, action: #selector(presentDisabledTabBar))
-        presentTabBar.delegate = self
-        presentTabBar.cancelsTouchesInView = false
-        presentTabBar.direction = .left
-        view.addGestureRecognizer(presentTabBar)
+//        let presentTabBar = UISwipeGestureRecognizer(target: self, action: #selector(presentDisabledTabBar))
+//        presentTabBar.delegate = self
+//        presentTabBar.cancelsTouchesInView = false
+//        presentTabBar.direction = .left
+//        view.addGestureRecognizer(presentTabBar)
     }
     
     private func configureNameSettingCell (_ tableView: UITableView, _ indexPath: IndexPath) -> UITableViewCell {
@@ -703,11 +703,11 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         notificationSettings["minsBefore"] = block.minsBefore
     }
     
-    @objc private func presentDisabledTabBar () {
-        
-        let generator = UINotificationFeedbackGenerator()
-        generator.notificationOccurred(.warning)
-    }
+//    @objc private func presentDisabledTabBar () {
+//        
+//        let generator = UINotificationFeedbackGenerator()
+//        generator.notificationOccurred(.warning)
+//    }
     
     func validateTextEntered (_ text: String) -> Bool {
         

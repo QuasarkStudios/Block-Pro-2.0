@@ -135,7 +135,7 @@ class LocationSearchView: UIView {
         locationImageContainer.addSubview(locationImageTitle)
         locationImageTitle.translatesAutoresizingMaskIntoConstraints = false
         
-        let imageViewDimensions = (UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0) > 0 ? UIScreen.main.bounds.width : UIScreen.main.bounds.width - 20
+        let imageViewDimensions = (keyWindow?.safeAreaInsets.bottom ?? 0) > 0 ? UIScreen.main.bounds.width : UIScreen.main.bounds.width - 20
         
         [
         
@@ -145,7 +145,7 @@ class LocationSearchView: UIView {
             locationImageContainer.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
             
             locationImageView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0),
-            locationImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -(UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0)),
+            locationImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -(keyWindow?.safeAreaInsets.bottom ?? 0)),
             locationImageView.widthAnchor.constraint(equalToConstant: imageViewDimensions),
             locationImageView.heightAnchor.constraint(equalToConstant: imageViewDimensions),
             

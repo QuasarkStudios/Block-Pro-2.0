@@ -21,8 +21,6 @@ class ProfileViewController: UIViewController {
     
     let currentUser = CurrentUser.sharedInstance
     
-    lazy var tabBar = CustomTabBar.sharedInstance
-    
     weak var profileViewDelegate: ProfileView?
     
     override func viewDidLoad() {
@@ -43,16 +41,6 @@ class ProfileViewController: UIViewController {
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        
-        configureTabBar()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        
-        tabBar.previousNavigationController = navigationController
-    }
-    
     private func configureImageView () {
         
         let tap = UITapGestureRecognizer()
@@ -63,24 +51,6 @@ class ProfileViewController: UIViewController {
         
         profileImage.layer.cornerRadius = 0.5 * profileImage.bounds.width
         profileImage.clipsToBounds = true
-    }
-    
-    func configureTabBar () {
-
-        tabBarController?.tabBar.isHidden = true
-        tabBarController?.delegate = tabBar
-        
-        tabBar.tabBarController = tabBarController
-        tabBar.currentNavigationController = self.navigationController
-        
-        tabBar.configureActiveTabBarGestureRecognizers(self.view)
-        
-        if tabBar.previousNavigationController == tabBar.currentNavigationController {
-            
-            tabBar.shouldHide = true
-        }
-        
-        view.addSubview(tabBar)
     }
 
     private func presentImageController () {

@@ -14,7 +14,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     lazy var collabHeaderView = CollabHeaderView(collab)
     lazy var collabHeaderViewHeightConstraint = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
     
-    let collabNavigationView = CollabNavigationView()
+    lazy var collabNavigationView = CollabNavigationView(collabStartTime: collab?.dates["startTime"], collabDeadline: collab?.dates["deadline"])
     let presentCollabNavigationViewButton = UIButton(type: .system)
     
     var editCollabBarButton: UIBarButtonItem?
@@ -99,8 +99,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         addObservors()
         
         self.becomeFirstResponder()
-        
-        configureTabBar() //Possibly animate to avoid finnicky animation when user partially leaves view on swipe dismissal then returns
     }
     
     
@@ -115,8 +113,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         saveMessageDraft()
         
         copiedAnimationView?.removeCopiedAnimation(remove: true)
-        
-        tabBar.previousNavigationController = navigationController
     }
     
     override var inputAccessoryView: UIView? {
@@ -560,7 +556,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
-        if indexPath.section == (tableView.numberOfSections - 1) {
+        if tableView == collabHomeTableView && indexPath.section == (tableView.numberOfSections - 1) {
             
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                 
@@ -604,7 +600,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
-        if indexPath.section == (tableView.numberOfSections - 1) {
+        if tableView == collabHomeTableView && indexPath.section == (tableView.numberOfSections - 1) {
             
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                 
@@ -721,6 +717,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         ].forEach({ $0.isActive = true })
         
+//        collabNavigationView.collabStartTime = collab?.dates["startTime"]
+//        collabNavigationView.collabDeadline = collab?.dates["deadline"]
+        
         collabNavigationView.collabViewController = self
     }
     
@@ -757,6 +756,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         [
             
             presentCollabNavigationViewButton.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
+            presentCollabNavigationViewButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -(self.view.frame.height - tabBar.frame.minY) - 15),
             presentCollabNavigationViewButton.widthAnchor.constraint(equalToConstant: 37.5),
             presentCollabNavigationViewButton.heightAnchor.constraint(equalToConstant: 37.5)
         
@@ -829,35 +829,14 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         [
             
             addBlockButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -29),
+            addBlockButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -(self.view.frame.height - tabBar.frame.minY) - 25),
             addBlockButton.widthAnchor.constraint(equalToConstant: 60),
             addBlockButton.heightAnchor.constraint(equalToConstant: 60)
             
         ].forEach( { $0.isActive = true } )
         
         addBlockButton.layer.cornerRadius = 30
-        addBlockButton.clipsToBounds = true
-    }
-    
-    func configureTabBar () {
-
-        tabBarController?.tabBar.isHidden = true
-        tabBarController?.delegate = tabBar
-        
-        tabBar.tabBarController = tabBarController
-        tabBar.currentNavigationController = self.navigationController
-        
-//        tabBar.configureActiveTabBarGestureRecognizers(self.view)
-        
-        if tabBar.previousNavigationController == tabBar.currentNavigationController {
-            
-//            tabBar.shouldHide = true
-        }
-        
-        view.addSubview(tabBar)
-        
-        addBlockButton.bottomAnchor.constraint(equalTo: tabBar.topAnchor, constant: -25).isActive = true
-        
-        presentCollabNavigationViewButton.bottomAnchor.constraint(equalTo: tabBar.topAnchor, constant: 20).isActive = true
+//        addBlockButton.clipsToBounds = true
     }
     
     
@@ -1077,6 +1056,19 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
 
         
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//
+//            if self.selectedTab == "Blocks" {
+//
+//                self.collabNavigationView.dismissCalendar()
+//            }
+//        }
+        
+        if selectedTab == "Blocks" {
+
+            collabNavigationView.dismissCalendar()
+        }
+        
         if selectedTab == "Messages" && self.messages?.count ?? 0 > 0 && scrollTableView {
             
             self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: ((self.messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: true)
@@ -1097,13 +1089,14 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabHeaderViewHeightAnchor?.constant = collabHeaderView.configureViewHeight() - 70
         collabNavigationViewTopAnchor?.constant = self.view.frame.height
         collabNavigationViewBottomAnchor?.constant = self.view.frame.height
-        presentNavViewButtonBottomAnchor?.constant = -20//-40
+        presentNavViewButtonBottomAnchor?.constant = -(self.view.frame.height - tabBar.frame.minY) - 15
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
             
             self.view.layoutIfNeeded()
             
             self.tabBar.alpha = 1
+            self.presentCollabNavigationViewButton.alpha = 1
             self.addBlockButton.alpha = 0
             self.messageInputAccesoryView.alpha = 0
         }
@@ -1117,7 +1110,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         collabNavigationViewTopAnchor?.constant = 0
         collabNavigationViewBottomAnchor?.constant = 0
-        collabTableViewTopAnchor?.constant = ((topBarHeight - collabNavigationView.buttonStackView.frame.maxY) + 5)
+//        collabTableViewTopAnchor?.constant = ((topBarHeight - collabNavigationView.buttonStackView.frame.maxY) + 5)
         
         title = selectedTab
         
@@ -1126,11 +1119,36 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
 
             self.view.layoutIfNeeded()
-            
+
             self.collabNavigationView.layer.cornerRadius = 0
             self.collabNavigationView.panGestureIndicator.alpha = 0
             self.collabNavigationView.buttonStackView.alpha = 0
         })
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+
+            if self.selectedTab == "Blocks" {
+
+                self.collabNavigationView.presentCalendar()
+            }
+        }
+        
+//        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut) {
+//
+//            self.view.layoutIfNeeded()
+//
+//            self.collabNavigationView.layer.cornerRadius = 0
+//            self.collabNavigationView.panGestureIndicator.alpha = 0
+//            self.collabNavigationView.buttonStackView.alpha = 0
+//
+//        } completion: { (finished: Bool) in
+//
+//            if self.selectedTab == "Blocks" {
+//
+//                self.collabNavigationView.presentCalendar()
+//            }
+//        }
+
     }
     
     internal func viewExpanded () {
@@ -1157,25 +1175,25 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         removeGestureRecognizers()
     }
     
-    private func setTableViewTopAnchor () -> CGFloat {
-        
-        //iPhone 11 Pro Max & iPhone 11
-        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
-            
-            return 30
-        }
-            
-        //iPhone 11 Pro
-        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
-            
-            return 30
-        }
-        
-        else {
-            
-            return 0
-        }
-    }
+//    private func setTableViewTopAnchor () -> CGFloat {
+//
+//        //iPhone 11 Pro Max & iPhone 11
+//        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
+//
+//            return 30
+//        }
+//
+//        //iPhone 11 Pro
+//        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
+//
+//            return 30
+//        }
+//
+//        else {
+//
+//            return 0
+//        }
+//    }
     
     //MARK: - User Activity Functions
     
@@ -1286,7 +1304,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     @objc private func dismissExpandedView () {
 
-        if navigationItem.hidesBackButton == true && tabBar.shouldHide == true {
+        if navigationItem.hidesBackButton == true /*&& tabBar.shouldHide == true */{
             
             cancelButtonPressed()
         }
@@ -1494,15 +1512,15 @@ extension CollabViewController: UIGestureRecognizerDelegate {
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 
-        if gestureRecognizer == tabBar.dismissActiveTabBarSwipeGesture && otherGestureRecognizer == dismissExpandedViewGesture {
-
-            return true
-        }
-
-        else if gestureRecognizer == dismissExpandedViewGesture && otherGestureRecognizer == tabBar.dismissActiveTabBarSwipeGesture {
-
-            return true
-        }
+//        if gestureRecognizer == tabBar.dismissActiveTabBarSwipeGesture && otherGestureRecognizer == dismissExpandedViewGesture {
+//
+//            return true
+//        }
+//
+//        else if gestureRecognizer == dismissExpandedViewGesture && otherGestureRecognizer == tabBar.dismissActiveTabBarSwipeGesture {
+//
+//            return true
+//        }
 
         return false
     }

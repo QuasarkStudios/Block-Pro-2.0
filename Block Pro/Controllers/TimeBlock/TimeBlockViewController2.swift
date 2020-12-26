@@ -30,8 +30,6 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
 
     var selectedBlock: PersonalRealmDatabase.blockTuple?
     
-    lazy var tabBar = CustomTabBar.sharedInstance
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -66,13 +64,6 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         selectedBlock = nil
         
         autoScrollToBlock()
-        
-        configureTabBar()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        
-        tabBar.previousNavigationController = navigationController
     }
 
     
@@ -88,24 +79,6 @@ class TimeBlockViewController2: UIViewController, UITableViewDataSource, UITable
         cell.editBlockDelegate = self
         
         return cell
-    }
-    
-    func configureTabBar () {
-
-        tabBarController?.tabBar.isHidden = true
-        tabBarController?.delegate = tabBar
-        
-        tabBar.tabBarController = tabBarController
-        tabBar.currentNavigationController = self.navigationController
-        
-        tabBar.configureActiveTabBarGestureRecognizers(self.view)
-        
-        if tabBar.previousNavigationController == tabBar.currentNavigationController {
-            
-            tabBar.shouldHide = true
-        }
-        
-        view.addSubview(tabBar)
     }
     
     private func applyGradientFade () {

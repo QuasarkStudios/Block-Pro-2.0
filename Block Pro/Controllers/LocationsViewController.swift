@@ -105,7 +105,7 @@ class LocationsViewController: UIViewController {
         self.view.addSubview(locationInfoView)
         locationInfoView.translatesAutoresizingMaskIntoConstraints = false
         
-        let bottomAnchor = (UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0) > 0 ? -((UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0) + 15) : -22.5
+        let bottomAnchor = (keyWindow?.safeAreaInsets.bottom ?? 0) > 0 ? -((keyWindow?.safeAreaInsets.bottom ?? 0) + 15) : -22.5
         
         [
         
@@ -517,7 +517,7 @@ class LocationsViewController: UIViewController {
             
             locationAddressLabel.performCopyAnimationOnView()
             
-            let navBarFrame = navBar.convert(navBar.frame, to: UIApplication.shared.keyWindow)
+            let navBarFrame = navBar.convert(navBar.frame, to: keyWindow)
             copiedAnimationView?.presentCopiedAnimation(topAnchor: navBarFrame.maxY + 10)
         }
     }

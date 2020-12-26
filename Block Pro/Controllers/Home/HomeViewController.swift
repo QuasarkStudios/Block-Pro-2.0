@@ -74,10 +74,10 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         profileButton.addTarget(self, action: #selector(profileButtonPressed), for: .touchUpInside)
         
-        tabBarController?.tabBar.barTintColor = .white
-        //tabBarController?.tabBar.shadowImage = UIImage()
-        tabBarController?.tabBar.isTranslucent = false
-        tabBarController?.tabBar.clipsToBounds = true
+//        tabBarController?.tabBar.barTintColor = .white
+//        //tabBarController?.tabBar.shadowImage = UIImage()
+//        tabBarController?.tabBar.isTranslucent = false
+//        tabBarController?.tabBar.clipsToBounds = true
         
         //tabBarController?.delegate = self
         
@@ -104,19 +104,19 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             retrieveCollabs()
         }
         
-//        configureTabBar()
+        configureTabBar()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
         configureNavBar()
         
-        configureTabBar()
+//        configureTabBar()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         
-        tabBar.previousNavigationController = navigationController
+//        tabBar.previousNavigationController = navigationController
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -127,15 +127,17 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             viewInitiallyLoaded = true
         }
         
-        if tabBar.previousNavigationController == navigationController && tabBar.popped != true {
-            
-            configureTabBar()
-        }
+//        configureTabBar()
         
-        else if tabBar.popped == true {
-            
-            tabBar.popped = false
-        }
+//        if tabBar.previousNavigationController == navigationController && tabBar.popped != true {
+//
+//            configureTabBar()
+//        }
+//
+//        else if tabBar.popped == true {
+//
+//            tabBar.popped = false
+//        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -334,16 +336,20 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     func configureTabBar () {
 
         tabBarController?.tabBar.isHidden = true
-        tabBarController?.delegate = tabBar
+//        tabBarController?.delegate = tabBar
+//        
+//        tabBar.shouldHide = false
+//        tabBar.tabBarController = tabBarController
+//        tabBar.currentNavigationController = self.navigationController
+//        
+//        tabBar.animateEntryToView()
+//        tabBar.workItem?.cancel()
         
-        tabBar.shouldHide = false
+//        tabBarController?.delegate = self
+        tabBar.homeTabNavigationController = navigationController
         tabBar.tabBarController = tabBarController
-        tabBar.currentNavigationController = self.navigationController
         
-        tabBar.animateEntryToView()
-        tabBar.workItem?.cancel()
-        
-        view.addSubview(tabBar)
+        keyWindow?.addSubview(tabBar)
     }
     
     private func setProfilePicture () {

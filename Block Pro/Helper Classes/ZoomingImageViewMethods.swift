@@ -41,13 +41,13 @@ class ZoomingImageViewMethods {
         
         blackBackground?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOutOnImageView)))
         
-        UIApplication.shared.keyWindow?.addSubview(blackBackground!)
+        keyWindow?.addSubview(blackBackground!)
         
         optionalButtons.forEach { (button) in
             
             if button != nil {
                 
-                UIApplication.shared.keyWindow?.addSubview(button!)
+                keyWindow?.addSubview(button!)
             }
         }
         
@@ -64,7 +64,7 @@ class ZoomingImageViewMethods {
             zoomingImageView.isUserInteractionEnabled = true
             zoomingImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOutOnImageView)))
             
-            UIApplication.shared.keyWindow?.addSubview(zoomingImageView)
+            keyWindow?.addSubview(zoomingImageView)
             zoomedInImageView = zoomingImageView
             
             imageView.isHidden = true

@@ -350,6 +350,9 @@ class FirebaseCollab {
                         collab.name = document.data()["collabName"] as! String
                         collab.objective = document.data()["collabObjective"] as? String
                         
+                        let dateCreated = document.data()["dateCreated"] as! Timestamp
+                        collab.dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreated.seconds))
+                        
                         collab.coverPhotoID = document.data()["coverPhotoID"] as? String
                         
                         collab.photoIDs = document.data()["photos"] as? [String] ?? []
@@ -357,11 +360,14 @@ class FirebaseCollab {
                         let startTime = document.data()["startTime"] as! Timestamp
                         collab.dates["startTime"] = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))
                         
+                        if let deadline = document.data()["deadline"] as? Timestamp {
+                            
+                            collab.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
+                        }
+                        
                         let memberActivity: [String : Any]? = document.data()["memberActivity"] as? [String : Any]
                         collab.memberActivity = self.parseCollabActivity(memberActivity: memberActivity)
                         
-                        let deadline = document.data()["deadline"] as! Timestamp
-                        collab.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
                         
                         collab.locations = self.retrieveCollabLocations(document: document)
                         
@@ -378,7 +384,7 @@ class FirebaseCollab {
                         else {
                             
                             self.collabs.append(collab)
-                            self.collabs = self.collabs.sorted(by: {$0.dates["deadline"]! > $1.dates["deadline"]!})
+                            self.collabs = self.collabs.sorted(by: {$0.dates["deadline"] ?? Date() > $1.dates["deadline"] ?? Date()})
                         }
                         
                         #warning("will need to move this to seperate function as well as configure way to sort historic members from current members modeling the way I did it with conversation :) i believe in you")

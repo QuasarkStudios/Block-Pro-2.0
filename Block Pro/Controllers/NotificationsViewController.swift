@@ -30,16 +30,6 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        
-        //configureTabBar()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        
-        tabBar.previousNavigationController = navigationController
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         guard let requests = collabRequests else { return 1 }
@@ -72,18 +62,6 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
             
             print("success")
         }
-    }
-    
-    func configureTabBar () {
-
-        tabBar.shouldHide = false
-        tabBarController?.tabBar.isHidden = true
-        tabBarController?.delegate = tabBar
-        
-        tabBar.tabBarController = tabBarController
-        tabBar.currentNavigationController = self.navigationController
-        
-        view.addSubview(tabBar)
     }
     
     @IBAction func acceptButton(_ sender: Any) {

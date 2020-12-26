@@ -12,7 +12,7 @@ public var keyWindow = UIApplication.shared.keyWindow
 
 public var topBarHeight: CGFloat {
 
-    let statusBarHeight = UIApplication.shared.keyWindow?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+    let statusBarHeight = keyWindow?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
     return statusBarHeight + 44
 }
 

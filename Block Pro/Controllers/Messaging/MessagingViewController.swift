@@ -86,6 +86,9 @@ class MessagingViewController: UIViewController {
         
         configureNavBar(navBar: navigationController?.navigationBar)
         
+        let tabBar = CustomTabBar.sharedInstance
+        tabBar.shouldHide = true
+        
         retrievePersonalMessages(personalConversation)
         retrieveCollabMessages(collabConversation)
         
@@ -1095,7 +1098,7 @@ class MessagingViewController: UIViewController {
         
         blackBackground?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
         
-        UIApplication.shared.keyWindow?.addSubview(blackBackground!)
+        keyWindow?.addSubview(blackBackground!)
         
         if let startingFrame = photoImageView.superview?.convert(photoImageView.frame, from: self.view) {
             
@@ -1109,7 +1112,7 @@ class MessagingViewController: UIViewController {
             zoomingImageView.isUserInteractionEnabled = true
             zoomingImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
             
-            UIApplication.shared.keyWindow?.addSubview(zoomingImageView)
+            keyWindow?.addSubview(zoomingImageView)
             zoomedInImageView = zoomingImageView
             
             photoImageView.isHidden = true

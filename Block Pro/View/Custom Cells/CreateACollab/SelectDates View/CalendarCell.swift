@@ -288,7 +288,7 @@ class CalendarCell: UITableViewCell, JTAppleCalendarViewDataSource, JTAppleCalen
         //Removes white lines for the cells that appear
         calendarViewWidthConstraint.constant = contentView.frame.width - contentView.frame.width.truncatingRemainder(dividingBy: 7)
         calendarView.cellSize = calendarViewWidthConstraint.constant / 7
-
+        
         formatter.dateFormat = "MM yyyy"
         
         //If statement fixes bug that would cause the range selection view's leading and trailing constraints to be off upon first view load 

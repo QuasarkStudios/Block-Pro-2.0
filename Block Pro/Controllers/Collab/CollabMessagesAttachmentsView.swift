@@ -175,7 +175,7 @@ extension CollabMessagesAttachmentsView: PresentCopiedAnimationProtocol {
     
     func presentCopiedAnimation() {
         
-        let navBarFrame = navBar.convert(navBar.frame, to: UIApplication.shared.keyWindow)
+        let navBarFrame = navBar.convert(navBar.frame, to: keyWindow)
         
         //20 is equal to 10 point top anchor the photosCollectionView has from the navBar plus an extra 10 point buffer
         copiedAnimationView?.presentCopiedAnimation(topAnchor: navBarFrame.maxY + 20)

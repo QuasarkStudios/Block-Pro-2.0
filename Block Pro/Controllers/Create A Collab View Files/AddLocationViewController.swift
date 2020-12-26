@@ -30,8 +30,8 @@ class AddLocationViewController: UIViewController {
     var locationPreselected: Bool = false
     var shouldSelectAnnotation: Bool = false
     
-    let bottomSafeAreaInset: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 140 : 160
-    let expandedBottomSafeAreaInset: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 285 : 305
+    let bottomSafeAreaInset: CGFloat = keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 140 : 160
+    let expandedBottomSafeAreaInset: CGFloat = keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 285 : 305
     
     weak var locationSavedDelegate: LocationSavedProtocol?
     weak var cancelLocationSelectionDelegate: CancelLocationSelectionProtocol?

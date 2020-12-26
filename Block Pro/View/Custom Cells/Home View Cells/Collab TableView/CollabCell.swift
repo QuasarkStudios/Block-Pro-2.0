@@ -94,7 +94,7 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
         
         collabName.text = collab?.name
         
-        setDeadlineText(deadline: (collab?.dates["deadline"])!)
+        setDeadlineText(deadline: (collab?.dates["deadline"]))
         
         retrieveProfilePics()
         
@@ -118,7 +118,7 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
         configureProgressBars()
     }
     
-    private func setDeadlineText (deadline: Date) {
+    private func setDeadlineText (deadline: Date?) {
         
         let formatter = DateFormatter()
         
@@ -131,17 +131,25 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
         deadlineText = NSAttributedString(string: "Next Deadline: ", attributes: semiBoldText as [NSAttributedString.Key : Any])
         attributedString.append(deadlineText)
         
-        formatter.dateFormat = "MMMM d"
-        deadlineText = NSAttributedString(string: formatter.string(from: deadline), attributes: standardText as [NSAttributedString.Key : Any])
-        attributedString.append(deadlineText)
+        if deadline != nil {
+            
+            formatter.dateFormat = "MMMM d"
+            deadlineText = NSAttributedString(string: formatter.string(from: deadline!), attributes: standardText as [NSAttributedString.Key : Any])
+            attributedString.append(deadlineText)
+            
+            let daySuffix = deadline!.daySuffix()
+            deadlineText = NSAttributedString(string: daySuffix, attributes: standardText as [NSAttributedString.Key : Any])
+            attributedString.append(deadlineText)
+            
+            formatter.dateFormat = "h:mm a"
+            deadlineText = NSAttributedString(string: ", \(formatter.string(from: deadline!))", attributes: standardText as [NSAttributedString.Key : Any])
+            attributedString.append(deadlineText)
+        }
         
-        let daySuffix = deadline.daySuffix()
-        deadlineText = NSAttributedString(string: daySuffix, attributes: standardText as [NSAttributedString.Key : Any])
-        attributedString.append(deadlineText)
-        
-        formatter.dateFormat = "h:mm a"
-        deadlineText = NSAttributedString(string: ", \(formatter.string(from: deadline))", attributes: standardText as [NSAttributedString.Key : Any])
-        attributedString.append(deadlineText)
+        else {
+            
+            deadlineText = NSAttributedString(string: "No Deadline", attributes: standardText as [NSAttributedString.Key : Any])
+        }
         
         deadlineLabel.attributedText = attributedString
     }

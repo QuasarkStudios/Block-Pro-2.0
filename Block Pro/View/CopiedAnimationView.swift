@@ -25,7 +25,7 @@ class CopiedAnimationView: UIView {
     
     private func configureCopiedAnimation () {
         
-        if let keyWindow = UIApplication.shared.keyWindow {
+        if let keyWindow = keyWindow {
             
             keyWindow.addSubview(self)
             self.translatesAutoresizingMaskIntoConstraints = false
@@ -104,7 +104,7 @@ class CopiedAnimationView: UIView {
             }
         }
         
-        UIApplication.shared.keyWindow?.constraints.forEach { (constraint) in
+        keyWindow?.constraints.forEach { (constraint) in
             
             if constraint.firstAttribute == .top {
                 
@@ -120,7 +120,7 @@ class CopiedAnimationView: UIView {
         //Animating the constraint changes
         UIView.animate(withDuration: 0.4, delay: 0, options: .curveEaseInOut, animations: {
             
-            UIApplication.shared.keyWindow?.layoutIfNeeded()
+            keyWindow?.layoutIfNeeded()
         })
         
         //Animating the alpha change, then starting animation once completed
@@ -158,7 +158,7 @@ class CopiedAnimationView: UIView {
             }
         }
         
-        UIApplication.shared.keyWindow?.constraints.forEach { (constraint) in
+        keyWindow?.constraints.forEach { (constraint) in
             
             if constraint.firstAttribute == .top {
                 
@@ -173,7 +173,7 @@ class CopiedAnimationView: UIView {
         
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: {
             
-            UIApplication.shared.keyWindow?.layoutIfNeeded()
+            keyWindow?.layoutIfNeeded()
             
             self.alpha = 0
         })

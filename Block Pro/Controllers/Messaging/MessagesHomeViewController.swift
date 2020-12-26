@@ -73,7 +73,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         
         configureSearchBar()
         configurePersonal_CollabContainers()
-        //configureNewConversationButton() //Currently being called from inside the configureTabBar func
+        configureNewConversationButton()
         configureDeleteConversationsButton()
         
         configureTableView(messagingHomeTableView)
@@ -91,12 +91,8 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         super.viewWillAppear(animated)
         
         configureNavBar()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
         
-        tabBar.previousNavigationController = navigationController
+        tabBar.shouldHide = false
     }
     
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -580,23 +576,6 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     }
     
     
-    //MARK: - Configure TabBar Function
-    
-    func configureTabBar () {
-        
-        tabBarController?.tabBar.isHidden = true
-        tabBarController?.delegate = tabBar
-
-        tabBar.shouldHide = false
-        tabBar.tabBarController = tabBarController
-        tabBar.currentNavigationController = self.navigationController
-        
-        view.addSubview(tabBar)
-        
-       configureNewConversationButton() //Called here because the buttons bottom anchor is constrained to the top anchor of the tabBar
-    }
-    
-    
     //MARK: - Configure Gesture Recognizors Function
     
     private func configureGestureRecognizors () {
@@ -623,7 +602,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         [
             
             newConversationButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -29),
-            newConversationButton.bottomAnchor.constraint(equalTo: tabBar.topAnchor, constant: -25),
+            newConversationButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -(self.view.frame.height - tabBar.frame.minY) - 25),
             newConversationButton.widthAnchor.constraint(equalToConstant: 60),
             newConversationButton.heightAnchor.constraint(equalToConstant: 60)
             

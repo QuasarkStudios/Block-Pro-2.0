@@ -231,6 +231,8 @@ class CollabHeaderView: UIView {
         
         if let deadline = collab?.dates["deadline"] {
              
+            deadlineTextLabel.font = UIFont(name: "Poppins-Regular", size: 13)
+            
             formatter.dateFormat = "d MMMM yyyy"
             var deadlineText = formatter.string(from: deadline)
             deadlineText += " at "
@@ -239,15 +241,18 @@ class CollabHeaderView: UIView {
             deadlineText += formatter.string(from: deadline)
             
             deadlineTextLabel.text = deadlineText
+            
         }
         
         else {
+            
+            deadlineTextLabel.font = UIFont(name: "Poppins-Italic", size: 13)
             
             deadlineTextLabel.text = "No Deadline Yet"
         }
         
         deadlineTextLabel.textColor = .white
-        deadlineTextLabel.font = UIFont(name: "Poppins-Regular", size: 13)
+//        deadlineTextLabel.font = UIFont(name: "Poppins-Regular", size: 13)
     }
     
     private func configureExpandButton () {

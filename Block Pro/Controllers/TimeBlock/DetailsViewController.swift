@@ -13,8 +13,6 @@ class DetailsViewController: UIViewController, UITableViewDataSource, UITableVie
 
     @IBOutlet weak var detailsTableView: UITableView!
     
-    lazy var tabBar = CustomTabBar.sharedInstance
-    
     var categoriesCellHeight: CGFloat = 200
     
     override func viewDidLoad() {
@@ -29,16 +27,6 @@ class DetailsViewController: UIViewController, UITableViewDataSource, UITableVie
         detailsTableView.register(UINib(nibName: "ProgressCirclesCell", bundle: nil), forCellReuseIdentifier: "progressCirclesCell")
         
         detailsTableView.register(UINib(nibName: "CategoriesCell", bundle: nil), forCellReuseIdentifier: "categoriesCell")
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        
-        configureTabBar()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        
-        tabBar.previousNavigationController = navigationController
     }
     
 
@@ -112,23 +100,5 @@ class DetailsViewController: UIViewController, UITableViewDataSource, UITableVie
             
             detailsTableView.scrollToRow(at: indexPath, at: .top, animated: true)
         }
-    }
-    
-    func configureTabBar () {
-
-        tabBarController?.tabBar.isHidden = true
-        tabBarController?.delegate = tabBar
-        
-        tabBar.tabBarController = tabBarController
-        tabBar.currentNavigationController = self.navigationController
-        
-        tabBar.configureActiveTabBarGestureRecognizers(self.view)
-        
-        if tabBar.previousNavigationController == tabBar.currentNavigationController {
-            
-            tabBar.shouldHide = true
-        }
-        
-        view.addSubview(tabBar)
     }
 }
