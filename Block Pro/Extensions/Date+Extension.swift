@@ -74,4 +74,100 @@ extension Date {
         
         return weekCount
     }
+    
+    //Func used to to ensure that time in the TimeConfigurationCells goes by 5 minute increments
+    func adjustTime (roundDown: Bool) -> Date {
+        
+        var dateComponents = Calendar.current.dateComponents(in: .current, from: self)
+    
+        if let hour = dateComponents.hour, let minutes = dateComponents.minute {
+            
+            //If the current time is already in a increment of 5
+            if minutes % 5 == 0 {
+                
+                //If the time should be rounded down, signifying that it is for a start TimeConfigurationCell
+                if roundDown {
+                    
+                    //If the current time is 11:55 PM
+                    if hour == 23 && minutes == 55 {
+                        
+                        //The start time should be moved back to 11:50 PM to allow the end time to be set to 11:55 PM
+                        return Calendar.current.date(byAdding: .minute, value: -5, to: self) ?? Date()
+                    }
+                    
+                    else {
+                        
+                        //Returning the current time because it is already properly configured
+                        return self
+                    }
+                }
+                
+                //If the time should be rounded up, signifying that it is for a end TimeConfigurationCell
+                else {
+                    
+                    //If the current time is 11:55 PM
+                    if hour == 23 && minutes == 55 {
+                        
+                        //Returning the current time because it is already properly configured
+                        return self
+                    }
+                    
+                    else {
+                        
+                        //Incrementing the current time by 5 minutes because the end time should be 5 minutes after the start time
+                        return Calendar.current.date(byAdding: .minute, value: 5, to: self) ?? Date()
+                    }
+                }
+            }
+
+            //If the current time isn't already in a increment of 5
+            else {
+
+                //If the time should be rounded down, signifying that it is for a start TimeConfigurationCell
+                if roundDown {
+                    
+                    //Rounding down the current time
+                    dateComponents = Calendar.current.dateComponents(in: .current, from: self.addingTimeInterval(-(Double((minutes % 5) * 60))))
+                    
+                    if let adjustedHour = dateComponents.hour, let adjustedMinutes = dateComponents.minute {
+                        
+                        //If the adjusted time is 11:55 PM
+                        if adjustedHour == 23 && adjustedMinutes == 55 {
+                            
+                            //The start time should be moved back to 11:50 PM to allow the end time to be set to 11:55 PM
+                            return Calendar.current.date(byAdding: .minute, value: -5, to: dateComponents.date ?? Date()) ?? Date()
+                        }
+                        
+                        else {
+                            
+                            return dateComponents.date ?? Date()
+                        }
+                    }
+                }
+                
+                else {
+                    
+                    //Rounding up the current time
+                    dateComponents = Calendar.current.dateComponents(in: .current, from: self.addingTimeInterval((Double((5 - (minutes % 5)) * 60))))
+                    
+                    if let adjustedHour = dateComponents.hour, let adjustedMinutes = dateComponents.minute {
+                        
+                        //If the adjusted time is 12:00 AM
+                        if adjustedHour == 0 && adjustedMinutes == 0 {
+                            
+                            //The end time should be moved back to 11:55 PM
+                            return Calendar.current.date(byAdding: .minute, value: -5, to: dateComponents.date ?? Date()) ?? Date()
+                        }
+                        
+                        else {
+                            
+                            return dateComponents.date ?? Date()
+                        }
+                    }
+                }
+            }
+        }
+
+        return Date() //Default
+    }
 }

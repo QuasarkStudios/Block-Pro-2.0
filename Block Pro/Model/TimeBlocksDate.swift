@@ -13,5 +13,5 @@ class TimeBlocksDate: Object {
     
     @objc dynamic var timeBlocksDate: String = ""
     
-    let timeBlocks = List<Block>()
+    let timeBlocks = List<Block2>()
 }

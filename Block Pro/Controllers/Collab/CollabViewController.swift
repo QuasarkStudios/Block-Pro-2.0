@@ -817,13 +817,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     private func configureAddBlockButton () {
         
-//        addBlockButton.addTarget(self, action: #selector(newMessageButtonPressed), for: .touchUpInside)
-        addBlockButton.backgroundColor = UIColor(hexString: "222222")
-        addBlockButton.setImage(UIImage(named: "plus 2"), for: .normal)
-        addBlockButton.tintColor = .white
-        
         view.addSubview(addBlockButton)
-        
         addBlockButton.translatesAutoresizingMaskIntoConstraints = false
         
         [
@@ -835,8 +829,13 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
         ].forEach( { $0.isActive = true } )
         
+        addBlockButton.backgroundColor = UIColor(hexString: "222222")
+        addBlockButton.setImage(UIImage(named: "plus 2"), for: .normal)
+        addBlockButton.tintColor = .white
+        
         addBlockButton.layer.cornerRadius = 30
-//        addBlockButton.clipsToBounds = true
+
+        addBlockButton.addTarget(self, action: #selector(addBlockButtonPressed), for: .touchUpInside)
     }
     
     
@@ -1248,6 +1247,18 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 locationVC.selectedLocationIndex = cell.selectedLocationIndex
             }
         }
+        
+        else if segue.identifier == "moveToConfigureBlockView" {
+            
+            if let navController = segue.destination as? UINavigationController {
+                
+                let configureBlockVC = navController.viewControllers.first as! ConfigureBlockViewController
+                configureBlockVC.collab = collab
+            }
+            
+//            let configureBlockVC = segue.destination as! ConfigureBlockViewController
+//            configureBlockVC.collab = collab
+        }
     }
     
     private func prepViewForImageViewZooming () {
@@ -1505,6 +1516,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             messageInputAccesoryView.alpha = 1
         }
+    }
+    
+    @objc private func addBlockButtonPressed () {
+        
+        performSegue(withIdentifier: "moveToConfigureBlockView", sender: self)
     }
 }
 

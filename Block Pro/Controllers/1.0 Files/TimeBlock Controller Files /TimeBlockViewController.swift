@@ -49,7 +49,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     var currentDate: Date = Date() //Variable that hold either the current date or the user selected date
     
-    var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
+    var blockData: Results<Block2>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
     let formatter = DateFormatter() //Global initialization of DateFormatter object
     
@@ -298,9 +298,9 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     //MARK: - Sort TimeBlocks Function
     
-    func sortRealmBlocks () -> [(key: Int, value: Block)] {
+    func sortRealmBlocks () -> [(key: Int, value: Block2)] {
         
-        var sortedBlocks: [Int : Block] = [:]
+        var sortedBlocks: [Int : Block2] = [:]
         
         for timeBlocks in blockData! {
     
@@ -312,7 +312,7 @@ class TimeBlockViewController: UIViewController, UITableViewDelegate, UITableVie
     
     
     //Function responsible for organizing TimeBlocks and bufferBlocks
-    func organizeBlocks (_ sortedBlocks: [(key: Int, value: Block)], _ blockTuple: blockTuple) -> [(blockTuple)] {
+    func organizeBlocks (_ sortedBlocks: [(key: Int, value: Block2)], _ blockTuple: blockTuple) -> [(blockTuple)] {
         
         var firstIteration: Bool = true //Tracks if the for loop is on its first iteration or not
         var count: Int = 0 //Variable that tracks which index of the "sortedBlocks" array the for loop is on
@@ -1132,7 +1132,7 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
 
         let cellDate = formatter.string(from: cellState.date)
 
-        let calandarData: [String : Results<Block>] = populateDataSource() //Setting calendarData to the "Block" container returned from the "poplateDataSource" function
+        let calandarData: [String : Results<Block2>] = populateDataSource() //Setting calendarData to the "Block" container returned from the "poplateDataSource" function
 
         //If there is no "Block" container in calendarData that matches a certains cell's date
         if calandarData[cellDate] == nil {
@@ -1159,9 +1159,9 @@ extension TimeBlockViewController: JTAppleCalendarViewDelegate, JTAppleCalendarV
     }
     
     //Function that populates the dataSource to be used in "handleCellEvents" function
-    func populateDataSource () -> [String : Results<Block>] {
+    func populateDataSource () -> [String : Results<Block2>] {
 
-        var data: [String : Results<Block>] = [:]
+        var data: [String : Results<Block2>] = [:]
 
         for dates in allBlockDates! {
 
@@ -1226,7 +1226,7 @@ extension TimeBlockViewController: BlockDeleted {
     
     func deleteBlock() {
         
-        guard let deletedBlock = realm.object(ofType: Block.self, forPrimaryKey: bigBlockID) else { return }
+        guard let deletedBlock = realm.object(ofType: Block2.self, forPrimaryKey: bigBlockID) else { return }
 
             do {
                 try realm.write {

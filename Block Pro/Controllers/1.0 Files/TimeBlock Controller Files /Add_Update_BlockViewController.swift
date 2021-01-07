@@ -46,7 +46,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
     @IBOutlet weak var categoryPicker: UIPickerView!
     
     lazy var realm = try! Realm() //Initializing a new "Realm"
-    var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
+    var blockData: Results<Block2>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
     
     var currentDateObject: TimeBlocksDate? //Variable that will contain a "TimeBlocksDate" object that matches the current date or the selected user date
     
@@ -150,7 +150,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
             let editButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.edit, target: self, action: #selector(add_editTimeBlock1))
             navigationItem.rightBarButtonItem = editButton
             
-            guard let bigBlockData = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
+            guard let bigBlockData = realm.object(ofType: Block2.self, forPrimaryKey: blockID) else { return }
             
                 blockNameTextField.text = bigBlockData.name
 //                startTimeTextField.text = convertTo12Hour(bigBlockData.startHour, bigBlockData.startMinute)
@@ -669,7 +669,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
         //If this is the "CreateBlockView", create a new TimeBlock
         if selectedView == "Add" {
             
-            let newBlock = Block()
+            let newBlock = Block2()
             
             newBlock.name = blockNameTextField.text!
             
@@ -701,7 +701,7 @@ class Add_Update_BlockViewController: UIViewController, UITextFieldDelegate, UIP
         //If this is the "EditBlockView", update a TimeBlock
         else if selectedView == "Edit" {
             
-            let updatedBlock = Block()
+            let updatedBlock = Block2()
             
             updatedBlock.blockID = blockID
             

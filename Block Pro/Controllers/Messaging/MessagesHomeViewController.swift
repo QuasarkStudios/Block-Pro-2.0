@@ -15,10 +15,6 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     @IBOutlet weak var navBarExtensionView: UIView!
     @IBOutlet weak var navBarExtensionBottomAnchor: NSLayoutConstraint!
     
-    @IBOutlet weak var navBarExtensionTopAnchor: NSLayoutConstraint!
-    
-    @IBOutlet weak var navBarExtensionHeightConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var messagingHomeTableView: UITableView!
     @IBOutlet weak var messagingTableViewTopAnchor: NSLayoutConstraint!
     

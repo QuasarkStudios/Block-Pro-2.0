@@ -220,7 +220,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 
                 if oldSchemaVersion < 1 {
                     
-                    migration.enumerateObjects(ofType: Block.className()) { (oldObject, newObject) in
+                    migration.enumerateObjects(ofType: Block2.className()) { (oldObject, newObject) in
                         
                         let formatter = DateFormatter()
                         formatter.dateFormat = "h:mm a"

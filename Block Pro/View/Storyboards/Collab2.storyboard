@@ -25,6 +25,7 @@
                         <segue destination="ZQ0-Pn-r3R" kind="presentation" identifier="moveToSendPhotoView" id="ALG-0R-TeX"/>
                         <segue destination="oby-j0-d8S" kind="showDetail" identifier="moveToAttachmentsView" id="4hG-Ij-Q67"/>
                         <segue destination="HbY-Ld-EQI" kind="presentation" identifier="moveToLocationsView" id="MzM-iI-Kld"/>
+                        <segue destination="uRd-HE-G0h" kind="showDetail" identifier="moveToConfigureBlockView" id="zFt-cE-0eL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uV2-mK-fUT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -46,6 +47,16 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Uhd-4h-Acc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="954" y="424"/>
+        </scene>
+        <!--ConfigureBlock-->
+        <scene sceneID="NYL-bv-oPP">
+            <objects>
+                <viewControllerPlaceholder storyboardName="ConfigureBlock" id="uRd-HE-G0h" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="vcN-vI-otW"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="BK5-qW-gBO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="719" y="423"/>
         </scene>
         <!--Collab Messages Attachments View-->
         <scene sceneID="P1R-p8-IKa">

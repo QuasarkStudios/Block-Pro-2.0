@@ -19,7 +19,7 @@ class PersonalRealmDatabase {
     var currentBlocksDate: Results<TimeBlocksDate>? //Results container that holds only one "TimeBlocksDate" object that matches the current date or user selected date
     var currentDateObject: TimeBlocksDate? //Variable that will contain a "TimeBlocksDate" object that matches the current date or the selected user date
 
-    var blockData: Results<Block>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
+    var blockData: Results<Block2>? //Setting the variable "blockData" to type "Results" that will contain "Block" objects; "Results" is an auto-updating container type in Realm
 
     let formatter = DateFormatter()
 
@@ -89,7 +89,7 @@ class PersonalRealmDatabase {
         var blockTuple = functionTuple //Tuples must be passed by value, not by reference
         var organizedBlocks: [blockTuple] = []// = [functionTuple] //Array of blockTuples going to be returned from the function
 
-        var sortedBlocks: [Block] = []
+        var sortedBlocks: [Block2] = []
         
         if blockData != nil {
             
@@ -430,7 +430,7 @@ class PersonalRealmDatabase {
     
     func addBlock (_ blockDict: [String : Any], _ currentDate: TimeBlocksDate) {
         
-        let newBlock = Block()
+        let newBlock = Block2()
         
         newBlock.name = blockDict["name"] as! String
 
@@ -458,7 +458,7 @@ class PersonalRealmDatabase {
     
     func updateBlock (_ blockDict: [String : Any], _ currentDate: TimeBlocksDate) {
         
-        let updatedBlock = Block()
+        let updatedBlock = Block2()
         
         updatedBlock.blockID = blockDict["blockID"] as! String
         updatedBlock.name = blockDict["name"] as! String
@@ -485,7 +485,7 @@ class PersonalRealmDatabase {
     
     func deleteBlock (blockID: String) {
         
-        guard let deletedBlock = realm.object(ofType: Block.self, forPrimaryKey: blockID) else { return }
+        guard let deletedBlock = realm.object(ofType: Block2.self, forPrimaryKey: blockID) else { return }
         
         do {
             
