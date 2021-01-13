@@ -57,21 +57,12 @@
                         <outlet property="messagingTableViewTopAnchor" destination="QHB-VU-Ish" id="4Pi-1Q-71G"/>
                         <outlet property="navBarExtensionBottomAnchor" destination="U4G-gB-a7v" id="x7E-vR-E7x"/>
                         <outlet property="navBarExtensionView" destination="2EB-nw-1U7" id="C2w-fK-lOC"/>
-                        <segue destination="tuQ-ms-kDI" kind="presentation" identifier="moveToAddMembersView" id="y10-by-iSs"/>
                         <segue destination="K7R-7c-5DO" kind="show" identifier="moveToMessagesView" id="bjq-GK-5vE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cpl-7O-hZc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1028.985507246377" y="158.70535714285714"/>
-        </scene>
-        <!--AddMembers-->
-        <scene sceneID="UIu-iO-e7f">
-            <objects>
-                <viewControllerPlaceholder storyboardName="AddMembers" id="tuQ-ms-kDI" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="VpX-8l-FNW" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1086" y="848"/>
         </scene>
         <!--Conversation Info View Controller-->
         <scene sceneID="uBe-XL-jhX">
@@ -121,7 +112,6 @@
                         <outlet property="messagingInfoTableView" destination="7Et-Xh-rJD" id="Wtj-Ma-ynE"/>
                         <segue destination="fGj-Gb-LZJ" kind="presentation" identifier="moveToFriendProfileView" id="S3o-JF-z2M"/>
                         <segue destination="3re-Lx-1xx" kind="presentation" identifier="moveToConvoPhotoView" id="Ttw-se-Aq5"/>
-                        <segue destination="tuQ-ms-kDI" kind="showDetail" identifier="moveToAddMembersView" id="kji-sU-rQE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lYR-U3-7ue" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -302,9 +292,6 @@
             <point key="canvasLocation" x="2728" y="159"/>
         </scene>
     </scenes>
-    <inferredMetricsTieBreakers>
-        <segue reference="y10-by-iSs"/>
-    </inferredMetricsTieBreakers>
     <resources>
         <image name="info" width="30" height="30"/>
         <image name="line.horizontal.3.decrease.circle.fill" catalog="system" width="128" height="121"/>

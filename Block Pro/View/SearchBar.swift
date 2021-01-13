@@ -50,8 +50,8 @@ class SearchBar: UIView {
             
             searchImage.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 15),
             searchImage.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            searchImage.widthAnchor.constraint(equalToConstant: 21/*22.5*/),
-            searchImage.heightAnchor.constraint(equalToConstant: 21/*22.5*/)
+            searchImage.widthAnchor.constraint(equalToConstant: 21),
+            searchImage.heightAnchor.constraint(equalToConstant: 21)
         
         ].forEach({ $0.isActive = true })
     }
@@ -93,6 +93,11 @@ class SearchBar: UIView {
         else if let addLocationVC = parentViewController as? AddLocationViewController {
             
             addLocationVC.searchTextChanged(searchText: searchTextField.text ?? "")
+        }
+        
+        else if let addMemberVC = parentViewController as? AddMembersViewController {
+            
+            addMemberVC.searchTextChanged(searchText: searchTextField.text ?? "")
         }
     }
 }

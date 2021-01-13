@@ -30,6 +30,7 @@ class ConfigureBlockViewController: UIViewController {
 //    var calendarPresented: Bool = false
     var calendarExpanded: Bool = false
     
+    let currentUser = CurrentUser.sharedInstance
     var collab: Collab?
     var block = Block()
     
@@ -48,16 +49,12 @@ class ConfigureBlockViewController: UIViewController {
         configureTableView(configureBlockTableView) //Call first to allow for the navigation bar to work properly
         configureNavBarExtensionView()
         configureGestureRecognizors()
-
-
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-//        print(self.view.gestureRecognizers)
         
-//        tableViewTopAnchor?.constant = 75 + (navigationController?.navigationBar.frame.height ?? 0)
     }
     
     private func configureNavBarExtensionView () {
@@ -102,10 +99,12 @@ class ConfigureBlockViewController: UIViewController {
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
         
-//        tableView.contentInset = UIEdgeInsets(top: 17.5, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
         
         tableView.register(NameConfigurationCell.self, forCellReuseIdentifier: "nameConfigurationCell")
         tableView.register(TimeConfigurationCell.self, forCellReuseIdentifier: "timeConfigurationCell")
+        tableView.register(MemberConfigurationCell.self, forCellReuseIdentifier: "memberConfigurationCell")
+        tableView.register(ReminderConfigurationCell.self, forCellReuseIdentifier: "reminderConfigurationCell")
     }
     
     private func configureGestureRecognizors () {
@@ -119,6 +118,35 @@ class ConfigureBlockViewController: UIViewController {
         let dismissKeyboardTap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         dismissKeyboardTap.cancelsTouchesInView = false
         self.view.addGestureRecognizer(dismissKeyboardTap)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "moveToAddMembersView" {
+            
+            let addMembersVC = segue.destination as! AddMembersViewController
+            addMembersVC.membersAddedDelegate = self
+            addMembersVC.headerLabelText = "Assign Members"
+            
+            var members = collab?.members
+            members?.removeAll(where: { $0.userID == currentUser.userID })
+            addMembersVC.members = members
+            
+            addMembersVC.addedMembers = [:]
+            
+            //Setting the added members for the AddMembersViewController
+            for member in block.members ?? [] {
+                
+                if member.userID != currentUser.userID {
+                    
+                    addMembersVC.addedMembers?[member.userID] = member
+                }
+            }
+            
+            let backButtonItem = UIBarButtonItem()
+            backButtonItem.title = ""
+            navigationItem.backBarButtonItem = backButtonItem
+        }
     }
     
     @objc private func dismissKeyboard () {
@@ -155,7 +183,7 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return 6
+        return 10
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -177,12 +205,18 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 let cell = tableView.dequeueReusableCell(withIdentifier: "timeConfigurationCell", for: indexPath) as! TimeConfigurationCell
                 cell.selectionStyle = .none
                 
+                cell.titleLabel.text = "Starts"
+                
                 cell.collab = collab
-                cell.starts = block.starts ?? Date().adjustTime(roundDown: true)
+                
+                if block.starts == nil {
+                    
+                    block.starts = Date().adjustTime(roundDown: true)
+                }
+                
+                cell.starts = block.starts //?? Date().adjustTime(roundDown: true)
                 
                 cell.timeConfigurationDelegate = self
-                
-                cell.titleLabel.text = "Starts"
                 
                 return cell
             }
@@ -192,12 +226,47 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 let cell = tableView.dequeueReusableCell(withIdentifier: "timeConfigurationCell", for: indexPath) as! TimeConfigurationCell
                 cell.selectionStyle = .none
                 
+                cell.titleLabel.text = "Ends"
+                
                 cell.collab = collab
-                cell.ends = block.ends ?? Date().adjustTime(roundDown: false)
+                
+                if block.ends == nil {
+                    
+                    block.ends = Date().adjustTime(roundDown: false)
+                }
+                
+                cell.ends = block.ends //?? Date().adjustTime(roundDown: false)
                 
                 cell.timeConfigurationDelegate = self
                 
-                cell.titleLabel.text = "Ends"
+                return cell
+            }
+            
+            else if indexPath.row == 7 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "memberConfigurationCell", for: indexPath) as! MemberConfigurationCell
+                cell.selectionStyle = .none
+                
+                cell.addMembersLabel.text = "Assign Members"
+                
+                cell.collab = collab
+                cell.members = block.members
+                
+                cell.memberConfigurationDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 9 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "reminderConfigurationCell", for: indexPath) as! ReminderConfigurationCell
+                cell.selectionStyle = .none
+                
+                cell.startTime = block.starts
+                
+                cell.selectedReminders = block.reminders ?? []
+                
+                cell.reminderConfigurationDelegate = self
                 
                 return cell
             }
@@ -232,12 +301,12 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                     
                     if calendarExpanded {
                         
-                        return 538
+                        return 543
                     }
                     
                     else {
                         
-                        return 491
+                        return 511
                     }
                 }
                 
@@ -252,12 +321,12 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                     
                     if calendarExpanded {
                         
-                        return 538
+                        return 543
                     }
                     
                     else {
                         
-                        return 491
+                        return 511
                     }
                 }
                 
@@ -266,9 +335,26 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                     return 135
                 }
                 
-            case 7, 9:
+            case 7:
                 
-                return 70
+                if block.members?.count ?? 0 == (collab?.members.count ?? 0) - 1 {
+                    
+                    return 160
+                }
+                
+                else if block.members?.count ?? 0 > 0 {
+                    
+                    return 225
+                }
+                
+                else {
+                    
+                    return 85
+                }
+                
+            case 9:
+                
+                return 130
                 
             default:
                 
@@ -554,5 +640,72 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
                 }
             }
         }
+        
+        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 9, section: 0)) as? ReminderConfigurationCell {
+            
+            cell.startTime = block.starts
+            
+            configureBlockTableView.beginUpdates()
+            configureBlockTableView.endUpdates()
+        }
+    }
+}
+
+extension ConfigureBlockViewController: MemberConfigurationProtocol, MembersAdded {
+    
+    func moveToAddMemberView () {
+        
+        performSegue(withIdentifier: "moveToAddMembersView", sender: self)
+    }
+    
+    func membersAdded(_ addedMembers: [Any]) {
+        
+        block.members = []
+        
+        for addedMember in addedMembers {
+            
+            if let member = addedMember as? Member {
+                
+                block.members?.append(member)
+            }
+        }
+        
+        self.navigationController?.popToRootViewController(animated: true)
+        
+        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? MemberConfigurationCell {
+            
+            cell.members = block.members
+        }
+        
+        configureBlockTableView.beginUpdates()
+        configureBlockTableView.endUpdates()
+        
+        configureBlockTableView.scrollToRow(at: IndexPath(row: 7, section: 0), at: .top, animated: true)
+    }
+    
+    func memberDeleted (_ userID: String) {
+        
+        block.members?.removeAll(where: { $0.userID == userID })
+        
+        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? MemberConfigurationCell {
+            
+            cell.members = block.members
+        }
+        
+        configureBlockTableView.beginUpdates()
+        configureBlockTableView.endUpdates()
+    }
+}
+
+extension ConfigureBlockViewController: ReminderConfigurationProtocol {
+    
+    func reminderSelected (_ selectedReminders: [Int]) {
+        
+        block.reminders = selectedReminders
+    }
+    
+    func reminderDeleted (_ deletedReminder: Int) {
+        
+        block.reminders?.removeAll(where: { $0 == deletedReminder })
     }
 }

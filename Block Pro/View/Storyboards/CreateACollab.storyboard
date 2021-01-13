@@ -296,7 +296,7 @@
                         <outlet property="selectedSegmentIndicator" destination="mMK-vg-ws2" id="yOJ-uP-wll"/>
                         <segue destination="Aib-ri-8Um" kind="showDetail" identifier="moveToMemberProfileView" id="8N5-xD-jrZ"/>
                         <segue destination="9q4-II-GJ8" kind="showDetail" identifier="moveToCalendarView" id="qck-wp-ll5"/>
-                        <segue destination="H1Y-3F-UIy" kind="presentation" identifier="moveToAddMembersView" id="EIL-Lt-IUX"/>
+                        <segue destination="H1Y-3F-UIy" kind="show" identifier="moveToAddMembersView" id="EIL-Lt-IUX"/>
                         <segue destination="jAh-Gt-n9R" kind="show" identifier="moveToAddLocationsView" id="dqN-Ha-7VB"/>
                     </connections>
                 </viewController>
@@ -323,7 +323,9 @@
         <!--AddMembers-->
         <scene sceneID="QbW-oI-4R4">
             <objects>
-                <viewControllerPlaceholder storyboardName="AddMembers" id="H1Y-3F-UIy" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="AddMembers" id="H1Y-3F-UIy" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="0Lp-Sr-1Ru"/>
+                </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wpi-5H-jM3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-223" y="-61"/>

@@ -1752,14 +1752,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if segue.identifier == "moveToAddMembersView" {
-            
-            let addMembersVC = segue.destination as! AddMembersViewController
-            addMembersVC.membersAddedDelegate = self
-            addMembersVC.headerLabelText = "Conversate With"
-        }
-        
-        else if segue.identifier == "moveToMessagesView" {
+        if segue.identifier == "moveToMessagesView" {
             
             let messagesVC = segue.destination as! MessagingViewController
             messagesVC.moveToConversationWithFriendDelegate = self
@@ -1960,7 +1953,19 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
     @objc private func newMessageButtonPressed () {
         
-        performSegue(withIdentifier: "moveToAddMembersView", sender: self)
+        let addMembersVC: AddMembersViewController = AddMembersViewController()
+        addMembersVC.membersAddedDelegate = self
+        addMembersVC.headerLabelText = "Conversate With"
+        
+        let firebaseCollab = FirebaseCollab.sharedInstance
+        addMembersVC.members = firebaseCollab.friends
+        
+        addMembersVC.addedMembers = [:]
+        
+        //Creating the navigation controller for the AddMembersViewController
+        let addMembersNavigationController = UINavigationController(rootViewController: addMembersVC)
+        
+        self.present(addMembersNavigationController, animated: true, completion: nil)
     }
     
     
@@ -1977,7 +1982,17 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
 
 extension MessagesHomeViewController: MembersAdded {
     
-    func membersAdded(members: [Friend]) {
+    func membersAdded(_ addedMembers: [Any]) {
+        
+        var members: [Friend] = []
+        
+        for addedMember in addedMembers {
+            
+            if let member = addedMember as? Friend {
+                
+                members.append(member)
+            }
+        }
         
         //If it isn't a new personal conversation
         if members.count == 1, let member = members.first, let conversation = verifyNewPersonalConversation(member: member) {
@@ -2053,6 +2068,6 @@ extension MessagesHomeViewController: MoveToConversationWithFriendProtcol {
             handlePersonalButtonTouchUpInside()
         }
         
-        membersAdded(members: [friend])
+        membersAdded([friend])
     }
 }

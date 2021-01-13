@@ -16,4 +16,8 @@ struct Block {
     
     var starts: Date?
     var ends: Date?
+    
+    var members: [Member]?
+    
+    var reminders: [Int]?
 }

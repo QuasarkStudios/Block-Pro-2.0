@@ -23,3 +23,17 @@ protocol TimeConfigurationProtocol: AnyObject {
     
     func timeEntered (startTime: Date?, endTime: Date?)
 }
+
+protocol MemberConfigurationProtocol: AnyObject {
+    
+    func moveToAddMemberView ()
+    
+    func memberDeleted (_ userID: String)
+}
+
+protocol ReminderConfigurationProtocol: AnyObject {
+    
+    func reminderSelected (_ selectedReminders: [Int])
+    
+    func reminderDeleted (_ deletedReminder: Int) 
+}

@@ -301,7 +301,7 @@ class CreateCollabLinksCell: UITableViewCell {
         
         linkPageControl.removeFromSuperview()
         
-        //Resetting the constraints of the attachMemoButton
+        //Resetting the constraints of the attachLinkButton
         linksContainer.constraints.forEach { (constraint) in
             
             if constraint.firstAttribute == .leading && constraint.firstItem as? UIButton != nil {

@@ -665,7 +665,26 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 
             else if let conversationMembers = personalConversation?.currentMembers, indexPath.row / 2 == conversationMembers.count {
                     
-                performSegue(withIdentifier: "moveToAddMembersView", sender: self)
+                let addMembersVC: AddMembersViewController = AddMembersViewController()
+                addMembersVC.membersAddedDelegate = self
+                addMembersVC.headerLabelText = "Add Members"
+                
+                addMembersVC.members = firebaseCollab.friends
+                addMembersVC.addedMembers = [:]
+                
+                //Setting the added members for the AddMembersViewController
+                for member in personalConversation?.currentMembers ?? [] {
+                    
+                    if member.userID != currentUser.userID {
+                        
+                        addMembersVC.addedMembers?[member.userID] = member
+                    }
+                }
+                
+                //Creating the navigation controller for the AddMembersViewController
+                let addMembersNavigationController = UINavigationController(rootViewController: addMembersVC)
+                
+                self.present(addMembersNavigationController, animated: true, completion: nil)
             }
             
             else {
@@ -1372,14 +1391,6 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             let memberVC = segue.destination as! FriendProfileViewController
             memberVC.member = selectedMember
         }
-            
-        else if segue.identifier == "moveToAddMembersView" {
-            
-            let addMembersVC = segue.destination as! AddMembersViewController
-            addMembersVC.membersAddedDelegate = self
-            addMembersVC.previouslyAddedMembers = personalConversation?.currentMembers
-            addMembersVC.headerLabelText = "Add Members"
-        }
         
         else if segue.identifier == "moveToConvoPhotoView" {
             
@@ -1509,7 +1520,17 @@ extension ConversationInfoViewController: ConversateWithFriendProtcol {
 
 extension ConversationInfoViewController: MembersAdded {
     
-    func membersAdded(members: [Friend]) {
+    func membersAdded(_ addedMembers: [Any]) {
+        
+        var members: [Friend] = []
+        
+        for addedMember in addedMembers {
+            
+            if let member = addedMember as? Friend {
+                
+                members.append(member)
+            }
+        }
         
         if let conversationID = personalConversation?.conversationID {
             

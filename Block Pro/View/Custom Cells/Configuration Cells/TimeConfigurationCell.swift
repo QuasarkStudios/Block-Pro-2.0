@@ -23,8 +23,9 @@ class TimeConfigurationCell: UITableViewCell {
     let dayStackView = UIStackView()
     let calendarView = JTAppleCalendarView()
     
-    let timeSelectorContainer = UIView()
     let setATimeLabel = UILabel()
+    
+    let timeSelectorContainer = UIView()
     let hourTextField = UITextField()
     let semiColonLabel = UILabel()
     let minuteTextField = UITextField()
@@ -356,13 +357,13 @@ class TimeConfigurationCell: UITableViewCell {
             timeSelectorContainer.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: -55),
             timeSelectorContainer.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor, constant: 0),
             timeSelectorContainer.widthAnchor.constraint(equalToConstant: 245),
-            timeSelectorContainer.heightAnchor.constraint(equalToConstant: 77)
+            timeSelectorContainer.heightAnchor.constraint(equalToConstant: 60)
         
         ].forEach({ $0.isActive = true })
         
         timeSelectorContainer.alpha = 0
         timeSelectorContainer.backgroundColor = UIColor(hexString: "222222")
-        timeSelectorContainer.layer.cornerRadius = 38
+        timeSelectorContainer.layer.cornerRadius = 30
         timeSelectorContainer.layer.cornerCurve = .continuous
         
         timeSelectorContainer.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
@@ -371,34 +372,10 @@ class TimeConfigurationCell: UITableViewCell {
         timeSelectorContainer.layer.shadowOpacity = 0.75
         
         //Calling functions that will configure all of the containers subviews
-        configureSetATimeLabel()
         configureHourTextField()
         configureSemiColonLabel()
         configureMinuteTextField()
         configurePeriodButton()
-    }
-    
-    
-    //MARK: - Configure Set a Time Label
-    
-    private func configureSetATimeLabel () {
-        
-        timeSelectorContainer.addSubview(setATimeLabel)
-        setATimeLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            setATimeLabel.leadingAnchor.constraint(equalTo: timeSelectorContainer.leadingAnchor, constant: 10),
-            setATimeLabel.trailingAnchor.constraint(equalTo: timeSelectorContainer.trailingAnchor, constant: -10),
-            setATimeLabel.topAnchor.constraint(equalTo: timeSelectorContainer.topAnchor, constant: 5),
-            setATimeLabel.heightAnchor.constraint(equalToConstant: 25)
-        
-        ].forEach({ $0.isActive = true })
-        
-        setATimeLabel.font = UIFont(name: "Poppins-SemiBold", size: 17)
-        setATimeLabel.textColor = .white
-        setATimeLabel.textAlignment = .center
-        setATimeLabel.text = "Set a Time"
     }
     
     
@@ -412,7 +389,7 @@ class TimeConfigurationCell: UITableViewCell {
         [
         
             hourTextField.leadingAnchor.constraint(equalTo: timeSelectorContainer.leadingAnchor, constant: 25),
-            hourTextField.bottomAnchor.constraint(equalTo: timeSelectorContainer.bottomAnchor, constant: -10),
+            hourTextField.centerYAnchor.constraint(equalTo: timeSelectorContainer.centerYAnchor, constant: 0),
             hourTextField.widthAnchor.constraint(equalToConstant: 50),
             hourTextField.heightAnchor.constraint(equalToConstant: 30)
         
@@ -447,7 +424,7 @@ class TimeConfigurationCell: UITableViewCell {
         [
         
             semiColonLabel.leadingAnchor.constraint(equalTo: hourTextField.trailingAnchor, constant: 0),
-            semiColonLabel.bottomAnchor.constraint(equalTo: timeSelectorContainer.bottomAnchor, constant: -10),
+            semiColonLabel.centerYAnchor.constraint(equalTo: timeSelectorContainer.centerYAnchor, constant: 0),
             semiColonLabel.widthAnchor.constraint(equalToConstant: 20),
             semiColonLabel.heightAnchor.constraint(equalToConstant: 30)
         
@@ -470,7 +447,7 @@ class TimeConfigurationCell: UITableViewCell {
         [
         
             minuteTextField.leadingAnchor.constraint(equalTo: semiColonLabel.trailingAnchor, constant: 0),
-            minuteTextField.bottomAnchor.constraint(equalTo: timeSelectorContainer.bottomAnchor, constant: -10),
+            minuteTextField.centerYAnchor.constraint(equalTo: timeSelectorContainer.centerYAnchor, constant: 0),
             minuteTextField.widthAnchor.constraint(equalToConstant: 50),
             minuteTextField.heightAnchor.constraint(equalToConstant: 30)
         
@@ -505,7 +482,7 @@ class TimeConfigurationCell: UITableViewCell {
         [
         
             periodButton.trailingAnchor.constraint(equalTo: timeSelectorContainer.trailingAnchor, constant: -25),
-            periodButton.bottomAnchor.constraint(equalTo: timeSelectorContainer.bottomAnchor, constant: -10),
+            periodButton.centerYAnchor.constraint(equalTo: timeSelectorContainer.centerYAnchor, constant: 0),
             periodButton.widthAnchor.constraint(equalToConstant: 50),
             periodButton.heightAnchor.constraint(equalToConstant: 30)
         
@@ -523,6 +500,30 @@ class TimeConfigurationCell: UITableViewCell {
         periodButton.setTitle(formatter.string(from: starts != nil ? starts! : ends ?? Date()), for: .normal)
         
         periodButton.addTarget(self, action: #selector(periodButtonPressed), for: .touchUpInside)
+    }
+    
+    
+    //MARK: - Configure Set a Time Label
+    
+    private func configureSetATimeLabel () {
+        
+        self.contentView.addSubview(setATimeLabel)
+        setATimeLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            setATimeLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 10),
+            setATimeLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -10),
+            setATimeLabel.bottomAnchor.constraint(equalTo: timeSelectorContainer.topAnchor, constant: -7.5),
+            setATimeLabel.heightAnchor.constraint(equalToConstant: 25)
+        
+        ].forEach({ $0.isActive = true })
+        
+        setATimeLabel.alpha = 0
+        setATimeLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
+        setATimeLabel.textColor = .black
+        setATimeLabel.textAlignment = .center
+        setATimeLabel.text = "Set a Time"
     }
     
     
@@ -574,7 +575,8 @@ class TimeConfigurationCell: UITableViewCell {
         configureCalendarView()
 
         configureTimeSelectorContainer()
-        
+        configureSetATimeLabel()
+
         configureDoneButton()
         
         titleLabel.textColor = .red
@@ -605,6 +607,7 @@ class TimeConfigurationCell: UITableViewCell {
         UIView.animate(withDuration: 0.4, delay: 0.35, options: .curveEaseInOut) {
             
             self.timeSelectorContainer.alpha = 1
+            self.setATimeLabel.alpha = 1
         }
     }
     
@@ -624,7 +627,6 @@ class TimeConfigurationCell: UITableViewCell {
             self.dayStackView.alpha = 0
             self.calendarView.alpha = 0
             
-            self.timeSelectorContainer.alpha = 0
             self.doneButton.alpha = 0
             
         } completion: { (finished: Bool) in
@@ -635,8 +637,18 @@ class TimeConfigurationCell: UITableViewCell {
             self.dayStackView.removeFromSuperview()
             self.calendarView.removeFromSuperview()
             
-            self.timeSelectorContainer.removeFromSuperview()
             self.doneButton.removeFromSuperview()
+        }
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            
+            self.timeSelectorContainer.alpha = 0
+            self.setATimeLabel.alpha = 0
+            
+        } completion: { (finished: Bool) in
+            
+            self.timeSelectorContainer.removeFromSuperview()
+            self.setATimeLabel.removeFromSuperview()
         }
         
         configureTimeContainer() //Reconfiguring the time container
@@ -726,7 +738,7 @@ class TimeConfigurationCell: UITableViewCell {
                     let timeConfigurationCellMinY = starts != nil ? tableView.rectForRow(at: IndexPath(row: 3, section: 0)).minY : tableView.rectForRow(at: IndexPath(row: 5, section: 0)).minY
                     
                     //Center of the hourTextField/minuteTextField
-                    let timeTextFieldCenter = timeSelectorContainer.frame.minY + 18.5
+                    let timeTextFieldCenter = timeSelectorContainer.frame.minY + 30
                     
                     let tableViewMinY = viewController.view.convert(tableView.frame, to: keyWindow).minY
                     
@@ -762,7 +774,7 @@ class TimeConfigurationCell: UITableViewCell {
                     viewController.configureBlockTableView.contentOffset.y = self.originalContentOffsetOfTableView
                 }
                 
-                viewController.configureBlockTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                viewController.configureBlockTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
             }
         }
     }

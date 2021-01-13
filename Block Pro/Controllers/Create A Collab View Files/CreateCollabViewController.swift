@@ -38,7 +38,9 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
     
     var copiedAnimationView: CopiedAnimationView?
     
-    let firebaseCollab = FirebaseCollab()
+    let currentUser = CurrentUser.sharedInstance
+    
+    let firebaseCollab = FirebaseCollab.sharedInstance
     
     let formatter = DateFormatter()
     
@@ -625,13 +627,23 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
             
             let addMembersVC = segue.destination as! AddMembersViewController
             addMembersVC.membersAddedDelegate = self
-            
             addMembersVC.headerLabelText = "Add Members"
             
-            if newCollab.members.count > 0 {
+            addMembersVC.members = firebaseCollab.friends
+            addMembersVC.addedMembers = [:] 
+            
+            //Setting the added members for the AddMembersViewController
+            for member in newCollab.members {
                 
-                addMembersVC.previouslyAddedFriends = newCollab.members
+                if member.userID != currentUser.userID {
+                    
+                    addMembersVC.addedMembers?[member.userID] = member
+                }
             }
+            
+            let backButtonItem = UIBarButtonItem()
+            backButtonItem.title = ""
+            navigationItem.backBarButtonItem = backButtonItem
         }
         
         else if segue.identifier == "moveToMemberProfileView" {
@@ -831,7 +843,17 @@ extension CreateCollabViewController: AddMembers {
 
 extension CreateCollabViewController: MembersAdded {
     
-    func membersAdded(members: [Friend]) {
+    func membersAdded(_ addedMembers: [Any]) {
+        
+        var members: [Friend] = []
+        
+        for addedMember in addedMembers {
+            
+            if let member = addedMember as? Friend {
+                
+                members.append(member)
+            }
+        }
         
         let cell = details_attachmentsTableView.cellForRow(at: IndexPath(row: 4, section: 0)) as! CollabMembersCell
         
@@ -850,7 +872,7 @@ extension CreateCollabViewController: MembersAdded {
         
         newCollab.members = members
         
-        dismiss(animated: true, completion: nil)
+        navigationController?.popToRootViewController(animated: true)
     }
 }
 

@@ -99,6 +99,9 @@ class CreateCollabVoiceMemoCell: UITableViewCell {
             }
         }
         
+        voiceMemoRecorder?.audioRecorder?.stop()
+        voiceMemoRecorder?.monitoringTimer?.invalidate()
+        
         NotificationCenter.default.removeObserver(self)
     }
 

@@ -14,9 +14,9 @@ class VoiceMemoRecorder {
     
     private let audioSession = AVAudioSession.sharedInstance()
     
-    private var audioRecorder: AVAudioRecorder?
+    var audioRecorder: AVAudioRecorder?
     private var audioPlayer: AVAudioPlayer?
-    private var monitoringTimer: Timer?
+    var monitoringTimer: Timer?
     
     private var currentSample: Int
     private let numberOfSamples: Int
