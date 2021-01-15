@@ -97,6 +97,8 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         super.viewWillDisappear(animated)
         
         copiedAnimationView?.removeCopiedAnimation(remove: true)
+        
+        SVProgressHUD.dismiss()
     }
     
     override func viewDidLayoutSubviews() {
@@ -199,6 +201,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 cell.selectionStyle = .none
                 
                 cell.selectedPhotos = newCollab.photos
+                
                 cell.createCollabPhotosCellDelegate = self
                 cell.zoomInDelegate = self
                 cell.presentCopiedAnimationDelegate = self

@@ -70,7 +70,7 @@ class NameConfigurationCell: UITableViewCell {
         
         [
         
-            nameTextField.leadingAnchor.constraint(equalTo: textFieldContainer.leadingAnchor, constant: 10),
+            nameTextField.leadingAnchor.constraint(equalTo: textFieldContainer.leadingAnchor, constant: 11.5),
             nameTextField.trailingAnchor.constraint(equalTo: textFieldContainer.trailingAnchor, constant: -10),
             nameTextField.topAnchor.constraint(equalTo: textFieldContainer.topAnchor, constant: 0),
             nameTextField.bottomAnchor.constraint(equalTo: textFieldContainer.bottomAnchor, constant: 0)
@@ -83,7 +83,6 @@ class NameConfigurationCell: UITableViewCell {
         nameTextField.font = UIFont(name: "Poppins-SemiBold", size: 15)
         nameTextField.placeholder = "Enter here"
         nameTextField.returnKeyType = .done
-//        nameTextField.autocapitalizationType = .none
         
         nameTextField.addTarget(self, action: #selector(textChanged), for: .editingChanged)
     }

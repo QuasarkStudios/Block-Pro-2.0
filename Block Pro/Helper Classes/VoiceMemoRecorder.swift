@@ -24,7 +24,13 @@ class VoiceMemoRecorder {
     private var soundSamples: [Float]? {
         didSet {
             
-            if let cell = parentCell as? CreateCollabVoiceMemoCell, let samples = soundSamples {
+            if let cell = parentCell as? VoiceMemosConfigurationCell, let samples = soundSamples {
+                
+                //Updates the audioVisualizer of the parentCell with the soundSamples configured in this class
+                cell.updateAudioVisualizer(samples)
+            }
+            
+            else if let cell = parentCell as? CreateCollabVoiceMemoCell, let samples = soundSamples {
                 
                 //Updates the audioVisualizer of the parentCell with the soundSamples configured in this class
                 cell.updateAudioVisualizer(samples)

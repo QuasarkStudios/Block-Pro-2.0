@@ -14,6 +14,7 @@ import FirebaseCore
 import FirebaseMessaging
 import RealmSwift
 import UserNotifications
+import SVProgressHUD
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -38,11 +39,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         deleteSavedVoiceMemos()
         
-//        let barButtonAppearance = UIBarButtonItem.appearance()
-//        let backButton = UIImage(named: "info")
-//        let backButtonImage = backButton?.stretchableImage(withLeftCapWidth: 0, topCapHeight: 0)
-//        backButtonImage?.resizableImage(withCapInsets: UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0))
-//        barButtonAppearance.setBackButtonBackgroundImage(backButtonImage, for: .normal, barMetrics: .default)
+        SVProgressHUD.setDefaultStyle(.dark)
+        
+        if let image = UIImage(systemName: "xmark.circle.fill") {
+            
+            SVProgressHUD.setErrorImage(image)
+        }
         
         return true
     }

@@ -20,4 +20,13 @@ struct Block {
     var members: [Member]?
     
     var reminders: [Int]?
+    
+    var photoIDs: [String]?
+    var photos: [String : UIImage?]?
+    
+    var locations: [Location]?
+    
+    var voiceMemos: [VoiceMemo]?
+    
+    var links: [Link]?
 }

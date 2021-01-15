@@ -18,9 +18,12 @@ class CustomSegmentControl: UIView {
     
     var segmentIndicatorLeadingAnchor: NSLayoutConstraint?
     
-    init() {
+    weak var parentViewController: AnyObject?
+    
+    init(parentViewController: AnyObject) {
         super.init(frame: .zero)
         
+        self.parentViewController = parentViewController
     }
     
     required init?(coder: NSCoder) {
@@ -151,6 +154,11 @@ class CustomSegmentControl: UIView {
             
             self.attachmentsButton.tintColor = .black
         }
+        
+        if let viewController = parentViewController as? ConfigureBlockViewController {
+            
+            viewController.changeSelectedTableView(detailsTableView: true)
+        }
     }
     
     @objc private func attachmentsButtonPressed () {
@@ -174,6 +182,11 @@ class CustomSegmentControl: UIView {
         UIView.transition(with: detailsButton, duration: 0.3, options: .transitionCrossDissolve) {
             
             self.detailsButton.tintColor = .black
+        }
+        
+        if let viewController = parentViewController as? ConfigureBlockViewController {
+            
+            viewController.changeSelectedTableView(detailsTableView: false)
         }
     }
 }

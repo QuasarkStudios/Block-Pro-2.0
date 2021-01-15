@@ -37,3 +37,39 @@ protocol ReminderConfigurationProtocol: AnyObject {
     
     func reminderDeleted (_ deletedReminder: Int) 
 }
+
+protocol PhotosConfigurationProtocol: AnyObject {
+    
+    func presentAddPhotoAlert ()
+}
+
+protocol LocationsConfigurationProtocol: AnyObject {
+    
+    func attachLocationSelected()
+}
+
+protocol VoiceMemosConfigurationProtocol: AnyObject {
+    
+    func attachMemoSelected()
+    
+    func recordingCancelled()
+    
+    func voiceMemoSaved(_ voiceMemo: VoiceMemo)
+    
+    func voiceMemoNameChanged (_ voiceMemoID: String, _ name: String?)
+    
+    func voiceMemoDeleted (_ voiceMemo: VoiceMemo)
+}
+
+protocol LinksConfigurationProtocol: AnyObject {
+    
+    func attachLinkSelected ()
+    
+    func linkEntered (_ linkID: String, _ url: String)
+    
+    func linkIconSaved (_ linkID: String, _ icon: UIImage?)
+    
+    func linkRenamed (_ linkID: String, _ name: String)
+    
+    func linkDeleted (_ linkID: String)
+}

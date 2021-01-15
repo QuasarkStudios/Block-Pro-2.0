@@ -53,6 +53,14 @@ class AddLocationViewController: UIViewController {
         configureGestureRecognizors()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: UIColor.white.withAlphaComponent(0.9))
+        
+        self.navigationItem.largeTitleDisplayMode = .never
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         

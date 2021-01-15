@@ -329,6 +329,8 @@ class MemberConfigurationCell: UITableViewCell {
     
     private func configureFullMembersCell () {
         
+        membersCountLabel.text = "\(self.members?.count ?? 0)/\((self.collab?.members.count ?? 6) - 1)"
+        
         //Resetting the height of the membersCollectionView
         membersCollectionView.constraints.forEach { (constraint) in
             
@@ -342,7 +344,7 @@ class MemberConfigurationCell: UITableViewCell {
         
         UIView.transition(with: membersContainer, duration: 0.3, options: .transitionCrossDissolve) {
             
-            self.membersCountLabel.text = "\(self.members?.count ?? 0)/\((self.collab?.members.count ?? 6) - 1)"
+            self.membersCountLabel.alpha = 1
             
             self.membersCollectionView.alpha = 1
             

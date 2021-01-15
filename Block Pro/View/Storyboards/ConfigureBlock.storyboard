@@ -19,15 +19,10 @@
                         <viewLayoutGuide key="safeArea" id="YDN-UX-u2s"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <navigationItem key="navigationItem" id="GsV-aW-HE4">
-                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="stop" id="4mG-5F-syV">
-                            <connections>
-                                <action selector="cancelButton:" destination="VqK-Qg-2Ha" id="7gv-Kc-bPN"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="GsV-aW-HE4"/>
                     <connections>
                         <segue destination="Mh7-Eh-nLA" kind="show" identifier="moveToAddMembersView" id="qbF-S0-wwb"/>
+                        <segue destination="ydz-TC-wnE" kind="show" identifier="moveToAddLocationsView" id="0TX-5o-mI1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="z43-ZF-nsz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -42,7 +37,17 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nsl-tw-cYM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1898" y="-435"/>
+            <point key="canvasLocation" x="-2118" y="-435"/>
+        </scene>
+        <!--AddLocation-->
+        <scene sceneID="tlZ-PA-SVh">
+            <objects>
+                <viewControllerPlaceholder storyboardName="AddLocation" id="ydz-TC-wnE" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="97R-Tx-bVe"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mZ7-h5-Aio" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1658" y="-435"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="fbj-uU-zkZ">

@@ -7,42 +7,51 @@
 //
 
 import UIKit
+import MapKit
+import SVProgressHUD
 
 class ConfigureBlockViewController: UIViewController {
     
     let navBarExtensionView = UIView()
-    let segmentControl = CustomSegmentControl()
+    lazy var segmentControl = CustomSegmentControl(parentViewController: self)
     
     let configureBlockTableView = UITableView()
     
+    lazy var editPhotoButton: UIButton = configureEditButton()
+    lazy var deletePhotoButton: UIButton = configureDeleteButton()
+    
+    var copiedAnimationView: CopiedAnimationView?
     
     var navBarExtensionHeightAnchor: NSLayoutConstraint?
     var tableViewTopAnchor: NSLayoutConstraint?
-    
-    var selectedTableView = "details"
-    
-    var startsCalendarPresented: Bool = false
-//    var startsCalendarExpanded: Bool = false
-    
-    var endsCalendarPresented: Bool = false
-//    var endsCalendarExpanded: Bool = false
-    
-//    var calendarPresented: Bool = false
-    var calendarExpanded: Bool = false
     
     let currentUser = CurrentUser.sharedInstance
     var collab: Collab?
     var block = Block()
     
+    var selectedTableView = "details"
+    
+    var startsCalendarPresented: Bool = false
+    var endsCalendarPresented: Bool = false
+    var calendarExpanded: Bool = false
+    
+    var selectedPhoto: UIImage?
+    var photoEditing: Bool = false
+    
+    var selectedLocation: Location?
+    
+    var audioVisualizerPresent: Bool = false
+    
+    var zoomingMethods: ZoomingImageViewMethods?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationController?.navigationBar.configureNavBar()
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor(hexString: "222222") as Any, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 30, weight: UIFont.Weight.bold)]
         self.title = "Add a Block"
         
-        self.navigationItem.largeTitleDisplayMode = .always
+        configureRightBarButtonItem()
         
         self.isModalInPresentation = true
 
@@ -51,33 +60,43 @@ class ConfigureBlockViewController: UIViewController {
         configureGestureRecognizors()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
+        self.navigationController?.navigationBar.configureNavBar()
+        
+        self.navigationItem.largeTitleDisplayMode = .always
+        
+        //Initializing here allows the animationView to be removed and readded multiple times
+        copiedAnimationView = CopiedAnimationView()
     }
     
-    private func configureNavBarExtensionView () {
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
-        self.view.addSubview(navBarExtensionView)
-        navBarExtensionView.translatesAutoresizingMaskIntoConstraints = false
+        copiedAnimationView?.removeCopiedAnimation(remove: true)
         
-        [
-
-            navBarExtensionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
-            navBarExtensionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
-            navBarExtensionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0),
-
-        ].forEach({ $0.isActive = true })
-
-        navBarExtensionHeightAnchor = navBarExtensionView.heightAnchor.constraint(equalToConstant: 70)
-        navBarExtensionHeightAnchor?.isActive = true
-        
-        tableViewTopAnchor = configureBlockTableView.topAnchor.constraint(equalTo: navBarExtensionView.bottomAnchor, constant: 0)
-        tableViewTopAnchor?.isActive = true
-        
-        navBarExtensionView.addSubview(segmentControl)
+        SVProgressHUD.dismiss()
     }
+    
+    
+    //MARK: - Configure Right Bar Button Item
+    
+    private func configureRightBarButtonItem () {
+        
+        let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(cancelButtonPressed))
+        cancelBarButtonItem.style = .done
+        
+        self.navigationItem.leftBarButtonItem = cancelBarButtonItem
+        
+        let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonPressed))
+        rightBarButtonItem.style = .done
+        
+        self.navigationItem.rightBarButtonItem = rightBarButtonItem
+    }
+    
+    
+    //MARK: - Configure TableView
     
     private func configureTableView (_ tableView: UITableView) {
         
@@ -105,7 +124,79 @@ class ConfigureBlockViewController: UIViewController {
         tableView.register(TimeConfigurationCell.self, forCellReuseIdentifier: "timeConfigurationCell")
         tableView.register(MemberConfigurationCell.self, forCellReuseIdentifier: "memberConfigurationCell")
         tableView.register(ReminderConfigurationCell.self, forCellReuseIdentifier: "reminderConfigurationCell")
+        
+        tableView.register(PhotosConfigurationCell.self, forCellReuseIdentifier: "photosConfigurationCell")
+        tableView.register(LocationsConfigurationCell.self, forCellReuseIdentifier: "locationsConfigurationCell")
+        tableView.register(VoiceMemosConfigurationCell.self, forCellReuseIdentifier: "voiceMemosConfigurationCell")
+        tableView.register(LinksConfigurationCell.self, forCellReuseIdentifier: "linksConfigurationCell")
     }
+    
+    
+    //MARK: - Configure Nav Bar Extension View
+    
+    private func configureNavBarExtensionView () {
+        
+        self.view.addSubview(navBarExtensionView)
+        navBarExtensionView.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+
+            navBarExtensionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
+            navBarExtensionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
+            navBarExtensionView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0),
+
+        ].forEach({ $0.isActive = true })
+
+        navBarExtensionHeightAnchor = navBarExtensionView.heightAnchor.constraint(equalToConstant: 70)
+        navBarExtensionHeightAnchor?.isActive = true
+        
+        tableViewTopAnchor = configureBlockTableView.topAnchor.constraint(equalTo: navBarExtensionView.bottomAnchor, constant: 0)
+        tableViewTopAnchor?.isActive = true
+        
+        navBarExtensionView.addSubview(segmentControl)
+    }
+    
+    
+    //MARK: - Configure Edit Photo Button
+    
+    private func configureEditButton () -> UIButton {
+        
+        let button = UIButton(type: .system)
+        
+        button.frame = CGRect(x: 15, y: 50, width: 75, height: 35)
+        
+        button.setTitle("Edit", for: .normal)
+        button.titleLabel?.font = UIFont(name: "Poppins-SemiBold", size: 16)
+        button.contentHorizontalAlignment = .center
+        button.tintColor = .white
+        button.alpha = 0
+        button.addTarget(self, action: #selector(editPhotoButtonPressed), for: .touchUpInside)
+        
+        return button
+    }
+    
+    
+    //MARK: - Configure Delete Photo Button
+    
+    private func configureDeleteButton () -> UIButton {
+        
+        let button = UIButton(type: .system)
+        
+        let xCoord = self.view.frame.width - (75 + 20)
+        button.frame = CGRect(x: xCoord, y: 50, width: 75, height: 35)
+        
+        button.setTitle("Delete", for: .normal)
+        button.titleLabel?.font = UIFont(name: "Poppins-SemiBold", size: 16)
+        button.contentHorizontalAlignment = .center
+        button.tintColor = .systemRed
+        button.alpha = 0
+        button.addTarget(self, action: #selector(deletePhotoButtonPressed), for: .touchUpInside)
+        
+        return button
+    }
+    
+    
+    //MARK: - Configure Gesture Recognizors
     
     private func configureGestureRecognizors () {
         
@@ -119,6 +210,87 @@ class ConfigureBlockViewController: UIViewController {
         dismissKeyboardTap.cancelsTouchesInView = false
         self.view.addGestureRecognizer(dismissKeyboardTap)
     }
+    
+    
+    //MARK: - Change Selected TableView
+    
+    func changeSelectedTableView (detailsTableView: Bool) {
+        
+        if detailsTableView {
+            
+            selectedTableView = "details"
+            
+            UIView.transition(with: configureBlockTableView, duration: 0.3, options: .transitionCrossDissolve) {
+                
+                self.configureBlockTableView.reloadData()
+            }
+        }
+        
+        else {
+            
+            selectedTableView = "attachments"
+            
+            UIView.transition(with: configureBlockTableView, duration: 0.3, options: .transitionCrossDissolve) {
+                
+                self.configureBlockTableView.reloadData()
+            }
+        }
+    }
+    
+    
+    //MARK: - Photo Edited
+    
+    private func photoEdited (newImage: UIImage) {
+        
+        for photo in block.photos ?? [:] {
+            
+            if photo.value == selectedPhoto {
+                
+                block.photos?[photo.key] = newImage
+                selectedPhoto = nil
+                
+                break
+            }
+        }
+        
+        photoEditing = false
+    }
+    
+    
+    //MARK: - Photo Deleted
+    
+    private func photoDeleted () {
+        
+        for photo in block.photos ?? [:] {
+            
+            if photo.value == selectedPhoto {
+                
+                block.photoIDs?.removeAll(where: { $0 == photo.key })
+                block.photos?.removeValue(forKey: photo.key)
+                selectedPhoto = nil
+                
+                break
+            }
+        }
+        
+        configureBlockTableView.reloadSections([0], with: .none)
+        
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+            
+            self.zoomingMethods?.blackBackground?.backgroundColor = .clear
+            self.zoomingMethods?.optionalButtons.forEach({ $0?.alpha = 0 })
+            self.zoomingMethods?.zoomedInImageView?.alpha = 0
+            
+        } completion: { (finished: Bool) in
+            
+            self.zoomingMethods?.blackBackground?.removeFromSuperview()
+            self.zoomingMethods?.optionalButtons.forEach({ $0?.removeFromSuperview() })
+            self.zoomingMethods?.zoomedInImageView?.removeFromSuperview()
+        }
+    }
+    
+    
+    //MARK: - Prepare for Segue
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -147,12 +319,37 @@ class ConfigureBlockViewController: UIViewController {
             backButtonItem.title = ""
             navigationItem.backBarButtonItem = backButtonItem
         }
+        
+        else if segue.identifier == "moveToAddLocationsView" {
+            
+            let addLocationVC = segue.destination as! AddLocationViewController
+            addLocationVC.locationSavedDelegate = self
+            addLocationVC.cancelLocationSelectionDelegate = self
+            
+            addLocationVC.locationPreselected = selectedLocation != nil
+            addLocationVC.selectedLocation = selectedLocation
+            
+            if let placemark = selectedLocation?.placemark {
+                
+                addLocationVC.locationMapItem = MKMapItem(placemark: placemark)
+            }
+            
+            let backButtonItem = UIBarButtonItem()
+            backButtonItem.title = ""
+            navigationItem.backBarButtonItem = backButtonItem
+        }
     }
+    
+    
+    //MARK: - Dismiss Keyboard
     
     @objc private func dismissKeyboard () {
         
         self.view.endEditing(true)
     }
+    
+    
+    //MARK: - Swipe Down Gesture
     
     @objc private func swipDownGesture () {
         
@@ -168,22 +365,60 @@ class ConfigureBlockViewController: UIViewController {
         }
     }
     
-    @IBAction func cancelButton(_ sender: Any) {
+    
+    //MARK: - Edit Photo Button Pressed
+    
+    @objc private func editPhotoButtonPressed () {
+        
+        zoomingMethods?.handleZoomOutOnImageView()
+        
+        photoEditing = true
+        
+        presentAddPhotoAlert()
+    }
+    
+    
+    //MARK: - Delete Photo Button Pressed
+    
+    @objc private func deletePhotoButtonPressed () {
+        
+        photoDeleted()
+    }
+    
+    
+    //MARK: - Cancel Button Pressed
+    
+    @objc private func cancelButtonPressed () {
         
         self.dismiss(animated: true, completion: nil)
     }
+    
+    //MARK: - Done Button Pressed
+    
+    @objc private func doneButtonPressed () {
+        
+        SVProgressHUD.showError(withStatus: "Error")
+        
+        print(block)
+    }
 }
+
+
+//MARK: - TableView Datasource and Delegate Extension
 
 extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelegate {
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        
-        return 1
-    }
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return 10
+        if selectedTableView == "details" {
+            
+            return 10
+        }
+        
+        else {
+            
+            return 8
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -209,12 +444,31 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 
                 cell.collab = collab
                 
+                //Signifying it hasn't been set yet
                 if block.starts == nil {
                     
-                    block.starts = Date().adjustTime(roundDown: true)
+                    if let deadline = collab?.dates["deadline"] {
+                        
+                        //If the current date is before the deadline of the collab
+                        if Date() < Calendar.current.date(byAdding: .minute, value: -5, to: deadline) ?? Date() {
+                            
+                            block.starts = Date().adjustTime(roundDown: true)
+                        }
+                        
+                        //If the current date is after the deadline of the collab
+                        else {
+                            
+                            block.starts = (Calendar.current.date(byAdding: .minute, value: -5, to: deadline) ?? Date()).adjustTime(roundDown: true)
+                        }
+                    }
+                    
+                    else {
+                        
+                        block.starts = Date().adjustTime(roundDown: true)
+                    }
                 }
                 
-                cell.starts = block.starts //?? Date().adjustTime(roundDown: true)
+                cell.starts = block.starts
                 
                 cell.timeConfigurationDelegate = self
                 
@@ -230,12 +484,31 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 
                 cell.collab = collab
                 
+                //Signifying it hasn't been set yet
                 if block.ends == nil {
                     
-                    block.ends = Date().adjustTime(roundDown: false)
+                    if let deadline = collab?.dates["deadline"] {
+                        
+                        //If the current date is before the deadline of the collab
+                        if Date() < Calendar.current.date(byAdding: .minute, value: -5, to: deadline) ?? Date() {
+                            
+                            block.ends = Date().adjustTime(roundDown: false)
+                        }
+                        
+                        //If the current date is after the deadline of the collab
+                        else {
+                            
+                            block.ends = (Calendar.current.date(byAdding: .minute, value: -5, to: deadline) ?? Date()).adjustTime(roundDown: false)
+                        }
+                    }
+                    
+                    else {
+                        
+                        block.ends = Date().adjustTime(roundDown: false)
+                    }
                 }
                 
-                cell.ends = block.ends //?? Date().adjustTime(roundDown: false)
+                cell.ends = block.ends
                 
                 cell.timeConfigurationDelegate = self
                 
@@ -247,12 +520,12 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 let cell = tableView.dequeueReusableCell(withIdentifier: "memberConfigurationCell", for: indexPath) as! MemberConfigurationCell
                 cell.selectionStyle = .none
                 
+                cell.memberConfigurationDelegate = self
+                
                 cell.addMembersLabel.text = "Assign Members"
                 
                 cell.collab = collab
                 cell.members = block.members
-                
-                cell.memberConfigurationDelegate = self
                 
                 return cell
             }
@@ -271,6 +544,62 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 return cell
             }
         }
+        
+        else {
+            
+            if indexPath.row == 1 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "photosConfigurationCell", for: indexPath) as! PhotosConfigurationCell
+                cell.selectionStyle = .none
+                
+                cell.selectedPhotoIDs = block.photoIDs
+                cell.selectedPhotos = block.photos
+                
+                cell.photosConfigurationDelegate = self
+                cell.zoomInDelegate = self
+                cell.presentCopiedAnimationDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 3 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "locationsConfigurationCell", for: indexPath) as! LocationsConfigurationCell
+                cell.selectionStyle = .none
+                
+                cell.selectedLocations = block.locations
+                
+                cell.locationsConfigurationDelegate = self
+                cell.locationSelectedDelegate = self
+                cell.cancelLocationSelectionDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 5 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "voiceMemosConfigurationCell", for: indexPath) as! VoiceMemosConfigurationCell
+                cell.selectionStyle = .none
+                
+                cell.voiceMemos = block.voiceMemos
+                
+                cell.voiceMemosConfigurationDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 7 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "linksConfigurationCell", for: indexPath) as! LinksConfigurationCell
+                cell.selectionStyle = .none
+                
+                cell.links = block.links
+                
+                cell.linksConfigurationDelegate = self
+                
+                return cell
+            }
+        }
             
         let cell = UITableViewCell()
         cell.selectionStyle = .none
@@ -282,93 +611,219 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
         if selectedTableView == "details" {
             
             switch indexPath.row {
-               
-            case 0:
-                
-                return 15
             
-            case 1:
-                
-                return 80
-                
-            case 3:
-                
-                //258 = height without calendar
-//                1 233.33333333333331
-//                2 280.0
-                
-                if startsCalendarPresented {
+                //Buffer cell
+                case 0:
                     
-                    if calendarExpanded {
+                    return 15
+                
+                //Name Configuration Cell
+                case 1:
+                    
+                    return 80
+                    
+                //StartTime Configuration Cell
+                case 3:
+                    
+                    if startsCalendarPresented {
                         
-                        return 543
+                        //If the calendar requires all 6 rows
+                        if calendarExpanded {
+                            
+                            return 543
+                        }
+                        
+                        else {
+                            
+                            return 511
+                        }
                     }
                     
                     else {
                         
-                        return 511
+                        return 135
                     }
-                }
                 
-                else {
+                //EndTime Configuration Cell
+                case 5:
                     
-                    return 135
-                }
-                
-            case 5:
-                
-                if endsCalendarPresented {
-                    
-                    if calendarExpanded {
+                    if endsCalendarPresented {
                         
-                        return 543
+                        //If the calendar requires all 6 rows
+                        if calendarExpanded {
+                            
+                            return 543
+                        }
+                        
+                        else {
+                            
+                            return 511
+                        }
                     }
                     
                     else {
                         
-                        return 511
+                        return 135
                     }
-                }
-                
-                else {
+                 
+                //Member Configuration Cell
+                case 7:
                     
-                    return 135
-                }
-                
-            case 7:
-                
-                if block.members?.count ?? 0 == (collab?.members.count ?? 0) - 1 {
+                    if block.members?.count ?? 0 == (collab?.members.count ?? 0) - 1 {
+                        
+                        return 160
+                    }
                     
-                    return 160
-                }
-                
-                else if block.members?.count ?? 0 > 0 {
+                    else if block.members?.count ?? 0 > 0 {
+                        
+                        return 225
+                    }
                     
-                    return 225
-                }
+                    else {
+                        
+                        return 85
+                    }
                 
-                else {
+                //Reminder Configuration Cell
+                case 9:
                     
-                    return 85
-                }
-                
-            case 9:
-                
-                return 130
-                
-            default:
-                
-                return 25
+                    return 130
+                 
+                //Buffer Cells
+                default:
+                    
+                    return 25
                 
             }
         }
         
         else {
             
-            return 0
+            switch indexPath.row {
+            
+                //Buffer Cell
+                case 0:
+                    
+                    return 15
+                
+                //Photos Configuration Cell
+                case 1:
+                    
+                    if block.photos?.count ?? 0 > 0 {
+                        
+                        let heightOfPhotosLabelAndBottomAnchor: CGFloat = 25
+                        
+                        if block.photos?.count ?? 0 <= 3 {
+                            
+                            //The item size plus the top and bottom edge insets, i.e. 20
+                            let heightOfCollectionView: CGFloat = itemSize + 20
+                            
+                            //The height of the "attach" button plus a 10 point buffer on the top annd bottom
+                            let heightOfAttachButton: CGFloat = 40 + 20
+                            
+                            return heightOfPhotosLabelAndBottomAnchor + heightOfCollectionView + heightOfAttachButton
+                            
+                        }
+                        
+                        else if block.photos?.count ?? 0 < 6 {
+                            
+                            //The height of the two rows of items that'll be displayed, the edge insets, i.e. 20, and the line spacing i.e. 5
+                            let heightOfCollectionView: CGFloat = (itemSize * 2) + 20 + 5
+                            
+                            //The height of the "attach" button plus a 10 point buffer on the top annd bottom
+                            let heightOfAttachButton: CGFloat = 40 + 20
+                            
+                            return heightOfPhotosLabelAndBottomAnchor + heightOfCollectionView + heightOfAttachButton
+                        }
+                        
+                        else {
+                            
+                            //The height of the two rows of items that'll be displayed, the edge insets, i.e. 20, and the line spacing i.e. 5
+                            let heightOfCollectionView: CGFloat = (itemSize * 2) + 20 + 5
+                            
+                            return heightOfPhotosLabelAndBottomAnchor + heightOfCollectionView
+                        }
+                    }
+                    
+                    else {
+                        
+                        return 85
+                    }
+                
+                //Locations Configuration Cell
+                case 3:
+                    
+                    if block.locations?.count ?? 0 == 0 {
+                        
+                        return 85
+                    }
+                    
+                    else if block.locations?.count ?? 0 == 1 {
+                        
+                        return 285
+                    }
+                    
+                    else if block.locations?.count ?? 0 == 2 {
+                       
+                        return 312.5
+                    }
+                    
+                    else {
+                        
+                        return 262.5
+                    }
+                 
+                //Voice Memos Configuration Cell
+                case 5:
+                    
+                    if block.voiceMemos?.count ?? 0 == 0 {
+                        
+                        return audioVisualizerPresent ? 200 : 85
+                    }
+                    
+                    else if block.voiceMemos?.count ?? 0 < 3 {
+                    
+                        return audioVisualizerPresent ? floor(itemSize) + 194 : floor(itemSize) + 105
+                    }
+                    
+                    else {
+                        
+                        return floor(itemSize) + 50
+                    }
+                
+                //Links Configuration Cell
+                case 7:
+                    
+                    if block.links?.count ?? 0 == 0 {
+                        
+                        return 85
+                    }
+                    
+                    else if block.links?.count ?? 0 < 3 {
+                        
+                        return 185
+                    }
+                    
+                    else if block.links?.count ?? 0 < 6 {
+                        
+                        return 212.5
+                    }
+                    
+                    else {
+                        
+                        return 162.5
+                    }
+                
+                //Buffer Cells
+                default:
+                    
+                    return 25
+            }
         }
-        
     }
+    
+    
+    //MARK: - ScrollView Did Scroll
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
@@ -403,12 +858,18 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
     }
 }
 
+
+//MARK: - UIGesture Recognizor Delegate
+
 extension ConfigureBlockViewController: UIGestureRecognizerDelegate {
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
 }
+
+
+//MARK: - Name Configuration Protocol Extension
 
 extension ConfigureBlockViewController: NameConfigurationProtocol {
     
@@ -417,6 +878,9 @@ extension ConfigureBlockViewController: NameConfigurationProtocol {
         block.name = text
     }
 }
+
+
+//MARK: - Time Configuration Protocol Extension
 
 extension ConfigureBlockViewController: TimeConfigurationProtocol {
     
@@ -584,29 +1048,30 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
             block.starts = time //Setting the selected start time
             
             //Ensures that the blocks dates match and that the start time is before the end time
+            formatter.dateFormat = "yyyy MM dd "
+            let newDate = formatter.string(from: time)
+            
+            formatter.dateFormat = "h:mm a"
+            let endTime = formatter.string(from: block.ends ?? Date())
+
+            formatter.dateFormat = "yyyy MM dd h:mm a"
+            
+            //If the end time is before the start time, likely because of the time and not the date
+            if let adjustedEndTime = formatter.date(from: newDate + endTime), adjustedEndTime <= time {
+                
+                //Incrementing the end time by 5 minutes
+                block.ends = Calendar.current.date(byAdding: .minute, value: 5, to: time)
+            }
+            
+            else {
+                
+                block.ends = formatter.date(from: newDate + endTime)
+            }
+            
+            //Setting the end time of the endTime configuration cell
             if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? TimeConfigurationCell {
                 
-                formatter.dateFormat = "yyyy MM dd "
-                let newDate = formatter.string(from: time)
-                
-                formatter.dateFormat = "h:mm a"
-                let endTime = formatter.string(from: cell.ends ?? Date())
-
-                formatter.dateFormat = "yyyy MM dd h:mm a"
-                
-                //If the end time is before the start time, likely because of the time and not the date
-                if let adjustedEndTime = formatter.date(from: newDate + endTime), adjustedEndTime <= time {
-                    
-                    //Incrementing the end time by 5 minutes
-                    block.ends = Calendar.current.date(byAdding: .minute, value: 5, to: time)
-                    cell.ends = Calendar.current.date(byAdding: .minute, value: 5, to: time)
-                }
-                
-                else {
-                    
-                    block.ends = formatter.date(from: newDate + endTime)
-                    cell.ends = formatter.date(from: newDate + endTime)
-                }
+                cell.ends = block.ends
             }
         }
         
@@ -615,32 +1080,34 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
             block.ends = time //Setting the selected end time
             
             //Ensures that the blocks dates match and that the start time is before the end time
+            formatter.dateFormat = "yyyy MM dd "
+            let newDate = formatter.string(from: time)
+            
+            formatter.dateFormat = "h:mm a"
+            let startTime = formatter.string(from: block.starts ?? Date())
+
+            formatter.dateFormat = "yyyy MM dd h:mm a"
+            
+            //If the end time is before the start time, likely because of the time and not the date
+            if let adjustedStartTime = formatter.date(from: newDate + startTime), adjustedStartTime >= time {
+                
+                //Decrementing the start time by 5 minutes
+                block.starts = Calendar.current.date(byAdding: .minute, value: -5, to: time)
+            }
+            
+            else {
+                
+                block.starts = formatter.date(from: newDate + startTime)
+            }
+            
+            //Setting the start time of the startTime configuration cell
             if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? TimeConfigurationCell {
                 
-                formatter.dateFormat = "yyyy MM dd "
-                let newDate = formatter.string(from: time)
-                
-                formatter.dateFormat = "h:mm a"
-                let startTime = formatter.string(from: cell.starts ?? Date())
-
-                formatter.dateFormat = "yyyy MM dd h:mm a"
-                
-                //If the end time is before the start time, likely because of the time and not the date
-                if let adjustedStartTime = formatter.date(from: newDate + startTime), adjustedStartTime >= time {
-                    
-                    //Decrementing the start time by 5 minutes
-                    block.starts = Calendar.current.date(byAdding: .minute, value: -5, to: time)
-                    cell.starts = Calendar.current.date(byAdding: .minute, value: -5, to: time)
-                }
-                
-                else {
-                    
-                    block.starts = formatter.date(from: newDate + startTime)
-                    cell.starts = formatter.date(from: newDate + startTime)
-                }
+                cell.starts = block.starts
             }
         }
         
+        //Setting the start time for the reminder configuration cell
         if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 9, section: 0)) as? ReminderConfigurationCell {
             
             cell.startTime = block.starts
@@ -650,6 +1117,9 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
         }
     }
 }
+
+
+//MARK: - Member Configuration Protocol Extension
 
 extension ConfigureBlockViewController: MemberConfigurationProtocol, MembersAdded {
     
@@ -697,6 +1167,9 @@ extension ConfigureBlockViewController: MemberConfigurationProtocol, MembersAdde
     }
 }
 
+
+//MARK: - Reminder Configuration Protocol Extension
+
 extension ConfigureBlockViewController: ReminderConfigurationProtocol {
     
     func reminderSelected (_ selectedReminders: [Int]) {
@@ -707,5 +1180,349 @@ extension ConfigureBlockViewController: ReminderConfigurationProtocol {
     func reminderDeleted (_ deletedReminder: Int) {
         
         block.reminders?.removeAll(where: { $0 == deletedReminder })
+    }
+}
+
+
+//MARK: - Photos Configuration Protocol Extension
+
+extension ConfigureBlockViewController: PhotosConfigurationProtocol, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func presentAddPhotoAlert() {
+        
+        let addPhotoAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+
+        let takePhotoAction = UIAlertAction(title: "    Take a Photo", style: .default) { (takePhoto) in
+
+            let imagePicker = UIImagePickerController()
+            imagePicker.navigationBar.configureNavBar()
+            imagePicker.delegate = self
+            imagePicker.sourceType = .camera
+            imagePicker.allowsEditing = true
+            
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+        
+        let cameraImage = UIImage(named: "camera2")
+        takePhotoAction.setValue(cameraImage, forKey: "image")
+        takePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
+
+        let choosePhotoAction = UIAlertAction(title: "    Choose a Photo", style: .default) { (chooseFromLibrary) in
+
+            let imagePicker = UIImagePickerController()
+            imagePicker.navigationBar.configureNavBar()
+            imagePicker.delegate = self
+            imagePicker.sourceType = .photoLibrary
+            imagePicker.allowsEditing = true
+            
+            self.present(imagePicker, animated: true, completion: nil)
+        }
+        
+        let photoImage = UIImage(named: "image")
+        choosePhotoAction.setValue(photoImage, forKey: "image")
+        choosePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
+
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
+            
+            self.photoEditing = false
+        }
+
+        addPhotoAlert.addAction(takePhotoAction)
+        addPhotoAlert.addAction(choosePhotoAction)
+        addPhotoAlert.addAction(cancelAction)
+
+        present(addPhotoAlert, animated: true)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        var selectedImageFromPicker: UIImage?
+        
+        if let editedImage = info[.editedImage] {
+            
+            selectedImageFromPicker = editedImage as? UIImage
+        }
+        
+        else if let originalImage = info[.originalImage] {
+            
+            selectedImageFromPicker = originalImage as? UIImage
+        }
+        
+        if let selectedImage = selectedImageFromPicker {
+            
+            if !photoEditing {
+                
+                if block.photos == nil {
+                    
+                    block.photoIDs = []
+                    block.photos = [:]
+                    
+                    let photoID = UUID().uuidString
+                    block.photoIDs?.append(photoID)
+                    block.photos?[photoID] = selectedImage
+                }
+                
+                else {
+                    
+                    let photoID = UUID().uuidString
+                    block.photoIDs?.append(photoID)
+                    block.photos?[photoID] = selectedImage
+                }
+            }
+            
+            else {
+                
+                photoEdited(newImage: selectedImage)
+            }
+            
+            configureBlockTableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+        }
+        
+        else {
+            
+            SVProgressHUD.showError(withStatus: "Sorry, something went wrong selecting this photo")
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        
+        photoEditing = false
+        
+        dismiss(animated: true, completion: nil)
+    }
+}
+
+
+//MARK: - Locations Configuration Protocol Extension
+
+extension ConfigureBlockViewController: LocationsConfigurationProtocol {
+    
+    func attachLocationSelected() {
+        
+        performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
+    }
+}
+
+
+//MARK: - Location Saved Protocol Extension
+
+extension ConfigureBlockViewController: LocationSavedProtocol {
+    
+    func locationSaved(_ location: Location?) {
+        
+        //If the location hasn't been added yet
+        if block.locations?.first(where: { $0.locationID == location?.locationID}) == nil {
+            
+            if location != nil && block.locations == nil {
+                
+                block.locations = []
+                block.locations?.append(location!)
+            }
+            
+            else if location != nil {
+                
+                block.locations?.append(location!)
+            }
+        }
+        
+        //If the location has been added
+        else {
+            
+            block.locations?.removeAll(where: { $0.locationID == location?.locationID })
+            
+            if location != nil {
+                
+                block.locations?.append(location!)
+            }
+        }
+        
+        configureBlockTableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: .none)
+    }
+}
+
+extension ConfigureBlockViewController: LocationSelectedProtocol {
+    
+    func locationSelected (_ location: Location?) {
+        
+        selectedLocation = location
+        
+        performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
+    }
+}
+
+extension ConfigureBlockViewController: CancelLocationSelectionProtocol {
+    
+    func selectionCancelled(_ locationID: String?) {
+        
+        if locationID != nil {
+            
+            block.locations?.removeAll(where: { $0.locationID == locationID! })
+            selectedLocation = nil
+            
+            configureBlockTableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: .fade)
+        }
+    }
+}
+
+
+//MARK: - Voice Memos Configuration Protocol Extension
+
+extension ConfigureBlockViewController: VoiceMemosConfigurationProtocol {
+    
+    func attachMemoSelected () {
+        
+        audioVisualizerPresent = true
+        
+        configureBlockTableView.beginUpdates()
+        configureBlockTableView.endUpdates()
+    }
+    
+    func recordingCancelled () {
+        
+        audioVisualizerPresent = false
+        
+        configureBlockTableView.beginUpdates()
+        configureBlockTableView.endUpdates()
+    }
+    
+    func voiceMemoSaved(_ voiceMemo: VoiceMemo) {
+        
+        audioVisualizerPresent = false
+        
+        if block.voiceMemos == nil {
+            
+            block.voiceMemos = []
+        }
+        
+        block.voiceMemos?.append(voiceMemo)
+        
+        configureBlockTableView.beginUpdates()
+        configureBlockTableView.endUpdates()
+    }
+    
+    func voiceMemoNameChanged (_ voiceMemoID: String, _ name: String?){
+        
+        if let index = block.voiceMemos?.firstIndex(where: { $0.voiceMemoID == voiceMemoID }) {
+            
+            if name != nil, name!.leniantValidationOfTextEntered() {
+                
+                block.voiceMemos?[index].name = name
+            }
+            
+            else {
+                
+                block.voiceMemos?[index].name = nil
+            }
+        }
+    }
+    
+    func voiceMemoDeleted (_ voiceMemo: VoiceMemo) {
+        
+        block.voiceMemos?.removeAll(where: { $0.voiceMemoID == voiceMemo.voiceMemoID })
+            
+        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? VoiceMemosConfigurationCell {
+            
+            cell.voiceMemos = block.voiceMemos
+        }
+
+        configureBlockTableView.beginUpdates()
+        configureBlockTableView.endUpdates()
+    }
+}
+
+
+//MARK: - Links Configuration Protocol Extension
+
+extension ConfigureBlockViewController: LinksConfigurationProtocol {
+    
+    func attachLinkSelected() {
+        
+        var link = Link()
+        link.linkID = UUID().uuidString
+        
+        if block.links == nil {
+            
+            block.links = [link]
+        }
+        
+        else {
+            
+            block.links?.append(link)
+        }
+        
+        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? LinksConfigurationCell {
+
+            cell.links = block.links
+        }
+        
+        configureBlockTableView.beginUpdates()
+        configureBlockTableView.endUpdates()
+    }
+    
+    func linkEntered (_ linkID: String, _ url: String) {
+        
+        if let linkIndex = block.links?.firstIndex(where: { $0.linkID == linkID }) {
+            
+            block.links?[linkIndex].url = url
+        }
+    }
+    
+    func linkIconSaved (_ linkID: String, _ icon: UIImage?) {
+        
+        if let linkIndex = block.links?.firstIndex(where: { $0.linkID == linkID }) {
+            
+            block.links?[linkIndex].icon = icon
+        }
+    }
+    
+    func linkRenamed (_ linkID: String, _ name: String) {
+        
+        if let linkIndex = block.links?.firstIndex(where: { $0.linkID == linkID }) {
+            
+            block.links?[linkIndex].name = name
+        }
+    }
+    
+    func linkDeleted (_ linkID: String) {
+        
+        block.links?.removeAll(where: { $0.linkID == linkID })
+        
+        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? LinksConfigurationCell {
+
+            cell.links = block.links
+        }
+        
+        configureBlockTableView.beginUpdates()
+        configureBlockTableView.endUpdates()
+    }
+}
+
+
+//MARK: - Zoom In Protocol Extension
+
+extension ConfigureBlockViewController: ZoomInProtocol {
+    
+    func zoomInOnPhotoImageView(photoImageView: UIImageView) {
+        
+        selectedPhoto = photoImageView.image
+        
+        zoomingMethods = ZoomingImageViewMethods(on: photoImageView, cornerRadius: 8, with: [editPhotoButton, deletePhotoButton])
+        zoomingMethods?.performZoom()
+    }
+}
+
+
+//MARK: - Present Copied Animation Protocol Extension
+
+extension ConfigureBlockViewController: PresentCopiedAnimationProtocol {
+    
+    func presentCopiedAnimation() {
+        
+        let navBarFrame = navigationController?.navigationBar.convert(navigationController?.navigationBar.frame ?? .zero, to: keyWindow) ?? .zero
+        
+        //12.5 is equal to 10 point top anchor the photosCollectionView has from the navBar plus an extra 10 point buffer
+        copiedAnimationView?.presentCopiedAnimation(topAnchor: navBarFrame.minY + 10)
     }
 }
