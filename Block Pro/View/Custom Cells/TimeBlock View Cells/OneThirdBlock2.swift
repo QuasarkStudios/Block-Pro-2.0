@@ -8,7 +8,7 @@
 
 import UIKit
 
-class OneThirdBlock: UIView {
+class OneThirdBlock2: UIView {
 
     let nameLabel = UILabel()
     

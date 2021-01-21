@@ -282,6 +282,35 @@ class FirebaseStorage {
         }
     }
     
+    func saveCollabBlockPhotosToStorage (_ collabID: String, _ blockID: String, _ photoID: String, _ photo: UIImage?) {
+        
+        let photoData = photo?.jpegData(compressionQuality: 0.2)
+        
+        if let data = photoData {
+            
+            collabStorageRef.child(collabID).child("blocks").child(blockID).child("photos").child("\(photoID).jpeg").putData(data, metadata: nil) { (metadata, error) in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription as Any)
+                }
+            }
+        }
+    }
+    
+    func saveCollabBlockVoiceMemosToStorage (_ collabID: String, _ blockID: String, _ voiceMemoID: String) {
+        
+        let voiceMemoURL = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
+        
+        collabStorageRef.child(collabID).child("blocks").child(blockID).child("voiceMemos").child("\(voiceMemoID).m4a").putFile(from: voiceMemoURL, metadata: nil) { (metatdata, error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+        }
+    }
+    
     func saveConversationCoverPhoto (conversationID: String, coverPhoto: UIImage, completion: @escaping ((_ error: Error?) -> Void)) {
         
         let photoData = coverPhoto.jpegData(compressionQuality: 0.2)

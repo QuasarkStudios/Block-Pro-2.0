@@ -478,6 +478,14 @@ extension CollabNavigationView: JTAppleCalendarViewDataSource, JTAppleCalendarVi
     func calendar(_ calendar: JTAppleCalendarView, didSelectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
         
         configureCell(view: cell, cellState: cellState)
+        
+        if cellState.selectionType != .programatic {
+            
+            if let startTime = collabStartTime, let row = Calendar.current.dateComponents([.day], from: startTime, to: date).day {
+                
+                collabTableView.scrollToRow(at: IndexPath(row: row, section: 0), at: .top, animated: true)
+            }
+        }
     }
     
     func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {

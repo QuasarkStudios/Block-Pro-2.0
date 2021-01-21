@@ -12,6 +12,10 @@ struct Block {
     
     var blockID: String?
     
+    var creator: String?
+    
+    var dateCreated: Date?
+    
     var name: String?
     
     var starts: Date?
@@ -29,4 +33,8 @@ struct Block {
     var voiceMemos: [VoiceMemo]?
     
     var links: [Link]?
+    
+    var position: BlockPosition = .centered
+    
+    var progress: BlockProgress = .none
 }

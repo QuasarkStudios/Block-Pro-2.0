@@ -1242,6 +1242,7 @@ extension TimeConfigurationCell: JTAppleCalendarViewDataSource, JTAppleCalendarV
         
             handleCellVisibility(cell: cell, cellState: cellState)
             handleCellSelected(cell: cell, cellState: cellState)
+//            handleCellTextColor(cell: cell, cellState: cellState)
     }
     
     
@@ -1282,6 +1283,36 @@ extension TimeConfigurationCell: JTAppleCalendarViewDataSource, JTAppleCalendarV
         
         cell.singleSelectionView.layer.cornerRadius = 18.5
     }
+    
+    
+//    //MARK: - Handle Cell Text Color
+//
+//    func handleCellTextColor (cell: DateCell, cellState: CellState) {
+//
+//        if let collabStartTime = collab?.dates["startTime"], let deadline = collab?.dates["deadline"] {
+//
+//            var startTimeDateComponents = calendar.dateComponents(in: .current, from: collabStartTime)
+//            startTimeDateComponents.hour = 0
+//            startTimeDateComponents.minute = 0
+//
+//            var deadlineDateComponents = calendar.dateComponents(in: .current, from: deadline)
+//            deadlineDateComponents.hour = 23
+//            deadlineDateComponents.minute = 55
+//
+//            if let startTimeDate = startTimeDateComponents.date, let deadlineDate = deadlineDateComponents.date {
+//
+//                if cellState.date < startTimeDate || cellState.date > deadlineDate {
+//
+//                    cell.dateLabel.textColor = .placeholderText
+//                }
+//
+//                else {
+//
+//                    cell.dateLabel.textColor = .black
+//                }
+//            }
+//        }
+//    }
 }
 
 

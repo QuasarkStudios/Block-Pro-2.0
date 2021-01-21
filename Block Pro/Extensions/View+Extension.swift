@@ -56,5 +56,31 @@ extension UIView {
         
         ].forEach({ $0.isActive = true })
     }
+    
+    func setCollabBlockColor (_ block: Block?) {
+        
+        switch block?.progress {
+        
+            case .completed:
+                
+                self.backgroundColor = UIColor(hexString: "2ECC70", withAlpha: 0.80)
+                
+            case .inProgress:
+                
+                self.backgroundColor = UIColor(hexString: "5065A0", withAlpha: 0.75)
+                
+            case .needsHelp:
+                
+                self.backgroundColor = UIColor(hexString: "FFCC02", withAlpha: 0.75)
+                
+            case .late:
+                
+                self.backgroundColor = UIColor(hexString: "E84D3C", withAlpha: 0.75)
+                
+            default:
+                
+                self.backgroundColor = UIColor(hexString: "AAAAAA", withAlpha: 0.75)
+        }
+    }
 
 }

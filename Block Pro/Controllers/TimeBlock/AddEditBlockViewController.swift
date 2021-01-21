@@ -789,7 +789,7 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         
         if notificationSettings["scheduled"] as? Bool ?? false == true {
             
-            notificationScheduler.scheduleBlockNotificiation(blockDict)
+            notificationScheduler.scheduleBlockNotificiation2(blockDict)
         }
         
         else {

@@ -330,15 +330,11 @@ extension PhotosConfigurationCell: UICollectionViewDataSource, UICollectionViewD
         
         cell.photoImageView.isHidden = false
         
-//        cell.photoID = selectedPhotoIDs?[indexPath.row]
-        
         if let photoID = selectedPhotoIDs?[indexPath.row], let photo = selectedPhotos?[photoID] {
             
             cell.photoID = photoID
             cell.photo = photo
         }
-        
-//        cell.photoImageView.image = selectedPhotos?[indexPath.row]
         
         cell.presentCopiedAnimationDelegate = presentCopiedAnimationDelegate
         

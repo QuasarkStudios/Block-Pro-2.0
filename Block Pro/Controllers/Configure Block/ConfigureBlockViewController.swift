@@ -25,6 +25,8 @@ class ConfigureBlockViewController: UIViewController {
     var navBarExtensionHeightAnchor: NSLayoutConstraint?
     var tableViewTopAnchor: NSLayoutConstraint?
     
+    let firebaseBlock = FirebaseBlock()
+    
     let currentUser = CurrentUser.sharedInstance
     var collab: Collab?
     var block = Block()
@@ -397,9 +399,33 @@ class ConfigureBlockViewController: UIViewController {
     
     @objc private func doneButtonPressed () {
         
-        SVProgressHUD.showError(withStatus: "Error")
+        SVProgressHUD.show()
         
-        print(block)
+        block.blockID = UUID().uuidString
+        
+        if let name = block.name, name.leniantValidationOfTextEntered() {
+            
+            firebaseBlock.createCollabBlock(collabID: collab?.collabID ?? "", block: block) { [weak self] (error) in
+                
+                if error != nil {
+                    
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                }
+                
+                else {
+                    
+                    let notificationScheduler = NotificationScheduler()
+                    notificationScheduler.scheduleBlockNotification(collab: self!.collab, self!.block)
+                    
+                    self?.dismiss(animated: true, completion: nil)
+                }
+            }
+        }
+        
+        else {
+            
+            SVProgressHUD.showError(withStatus: "Please enter a name for this Block")
+        }
     }
 }
 

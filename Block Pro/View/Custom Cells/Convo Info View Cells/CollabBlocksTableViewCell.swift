@@ -10,15 +10,38 @@ import UIKit
 
 class CollabBlocksTableViewCell: UITableViewCell {
 
+    var blocks: [Block]? {
+        didSet {
+            
+            //Removing all the old blocks from the cell
+            for subview in contentView.subviews {
+                
+                if subview as? FullBlock != nil || subview as? HalfBlock != nil || subview as? OneThirdBlock != nil {
+                    
+                    subview.removeFromSuperview()
+                }
+            }
+            
+            determineBlockIntersections()
+            configureBlocks(blocks)
+        }
+    }
+    
+    var blockIntersections: [String : [[String : Any]]] = [:]
+    
     let cellTimes: [String] = ["12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"]
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: .default, reuseIdentifier: "collabBlocksTableViewCell")
         
         configureCellBackground()
     }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
-    func configureCellBackground () {
+    private func configureCellBackground () {
         
         var count: Double = 0
         
@@ -28,24 +51,258 @@ class CollabBlocksTableViewCell: UITableViewCell {
 
             let timeLabel = UILabel()
             timeLabel.frame = CGRect(x: 0, y: textYPosition, width: 50, height: 20)
-            timeLabel.font = UIFont(name: "Poppins-SemiBold", size: 13)
+            timeLabel.font = UIFont(name: "Poppins-SemiBold", size: 14)
             timeLabel.textAlignment = .right
-            //timeLabel.textColor = UIColor(hexString: "9D9D9D")
             timeLabel.text = time
 
             let seperatorCenter = timeLabel.center.y - 0.5
             let seperatorWidth = contentView.frame.width
 
-            let seperatorView = UIView()
-            seperatorView.frame = CGRect(x: 70, y: seperatorCenter, width: seperatorWidth, height: 1)
+            let seperatorView = UIView(frame: CGRect(x: 70, y: seperatorCenter, width: seperatorWidth, height: 1))
             seperatorView.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.70)
 
             contentView.addSubview(timeLabel)
             contentView.addSubview(seperatorView)
             
             count += 1
-
         }
     }
     
+    private func configureBlocks (_ blocks: [Block]?) {
+        
+        var blockArray = blocks
+        
+        var configuredBlocks: [UIView] = []
+        
+        let calendar = Calendar.current
+        
+        var count = 0
+        
+        while count < blockArray?.count ?? 0 {
+            
+            //height
+            let height = CGFloat(calendar.dateComponents([.minute], from: blocks![count].starts!, to: blocks![count].ends!).minute!) * 1.5
+            
+            //ycoord
+            let blockStartHour = calendar.dateComponents([.hour], from: blocks![count].starts!).hour!
+            let blockStartMinute = calendar.dateComponents([.minute], from: blocks![count].starts!).minute!
+            let yCoord = CGFloat((Double(blockStartHour) * 90) + (Double(blockStartMinute) * 1.5)) + 50
+            
+            //width
+            let width = (UIScreen.main.bounds.width - 70) - 10
+            
+            let blockInterceptionCount: Int? = determineBlockType(blocks![count], blockArray!)
+            
+            //Configuring a full block
+            if blockInterceptionCount == 0 {
+                
+                let fullBlock = FullBlock(frame: CGRect(x: 75, y: yCoord, width: width, height: height))
+                fullBlock.block = blockArray?[count]
+                
+                self.contentView.addSubview(fullBlock)
+            }
+            
+            //Configuring a half block
+            else if blockInterceptionCount == 1 {
+                
+                //If this isn't the first block
+                if count != 0 {
+                    
+                    //If the block conflicts with the block before it, and that block is positioned to the left
+                    if blockArray![count - 1].ends! > blockArray![count].starts! && blockArray![count - 1].position == .left {
+                        
+                        blockArray?[count].position = .right
+                    }
+                    
+                    //If the block doesn't conflict with the block before it or that block isn't positioned to the left
+                    else {
+                        
+                        blockArray?[count].position = .left
+                    }
+                }
+                
+                //If this is the first block
+                else {
+                    
+                    blockArray?[count].position = .left
+                }
+                
+                let xCoord: CGFloat = blockArray?[count].position == .left ? 75 : (width / 2) + (77.5)
+                
+                let halfBlock = HalfBlock(frame: CGRect(x: xCoord, y: yCoord, width: (width / 2) - 2.5, height: height))
+                halfBlock.block = blockArray?[count]
+                
+                configuredBlocks.append(halfBlock)
+                
+                contentView.addSubview(halfBlock)
+            }
+            
+            //Configuring a one third block
+            else if blockInterceptionCount == 2 {
+                    
+                //Starting the block in it's left position configuration
+                blockArray?[count].position = .left
+                
+                //Frames for each possible block configurations
+                let leftFrame = CGRect(x: 75, y: yCoord, width: (width / 3) - 2.5, height: height)
+                let centeredFrame = CGRect(x: (width / 3) + 77.5, y: yCoord, width: (width / 3) - 2.5, height: height)
+                let rightFrame = CGRect(x: ((width / 3) * 2) + 80, y: yCoord, width: (width / 3) - 2.5, height: height)
+                
+                //Checking to see if the current block positioned to the left would intercept with any previously added blocks
+                for block in configuredBlocks {
+
+                    if block.frame.intersects(leftFrame), block.frame.minY != leftFrame.maxY && block.frame.maxY != leftFrame.minY {
+
+                        blockArray?[count].position = .centered
+                        break
+                    }
+                }
+                
+                //If the position has been changed to the center, this will check to see if the current block positioned in the center would intercept with any previously added blocks
+                if blockArray?[count].position == .centered {
+                    
+                    for block in configuredBlocks {
+                        
+                        if block.frame.intersects(centeredFrame), block.frame.minY != centeredFrame.maxY && block.frame.maxY != centeredFrame.minY {
+                            
+                            blockArray?[count].position = .right
+                            break
+                        }
+                    }
+                }
+                
+                //If the position has been changed to the right, this will check to see if the current block positioned to the right would intercept with any previously added blocks
+                if blockArray?[count].position == .right {
+                    
+                    for block in configuredBlocks {
+                        
+                        //If the block positioned to the right also wouldn't work, the block should be hidden
+                        if block.frame.intersects(rightFrame), block.frame.minY != rightFrame.maxY && block.frame.maxY != rightFrame.minY {
+                            
+                            blockArray?[count].position = .hidden
+                            break
+                        }
+                    }
+                }
+                
+                if blockArray?[count].position != .hidden {
+                    
+                    let oneThirdBlock: OneThirdBlock?
+                    
+                    if blockArray?[count].position == .left {
+                        
+                        oneThirdBlock = OneThirdBlock(frame: CGRect(x: 75, y: yCoord, width: (width / 3) - 2.5, height: height))
+                    }
+                    
+                    else if blockArray?[count].position == .centered {
+                        
+                        oneThirdBlock = OneThirdBlock(frame: CGRect(x: (width / 3) + 77.5, y: yCoord, width: (width / 3) - 2.5, height: height))
+                    }
+                    
+                    else {
+                        
+                        oneThirdBlock = OneThirdBlock(frame: CGRect(x: ((width / 3) * 2) + 80, y: yCoord, width: (width / 3) - 2.5, height: height))
+                    }
+                    
+                    oneThirdBlock?.block = blockArray?[count]
+                    configuredBlocks.append(oneThirdBlock!)
+                    
+                    self.contentView.addSubview(oneThirdBlock!)
+                }
+            }
+            
+            count += 1
+        }
+    }
+    
+    private func determineBlockIntersections () {
+        
+        blockIntersections = [:]
+        
+        for firstBlock in blocks ?? [] {
+            
+            for secondBlock in blocks ?? [] {
+                
+                //If the two blocks aren't the same block
+                if firstBlock.blockID != secondBlock.blockID {
+                    
+                    //If the blocks time intercept one another
+                    if let intersection = DateInterval(start: firstBlock.starts!, end: firstBlock.ends!).intersection(with: DateInterval(start: secondBlock.starts!, end: secondBlock.ends!)) {
+                        
+                        //If true, these blocks interception is permitted
+                        if firstBlock.starts! != secondBlock.ends! && firstBlock.ends! != secondBlock.starts! {
+                            
+                            if blockIntersections[firstBlock.blockID!] == nil {
+                                
+                                blockIntersections[firstBlock.blockID!] = []
+                            }
+                            
+                            blockIntersections[firstBlock.blockID!]?.append(["intersectingBlock" : secondBlock, "intersectionStart" : intersection.start, "intersectionEnd" : intersection.end])
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func determineBlockType (_ block: Block, _ blockArray: [Block]) -> Int? {
+        
+        //Full Block
+        if blockIntersections[block.blockID!] == nil {
+            
+            return 0
+        }
+        
+        //Half Block
+        else if blockIntersections[block.blockID ?? ""]?.count == 1 {
+            
+            return 1
+        }
+        
+        //Possible One Third Block
+        else {
+            
+            //One Third Block
+            if confirmTwoBlockIntersections(block) {
+                
+                return 2
+            }
+
+            //Half Block
+            else {
+                
+                return 1
+            }
+        }
+    }
+    
+    private func confirmTwoBlockIntersections (_ block: Block) -> Bool {
+        
+        let intersections = blockIntersections[block.blockID ?? ""]
+        
+        //Will check to see if a block has multiple interceptions
+        for firstIntersection in intersections ?? [] {
+            
+            if let firstBlock = firstIntersection["intersectingBlock"] as? Block {
+                
+                for secondIntersection in intersections ?? [] {
+                    
+                    if let secondBlock = secondIntersection["intersectingBlock"] as? Block, firstBlock.blockID != secondBlock.blockID {
+                              
+                        //If true, these blocks interception is permitted
+                        if firstBlock.starts! != secondBlock.ends! && firstBlock.ends! != secondBlock.starts! {
+                            
+                            //If the blocks time intercept one another
+                            if DateInterval(start: firstBlock.starts!, end: firstBlock.ends!).intersects(DateInterval(start: secondBlock.starts!, end: secondBlock.ends!)) {
+                                
+                                return true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return false
+    }
 }

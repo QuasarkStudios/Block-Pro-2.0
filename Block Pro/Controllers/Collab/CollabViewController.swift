@@ -37,8 +37,14 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseStorage = FirebaseStorage()
+    let firebaseBlock = FirebaseBlock()
     let firebaseMessaging = FirebaseMessaging.sharedInstance
     var collab: Collab?
+    
+//    let formatter = DateFormatter()
+    let calendar = Calendar.current
+    
+    var blocks: [Block]?
     
     var messagingMethods: MessagingMethods!
     var messages: [Message]?
@@ -60,6 +66,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     var imageViewBeingZoomed: Bool?
     var keyboardWasPresent: Bool?
     
+//    var viewAppeared: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -77,6 +85,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         configureBlockView()
 //        configureMessagingView()
         
+        retrieveBlocks()
         retrieveMessages()
         
         setUserActiveStatus()
@@ -95,6 +104,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        
+//        viewAppeared = true
         
         addObservors()
         
@@ -175,7 +186,25 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             if selectedTab == "Blocks" {
                 
-                return 1
+                //still needs testing
+                if let startTime = collab?.dates["startTime"], let deadline = collab?.dates["deadline"] {
+                    
+                    if let days = calendar.dateComponents([.day], from: startTime, to: deadline).day, days != 0 {
+                        
+                        return days + 1
+                    }
+                    
+                    else {
+                        
+                        //this can only be tested once create a collab view is reconfigured giving users the ability to set a collab to start and end on the same day
+                        return 1
+                    }
+                }
+                
+                else {
+                    
+                    return 1
+                }
             }
             
             else if selectedTab == "Messages" {
@@ -373,6 +402,24 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "collabBlocksTableViewCell", for: indexPath) as! CollabBlocksTableViewCell
                 cell.selectionStyle = .none
+                
+                if let startTime = collab?.dates["startTime"], let dateForCell = calendar.date(byAdding: .day, value: indexPath.row, to: startTime) {
+                    
+                    cell.blocks = blocks?.filter({ calendar.isDate($0.starts!, inSameDayAs: dateForCell) }).sorted(by: { $0.starts! < $1.starts! })
+                    
+//                    let formatter = DateFormatter()
+//                    formatter.dateFormat = "yyyy MMMM dd"
+//                    
+//                    for block in cell.blocks ?? [] {
+//                        
+//                        print(block.name, formatter.string(from: block.starts!))
+//                        
+////                        print(block.starts)
+//                    }
+//                    
+//                    print("\n")
+                }
+                
                 return cell
             }
             
@@ -570,7 +617,20 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         else {
             
-            
+//            if selectedTab == "Blocks" {
+//
+//                if viewAppeared {
+//
+//                    if let lastVisibleCellIndexPath = tableView.indexPathsForVisibleRows?.last {
+//
+//                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: lastVisibleCellIndexPath.row, to: startTime) {
+//
+//                            collabNavigationView.calendarView.scrollToDate(adjustedDate)
+//                            collabNavigationView.calendarView.selectDates([adjustedDate])
+//                        }
+//                    }
+//                }
+//            }
         }
         
 //        let tableViewExpandedHeight = self.view.frame.height - topBarHeight
@@ -656,6 +716,64 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 }
             }
         }
+        
+        else {
+            
+            if selectedTab == "Blocks" {
+                
+                //22 is the top contentInset of the collabTableView; this will be required to be updated if that ever changes
+                if scrollView.contentOffset.y == 22 {
+                    
+                    if let startTime = collab?.dates["startTime"] {
+                        
+                        collabNavigationView.calendarView.scrollToDate(startTime)
+                        collabNavigationView.calendarView.selectDates([startTime])
+                    }
+                }
+            }
+        }
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        
+        if scrollView == collabNavigationView.collabTableView {
+            
+            if velocity.y < 0 {
+                
+                if let firstVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first {
+                    
+                    if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: firstVisibleCellIndexPath.row, to: startTime) {
+
+                        collabNavigationView.calendarView.scrollToDate(adjustedDate)
+                        collabNavigationView.calendarView.selectDates([adjustedDate])
+                    }
+                }
+                
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                    
+                    self.addBlockButton.alpha = 1
+                    self.tabBar.alpha = 1
+                }
+            }
+            
+            else {
+                
+                if let lastVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.last {
+                    
+                    if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: lastVisibleCellIndexPath.row, to: startTime) {
+
+                        collabNavigationView.calendarView.scrollToDate(adjustedDate)
+                        collabNavigationView.calendarView.selectDates([adjustedDate])
+                    }
+                }
+                
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                    
+                    self.addBlockButton.alpha = 0
+                    self.tabBar.alpha = 0
+                }
+            }
+        }
     }
     
     private func configureNavBar () {
@@ -734,7 +852,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         collabNavigationView.collabTableView.scrollsToTop = true
         
-        collabNavigationView.collabTableView.register(UINib(nibName: "CollabBlocksTableViewCell", bundle: nil), forCellReuseIdentifier: "collabBlocksTableViewCell")
+        collabNavigationView.collabTableView.register(CollabBlocksTableViewCell.self, forCellReuseIdentifier: "collabBlocksTableViewCell")
     }
     
     private func configureMessagingView () {
@@ -1519,6 +1637,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     @objc private func addBlockButtonPressed () {
+        
+        if navigationItem.hidesBackButton == false {
+            
+            expandView()
+        }
         
         performSegue(withIdentifier: "moveToConfigureBlockView", sender: self)
     }

@@ -248,7 +248,7 @@ class TimeBlockCell: UITableViewCell {
                     
                 case "fullBlock":
                     
-                    let fullBlock = FullBlock()
+                    let fullBlock = FullBlock2()
                     fullBlock.frame = CGRect(x: 77.5, y: blockYCoord, width: blockWidth, height: blockHeight)
                     fullBlock.block = block
 
@@ -257,7 +257,7 @@ class TimeBlockCell: UITableViewCell {
                  
                 case "halfBlock":
                     
-                    let halfBlock = HalfBlock()
+                    let halfBlock = HalfBlock2()
                     
                     if position == "left" {
 
@@ -276,7 +276,7 @@ class TimeBlockCell: UITableViewCell {
                     
                 case "oneThirdBlock":
                     
-                    let oneThirdBlock = OneThirdBlock()
+                    let oneThirdBlock = OneThirdBlock2()
                     
                     if position == "left" {
                         
