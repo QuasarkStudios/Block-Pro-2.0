@@ -14,8 +14,6 @@ class NotificationScheduler {
     let formatter = DateFormatter()
     var calendar = Calendar.current
     
-    let minutesToSubtractBy: [Int] = [-5, -10, -15, -30, -45 ,-60, -120]
-    
     func scheduleBlockNotification (collab: Collab? = nil, _ block: Block) {
         
         if let startTime = block.starts {
@@ -94,6 +92,14 @@ class NotificationScheduler {
 
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
 
+    }
+    
+    func getPendingNotifications (completion: @escaping ((_ requests: [UNNotificationRequest]) -> Void)) {
+        
+        UNUserNotificationCenter.current().getPendingNotificationRequests { (requests) in
+            
+            completion(requests)
+        }
     }
     
     func removePendingNotification () {

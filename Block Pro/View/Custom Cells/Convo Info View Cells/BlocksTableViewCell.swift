@@ -1,5 +1,5 @@
 //
-//  CollabBlocksTableViewCell.swift
+//  BlocksTableViewCell.swift
 //  Block Pro
 //
 //  Created by Nimat Azeez on 10/10/20.
@@ -8,8 +8,9 @@
 
 import UIKit
 
-class CollabBlocksTableViewCell: UITableViewCell {
+class BlocksTableViewCell: UITableViewCell {
 
+    var collab: Collab?
     var blocks: [Block]? {
         didSet {
             
@@ -27,12 +28,16 @@ class CollabBlocksTableViewCell: UITableViewCell {
         }
     }
     
+    let formatter = DateFormatter()
+    
     var blockIntersections: [String : [[String : Any]]] = [:]
     
     let cellTimes: [String] = ["12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"]
     
+    weak var blockSelectedDelegate: BlockSelectedProtocol?
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .default, reuseIdentifier: "collabBlocksTableViewCell")
+        super.init(style: .default, reuseIdentifier: "blocksTableViewCell")
         
         configureCellBackground()
     }
@@ -56,7 +61,7 @@ class CollabBlocksTableViewCell: UITableViewCell {
             timeLabel.text = time
 
             let seperatorCenter = timeLabel.center.y - 0.5
-            let seperatorWidth = contentView.frame.width
+            let seperatorWidth = UIScreen.main.bounds.width
 
             let seperatorView = UIView(frame: CGRect(x: 70, y: seperatorCenter, width: seperatorWidth, height: 1))
             seperatorView.backgroundColor = UIColor(hexString: "D8D8D8", withAlpha: 0.70)
@@ -97,7 +102,20 @@ class CollabBlocksTableViewCell: UITableViewCell {
             if blockInterceptionCount == 0 {
                 
                 let fullBlock = FullBlock(frame: CGRect(x: 75, y: yCoord, width: width, height: height))
+                fullBlock.formatter = formatter
+                fullBlock.collab = collab
+                
+                //Remove
+                /////////////////////////////////////////////////////////////////////////////////////
+//                let progress: [BlockStatus] = [.completed, .inProgress, .needsHelp, .late, .notStarted]
+//                
+//                let random = Int.random(in: 0...4)
+//                
+//                blockArray?[count].status = progress[random]
+                /////////////////////////////////////////////////////////////////////////////////////
+                
                 fullBlock.block = blockArray?[count]
+                fullBlock.blockSelectedDelegate = blockSelectedDelegate
                 
                 self.contentView.addSubview(fullBlock)
             }
@@ -105,32 +123,37 @@ class CollabBlocksTableViewCell: UITableViewCell {
             //Configuring a half block
             else if blockInterceptionCount == 1 {
                 
-                //If this isn't the first block
-                if count != 0 {
-                    
-                    //If the block conflicts with the block before it, and that block is positioned to the left
-                    if blockArray![count - 1].ends! > blockArray![count].starts! && blockArray![count - 1].position == .left {
-                        
+                //Starting the block in it's left position configuration
+                blockArray?[count].position = .left
+                
+                //Frames for each possible block configurations
+                let leftFrame = CGRect(x: 75, y: yCoord, width: (width / 2) - 2.5, height: height)
+                let rightFrame = CGRect(x: (width / 2) + (77.5), y: yCoord, width: (width / 2) - 2.5, height: height)
+                
+                //Checking to see if the current block positioned to the left would intercept with any previously added blocks
+                for block in configuredBlocks {
+
+                    if block.frame.intersects(leftFrame), block.frame.minY != leftFrame.maxY && block.frame.maxY != leftFrame.minY {
+
                         blockArray?[count].position = .right
-                    }
-                    
-                    //If the block doesn't conflict with the block before it or that block isn't positioned to the left
-                    else {
-                        
-                        blockArray?[count].position = .left
+                        break
                     }
                 }
                 
-                //If this is the first block
-                else {
-                    
-                    blockArray?[count].position = .left
-                }
+                let halfBlock = HalfBlock(frame: blockArray?[count].position == .left ? leftFrame : rightFrame)
+                halfBlock.formatter = formatter
                 
-                let xCoord: CGFloat = blockArray?[count].position == .left ? 75 : (width / 2) + (77.5)
+                //Remove
+                /////////////////////////////////////////////////////////////////////////////////////
+//                let progress: [BlockStatus] = [.completed, .inProgress, .needsHelp, .late, .notStarted]
+//
+//                let random = Int.random(in: 0...4)
+//
+//                blockArray?[count].status = progress[random]
+                /////////////////////////////////////////////////////////////////////////////////////
                 
-                let halfBlock = HalfBlock(frame: CGRect(x: xCoord, y: yCoord, width: (width / 2) - 2.5, height: height))
                 halfBlock.block = blockArray?[count]
+                halfBlock.blockSelectedDelegate = blockSelectedDelegate
                 
                 configuredBlocks.append(halfBlock)
                 
@@ -204,7 +227,17 @@ class CollabBlocksTableViewCell: UITableViewCell {
                         oneThirdBlock = OneThirdBlock(frame: CGRect(x: ((width / 3) * 2) + 80, y: yCoord, width: (width / 3) - 2.5, height: height))
                     }
                     
+                    //Remove
+                    /////////////////////////////////////////////////////////////////////////////////////
+//                    let progress: [BlockStatus] = [.completed, .inProgress, .needsHelp, .late, .notStarted]
+//
+//                    let random = Int.random(in: 0...4)
+//
+//                    blockArray?[count].status = progress[random]
+                    /////////////////////////////////////////////////////////////////////////////////////
+                    
                     oneThirdBlock?.block = blockArray?[count]
+                    oneThirdBlock?.blockSelectedDelegate = blockSelectedDelegate
                     configuredBlocks.append(oneThirdBlock!)
                     
                     self.contentView.addSubview(oneThirdBlock!)
@@ -304,5 +337,10 @@ class CollabBlocksTableViewCell: UITableViewCell {
         }
         
         return false
+    }
+    
+    func blockSelected (_ block: Block) {
+        
+        blockSelectedDelegate?.blockSelected(block)
     }
 }

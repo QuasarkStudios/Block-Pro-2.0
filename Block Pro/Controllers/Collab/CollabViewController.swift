@@ -45,6 +45,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     let calendar = Calendar.current
     
     var blocks: [Block]?
+    var selectedBlock: Block?
     
     var messagingMethods: MessagingMethods!
     var messages: [Message]?
@@ -400,24 +401,15 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             if selectedTab == "Blocks" {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "collabBlocksTableViewCell", for: indexPath) as! CollabBlocksTableViewCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "blocksTableViewCell", for: indexPath) as! BlocksTableViewCell
                 cell.selectionStyle = .none
+                
+                cell.collab = collab
+                cell.blockSelectedDelegate = self
                 
                 if let startTime = collab?.dates["startTime"], let dateForCell = calendar.date(byAdding: .day, value: indexPath.row, to: startTime) {
                     
                     cell.blocks = blocks?.filter({ calendar.isDate($0.starts!, inSameDayAs: dateForCell) }).sorted(by: { $0.starts! < $1.starts! })
-                    
-//                    let formatter = DateFormatter()
-//                    formatter.dateFormat = "yyyy MMMM dd"
-//                    
-//                    for block in cell.blocks ?? [] {
-//                        
-//                        print(block.name, formatter.string(from: block.starts!))
-//                        
-////                        print(block.starts)
-//                    }
-//                    
-//                    print("\n")
                 }
                 
                 return cell
@@ -738,39 +730,45 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         if scrollView == collabNavigationView.collabTableView {
             
-            if velocity.y < 0 {
+            if selectedTab == "Blocks" {
                 
-                if let firstVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first {
+                if velocity.y < 0 {
                     
-                    if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: firstVisibleCellIndexPath.row, to: startTime) {
+                    if let firstVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first {
+                        
+                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: firstVisibleCellIndexPath.row, to: startTime) {
 
-                        collabNavigationView.calendarView.scrollToDate(adjustedDate)
-                        collabNavigationView.calendarView.selectDates([adjustedDate])
+                            collabNavigationView.calendarView.scrollToDate(adjustedDate)
+                            collabNavigationView.calendarView.selectDates([adjustedDate])
+                        }
+                    }
+                    
+                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                        
+                        self.addBlockButton.alpha = 1
+                        self.tabBar.alpha = 1
                     }
                 }
                 
-                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                else {
                     
-                    self.addBlockButton.alpha = 1
-                    self.tabBar.alpha = 1
-                }
-            }
-            
-            else {
-                
-                if let lastVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.last {
-                    
-                    if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: lastVisibleCellIndexPath.row, to: startTime) {
+                    if let lastVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.last {
+                        
+                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: lastVisibleCellIndexPath.row, to: startTime) {
 
-                        collabNavigationView.calendarView.scrollToDate(adjustedDate)
-                        collabNavigationView.calendarView.selectDates([adjustedDate])
+                            collabNavigationView.calendarView.scrollToDate(adjustedDate)
+                            collabNavigationView.calendarView.selectDates([adjustedDate])
+                        }
                     }
-                }
-                
-                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                     
-                    self.addBlockButton.alpha = 0
-                    self.tabBar.alpha = 0
+                    if velocity.y > 0.5 {
+                        
+                        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                            
+                            self.addBlockButton.alpha = 0
+                            self.tabBar.alpha = 0
+                        }
+                    }
                 }
             }
         }
@@ -852,7 +850,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         collabNavigationView.collabTableView.scrollsToTop = true
         
-        collabNavigationView.collabTableView.register(CollabBlocksTableViewCell.self, forCellReuseIdentifier: "collabBlocksTableViewCell")
+        collabNavigationView.collabTableView.register(BlocksTableViewCell.self, forCellReuseIdentifier: "blocksTableViewCell")
     }
     
     private func configureMessagingView () {
@@ -1377,6 +1375,16 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
 //            let configureBlockVC = segue.destination as! ConfigureBlockViewController
 //            configureBlockVC.collab = collab
         }
+        
+        else if segue.identifier == "moveToSelectedBlockView" {
+            
+            if let navController = segue.destination as? UINavigationController {
+                
+                let selectedBlockVC = navController.viewControllers.first as! SelectedBlockViewController
+                selectedBlockVC.collab = collab
+                selectedBlockVC.block = selectedBlock
+            }
+        }
     }
     
     private func prepViewForImageViewZooming () {
@@ -1665,6 +1673,16 @@ extension CollabViewController: UIGestureRecognizerDelegate {
     }
 }
 
+extension CollabViewController: BlockSelectedProtocol {
+    
+    func blockSelected (_ block: Block) {
+        
+        selectedBlock = block
+        
+        performSegue(withIdentifier: "moveToSelectedBlockView", sender: self)
+    }
+}
+
 extension CollabViewController: CachePhotoProtocol {
     
     internal func cacheMessagePhoto(messageID: String, photo: UIImage?) {
@@ -1679,6 +1697,8 @@ extension CollabViewController: CachePhotoProtocol {
         
         collab?.photos[photoID] = photo
     }
+    
+    func cacheBlockPhoto(photoID: String, photo: UIImage?) {}
 }
 
 extension CollabViewController: PresentCopiedAnimationProtocol {
@@ -1820,7 +1840,20 @@ extension CollabViewController: LocationSelectedProtocol {
     
     func locationSelected(_ location: Location?) {
         
-        performSegue(withIdentifier: "moveToLocationsView", sender: self)
+        let locationsVC: LocationsViewController = LocationsViewController()
+        locationsVC.locations = collab?.locations
+    
+        if let cell = collabHomeTableView.cellForRow(at: IndexPath(row: 3, section: 1)) as? CollabHomeLocationsCell {
+            
+            locationsVC.selectedLocationIndex = cell.selectedLocationIndex
+        }
+        
+        //Creating the navigation controller for the LocationsViewController
+        let locationsNavigationController = UINavigationController(rootViewController: locationsVC)
+        
+        self.present(locationsNavigationController, animated: true, completion: nil)
+        
+//        performSegue(withIdentifier: "moveToLocationsView", sender: self)
     }
 }
 

@@ -49,11 +49,11 @@ class ConfigureBlockViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationController?.navigationBar.prefersLargeTitles = true
+//        self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor(hexString: "222222") as Any, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 30, weight: UIFont.Weight.bold)]
         self.title = "Add a Block"
         
-        configureRightBarButtonItem()
+        configureBarButtonItems()
         
         self.isModalInPresentation = true
 
@@ -66,7 +66,6 @@ class ConfigureBlockViewController: UIViewController {
         super.viewWillAppear(animated)
         
         self.navigationController?.navigationBar.configureNavBar()
-        
         self.navigationItem.largeTitleDisplayMode = .always
         
         //Initializing here allows the animationView to be removed and readded multiple times
@@ -82,19 +81,30 @@ class ConfigureBlockViewController: UIViewController {
     }
     
     
-    //MARK: - Configure Right Bar Button Item
+    //MARK: - Configure Bar Button Item
     
-    private func configureRightBarButtonItem () {
+    private func configureBarButtonItems () {
         
-        let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(cancelButtonPressed))
-        cancelBarButtonItem.style = .done
+        if self.navigationController?.viewControllers.count == 1 {
+            
+            let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(cancelButtonPressed))
+            cancelBarButtonItem.style = .done
+            
+            self.navigationItem.leftBarButtonItem = cancelBarButtonItem
+            
+            let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonPressed))
+            rightBarButtonItem.style = .done
+            
+            self.navigationItem.rightBarButtonItem = rightBarButtonItem
+        }
         
-        self.navigationItem.leftBarButtonItem = cancelBarButtonItem
-        
-        let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonPressed))
-        rightBarButtonItem.style = .done
-        
-        self.navigationItem.rightBarButtonItem = rightBarButtonItem
+        else {
+            
+            let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(doneButtonPressed))
+            rightBarButtonItem.style = .done
+            
+            self.navigationItem.rightBarButtonItem = rightBarButtonItem
+        }
     }
     
     

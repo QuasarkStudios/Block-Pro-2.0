@@ -298,6 +298,25 @@ class FirebaseStorage {
         }
     }
     
+    func retrieveCollabBlockPhotoFromStorage (_ collabID: String, _ blockID: String, _ photoID: String, completion: @escaping ((_ error: Error?, _ photo: UIImage?) -> Void)) {
+        
+        collabStorageRef.child(collabID).child("blocks").child(blockID).child("photos").child("\(photoID).jpeg").getData(maxSize: 1048576) { (data, error) in
+            
+            if error != nil {
+                
+                completion(error, nil)
+            }
+            
+            else {
+                
+                if let photoData = data {
+                    
+                    completion(nil, UIImage(data: photoData))
+                }
+            }
+        }
+    }
+    
     func saveCollabBlockVoiceMemosToStorage (_ collabID: String, _ blockID: String, _ voiceMemoID: String) {
         
         let voiceMemoURL = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
@@ -310,6 +329,32 @@ class FirebaseStorage {
             }
         }
     }
+    
+    func retrieveCollabBlockVoiceMemosFromStorage (_ collabID: String, _ blockID: String, _ voiceMemoID: String, completion: @escaping ((_ progress: Double?, _ error: Error?) -> Void)) {
+        
+        let voiceMemoURL = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
+        
+        let downloadTask = collabStorageRef.child(collabID).child("blocks").child(blockID).child("voiceMemos").child(voiceMemoID + ".m4a").write(toFile: voiceMemoURL)
+        
+        downloadTask.observe(.progress) { (snapshot) in
+            
+            completion(snapshot.progress?.fractionCompleted, nil)
+        }
+        
+        downloadTask.observe(.success) { (snapshot) in
+            
+            completion(nil, nil)
+        }
+        
+        downloadTask.observe(.failure) { (snapshot) in
+            
+            if let error = snapshot.error {
+                
+                completion(nil, error)
+            }
+        }
+    }
+    
     
     func saveConversationCoverPhoto (conversationID: String, coverPhoto: UIImage, completion: @escaping ((_ error: Error?) -> Void)) {
         

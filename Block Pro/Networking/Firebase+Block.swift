@@ -189,6 +189,13 @@ class FirebaseBlock {
                     
                     block.links = self.retrieveBlockLinks(document: document)
                     
+                    let statusArray: [String : BlockStatus] = ["notStarted" : .notStarted, "inProgress" : .inProgress, "completed" : .completed, "needsHelp" : .needsHelp, "late" : .late]
+                    
+                    if let blockStatus = document.data()["status"] as? String, let status = statusArray[blockStatus] {
+                        
+                        block.status = status
+                    }
+                    
                     blocks.append(block)
                 }
                 
@@ -300,6 +307,19 @@ class FirebaseBlock {
         else {
             
             return nil
+        }
+    }
+    
+    func setCollabBlockStatus (_ collabID: String, blockID: String, status: BlockStatus, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        let statusArray: [BlockStatus : String] = [.notStarted : "notStarted", .inProgress : "inProgress", .completed : "completed", .needsHelp : "needsHelp", .late : "late"]
+        
+        db.collection("Collaborations").document(collabID).collection("Blocks").document(blockID).updateData(["status" : statusArray[status] as Any]) { (error) in
+            
+            if error != nil {
+                
+                completion(error)
+            }
         }
     }
 }

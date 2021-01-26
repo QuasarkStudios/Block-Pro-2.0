@@ -31,7 +31,7 @@ class NameConfigurationCell: UITableViewCell {
     private func configureNameLabel () {
         
         self.contentView.addSubview(nameLabel)
-        nameLabel.configureConfigurationTitleLabelConstraints()
+        nameLabel.configureTitleLabelConstraints()
         
         nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
         nameLabel.textColor = .black

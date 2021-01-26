@@ -51,7 +51,7 @@ class ReminderConfigurationCell: UITableViewCell {
     private func configureRemindersLabel () {
         
         self.contentView.addSubview(remindersLabel)
-        remindersLabel.configureConfigurationTitleLabelConstraints()
+        remindersLabel.configureTitleLabelConstraints()
         
         remindersLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
         remindersLabel.textColor = .black

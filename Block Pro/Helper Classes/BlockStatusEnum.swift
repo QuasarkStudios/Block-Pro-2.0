@@ -1,5 +1,5 @@
 //
-//  BlockProgressEnum.swift
+//  BlockStatusEnum.swift
 //  Block Pro
 //
 //  Created by Nimat Azeez on 1/17/21.
@@ -8,11 +8,11 @@
 
 import Foundation
 
-enum BlockProgress {
+enum BlockStatus: CaseIterable {
     
-    case completed
+    case notStarted
     case inProgress
+    case completed
     case needsHelp
     case late
-    case none
 }

@@ -25,3 +25,5 @@ public var documentsDirectory: URL {
 
 //General arithmetic used to calculate the size of cells for the photoCollectionView, voiceMemoCollectionView etc.
 public let itemSize = floor((UIScreen.main.bounds.width - (40 + 10 + 20)) / 3)
+
+public let minutesToSubtractBy: [Int] = [-5, -10, -15, -30, -45 , -60, -120]

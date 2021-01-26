@@ -1,5 +1,5 @@
 //
-//  ConfigurationProtocol.swift
+//  ConfigurationProtocols.swift
 //  Block Pro
 //
 //  Created by Nimat Azeez on 12/29/20.

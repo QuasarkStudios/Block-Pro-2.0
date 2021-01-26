@@ -50,7 +50,7 @@ class MemberConfigurationCell: UITableViewCell {
     private func configureMembersLabel () {
         
         self.contentView.addSubview(membersLabel)
-        membersLabel.configureConfigurationTitleLabelConstraints()
+        membersLabel.configureTitleLabelConstraints()
         
         membersLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
         membersLabel.textColor = .black

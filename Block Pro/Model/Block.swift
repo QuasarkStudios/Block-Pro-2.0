@@ -36,5 +36,5 @@ struct Block {
     
     var position: BlockPosition = .centered
     
-    var progress: BlockProgress = .none
+    var status: BlockStatus = .notStarted
 }

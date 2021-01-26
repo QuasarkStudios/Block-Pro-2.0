@@ -10,8 +10,6 @@ import UIKit
 import MapKit
 
 class LocationsViewController: UIViewController {
-
-    @IBOutlet weak var navBar: UINavigationBar!
     
     let mapView = MKMapView()
     
@@ -44,11 +42,12 @@ class LocationsViewController: UIViewController {
         
         additionalSafeAreaInsets = UIEdgeInsets(top: 0, left: 0, bottom: -15, right: 0)
         
-        navBar.configureNavBar(barBackgroundColor: UIColor.white.withAlphaComponent(0.9))
+        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: UIColor.white.withAlphaComponent(0.9))
+        self.title = "Locations"
+        
+        configureCancelBarButtonItem()
         
         configureMapView ()
-        
-        self.view.bringSubviewToFront(navBar) //Call this after configureMapView()
         
         configureLocationInfoView()
         configureLocationNameLabel()
@@ -82,6 +81,17 @@ class LocationsViewController: UIViewController {
     
     
     //MARK: - Configuration Functions
+    
+    private func configureCancelBarButtonItem () {
+        
+        if navigationController?.viewControllers.count == 1 {
+            
+            let cancelButton = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(cancelButtonPressed))
+            cancelButton.style = .done
+            
+            self.navigationItem.leftBarButtonItem = cancelButton
+        }
+    }
     
     private func configureMapView () {
         
@@ -197,7 +207,7 @@ class LocationsViewController: UIViewController {
         
         [
         
-            navigateButton.topAnchor.constraint(equalTo: navBar.bottomAnchor, constant: 25),
+            navigateButton.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 25),
             navigateButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
             navigateButton.widthAnchor.constraint(equalToConstant: 45),
             navigateButton.heightAnchor.constraint(equalToConstant: 45)
@@ -425,6 +435,11 @@ class LocationsViewController: UIViewController {
     
     //MARK: - Button Functions
     
+    @objc private func cancelButtonPressed () {
+        
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     @objc private func navigateButtonTapped () {
         
         if let annotation = mapView.annotations.first {
@@ -517,8 +532,11 @@ class LocationsViewController: UIViewController {
             
             locationAddressLabel.performCopyAnimationOnView()
             
-            let navBarFrame = navBar.convert(navBar.frame, to: keyWindow)
-            copiedAnimationView?.presentCopiedAnimation(topAnchor: navBarFrame.maxY + 10)
+            if let navBar = navigationController?.navigationBar {
+                
+                let navBarFrame = navBar.convert(navBar.frame, to: keyWindow)
+                copiedAnimationView?.presentCopiedAnimation(topAnchor: navBarFrame.maxY + 10)
+            }
         }
     }
     

@@ -22,7 +22,28 @@ class MemberConfigurationCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    var showCancelButton: Bool = true
+    var showCancelButton: Bool? {
+        didSet {
+            
+            if showCancelButton ?? true == false {
+                
+                cancelButton.isHidden = true
+                
+                self.contentView.constraints.forEach({ (constraint) in
+                    
+                    if constraint.firstAttribute == .centerY {
+                        
+                        constraint.constant = -6
+                    }
+                })
+            }
+        }
+    }
+    
+    let currentUser = CurrentUser.sharedInstance
+    
+    let firebaseCollab = FirebaseCollab.sharedInstance
+    let firebaseStorage = FirebaseStorage()
     
     weak var memberConfigurationDelegate: MemberConfigurationProtocol?
     
@@ -49,7 +70,7 @@ class MemberConfigurationCollectionViewCell: UICollectionViewCell {
     
     private func configureCancelButton () {
         
-        if showCancelButton {
+        if showCancelButton ?? true {
             
             self.contentView.addSubview(cancelButton)
             cancelButton.translatesAutoresizingMaskIntoConstraints = false
@@ -114,6 +135,26 @@ class MemberConfigurationCollectionViewCell: UICollectionViewCell {
                 
                 profilePicImageView?.profilePic = profilePicture
             }
+            
+            else if let friendIndex = firebaseCollab.friends.firstIndex(where: { $0.userID == member.userID }) {
+                
+                profilePicImageView?.profilePic = firebaseCollab.friends[friendIndex].profilePictureImage
+            }
+            
+            else if let memberProfilePic = firebaseCollab.membersProfilePics[member.userID] {
+                
+                profilePicImageView?.profilePic = memberProfilePic
+            }
+            
+            else {
+                
+                firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic, userID) in
+                    
+                    self.profilePicImageView?.profilePic = profilePic
+                    
+                    self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: profilePic)
+                }
+            }
         }
         
         else if let member = member as? Friend {
@@ -122,6 +163,26 @@ class MemberConfigurationCollectionViewCell: UICollectionViewCell {
                 
                 profilePicImageView?.profilePic = profilePicture
             }
+            
+            else if let friendIndex = firebaseCollab.friends.firstIndex(where: { $0.userID == member.userID }) {
+                
+                profilePicImageView?.profilePic = firebaseCollab.friends[friendIndex].profilePictureImage
+            }
+            
+            else if let memberProfilePic = firebaseCollab.membersProfilePics[member.userID] {
+                
+                profilePicImageView?.profilePic = memberProfilePic
+            }
+            
+            else {
+                
+                firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic, userID) in
+                    
+                    self.profilePicImageView?.profilePic = profilePic
+                    
+                    self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: profilePic)
+                }
+            }
         }
     }
     
@@ -129,7 +190,7 @@ class MemberConfigurationCollectionViewCell: UICollectionViewCell {
         
         if let member = member as? Member {
             
-            nameLabel.text = member.firstName
+            nameLabel.text = member.userID != currentUser.userID ? member.firstName : "You"
         }
         
         else if let member = member as? Friend {

@@ -216,7 +216,7 @@ class CollabMemberCollectionViewCell: UICollectionViewCell {
         }
         
         else if let memberProfilePic = firebaseCollab.membersProfilePics[member.userID] {
-                
+            
             profilePic.profilePic = memberProfilePic
         }
         

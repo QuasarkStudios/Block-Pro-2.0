@@ -81,7 +81,7 @@ class TimeConfigurationCell: UITableViewCell {
     private func configureTitleLabel () {
         
         self.contentView.addSubview(titleLabel)
-        titleLabel.configureConfigurationTitleLabelConstraints()
+        titleLabel.configureTitleLabelConstraints()
         
         titleLabel.textColor = .black
         titleLabel.textAlignment = .left
