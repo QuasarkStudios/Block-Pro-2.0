@@ -455,8 +455,6 @@ class FirebaseCollab {
                 
                 if let values = retrievedLocation.value as? [String : Any] {
                     
-                    location.locationID = values["locationID"] as? String
-                    
                     location.coordinates = values["coordinates"] as? [String : Double]
                     
                     location.name = values["name"] as? String

@@ -105,6 +105,17 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         configureTabBar()
+        
+//        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+//        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+//
+//            UNUserNotificationCenter.current().getPendingNotificationRequests { (requests) in
+//
+//                print(requests)
+//            }
+//        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

@@ -37,10 +37,10 @@ class PhotosConfigurationCell: UITableViewCell {
     
     lazy var collectionViewHeightConstraint = photosCollectionView.constraints.first(where: { $0.firstAttribute == .height })
     
-    lazy var attachButtonLeadingAnchor = photosContainer.constraints.first(where: { $0.firstAttribute == .leading && $0.firstItem as? UIButton != nil })
-    lazy var attachButtonTrailingAnchor = photosContainer.constraints.first(where: { $0.firstAttribute == .trailing && $0.firstItem as? UIButton != nil })
-    lazy var attachButtonTopAnchor = photosContainer.constraints.first(where: { $0.firstAttribute == .top && $0.firstItem as? UIButton != nil })
-    lazy var attachButtonBottomAnchor = photosContainer.constraints.first(where: { $0.firstAttribute == .bottom && $0.firstItem as? UIButton != nil })
+    var attachButtonLeadingAnchor: NSLayoutConstraint?
+    var attachButtonTrailingAnchor: NSLayoutConstraint?
+    var attachButtonTopAnchor: NSLayoutConstraint?
+    var attachButtonBottomAnchor: NSLayoutConstraint?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: "photosConfigurationCell")
@@ -139,12 +139,17 @@ class PhotosConfigurationCell: UITableViewCell {
         cameraImage.translatesAutoresizingMaskIntoConstraints = false
         attachPhotosLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        [
+        attachButtonLeadingAnchor = attachPhotoButton.leadingAnchor.constraint(equalTo: photosContainer.leadingAnchor, constant: 0)
+        attachButtonTrailingAnchor = attachPhotoButton.trailingAnchor.constraint(equalTo: photosContainer.trailingAnchor, constant: 0)
+        attachButtonTopAnchor = attachPhotoButton.topAnchor.constraint(equalTo: photosCollectionView.bottomAnchor, constant: 0)
+        attachButtonBottomAnchor = attachPhotoButton.bottomAnchor.constraint(equalTo: photosContainer.bottomAnchor, constant: 0)
         
-            attachPhotoButton.leadingAnchor.constraint(equalTo: photosContainer.leadingAnchor, constant: 0),
-            attachPhotoButton.trailingAnchor.constraint(equalTo: photosContainer.trailingAnchor, constant: 0),
-            attachPhotoButton.topAnchor.constraint(equalTo: photosCollectionView.bottomAnchor, constant: 0),
-            attachPhotoButton.bottomAnchor.constraint(equalTo: photosContainer.bottomAnchor, constant: 0),
+        attachButtonLeadingAnchor?.isActive = true
+        attachButtonTrailingAnchor?.isActive = true
+        attachButtonTopAnchor?.isActive = true
+        attachButtonBottomAnchor?.isActive = true
+        
+        [
             
             cameraImage.leadingAnchor.constraint(equalTo: attachPhotoButton.leadingAnchor, constant: 20),
             cameraImage.centerYAnchor.constraint(equalTo: attachPhotoButton.centerYAnchor),

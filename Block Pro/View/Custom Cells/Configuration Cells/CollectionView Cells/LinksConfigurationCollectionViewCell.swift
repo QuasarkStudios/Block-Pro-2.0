@@ -200,7 +200,7 @@ class LinksConfigurationCollectionViewCell: UICollectionViewCell {
             textField.bottomAnchor.constraint(equalTo: linkView.bottomAnchor, constant: -3),
             textField.leadingAnchor.constraint(equalTo: linkView.leadingAnchor, constant: 5),
             textField.trailingAnchor.constraint(equalTo: linkView.trailingAnchor, constant: -5),
-            textField.heightAnchor.constraint(equalToConstant: 15)
+            textField.heightAnchor.constraint(equalToConstant: 17)
         
         ].forEach({ $0.isActive = true })
     }

@@ -13,7 +13,7 @@ import SVProgressHUD
 
 class AddLocationViewController: UIViewController {
 
-    let mapView = MKMapView()
+    lazy var mapView = MKMapView()
     
     lazy var locationSearchView = LocationSearchView(parentViewController: self)
     lazy var searchViewHeightConstraint = locationSearchView.constraints.first(where: { $0.firstAttribute == .height })
@@ -66,7 +66,7 @@ class AddLocationViewController: UIViewController {
         
         if locationPreselected {
             
-            locationSet(locationMapItem)
+            locationSet(locationMapItem, selectedLocation: selectedLocation)
         }
     }
     
@@ -140,7 +140,11 @@ class AddLocationViewController: UIViewController {
             
         case .authorizedWhenInUse:
             
-            centerViewOnUserLocation()
+            //Ensures that a location is currently selected; corrects the untimely removal of a currently annotated location as well as a untimely centering on the current users location
+            if locationMapItem == nil && selectedLocation == nil {
+                
+                centerViewOnUserLocation()
+            }
             
         case .notDetermined:
             
@@ -248,7 +252,7 @@ class AddLocationViewController: UIViewController {
         case .ended:
             
             //If a location hasn't been selected yet
-            if locationMapItem == nil {
+            if locationMapItem == nil && selectedLocation == nil {
                 
                 if locationSearchView.frame.minY > (self.view.frame.height * 0.5) {
                     
@@ -299,7 +303,7 @@ class AddLocationViewController: UIViewController {
         else {
             
             //If a location hasn't been selected yet
-            if locationMapItem == nil {
+            if locationMapItem == nil && selectedLocation == nil {
                 
                 //120 = minimum height when no location has been selected
                 if ((searchViewHeightConstraint?.constant ?? 0) - translation.y) >= 120 {
@@ -328,7 +332,7 @@ class AddLocationViewController: UIViewController {
             }
         }
         
-        if locationMapItem == nil && locationSearchResults.count == 0 {
+        if locationMapItem == nil && selectedLocation == nil && locationSearchResults.count == 0 {
             
             transitionLocationImage(maxHeight: maxHeight, searchViewHeight: searchViewHeightConstraint?.constant)
         }
@@ -425,7 +429,7 @@ class AddLocationViewController: UIViewController {
     
     func searchBegan () {
         
-        if locationMapItem != nil {
+        if locationMapItem != nil || selectedLocation != nil {
             
             selectionCancelled(selectedLocation?.locationID)
         }
@@ -510,7 +514,7 @@ class AddLocationViewController: UIViewController {
             returnToOrigin()
         }
         
-        else if locationMapItem != nil {
+        else if locationMapItem != nil || selectedLocation != nil {
             
             sendToSelectedLocationPosition()
         }
@@ -519,9 +523,9 @@ class AddLocationViewController: UIViewController {
     
     //MARK: - Location Set Function
     
-    private func locationSet (_ location: MKMapItem?) {
-            
-        if location != nil {
+    private func locationSet (_ locationMapItem: MKMapItem?, selectedLocation: Location? = nil) {
+        
+        if locationMapItem != nil || selectedLocation != nil {
             
             if locationPreselected {
                 
@@ -536,7 +540,7 @@ class AddLocationViewController: UIViewController {
                 saveLocation()
             }
             
-            addNewAnnotation(location)
+            addNewAnnotation(locationMapItem, selectedLocation: selectedLocation)
         }
     }
     
@@ -574,12 +578,12 @@ class AddLocationViewController: UIViewController {
     
     //MARK: - Add Annotation Function
     
-    private func addNewAnnotation (_ location: MKMapItem?) {
+    private func addNewAnnotation (_ locationMapItem: MKMapItem?, selectedLocation: Location? = nil) {
         
         mapView.removeAnnotations(mapView.annotations)
         mapView.showsUserLocation = false
         
-        if let placemark = location?.placemark {
+        if let placemark = locationMapItem?.placemark {
             
             let annotation = MKPointAnnotation()
             annotation.coordinate = placemark.coordinate
@@ -602,6 +606,28 @@ class AddLocationViewController: UIViewController {
 
             let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
             let region = MKCoordinateRegion(center: placemark.coordinate, span: span)
+            
+            mapView.setRegion(region, animated: true)
+        }
+        
+        //If the placemark is nil but the selectedLocation; signals that the previous view is either editing a collab or a block
+        else if let location = selectedLocation, let latitude = location.coordinates?["latitude"], let longitude = location.coordinates?["longitude"] {
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            
+            annotation.title = location.name
+            
+            if let city = location.city, let state = location.state {
+                
+                annotation.subtitle = "\(city), \(state)"
+            }
+            
+            shouldSelectAnnotation = true //Fixes bug that caused mapView to annotate back to annotation whenever the region changed
+            mapView.addAnnotation(annotation)
+            
+            let span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            let region = MKCoordinateRegion(center: annotation.coordinate, span: span)
             
             mapView.setRegion(region, animated: true)
         }
@@ -720,21 +746,40 @@ extension AddLocationViewController: UITableViewDataSource, UITableViewDelegate 
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if locationMapItem == nil {
+        if locationMapItem != nil || selectedLocation != nil {
             
-            return locationSearchResults.count * 2
+            return 1
         }
         
         else {
             
-            return 1
+            return locationSearchResults.count * 2
         }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        //If no location has been set yet
-        if locationMapItem == nil {
+        if locationMapItem != nil || selectedLocation != nil {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "selectedLocationCell", for: indexPath) as! SelectedLocationCell
+            cell.selectionStyle = .none
+            
+            cell.locationNameTextField.text = selectedLocation?.name
+            cell.locationAddressLabel.text = selectedLocation?.address
+            
+            cell.locationID = selectedLocation?.locationID
+            
+            cell.changeLocationNameDelegate = self
+            cell.cancelLocationSelectionDelegate = self
+            cell.locationSavedDelegate = self
+            cell.navigateToLocationDelegate = self
+            
+            cell.scheduleLabelAnimationWorkItem()
+            
+            return cell
+        }
+        
+        else {
             
             if indexPath.row % 2 == 0 {
                 
@@ -755,32 +800,16 @@ extension AddLocationViewController: UITableViewDataSource, UITableViewDelegate 
                 return cell
             }
         }
-        
-        //If a location has been set
-        else {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "selectedLocationCell", for: indexPath) as! SelectedLocationCell
-            cell.selectionStyle = .none
-            
-            cell.locationNameTextField.text = selectedLocation?.name
-            cell.locationAddressLabel.text = selectedLocation?.address
-            
-            cell.locationID = selectedLocation?.locationID
-            
-            cell.changeLocationNameDelegate = self
-            cell.cancelLocationSelectionDelegate = self
-            cell.locationSavedDelegate = self
-            cell.navigateToLocationDelegate = self
-            
-            cell.scheduleLabelAnimationWorkItem()
-            
-            return cell
-        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        if locationMapItem == nil {
+        if locationMapItem != nil || selectedLocation != nil {
+            
+            return 140
+        }
+        
+        else {
             
             if indexPath.row % 2 == 0 {
                 
@@ -792,27 +821,11 @@ extension AddLocationViewController: UITableViewDataSource, UITableViewDelegate 
                 return 5
             }
         }
-        
-        else {
-            
-            return 140
-        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-             
-        if locationMapItem == nil {
-            
-            searchWorkItem?.cancel()
-            locationSearch?.cancel()
-            
-            locationMapItem = locationSearchResults[indexPath.row / 2]
-            locationSet(locationMapItem)
-            
-            locationSearchView.searchTableView.reloadSections([0], with: .fade)
-        }
-        
-        else {
+          
+        if locationMapItem != nil || selectedLocation != nil {
             
             //Brings the selected location's annotation back to the center if the cell is tapped
             if let annotation = mapView.annotations.first {
@@ -823,6 +836,17 @@ extension AddLocationViewController: UITableViewDataSource, UITableViewDelegate 
                 shouldSelectAnnotation = true
                 mapView.setRegion(region, animated: true)
             }
+        }
+        
+        else {
+            
+            searchWorkItem?.cancel()
+            locationSearch?.cancel()
+            
+            locationMapItem = locationSearchResults[indexPath.row / 2]
+            locationSet(locationMapItem)
+            
+            locationSearchView.searchTableView.reloadSections([0], with: .fade)
         }
     }
 }
@@ -908,13 +932,21 @@ extension AddLocationViewController: NavigateToLocationProtocol {
     
     func navigateToLocation() {
         
-        guard let location = locationMapItem else { return }
-        
+        if let location = locationMapItem {
+            
             if let name = selectedLocation?.name, name.leniantValidationOfTextEntered() {
                 
                 location.name = name
             }
         
             location.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDefault])
+        }
+        
+        else if let location = selectedLocation, let latitude = location.coordinates?["latitude"], let longitude = location.coordinates?["longitude"] {
+            
+            let locationMapItem = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: latitude, longitude: longitude)))
+            locationMapItem.name = location.name
+            locationMapItem.openInMaps(launchOptions: [MKLaunchOptionsDirectionsModeKey : MKLaunchOptionsDirectionsModeDefault])
+        }
     }
 }

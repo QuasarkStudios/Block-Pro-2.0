@@ -28,6 +28,8 @@ class MemberConfigurationCell: UITableViewCell {
         }
     }
     
+    var editingCell: Bool = false
+    
     weak var memberConfigurationDelegate: MemberConfigurationProtocol?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -194,19 +196,40 @@ class MemberConfigurationCell: UITableViewCell {
     
     private func reconfigureCell() {
         
-        if members?.count ?? 0 == (collab?.members.count ?? 0) - 1 {
+        if editingCell {
             
-            configureFullMembersCell()
-        }
-        
-        else if members?.count ?? 0 > 0 {
+            if members?.count ?? 0 == collab?.members.count ?? 0 {
+                
+                configureFullMembersCell()
+            }
             
-            configurePartialMembersCell()
+            else if members?.count ?? 0 > 0 {
+                
+                configurePartialMembersCell()
+            }
+            
+            else {
+                
+                configureNoMembersCell()
+            }
         }
         
         else {
             
-            configureNoMembersCell()
+            if members?.count ?? 0 == (collab?.members.count ?? 0) - 1 {
+                
+                configureFullMembersCell()
+            }
+            
+            else if members?.count ?? 0 > 0 {
+                
+                configurePartialMembersCell()
+            }
+            
+            else {
+                
+                configureNoMembersCell()
+            }
         }
     }
     
@@ -264,7 +287,15 @@ class MemberConfigurationCell: UITableViewCell {
     
     private func configurePartialMembersCell () {
         
-        membersCountLabel.text = "\(members?.count ?? 0)/\((collab?.members.count ?? 6) - 1)"
+        if editingCell {
+            
+            membersCountLabel.text = "\(members?.count ?? 0)/\(collab?.members.count ?? 0)"
+        }
+        
+        else {
+            
+            membersCountLabel.text = "\(members?.count ?? 0)/\((collab?.members.count ?? 6) - 1)"
+        }
         
         //Resetting the constraints of the addMembersButton
         membersContainer.constraints.forEach { (constraint) in
@@ -329,7 +360,15 @@ class MemberConfigurationCell: UITableViewCell {
     
     private func configureFullMembersCell () {
         
-        membersCountLabel.text = "\(self.members?.count ?? 0)/\((self.collab?.members.count ?? 6) - 1)"
+        if editingCell {
+            
+            membersCountLabel.text = "\(members?.count ?? 0)/\(collab?.members.count ?? 0)"
+        }
+        
+        else {
+            
+            membersCountLabel.text = "\(members?.count ?? 0)/\((collab?.members.count ?? 6) - 1)"
+        }
         
         //Resetting the height of the membersCollectionView
         membersCollectionView.constraints.forEach { (constraint) in

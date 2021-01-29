@@ -17,6 +17,13 @@ class FirebaseBlock {
     
     var db = Firestore.firestore()
     
+    var cachedBlocks: [Block] = []
+    
+    var collabBlocksListener: ListenerRegistration?
+    var blockListener: ListenerRegistration?
+    
+    static let sharedInstance = FirebaseBlock()
+    
     func createCollabBlock (collabID: String, block: Block, completion: @escaping ((_ error: Error?) -> Void)) {
         
         var memberIDs: [String] = [currentUser.userID]
@@ -48,6 +55,40 @@ class FirebaseBlock {
         }
     }
     
+    func editCollabBlock (collabID: String, block: Block, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        if let cachedBlock = cachedBlocks.first(where: { $0.blockID == block.blockID }) {
+            
+            editCollabBlockPhotosSavedInStorage(collabID: collabID, cachedBlock: cachedBlock, editedBlock: block)
+            
+            editCollabBlockVoiceMemosSavedInStorage(collabID: collabID, cachedBlock: cachedBlock, editedBlock: block)
+            
+            var memberIDs: [String] = []
+            block.members?.forEach({ memberIDs.append($0.userID) })
+            
+            var blockData: [String : Any] = ["blockName" : block.name as Any, "startTime" : block.starts as Any, "endTime" : block.ends as Any, "members" : memberIDs, "photos" : block.photoIDs as Any]
+            
+            blockData["locations"] = setBlockLocations(block.locations)
+            
+            blockData["voiceMemos"] = setBlockVoiceMemos(block.voiceMemos)
+            
+            blockData["links"] = setBlockLinks(block.links)
+            
+            db.collection("Collaborations").document(collabID).collection("Blocks").document(block.blockID!).updateData(blockData) { (error) in
+                
+                if error != nil {
+                    
+                    completion(error)
+                }
+                
+                else {
+                    
+                    completion(nil)
+                }
+            }
+        }
+    }
+    
     private func setBlockLocations (_ locations: [Location]?) -> [String : [String : Any]]? {
         
         var locationsDict: [String : [String : Any]] = [:]
@@ -60,15 +101,7 @@ class FirebaseBlock {
             }
         }
         
-        if locationsDict.isEmpty {
-            
-            return nil
-        }
-        
-        else {
-            
-            return locationsDict
-        }
+        return locationsDict
     }
     
     private func setBlockVoiceMemos (_ voiceMemos: [VoiceMemo]?) -> [String : [String : Any]]? {
@@ -83,15 +116,7 @@ class FirebaseBlock {
             }
         }
         
-        if voiceMemosDict.isEmpty {
-            
-            return nil
-        }
-        
-        else {
-            
-            return voiceMemosDict
-        }
+        return voiceMemosDict
     }
     
     private func setBlockLinks (_ links: [Link]?) -> [String : [String : String?]]? {
@@ -106,15 +131,7 @@ class FirebaseBlock {
             }
         }
         
-        if linksDict.isEmpty {
-            
-            return nil
-        }
-        
-        else {
-            
-            return linksDict
-        }
+        return linksDict
     }
     
     private func saveCollabBlockPhotosToStorage (_ collabID: String, _ blockID: String, _ photos: [String : UIImage?]?) {
@@ -129,6 +146,28 @@ class FirebaseBlock {
         }
     }
     
+    private func editCollabBlockPhotosSavedInStorage (collabID: String, cachedBlock: Block, editedBlock: Block) {
+        
+        for photoID in cachedBlock.photoIDs ?? [] {
+            
+            if !(editedBlock.photoIDs?.contains(photoID) ?? false) {
+                
+                firebaseStorage.deleteCollabBlockPhoto(collabID, editedBlock.blockID ?? "", photoID) { (error) in
+                    
+                    print(error?.localizedDescription as Any)
+                }
+            }
+        }
+        
+        for photo in editedBlock.photos ?? [:] {
+            
+            if !(cachedBlock.photoIDs?.contains(photo.key) ?? false) {
+                
+                firebaseStorage.saveCollabBlockPhotosToStorage(collabID, editedBlock.blockID ?? "", photo.key, photo.value)
+            }
+        }
+    }
+    
     private func saveCollabBlockVoiceMemosToStorage (_ collabID: String, _ blockID: String, _ voiceMemos: [VoiceMemo]?) {
         
         for voiceMemo in voiceMemos ?? [] {
@@ -137,9 +176,31 @@ class FirebaseBlock {
         }
     }
     
+    private func editCollabBlockVoiceMemosSavedInStorage (collabID: String, cachedBlock: Block, editedBlock: Block) {
+        
+        for voiceMemo in cachedBlock.voiceMemos ?? [] {
+            
+            if !(editedBlock.voiceMemos?.contains(where: { $0.voiceMemoID == voiceMemo.voiceMemoID }) ?? false) {
+                
+                firebaseStorage.deleteCollabBlockVoiceMemo(collabID, editedBlock.blockID ?? "", voiceMemo.voiceMemoID ?? "") { (error) in
+                    
+                    print(error?.localizedDescription as Any)
+                }
+            }
+        }
+        
+        for voiceMemo in editedBlock.voiceMemos ?? [] {
+            
+            if !(cachedBlock.voiceMemos?.contains(where: { $0.voiceMemoID == voiceMemo.voiceMemoID }) ?? false) {
+                
+                firebaseStorage.saveCollabBlockVoiceMemosToStorage(collabID, editedBlock.blockID ?? "", voiceMemo.voiceMemoID ?? "")
+            }
+        }
+    }
+    
     func retrieveCollabBlocks (_ collab: Collab, completion: @escaping ((_ error: Error?, _ blocks: [Block]?) -> Void)) {
         
-        db.collection("Collaborations").document(collab.collabID).collection("Blocks").addSnapshotListener { (snapshot, error) in
+        collabBlocksListener = db.collection("Collaborations").document(collab.collabID).collection("Blocks").addSnapshotListener { (snapshot, error) in
             
             if error != nil {
                 
@@ -179,15 +240,13 @@ class FirebaseBlock {
                         }
                     }
                     
-                    block.reminders = document.data()["reminders"] as? [Int]
-                    
                     block.photoIDs = document.data()["photos"] as? [String]
                     
-                    block.locations = self.retrieveBlockLocations(document: document)
+                    block.locations = self.retrieveBlockLocations(document.data()["locations"] as? [String : Any])
                     
-                    block.voiceMemos = self.retrieveBlockVoiceMemos(document: document)
+                    block.voiceMemos = self.retrieveBlockVoiceMemos(document.data()["voiceMemos"] as? [String : Any])
                     
-                    block.links = self.retrieveBlockLinks(document: document)
+                    block.links = self.retrieveBlockLinks(document.data()["links"] as? [String : Any])
                     
                     let statusArray: [String : BlockStatus] = ["notStarted" : .notStarted, "inProgress" : .inProgress, "completed" : .completed, "needsHelp" : .needsHelp, "late" : .late]
                     
@@ -199,115 +258,97 @@ class FirebaseBlock {
                     blocks.append(block)
                 }
                 
+                self.cachedBlocks = blocks
+                
                 completion(nil, blocks)
             }
         }
     }
     
-    private func retrieveBlockLocations (document: QueryDocumentSnapshot) -> [Location]? {
+    
+    private func retrieveBlockLocations (_ locations: [String : Any]?) -> [Location]? {
         
-        if let locations = document.data()["locations"] as? [String : Any] {
+        var locationArray: [Location] = []
+        
+        locations?.forEach { (retrievedLocation) in
             
-            var locationArray: [Location] = []
+            var location = Location()
+            location.locationID = retrievedLocation.key
             
-            locations.forEach { (retrievedLocation) in
+            if let values = retrievedLocation.value as? [String : Any] {
                 
-                var location = Location()
-                location.locationID = retrievedLocation.key
+                location.coordinates = values["coordinates"] as? [String : Double]
                 
-                if let values = retrievedLocation.value as? [String : Any] {
+                location.name = values["name"] as? String
+                location.number = values["number"] as? String
+                
+                if let urlString = values["url"] as? String {
                     
-                    location.locationID = values["locationID"] as? String
-                    
-                    location.coordinates = values["coordinates"] as? [String : Double]
-                    
-                    location.name = values["name"] as? String
-                    location.number = values["number"] as? String
-                    
-                    if let urlString = values["url"] as? String {
-                        
-                        location.url = URL(string: urlString)
-                    }
-                    
-                    let address = values["address"] as? [String : String]
-                    location.streetNumber = address?["streetNumber"]
-                    location.streetName = address?["streetName"]
-                    location.city = address?["city"]
-                    location.state = address?["state"]
-                    location.zipCode = address?["zipCode"]
-                    location.country = address?["country"]
-                    
-                    location.address = location.parseAddress()
+                    location.url = URL(string: urlString)
                 }
                 
-                locationArray.append(location)
+                let address = values["address"] as? [String : String]
+                location.streetNumber = address?["streetNumber"]
+                location.streetName = address?["streetName"]
+                location.city = address?["city"]
+                location.state = address?["state"]
+                location.zipCode = address?["zipCode"]
+                location.country = address?["country"]
+                
+                location.address = location.parseAddress()
             }
             
-            return locationArray
+            locationArray.append(location)
         }
         
-        return nil
+        return locationArray
     }
     
-    private func retrieveBlockVoiceMemos (document: QueryDocumentSnapshot) -> [VoiceMemo]? {
+    
+    private func retrieveBlockVoiceMemos (_ voiceMemos: [String : Any]?) -> [VoiceMemo]? {
         
-        if let voiceMemos = document.data()["voiceMemos"] as? [String : Any] {
+        var voiceMemoArray: [VoiceMemo] = []
+        
+        voiceMemos?.forEach { (retrievedVoiceMemo) in
             
-            var voiceMemoArray: [VoiceMemo] = []
+            var voiceMemo = VoiceMemo()
+            voiceMemo.voiceMemoID = retrievedVoiceMemo.key
             
-            voiceMemos.forEach { (retrievedVoiceMemo) in
+            if let values = retrievedVoiceMemo.value as? [String : Any] {
                 
-                var voiceMemo = VoiceMemo()
-                voiceMemo.voiceMemoID = retrievedVoiceMemo.key
+                voiceMemo.name = values["name"] as? String
+                voiceMemo.length = values["length"] as? Double
                 
-                if let values = retrievedVoiceMemo.value as? [String : Any] {
-                    
-                    voiceMemo.name = values["name"] as? String
-                    voiceMemo.length = values["length"] as? Double
-                    
-                    let dateCreated = values["dateCreated"] as! Timestamp
-                    voiceMemo.dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreated.seconds))
-                }
-                
-                voiceMemoArray.append(voiceMemo)
+                let dateCreated = values["dateCreated"] as! Timestamp
+                voiceMemo.dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreated.seconds))
             }
             
-            return voiceMemoArray
+            voiceMemoArray.append(voiceMemo)
         }
         
-        else {
-            
-            return nil
-        }
+        return voiceMemoArray
     }
     
-    private func retrieveBlockLinks (document: QueryDocumentSnapshot) -> [Link]? {
+    
+    private func retrieveBlockLinks (_ links: [String : Any]?) -> [Link]? {
         
-        if let links = document.data()["links"] as? [String : Any] {
+        var linkArray: [Link] = []
+        
+        links?.forEach { (retrievedLink) in
             
-            var linkArray: [Link] = []
+            var link = Link()
+            link.linkID = retrievedLink.key
             
-            links.forEach { (retrievedLink) in
+            if let values = retrievedLink.value as? [String : Any] {
                 
-                var link = Link()
-                link.linkID = retrievedLink.key
-                
-                if let values = retrievedLink.value as? [String : Any] {
-                    
-                    link.url = values["url"] as? String
-                    link.name = values["name"] as? String
-                }
-                
-                linkArray.append(link)
+                link.url = values["url"] as? String
+                link.name = values["name"] as? String
             }
             
-            return linkArray
+            linkArray.append(link)
         }
         
-        else {
-            
-            return nil
-        }
+        return linkArray
     }
     
     func setCollabBlockStatus (_ collabID: String, blockID: String, status: BlockStatus, completion: @escaping ((_ error: Error?) -> Void)) {
@@ -319,6 +360,114 @@ class FirebaseBlock {
             if error != nil {
                 
                 completion(error)
+            }
+        }
+    }
+    
+    func monitorCollabBlock (_ collab: Collab, _ blockID: String, completion: @escaping ((_ block: Block?, _ error: Error?) -> Void)) {
+
+        blockListener = db.collection("Collaborations").document(collab.collabID).collection("Blocks").document(blockID).addSnapshotListener { (snapshot, error) in
+
+            if error != nil {
+
+                completion(nil, error)
+            }
+
+            else {
+                
+                if let snapshotData = snapshot?.data() {
+
+                    var block = Block()
+                    
+                    block.blockID = snapshot?.documentID
+
+                    block.creator = snapshotData["creator"] as? String
+
+                    let dateCreated = snapshotData["dateCreated"] as! Timestamp
+                    block.dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreated.seconds))
+
+                    block.name = snapshotData["blockName"] as? String
+
+                    let starts = snapshotData["startTime"] as! Timestamp
+                    let ends = snapshotData["endTime"] as! Timestamp
+
+                    block.starts = Date(timeIntervalSince1970: TimeInterval(starts.seconds))
+                    block.ends = Date(timeIntervalSince1970: TimeInterval(ends.seconds))
+
+                    block.members = []
+
+                    for retrievedMember in snapshotData["members"] as? [String] ?? [] {
+
+                        if let member = collab.members.first(where: { $0.userID == retrievedMember }) {
+
+                            block.members?.append(member)
+                        }
+                    }
+
+                    block.photoIDs = snapshotData["photos"] as? [String]
+
+                    block.locations = self.retrieveBlockLocations(snapshotData["locations"] as? [String : Any])
+
+                    block.voiceMemos = self.retrieveBlockVoiceMemos(snapshotData["voiceMemos"] as? [String : Any])
+
+                    block.links = self.retrieveBlockLinks(snapshotData["links"] as? [String : Any])
+
+                    let statusArray: [String : BlockStatus] = ["notStarted" : .notStarted, "inProgress" : .inProgress, "completed" : .completed, "needsHelp" : .needsHelp, "late" : .late]
+
+                    if let blockStatus = snapshotData["status"] as? String, let status = statusArray[blockStatus] {
+
+                        block.status = status
+                    }
+
+                    completion(block, nil)
+                }
+                
+                else {
+                    
+                    completion(nil, nil)
+                }
+            }
+        }
+    }
+    
+    func deleteCollabBlock (_ collabID: String, _ block: Block, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        db.collection("Collaborations").document(collabID).collection("Blocks").document(block.blockID ?? "").delete { (error) in
+
+            if error != nil {
+
+                completion(error)
+            }
+
+            else {
+
+                self.deleteCollabBlockPhotos(collabID, block)
+                
+                self.deleteCollabBlockVoiceMemos(collabID, block)
+                
+                completion(nil)
+            }
+        }
+    }
+    
+    private func deleteCollabBlockPhotos (_ collabID: String, _ block: Block) {
+        
+        for photoID in block.photoIDs ?? [] {
+            
+            firebaseStorage.deleteCollabBlockPhoto(collabID, block.blockID ?? "", photoID) { (error) in
+                
+                print(error?.localizedDescription as Any)
+            }
+        }
+    }
+    
+    private func deleteCollabBlockVoiceMemos (_ collabID: String, _ block: Block) {
+        
+        for voiceMemo in block.voiceMemos ?? [] {
+            
+            firebaseStorage.deleteCollabBlockVoiceMemo(collabID, block.blockID ?? "", voiceMemo.voiceMemoID ?? "") { (error) in
+                
+                print(error?.localizedDescription as Any)
             }
         }
     }

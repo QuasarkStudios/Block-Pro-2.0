@@ -20,34 +20,10 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <navigationItem key="navigationItem" id="GsV-aW-HE4"/>
-                    <connections>
-                        <segue destination="Mh7-Eh-nLA" kind="show" identifier="moveToAddMembersView" id="qbF-S0-wwb"/>
-                        <segue destination="ydz-TC-wnE" kind="show" identifier="moveToAddLocationsView" id="0TX-5o-mI1"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="z43-ZF-nsz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1898.5507246376812" y="-859.15178571428567"/>
-        </scene>
-        <!--AddMembers-->
-        <scene sceneID="uaa-BM-kdf">
-            <objects>
-                <viewControllerPlaceholder storyboardName="AddMembers" id="Mh7-Eh-nLA" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="zYi-0H-7Ve"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="nsl-tw-cYM" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2118" y="-435"/>
-        </scene>
-        <!--AddLocation-->
-        <scene sceneID="tlZ-PA-SVh">
-            <objects>
-                <viewControllerPlaceholder storyboardName="AddLocation" id="ydz-TC-wnE" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="97R-Tx-bVe"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="mZ7-h5-Aio" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1658" y="-435"/>
         </scene>
     </scenes>
     <resources>

@@ -37,7 +37,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseStorage = FirebaseStorage()
-    let firebaseBlock = FirebaseBlock()
+    let firebaseBlock = FirebaseBlock.sharedInstance
     let firebaseMessaging = FirebaseMessaging.sharedInstance
     var collab: Collab?
     
@@ -1366,14 +1366,20 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         else if segue.identifier == "moveToConfigureBlockView" {
             
-            if let navController = segue.destination as? UINavigationController {
-                
-                let configureBlockVC = navController.viewControllers.first as! ConfigureBlockViewController
-                configureBlockVC.collab = collab
-            }
+//            if let navController = segue.destination as? UINavigationController {
+//                
+//                let configureBlockVC = navController.viewControllers.first as! ConfigureBlockViewController
+//                configureBlockVC.collab = collab
+//            }
             
-//            let configureBlockVC = segue.destination as! ConfigureBlockViewController
-//            configureBlockVC.collab = collab
+            let configureBlockVC: ConfigureBlockViewController = ConfigureBlockViewController()
+            configureBlockVC.collab = collab
+            configureBlockVC.title = "Add a Block"
+            
+            let configureBlockNavigationController = UINavigationController(rootViewController: configureBlockVC)
+            configureBlockNavigationController.navigationBar.prefersLargeTitles = true
+            
+            self.present(configureBlockNavigationController, animated: true, completion: nil)
         }
         
         else if segue.identifier == "moveToSelectedBlockView" {

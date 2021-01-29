@@ -183,7 +183,7 @@ class LinksPresentationCollectionViewCell: UICollectionViewCell {
             label.bottomAnchor.constraint(equalTo: linkView.bottomAnchor, constant: -3),
             label.leadingAnchor.constraint(equalTo: linkView.leadingAnchor, constant: 5),
             label.trailingAnchor.constraint(equalTo: linkView.trailingAnchor, constant: -5),
-            label.heightAnchor.constraint(equalToConstant: 15)
+            label.heightAnchor.constraint(equalToConstant: 17)
         
         ].forEach({ $0.isActive = true })
     }

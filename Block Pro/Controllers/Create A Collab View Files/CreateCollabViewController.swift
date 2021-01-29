@@ -346,7 +346,7 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
                 
                 else if newCollab.locations?.count ?? 0 == 2 {
                    
-                    return 312.5//315
+                    return 315
                 }
                 
                 else {
@@ -619,6 +619,29 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         }
     }
     
+    //MARK: - Move to Add Location View
+    
+    private func moveToAddLocationView () {
+        
+        let addLocationVC: AddLocationViewController = AddLocationViewController()
+        addLocationVC.locationSavedDelegate = self
+        addLocationVC.cancelLocationSelectionDelegate = self
+        
+        addLocationVC.locationPreselected = selectedLocation != nil
+        addLocationVC.selectedLocation = selectedLocation
+        
+        if let placemark = selectedLocation?.placemark {
+            
+            addLocationVC.locationMapItem = MKMapItem(placemark: placemark)
+        }
+        
+        let backButtonItem = UIBarButtonItem()
+        backButtonItem.title = ""
+        navigationItem.backBarButtonItem = backButtonItem
+        
+        self.navigationController?.pushViewController(addLocationVC, animated: true)
+    }
+    
     @objc private func dismissKeyboard () {
         
         view.endEditing(true)
@@ -679,24 +702,24 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
             }
         }
         
-        else if segue.identifier == "moveToAddLocationsView" {
-            
-            let item: UIBarButtonItem = UIBarButtonItem()
-            item.title = ""
-            navigationItem.backBarButtonItem = item
-            
-            let addLocationVC = segue.destination as! AddLocationViewController
-            addLocationVC.locationSavedDelegate = self
-            addLocationVC.cancelLocationSelectionDelegate = self
-            
-            addLocationVC.locationPreselected = selectedLocation != nil
-            addLocationVC.selectedLocation = selectedLocation
-            
-            if let placemark = selectedLocation?.placemark {
-                
-                addLocationVC.locationMapItem = MKMapItem(placemark: placemark)
-            }
-        }
+//        else if segue.identifier == "moveToAddLocationsView" {
+//
+//            let item: UIBarButtonItem = UIBarButtonItem()
+//            item.title = ""
+//            navigationItem.backBarButtonItem = item
+//
+//            let addLocationVC = segue.destination as! AddLocationViewController
+//            addLocationVC.locationSavedDelegate = self
+//            addLocationVC.cancelLocationSelectionDelegate = self
+//
+//            addLocationVC.locationPreselected = selectedLocation != nil
+//            addLocationVC.selectedLocation = selectedLocation
+//
+//            if let placemark = selectedLocation?.placemark {
+//
+//                addLocationVC.locationMapItem = MKMapItem(placemark: placemark)
+//            }
+//        }
 //        
 //        else if segue.identifier == "moveToSelectedPhotoView" {
 //            
@@ -1045,7 +1068,9 @@ extension CreateCollabViewController: CreateCollabLocationsCellProtocol {
     
     func attachLocationSelected () {
         
-        performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
+        moveToAddLocationView()
+        
+//        performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
     }
 }
 

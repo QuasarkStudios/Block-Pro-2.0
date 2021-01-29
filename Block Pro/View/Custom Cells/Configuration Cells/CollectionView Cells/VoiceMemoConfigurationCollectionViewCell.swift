@@ -219,7 +219,7 @@ class VoiceMemoConfigurationCollectionViewCell: UICollectionViewCell {
         
         recordingPlaying = false
         
-        self.voiceMemosConfigurationCell?.stopRecordingPlayback()
+        voiceMemosConfigurationCell?.stopRecordingPlayback()
         playbackWorkItem?.cancel()
         playbackWorkItem = nil
         
@@ -270,7 +270,7 @@ class VoiceMemoConfigurationCollectionViewCell: UICollectionViewCell {
             
             if recordingPlaying ?? false {
                 
-                voiceMemosConfigurationCell?.stopRecordingPlayback()
+                stopRecordingPlayback()
             }
             
             voiceMemosConfigurationCell?.deleteVoiceMemo(memo)

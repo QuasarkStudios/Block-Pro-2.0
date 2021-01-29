@@ -48,6 +48,13 @@ class VoiceMemosConfigurationCell: UITableViewCell {
         didSet {
             
             reconfigureCell()
+            
+            //If the cell is being configured for the first time with voiceMemos, but the voiceMemoRecorder has not yet been initialized; signifies that the parentView is editing a Collab/Block
+            if voiceMemos?.count ?? 0 > 0, voiceMemoRecorder == nil {
+                
+                let numberOfSamples: Int = Int((UIScreen.main.bounds.width - 40) / 8.5) - 2
+                voiceMemoRecorder = VoiceMemoRecorder(parentCell: self, numberOfSamples: numberOfSamples, beginMonitoring: false)
+            }
         }
     }
     
@@ -56,9 +63,8 @@ class VoiceMemosConfigurationCell: UITableViewCell {
     
     var attachMemoButtonLeadingAnchor: NSLayoutConstraint?
     var attachMemoButtonTrailingAnchor: NSLayoutConstraint?
-    var attachMemoButtonTopAnchorWithContainer: NSLayoutConstraint?
-    var attachMemoButtonTopAnchorWithCollectionView: NSLayoutConstraint?
-    var attachMemoButtonBottomAnchor: NSLayoutConstraint?
+    var attachMemoButtonTopAnchor: NSLayoutConstraint?
+    var attachMemoButtonHeightAnchor: NSLayoutConstraint?
     
     weak var voiceMemosConfigurationDelegate: VoiceMemosConfigurationProtocol?
     
@@ -78,8 +84,8 @@ class VoiceMemosConfigurationCell: UITableViewCell {
         
         for memoCell in memoCollectionView.visibleCells {
             
-            //If a cell has had the playbackWorkItem added to the dispatchQueue, it will prevent the "CreateCollabMemoCollectionViewCell" from being deinitialized until after the playbackWorkItem was scheduled to be run. Therefore, canceling the playbackWorkItem and setting it to nil when "CreateCollabVoiceMemoCell" is denitialized is more reliable because this cell has so far always been deinitialized properly
-            if let cell = memoCell as? CreateCollabMemoCollectionViewCell {
+            //If a cell has had the playbackWorkItem added to the dispatchQueue, it will prevent the "VoiceMemoConfigurationCollectionViewCell" from being deinitialized until after the playbackWorkItem was scheduled to be run. Therefore, canceling the playbackWorkItem and setting it to nil when "VoiceMemoConfigurationCell" is denitialized is more reliable because this cell has so far always been deinitialized properly
+            if let cell = memoCell as? VoiceMemoConfigurationCollectionViewCell {
                 
                 cell.playbackWorkItem?.cancel()
                 cell.playbackWorkItem = nil //Prevents memory leaks
@@ -183,12 +189,17 @@ class VoiceMemosConfigurationCell: UITableViewCell {
         micImage.translatesAutoresizingMaskIntoConstraints = false
         attachMemoLabel.translatesAutoresizingMaskIntoConstraints = false
         
+        attachMemoButtonLeadingAnchor = attachMemoButton.leadingAnchor.constraint(equalTo: memosContainer.leadingAnchor, constant: 0)
+        attachMemoButtonTrailingAnchor = attachMemoButton.trailingAnchor.constraint(equalTo: memosContainer.trailingAnchor, constant: 0)
+        attachMemoButtonTopAnchor = attachMemoButton.topAnchor.constraint(equalTo: memosContainer.topAnchor, constant: 0)
+        attachMemoButtonHeightAnchor = attachMemoButton.heightAnchor.constraint(equalToConstant: 55)
+        
+        attachMemoButtonLeadingAnchor?.isActive = true
+        attachMemoButtonTrailingAnchor?.isActive = true
+        attachMemoButtonTopAnchor?.isActive = true
+        attachMemoButtonHeightAnchor?.isActive = true
+        
         [
-
-            attachMemoButton.leadingAnchor.constraint(equalTo: memosContainer.leadingAnchor, constant: 0),
-            attachMemoButton.trailingAnchor.constraint(equalTo: memosContainer.trailingAnchor, constant: 0),
-            attachMemoButton.topAnchor.constraint(equalTo: memosContainer.topAnchor, constant: 0),
-            attachMemoButton.heightAnchor.constraint(equalToConstant: 55),
             
             micImage.leadingAnchor.constraint(equalTo: attachMemoButton.leadingAnchor, constant: 20),
             micImage.centerYAnchor.constraint(equalTo: attachMemoButton.centerYAnchor),
@@ -423,7 +434,7 @@ class VoiceMemosConfigurationCell: UITableViewCell {
     private func reconfigureCell () {
         
         if voiceMemos?.count ?? 0 == 0 {
-
+            
             if willBeginRecording || recording {
                 
                 memoCollectionView.constraints.forEach { (constraint) in
@@ -486,31 +497,15 @@ class VoiceMemosConfigurationCell: UITableViewCell {
             memoCollectionView.alpha = 0
             
             //Resetting the constraints of the attachMemoButton
-            memosContainer.constraints.forEach { (constraint) in
-                
-                if constraint.firstAttribute == .leading && constraint.firstItem as? UIButton != nil {
-                    
-                    constraint.constant = 0
-                }
-                
-                else if constraint.firstAttribute == .trailing && constraint.firstItem as? UIButton != nil {
-                    
-                    constraint.constant = 0
-                }
-                
-                else if constraint.firstAttribute == .top && constraint.firstItem as? UIButton != nil {
-                    
-                    constraint.constant = 0
-                }
-            }
+            attachMemoButtonLeadingAnchor?.constant = 0
+            attachMemoButtonTrailingAnchor?.constant = 0
+            attachMemoButtonTopAnchor?.constant = 0
+            attachMemoButtonHeightAnchor?.constant = 55
             
-            attachMemoButton.constraints.forEach { (constraint) in
-                
-                if constraint.firstAttribute == .height {
-                    
-                    constraint.constant = 55
-                }
-            }
+            attachMemoButtonLeadingAnchor?.isActive = true
+            attachMemoButtonTrailingAnchor?.isActive = true
+            attachMemoButtonTopAnchor?.isActive = true
+            attachMemoButtonHeightAnchor?.isActive = true
             ////////////////////////////////////////////////////////////////////////
             
             self.attachMemoButton.backgroundColor = .clear
@@ -546,31 +541,15 @@ class VoiceMemosConfigurationCell: UITableViewCell {
         memosContainer.addSubview(attachMemoButton)
         
         //Resetting the constraints of the attachMemoButton
-        memosContainer.constraints.forEach { (constraint) in
-            
-            if constraint.firstAttribute == .leading && constraint.firstItem as? UIButton != nil {
-                
-                constraint.constant = 32.5
-            }
-            
-            else if constraint.firstAttribute == .trailing && constraint.firstItem as? UIButton != nil {
-                
-                constraint.constant = -32.5
-            }
-            
-            else if constraint.firstAttribute == .top && constraint.firstItem as? UIButton != nil {
-                
-                constraint.constant = itemSize + 10 + 12.5
-            }
-        }
+        attachMemoButtonLeadingAnchor?.constant = 32.5
+        attachMemoButtonTrailingAnchor?.constant = -32.5
+        attachMemoButtonTopAnchor?.constant = itemSize + 10 + 12.5
+        attachMemoButtonHeightAnchor?.constant = 40
         
-        attachMemoButton.constraints.forEach { (constraint) in
-            
-            if constraint.firstAttribute == .height {
-                
-                constraint.constant = 40
-            }
-        }
+        attachMemoButtonLeadingAnchor?.isActive = true
+        attachMemoButtonTrailingAnchor?.isActive = true
+        attachMemoButtonTopAnchor?.isActive = true
+        attachMemoButtonHeightAnchor?.isActive = true
         ////////////////////////////////////////////////////////////////////////
         
         attachMemoButton.backgroundColor = UIColor(hexString: "222222")
@@ -617,11 +596,24 @@ class VoiceMemosConfigurationCell: UITableViewCell {
         
         memoCollectionView.reloadData()
         
+        //Resetting the height of the memoCollectionView
+        memoCollectionView.constraints.forEach { (constraint) in
+            
+            if constraint.firstAttribute == .height {
+                
+                constraint.constant = itemSize
+            }
+        }
+        
         UIView.transition(with: memosContainer, duration: 0.3, options: .transitionCrossDissolve) {
-
+            
+            self.attachMemoButton.removeFromSuperview()
             self.visualizerStackView.removeFromSuperview()
             self.memoLengthLabel.removeFromSuperview()
             self.record_stopButton.removeFromSuperview()
+            
+            self.memosCountLabel.alpha = 1
+            self.memoCollectionView.alpha = 1
         }
     }
     
@@ -924,7 +916,7 @@ class VoiceMemosConfigurationCell: UITableViewCell {
         
         for visibleCell in memoCollectionView.visibleCells {
             
-            if let cell = visibleCell as? CreateCollabMemoCollectionViewCell {
+            if let cell = visibleCell as? VoiceMemoConfigurationCollectionViewCell {
                 
                 if cell.recordingPlaying ?? false {
                     
@@ -1182,7 +1174,7 @@ extension VoiceMemosConfigurationCell: UICollectionViewDataSource, UICollectionV
         
         cell.voiceMemosConfigurationCell = self
         
-        if let name = voiceMemos?[indexPath.row].name {
+        if let name = voiceMemos?[indexPath.row].name, name.leniantValidationOfTextEntered() {
             
             cell.nameTextField.text = name
         }
@@ -1191,10 +1183,7 @@ extension VoiceMemosConfigurationCell: UICollectionViewDataSource, UICollectionV
             
             cell.nameTextField.text = ""
             
-            let centeredParagraphStyle = NSMutableParagraphStyle()
-            centeredParagraphStyle.alignment = .center
-            
-            cell.nameTextField.attributedPlaceholder = NSAttributedString(string: "Memo #\(indexPath.row + 1)", attributes: [NSAttributedString.Key.foregroundColor: UIColor(hexString: "AAAAAA") as Any, NSAttributedString.Key.paragraphStyle : centeredParagraphStyle])
+            cell.nameTextField.setCustomPlaceholder(text: "Memo #\(indexPath.row + 1)", alignment: .center)
         }
         
         return cell

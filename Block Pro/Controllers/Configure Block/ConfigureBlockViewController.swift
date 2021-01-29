@@ -25,7 +25,7 @@ class ConfigureBlockViewController: UIViewController {
     var navBarExtensionHeightAnchor: NSLayoutConstraint?
     var tableViewTopAnchor: NSLayoutConstraint?
     
-    let firebaseBlock = FirebaseBlock()
+    let firebaseBlock = FirebaseBlock.sharedInstance
     
     let currentUser = CurrentUser.sharedInstance
     var collab: Collab?
@@ -49,13 +49,10 @@ class ConfigureBlockViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor(hexString: "222222") as Any, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 30, weight: UIFont.Weight.bold)]
-        self.title = "Add a Block"
-        
         configureBarButtonItems()
         
         self.isModalInPresentation = true
+        self.view.backgroundColor = .white
 
         configureTableView(configureBlockTableView) //Call first to allow for the navigation bar to work properly
         configureNavBarExtensionView()
@@ -64,6 +61,8 @@ class ConfigureBlockViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        self.navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor(hexString: "222222") as Any, NSAttributedString.Key.font: UIFont.systemFont(ofSize: 30, weight: UIFont.Weight.bold)]
         
         self.navigationController?.navigationBar.configureNavBar()
         self.navigationItem.largeTitleDisplayMode = .always
@@ -100,7 +99,7 @@ class ConfigureBlockViewController: UIViewController {
         
         else {
             
-            let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(doneButtonPressed))
+            let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editButtonPressed))
             rightBarButtonItem.style = .done
             
             self.navigationItem.rightBarButtonItem = rightBarButtonItem
@@ -302,54 +301,57 @@ class ConfigureBlockViewController: UIViewController {
     }
     
     
-    //MARK: - Prepare for Segue
+    //MARK: - Move to Add Members View
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    private func moveToAddMembersView () {
         
-        if segue.identifier == "moveToAddMembersView" {
+        let addMembersVC: AddMembersViewController = AddMembersViewController()
+        addMembersVC.membersAddedDelegate = self
+        addMembersVC.headerLabelText = "Assign Members"
+        
+        var members = collab?.members
+        members?.removeAll(where: { $0.userID == currentUser.userID })
+        addMembersVC.members = members
+        
+        addMembersVC.addedMembers = [:]
+        
+        //Setting the added members for the AddMembersViewController
+        for member in block.members ?? [] {
             
-            let addMembersVC = segue.destination as! AddMembersViewController
-            addMembersVC.membersAddedDelegate = self
-            addMembersVC.headerLabelText = "Assign Members"
-            
-            var members = collab?.members
-            members?.removeAll(where: { $0.userID == currentUser.userID })
-            addMembersVC.members = members
-            
-            addMembersVC.addedMembers = [:]
-            
-            //Setting the added members for the AddMembersViewController
-            for member in block.members ?? [] {
+            if member.userID != currentUser.userID {
                 
-                if member.userID != currentUser.userID {
-                    
-                    addMembersVC.addedMembers?[member.userID] = member
-                }
+                addMembersVC.addedMembers?[member.userID] = member
             }
-            
-            let backButtonItem = UIBarButtonItem()
-            backButtonItem.title = ""
-            navigationItem.backBarButtonItem = backButtonItem
         }
         
-        else if segue.identifier == "moveToAddLocationsView" {
+        let backButtonItem = UIBarButtonItem()
+        backButtonItem.title = ""
+        navigationItem.backBarButtonItem = backButtonItem
+        
+        self.navigationController?.pushViewController(addMembersVC, animated: true)
+    }
+    
+    //MARK: - Move to Add Location View
+    
+    private func moveToAddLocationView () {
+        
+        let addLocationVC: AddLocationViewController = AddLocationViewController()
+        addLocationVC.locationSavedDelegate = self
+        addLocationVC.cancelLocationSelectionDelegate = self
+        
+        addLocationVC.locationPreselected = selectedLocation != nil
+        addLocationVC.selectedLocation = selectedLocation
+        
+        if let placemark = selectedLocation?.placemark {
             
-            let addLocationVC = segue.destination as! AddLocationViewController
-            addLocationVC.locationSavedDelegate = self
-            addLocationVC.cancelLocationSelectionDelegate = self
-            
-            addLocationVC.locationPreselected = selectedLocation != nil
-            addLocationVC.selectedLocation = selectedLocation
-            
-            if let placemark = selectedLocation?.placemark {
-                
-                addLocationVC.locationMapItem = MKMapItem(placemark: placemark)
-            }
-            
-            let backButtonItem = UIBarButtonItem()
-            backButtonItem.title = ""
-            navigationItem.backBarButtonItem = backButtonItem
+            addLocationVC.locationMapItem = MKMapItem(placemark: placemark)
         }
+        
+        let backButtonItem = UIBarButtonItem()
+        backButtonItem.title = ""
+        navigationItem.backBarButtonItem = backButtonItem
+        
+        self.navigationController?.pushViewController(addLocationVC, animated: true)
     }
     
     
@@ -437,6 +439,37 @@ class ConfigureBlockViewController: UIViewController {
             SVProgressHUD.showError(withStatus: "Please enter a name for this Block")
         }
     }
+    
+    
+    //MARK: - Edit Button Pressed
+    
+    @objc private func editButtonPressed () {
+        
+        SVProgressHUD.show()
+        
+        if let name = block.name, name.leniantValidationOfTextEntered() {
+            
+            firebaseBlock.editCollabBlock(collabID: collab?.collabID ?? "", block: block) { [weak self] (error) in
+                
+                if error != nil {
+                    
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                }
+                
+                else {
+                    
+                    let notificationScheduler = NotificationScheduler()
+                    
+                    notificationScheduler.removePendingBlockNotifications(self!.block.blockID!) {
+                        
+                        notificationScheduler.scheduleBlockNotification(collab: self!.collab, self!.block)
+                    }
+                    
+                    self?.navigationController?.popViewController(animated: true)
+                }
+            }
+        }
+    }
 }
 
 
@@ -466,6 +499,7 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 let cell = tableView.dequeueReusableCell(withIdentifier: "nameConfigurationCell", for: indexPath) as! NameConfigurationCell
                 cell.selectionStyle = .none
                 
+                cell.block = block
                 cell.nameConfigurationDelegate = self
                 
                 return cell
@@ -559,6 +593,8 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 cell.memberConfigurationDelegate = self
                 
                 cell.addMembersLabel.text = "Assign Members"
+                
+                cell.editingCell = !(self.navigationController?.viewControllers.count == 1)
                 
                 cell.collab = collab
                 cell.members = block.members
@@ -705,19 +741,40 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 //Member Configuration Cell
                 case 7:
                     
-                    if block.members?.count ?? 0 == (collab?.members.count ?? 0) - 1 {
+                    if self.navigationController?.viewControllers.count == 1 {
                         
-                        return 160
-                    }
-                    
-                    else if block.members?.count ?? 0 > 0 {
+                        if block.members?.count ?? 0 == (collab?.members.count ?? 0) - 1 {
+                            
+                            return 160
+                        }
                         
-                        return 225
+                        else if block.members?.count ?? 0 > 0 {
+                            
+                            return 225
+                        }
+                        
+                        else {
+                            
+                            return 85
+                        }
                     }
                     
                     else {
                         
-                        return 85
+                        if block.members?.count ?? 0 == collab?.members.count ?? 0 {
+                            
+                            return 160
+                        }
+                        
+                        else if block.members?.count ?? 0 > 0 {
+                            
+                            return 225
+                        }
+                        
+                        else {
+                            
+                            return 85
+                        }
                     }
                 
                 //Reminder Configuration Cell
@@ -801,7 +858,7 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                     
                     else if block.locations?.count ?? 0 == 2 {
                        
-                        return 312.5
+                        return 315
                     }
                     
                     else {
@@ -854,6 +911,19 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 default:
                     
                     return 25
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if let reminderCell = cell as? ReminderConfigurationCell, var blockReminders = block.reminders {
+            
+            blockReminders.sort()
+            
+            if let firstReminder = blockReminders.first {
+                
+                reminderCell.remindersCollectionView.scrollToItem(at: IndexPath(item: firstReminder, section: 0), at: .centeredHorizontally, animated: false)
             }
         }
     }
@@ -1161,12 +1231,20 @@ extension ConfigureBlockViewController: MemberConfigurationProtocol, MembersAdde
     
     func moveToAddMemberView () {
         
-        performSegue(withIdentifier: "moveToAddMembersView", sender: self)
+        self.moveToAddMembersView()
     }
     
     func membersAdded(_ addedMembers: [Any]) {
         
-        block.members = []
+        if block.members == nil {
+            
+            block.members = []
+        }
+        
+        else {
+            
+            block.members?.removeAll(where: { $0.userID != currentUser.userID })
+        }
         
         for addedMember in addedMembers {
             
@@ -1176,7 +1254,7 @@ extension ConfigureBlockViewController: MemberConfigurationProtocol, MembersAdde
             }
         }
         
-        self.navigationController?.popToRootViewController(animated: true)
+        self.navigationController?.popViewController(animated: true)
         
         if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? MemberConfigurationCell {
             
@@ -1337,7 +1415,7 @@ extension ConfigureBlockViewController: LocationsConfigurationProtocol {
     
     func attachLocationSelected() {
         
-        performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
+        moveToAddLocationView()
     }
 }
 
@@ -1384,7 +1462,9 @@ extension ConfigureBlockViewController: LocationSelectedProtocol {
         
         selectedLocation = location
         
-        performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
+        moveToAddLocationView()
+        
+//        performSegue(withIdentifier: "moveToAddLocationsView", sender: self)
     }
 }
 

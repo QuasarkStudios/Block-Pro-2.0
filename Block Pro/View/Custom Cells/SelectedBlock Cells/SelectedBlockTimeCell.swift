@@ -18,12 +18,14 @@ class SelectedBlockTimeCell: UITableViewCell {
     var ends: Date? {
         didSet {
             
-            configureTimeLabel()
+            setTimeLabel()
         }
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: "selectedBlockNameCell")
+        
+        configureTimeLabel()
     }
     
     required init?(coder: NSCoder) {
@@ -45,6 +47,9 @@ class SelectedBlockTimeCell: UITableViewCell {
         ].forEach({ $0.isActive = true })
         
         timeLabel.numberOfLines = 0
+    }
+    
+    private func setTimeLabel () {
         
         if starts != nil, ends != nil, formatter != nil {
             
@@ -69,5 +74,4 @@ class SelectedBlockTimeCell: UITableViewCell {
             timeLabel.attributedText = attributedString
         }
     }
-
 }

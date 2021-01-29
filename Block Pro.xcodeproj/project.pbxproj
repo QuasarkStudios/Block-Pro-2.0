@@ -56,6 +56,7 @@
 		0D23077A22D6CD9900A12393 /* CollabBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D23077922D6CD9900A12393 /* CollabBlockViewController.swift */; };
 		0D2386CB24C26F6A00876154 /* PhotoMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2386C924C26F6A00876154 /* PhotoMessageCell.swift */; };
 		0D2386CC24C26F6A00876154 /* PhotoMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D2386CA24C26F6A00876154 /* PhotoMessageCell.xib */; };
+		0D2576EB25C3E00E008C2711 /* Error+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2576EA25C3E00D008C2711 /* Error+Extension.swift */; };
 		0D2707FC2326DF9000592EC8 /* PomodoroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2707FB2326DF9000592EC8 /* PomodoroViewController.swift */; };
 		0D2A387B24C2A207008D69F3 /* chat-bubbles-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D2A387A24C2A207008D69F3 /* chat-bubbles-animation.json */; };
 		0D2B5BCE24744AE800FC2536 /* ProfilePicture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2B5BCD24744AE800FC2536 /* ProfilePicture.swift */; };
@@ -153,6 +154,7 @@
 		0D5FD11B25BFD98500E9BA2D /* BlockStatusCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5FD11A25BFD98500E9BA2D /* BlockStatusCollectionViewCell.swift */; };
 		0D5FD11F25C00C1600E9BA2D /* SelectedBlockEdit_DeleteCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5FD11E25C00C1600E9BA2D /* SelectedBlockEdit_DeleteCell.swift */; };
 		0D5FD12225C018D300E9BA2D /* BlockEdited_DeletedProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5FD12125C018D300E9BA2D /* BlockEdited_DeletedProtocol.swift */; };
+		0D5FD14825C2848200E9BA2D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5FD14725C2848100E9BA2D /* MapKit.framework */; };
 		0D62771425AA1EEE00B2B2C0 /* MemberConfigurationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D62771325AA1EEE00B2B2C0 /* MemberConfigurationCollectionViewCell.swift */; };
 		0D670D8825567316001D2634 /* Location.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D670D8725567316001D2634 /* Location.storyboard */; };
 		0D670D8B255674DD001D2634 /* LocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D8A255674DD001D2634 /* LocationsViewController.swift */; };
@@ -411,6 +413,7 @@
 		0D23077922D6CD9900A12393 /* CollabBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabBlockViewController.swift; sourceTree = "<group>"; };
 		0D2386C924C26F6A00876154 /* PhotoMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMessageCell.swift; sourceTree = "<group>"; };
 		0D2386CA24C26F6A00876154 /* PhotoMessageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoMessageCell.xib; sourceTree = "<group>"; };
+		0D2576EA25C3E00D008C2711 /* Error+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extension.swift"; sourceTree = "<group>"; };
 		0D2707FB2326DF9000592EC8 /* PomodoroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroViewController.swift; sourceTree = "<group>"; };
 		0D2A387A24C2A207008D69F3 /* chat-bubbles-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "chat-bubbles-animation.json"; sourceTree = "<group>"; };
 		0D2B5BCD24744AE800FC2536 /* ProfilePicture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePicture.swift; sourceTree = "<group>"; };
@@ -510,6 +513,7 @@
 		0D5FD11A25BFD98500E9BA2D /* BlockStatusCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockStatusCollectionViewCell.swift; sourceTree = "<group>"; };
 		0D5FD11E25C00C1600E9BA2D /* SelectedBlockEdit_DeleteCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedBlockEdit_DeleteCell.swift; sourceTree = "<group>"; };
 		0D5FD12125C018D300E9BA2D /* BlockEdited_DeletedProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockEdited_DeletedProtocol.swift; sourceTree = "<group>"; };
+		0D5FD14725C2848100E9BA2D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		0D62771325AA1EEE00B2B2C0 /* MemberConfigurationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberConfigurationCollectionViewCell.swift; sourceTree = "<group>"; };
 		0D670D8725567316001D2634 /* Location.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Location.storyboard; sourceTree = "<group>"; };
 		0D670D8A255674DD001D2634 /* LocationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsViewController.swift; sourceTree = "<group>"; };
@@ -728,6 +732,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0D5FD14825C2848200E9BA2D /* MapKit.framework in Frameworks */,
 				BF3780A68B78275643E3A760 /* Pods_Block_Pro.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1589,6 +1594,7 @@
 				0D670D8F2558778F001D2634 /* Location+Extension.swift */,
 				0D92BB9E2585698F00D9C561 /* UITextField+Extension.swift */,
 				0D891CF325BA980500B04C2F /* UILabel+Extension.swift */,
+				0D2576EA25C3E00D008C2711 /* Error+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1702,6 +1708,7 @@
 		17AB833BF888E8CFD139A727 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0D5FD14725C2848100E9BA2D /* MapKit.framework */,
 				D06DFBCF9AAEBEE0188F2376 /* Pods_Block_Pro.framework */,
 			);
 			name = Frameworks;
@@ -2095,6 +2102,7 @@
 				0D891CCA25B5721700B04C2F /* OneThirdBlock.swift in Sources */,
 				0DE31E15244BA97800DE6EE3 /* Date+Extension.swift in Sources */,
 				0DAFFE002533005500C39B69 /* CollabMemberCollectionViewCell.swift in Sources */,
+				0D2576EB25C3E00E008C2711 /* Error+Extension.swift in Sources */,
 				0DDDA65122DA59BE00B69A4E /* AddFriendViewController.swift in Sources */,
 				0D7862F3245FF65B003189AE /* InputAccesoryView.swift in Sources */,
 				0D0C8D8A244116F700EB51F7 /* CollabMembersCell.swift in Sources */,

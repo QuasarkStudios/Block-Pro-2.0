@@ -17,7 +17,12 @@ class SelectedBlockStatusCell: UITableViewCell {
     let firebaseBlock = FirebaseBlock()
     
     var collab: Collab?
-    var block: Block? 
+    var block: Block? {
+        didSet {
+            
+            statusCollectionView.reloadData()
+        }
+    }
     
     var statuses: [BlockStatus] = []
     
@@ -144,32 +149,36 @@ extension SelectedBlockStatusCell: UICollectionViewDataSource, UICollectionViewD
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let cell = collectionView.cellForItem(at: indexPath) as! BlockStatusCollectionViewCell
-        cell.selectContainer(animate: true)
-        cell.statusSelected = true
         
-        if cell.status != nil {
+        if !cell.statusSelected {
             
-            block?.status = cell.status!
+            cell.selectContainer(animate: true)
+            cell.statusSelected = true
             
-            if let collabID = collab?.collabID, let blockID = block?.blockID, let status = block?.status {
+            if cell.status != nil {
                 
-                //Setting the block status
-                firebaseBlock.setCollabBlockStatus(collabID, blockID: blockID, status: status) { (error) in
+                block?.status = cell.status!
+                
+                if let collabID = collab?.collabID, let blockID = block?.blockID, let status = block?.status {
                     
-                    print(error?.localizedDescription as Any)
+                    //Setting the block status
+                    firebaseBlock.setCollabBlockStatus(collabID, blockID: blockID, status: status) { (error) in
+                        
+                        print(error?.localizedDescription as Any)
+                    }
                 }
             }
-        }
-        
-        //Deselecting all the other cells if they were selected
-        for visibleCell in collectionView.visibleCells {
             
-            if let cell = visibleCell as? BlockStatusCollectionViewCell {
+            //Deselecting all the other cells if they were selected
+            for visibleCell in collectionView.visibleCells {
                 
-                if cell.status != block?.status && cell.statusSelected == true {
+                if let cell = visibleCell as? BlockStatusCollectionViewCell {
                     
-                    cell.deselectContainer(animate: true)
-                    cell.statusSelected = false
+                    if cell.status != block?.status && cell.statusSelected == true {
+                        
+                        cell.deselectContainer(animate: true)
+                        cell.statusSelected = false
+                    }
                 }
             }
         }

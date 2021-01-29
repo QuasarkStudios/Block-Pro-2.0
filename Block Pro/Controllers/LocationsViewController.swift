@@ -11,7 +11,7 @@ import MapKit
 
 class LocationsViewController: UIViewController {
     
-    let mapView = MKMapView()
+    lazy var mapView = MKMapView()
     
     let locationInfoView = UIView()
     let locationNameLabel = UILabel()

@@ -16,12 +16,15 @@ class SelectedBlockMembersCell: UITableViewCell {
     var block: Block? {
         didSet {
             
-            
+            setAssignedLabel()
+            membersCollectionView.reloadData()
         }
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: "selectedBlockMembersCell")
+        
+        self.clipsToBounds = true
         
         configureAssignedLabel()
         configureMembersCollectionView(membersCollectionView)
@@ -34,12 +37,19 @@ class SelectedBlockMembersCell: UITableViewCell {
     private func configureAssignedLabel () {
         
         self.contentView.addSubview(assignedLabel)
-        assignedLabel.configureTitleLabelConstraints()
+        assignedLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        assignedLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
+        [
+        
+            assignedLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 30),
+            assignedLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -30),
+            assignedLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor),
+            assignedLabel.heightAnchor.constraint(equalToConstant: 20)
+        
+        ].forEach({ $0.isActive = true })
+        
         assignedLabel.textColor = .black
         assignedLabel.textAlignment = .left
-        assignedLabel.text = "Assigned"
     }
     
     private func configureMembersCollectionView (_ collectionView: UICollectionView) {
@@ -74,6 +84,21 @@ class SelectedBlockMembersCell: UITableViewCell {
         membersCollectionView.collectionViewLayout = layout
         
         membersCollectionView.register(MemberConfigurationCollectionViewCell.self, forCellWithReuseIdentifier: "memberConfigurationCollectionViewCell")
+    }
+    
+    private func setAssignedLabel () {
+        
+        if block?.members?.count ?? 0 > 0 {
+            
+            assignedLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
+            assignedLabel.text = "Assigned"
+        }
+        
+        else {
+            
+            assignedLabel.font = UIFont(name: "Poppins-SemiBold", size: 16.5)
+            assignedLabel.text = "No Members Yet"
+        }
     }
 }
 

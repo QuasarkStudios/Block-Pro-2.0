@@ -297,28 +297,11 @@
                         <segue destination="Aib-ri-8Um" kind="showDetail" identifier="moveToMemberProfileView" id="8N5-xD-jrZ"/>
                         <segue destination="9q4-II-GJ8" kind="showDetail" identifier="moveToCalendarView" id="qck-wp-ll5"/>
                         <segue destination="H1Y-3F-UIy" kind="show" identifier="moveToAddMembersView" id="EIL-Lt-IUX"/>
-                        <segue destination="jAh-Gt-n9R" kind="show" identifier="moveToAddLocationsView" id="dqN-Ha-7VB"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RJi-lx-3XP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-824.79999999999995" y="-125.61576354679804"/>
-        </scene>
-        <!--Add Location View Controller-->
-        <scene sceneID="AVZ-KE-Uzd">
-            <objects>
-                <viewController id="jAh-Gt-n9R" customClass="AddLocationViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="T4Q-VZ-M7p">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="kNx-Cz-aXL"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="zAo-Qc-Kg3"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dm4-kf-fBH" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="348" y="-126.35467980295567"/>
         </scene>
         <!--AddMembers-->
         <scene sceneID="QbW-oI-4R4">

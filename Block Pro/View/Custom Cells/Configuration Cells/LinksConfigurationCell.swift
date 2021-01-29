@@ -750,6 +750,8 @@ extension LinksConfigurationCell: UITextFieldDelegate {
             let leftTextFieldEditing: Bool = textField == linkCollectionViewCell.leftTextField //If the leftTextBeganEditing
             
             //Each var below either belongs to the left or right link view, depending on which textField is editing
+            let url = leftTextFieldEditing ? linkCollectionViewCell.leftLink?.url : linkCollectionViewCell.rightLink?.url
+            
             let linkName = leftTextFieldEditing ? linkCollectionViewCell.leftLink?.name : linkCollectionViewCell.rightLink?.name
             
             let cancelButton = leftTextFieldEditing ? linkCollectionViewCell.leftCancelButton : linkCollectionViewCell.rightCancelButton
@@ -767,17 +769,19 @@ extension LinksConfigurationCell: UITextFieldDelegate {
                     textField.endEditing(true) //Stop the keyboard from presenting itself
                 }
                 
-                //If the user want's to rename the link
+                //If the user wants to rename the link
                 else if linkBeingRenamed {
                     
                     //If the link has already been renamed
                     if linkName?.leniantValidationOfTextEntered() ?? false {
                         
+                        textField.keyboardType = .default
                         textField.text = linkName
                     }
                     
                     else {
                         
+                        textField.keyboardType = .default
                         textField.text = ""
                     }
                     
@@ -790,7 +794,10 @@ extension LinksConfigurationCell: UITextFieldDelegate {
                 //If the user wants to enter a link/edit a link
                 else {
                     
-                    linkBeingEdited = true
+                    textField.keyboardType = .URL
+                    textField.text = url
+                    
+//                    linkBeingEdited = true
                     
                     //Stops the user from deleting links or opening url's while the keyboard is present
                     cancelButton.isUserInteractionEnabled = false
@@ -801,7 +808,10 @@ extension LinksConfigurationCell: UITextFieldDelegate {
             //If the textField hasn't had text entered yet
             else {
                 
-                linkBeingEdited = true
+                textField.keyboardType = .URL
+                textField.text = url
+                
+//                linkBeingEdited = true
                 
                 //Stops the user from deleting links or opening url's while the keyboard is present
                 cancelButton.isUserInteractionEnabled = false

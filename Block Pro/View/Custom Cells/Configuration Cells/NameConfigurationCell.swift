@@ -14,6 +14,13 @@ class NameConfigurationCell: UITableViewCell {
     let textFieldContainer = UIView()
     let nameTextField = UITextField()
     
+    var block: Block? {
+        didSet {
+            
+            nameTextField.text = block?.name
+        }
+    }
+    
     weak var nameConfigurationDelegate: NameConfigurationProtocol?
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {

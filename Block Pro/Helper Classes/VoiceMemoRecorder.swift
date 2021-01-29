@@ -39,16 +39,19 @@ class VoiceMemoRecorder {
     }
     
     var microphoneAccessGranted: Bool?
+    var beginMonitoring: Bool
     
     weak var parentCell: AnyObject?
     
-    init(parentCell: AnyObject, numberOfSamples: Int) {
+    init(parentCell: AnyObject, numberOfSamples: Int, beginMonitoring: Bool = true) {
         
         self.parentCell = parentCell
         
         self.numberOfSamples = numberOfSamples
         self.soundSamples = Array(repeating: .zero, count: numberOfSamples)
         self.currentSample = 0
+        
+        self.beginMonitoring = beginMonitoring
         
         verifyRecordingPermission()
     }
@@ -68,7 +71,10 @@ class VoiceMemoRecorder {
             
             microphoneAccessGranted = true
             
-            configureTemporaryAudioRecorder()
+            if beginMonitoring {
+                
+                configureTemporaryAudioRecorder()
+            }
             
             if let cell = parentCell as? CreateCollabVoiceMemoCell {
                 
@@ -87,7 +93,10 @@ class VoiceMemoRecorder {
                     
                     self.microphoneAccessGranted = true
                     
-                    self.configureTemporaryAudioRecorder()
+                    if self.beginMonitoring {
+                        
+                        self.configureTemporaryAudioRecorder()
+                    }
                     
                     if let cell = self.parentCell as? CreateCollabVoiceMemoCell {
                         

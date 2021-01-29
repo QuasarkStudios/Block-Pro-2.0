@@ -730,7 +730,7 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         
         personalDatabase.deleteBlock(blockID: selectedBlock!.blockID)
         
-        notificationScheduler.removePendingNotification()
+//        notificationScheduler.removePendingNotification()
         
         let cell = tableView.cellForRow(at: indexPath) as! DeleteBlockCell
         
@@ -794,7 +794,7 @@ class AddEditBlockViewController: UIViewController, UITableViewDataSource, UITab
         
         else {
             
-            notificationScheduler.removePendingNotification()
+//            notificationScheduler.removePendingNotification()
         }
         
         dismiss(animated: true) {

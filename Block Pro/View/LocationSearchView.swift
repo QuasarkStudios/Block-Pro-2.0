@@ -54,7 +54,7 @@ class LocationSearchView: UIView {
                 self.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
                 self.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
                 self.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0),
-                self.heightAnchor.constraint(equalToConstant: viewController.locationMapItem != nil ? 265 : 120)
+                self.heightAnchor.constraint(equalToConstant: viewController.locationMapItem != nil || viewController.selectedLocation != nil ? 265 : 120)
             
             ].forEach({ $0.isActive = true })
             

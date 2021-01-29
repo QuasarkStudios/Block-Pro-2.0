@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import UserNotifications
+//import UserNotifications
 
 class NotificationScheduler {
     
@@ -16,7 +16,7 @@ class NotificationScheduler {
     
     func scheduleBlockNotification (collab: Collab? = nil, _ block: Block) {
         
-        if let startTime = block.starts {
+        if let startTime = block.starts, startTime > Date() {
             
             let content = UNMutableNotificationContent()
             var trigger: UNCalendarNotificationTrigger
@@ -25,7 +25,7 @@ class NotificationScheduler {
             for reminder in block.reminders ?? [] {
                 
                 if let reminderDate = calendar.date(byAdding: .minute, value: minutesToSubtractBy[reminder], to: startTime) {
-
+                    
                     var dateComponents = DateComponents()
                     dateComponents.calendar = .current
                     
@@ -43,12 +43,20 @@ class NotificationScheduler {
                     
                     trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
             
-                    request = UNNotificationRequest(identifier: block.blockID! + "-\(reminder)", content: content, trigger: trigger)
+                    request = UNNotificationRequest(identifier: (collab?.collabID ?? "") + " - " + block.blockID! + "-\(reminder)", content: content, trigger: trigger)
             
                     UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
                 }
             }
         }
+        
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+//
+//            UNUserNotificationCenter.current().getPendingNotificationRequests { (requests) in
+//
+//                requests.forEach({ print($0) })
+//            }
+//        }
     }
     
     func scheduleBlockNotificiation2 (_ blockDict: [String : Any]) {
@@ -91,7 +99,6 @@ class NotificationScheduler {
         request = UNNotificationRequest(identifier: blockDict["notificationID"] as! String, content: content, trigger: trigger)
 
         UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-
     }
     
     func getPendingNotifications (completion: @escaping ((_ requests: [UNNotificationRequest]) -> Void)) {
@@ -102,7 +109,23 @@ class NotificationScheduler {
         }
     }
     
-    func removePendingNotification () {
+    func removePendingBlockNotifications (_ blockID: String, completion: @escaping (() -> Void)) {
         
+        getPendingNotifications { (requests) in
+            
+            var pendingNotificationIdentifiers: [String] = []
+            
+            for request in requests {
+                
+                if request.identifier.contains(blockID) {
+                    
+                    pendingNotificationIdentifiers.append(request.identifier)
+                }
+            }
+            
+            UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: pendingNotificationIdentifiers)
+            
+            completion()
+        }
     }
 }

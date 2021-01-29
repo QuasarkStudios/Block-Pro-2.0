@@ -317,6 +317,11 @@ class FirebaseStorage {
         }
     }
     
+    func getStorageErrorCode (_ error: NSError) -> StorageErrorCode? {
+        
+        return StorageErrorCode(rawValue: error.code)
+    }
+    
     func saveCollabBlockVoiceMemosToStorage (_ collabID: String, _ blockID: String, _ voiceMemoID: String) {
         
         let voiceMemoURL = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
@@ -355,6 +360,21 @@ class FirebaseStorage {
         }
     }
     
+    func deleteCollabBlockPhoto (_ collabID: String, _ blockID: String, _ photoID: String, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        collabStorageRef.child(collabID).child("blocks").child(blockID).child("photos").child(photoID + ".jpeg").delete { (error) in
+            
+            completion(error)
+        }
+    }
+    
+    func deleteCollabBlockVoiceMemo (_ collabID: String, _ blockID: String, _ voiceMemoID: String, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        collabStorageRef.child(collabID).child("blocks").child(blockID).child("voiceMemos").child(voiceMemoID + ".m4a").delete { (error) in
+            
+            completion(error)
+        }
+    }
     
     func saveConversationCoverPhoto (conversationID: String, coverPhoto: UIImage, completion: @escaping ((_ error: Error?) -> Void)) {
         

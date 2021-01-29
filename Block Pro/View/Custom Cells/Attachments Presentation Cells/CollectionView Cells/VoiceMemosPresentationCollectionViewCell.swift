@@ -146,7 +146,7 @@ class VoiceMemosPresentationCollectionViewCell: UICollectionViewCell {
         iProgressView.updateIndicator(style: .lineScalePulseOut)
     }
     
-    private func retrieveVoiceMemo (_ collab: Collab?, _ block: Block?, _ voiceMemo: VoiceMemo?, _ completion: @escaping ((_ error: Error?) -> Void)) {
+    private func retrieveVoiceMemo (_ collab: Collab?, _ block: Block?, _ voiceMemo: VoiceMemo?, _ failureCount: Int = 0, _ completion: @escaping ((_ error: Error?) -> Void)) {
         
         if let collabID = collab?.collabID, let blockID = block?.blockID, let voiceMemoID = voiceMemo?.voiceMemoID {
             
@@ -154,7 +154,15 @@ class VoiceMemosPresentationCollectionViewCell: UICollectionViewCell {
                 
                 if error != nil {
                     
-                    completion(error)
+                    if error!.retryStorageRetrieval(), failureCount < 3 {
+                        
+                        self?.retrieveVoiceMemo(collab, block, voiceMemo, failureCount + 1, completion)
+                    }
+                    
+                    else {
+                        
+                        SVProgressHUD.showError(withStatus: "Sorry, an error occurred while loading this Voice Memo")
+                    }
                 }
                 
                 else if progress != nil {
@@ -194,7 +202,15 @@ class VoiceMemosPresentationCollectionViewCell: UICollectionViewCell {
 
                 if error != nil {
 
-                    completion(error)
+                    if error!.retryStorageRetrieval(), failureCount < 3 {
+                        
+                        self?.retrieveVoiceMemo(collab, block, voiceMemo, failureCount + 1, completion)
+                    }
+                    
+                    else {
+                        
+                        SVProgressHUD.showError(withStatus: "Sorry, an error occurred while loading this Voice Memo")
+                    }
                 }
 
                 else if progress != nil {

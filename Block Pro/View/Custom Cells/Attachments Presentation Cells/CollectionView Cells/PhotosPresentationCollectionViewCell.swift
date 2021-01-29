@@ -8,6 +8,7 @@
 
 import UIKit
 import iProgressHUD
+import SVProgressHUD
 
 class PhotosPresentationCollectionViewCell: UICollectionViewCell {
     
@@ -96,61 +97,88 @@ class PhotosPresentationCollectionViewCell: UICollectionViewCell {
         ].forEach({ $0.isActive = true })
     }
     
-    private func setPhoto (_ photo: UIImage?) {
+    private func setPhoto (_ photo: UIImage?, _ failureCount: Int = 0) {
         
-        photoImageView.image = nil
+        showProgress = true
         
-        if let photo = photo {
+        if failureCount > 0 {
             
-            photoImageView.image = photo
+            progressView.showProgress()
         }
         
-        else if let collabID = collabID, let blockID = blockID, let photoID = photoID {
+        //Delays the next retrieval attempt of the photo
+        DispatchQueue.main.asyncAfter(deadline: .now() + Double(3 * failureCount)) {
             
-            showProgress = true
+            self.photoImageView.image = nil
             
-            firebaseStorage.retrieveCollabBlockPhotoFromStorage(collabID, blockID, photoID) { (error, photo) in
+            if let photo = photo {
                 
-                if error != nil {
-                    
-                    print(error as Any)
-                }
+                self.photoImageView.image = photo
+                self.progressView.dismissProgress()
+            }
+            
+            else if let collabID = self.collabID, let blockID = self.blockID, let photoID = self.photoID {
                 
-                else {
+                self.firebaseStorage.retrieveCollabBlockPhotoFromStorage(collabID, blockID, photoID) { (error, photo) in
                     
-                    self.photoImageView.image = photo
+                    if error != nil {
+                        
+                        //If the failure was caused by the object not being found and retrieval hasn't been tried 3 times yet
+                        if error!.retryStorageRetrieval(), failureCount < 3 {
+                            
+                            self.setPhoto(nil, failureCount + 1)
+                        }
+                        
+                        else {
+                            
+                            SVProgressHUD.showError(withStatus: "Sorry, an error occurred while loading this photo")
+                        }
+                    }
+                    
+                    else {
+                        
+                        self.photoImageView.image = photo
 
-                    self.showProgress = false
-                    self.progressView.dismissProgress()
+                        self.showProgress = false
+                        self.progressView.dismissProgress()
 
-                    self.cachePhotoDelegate?.cacheBlockPhoto(photoID: photoID, photo: photo)
+                        self.cachePhotoDelegate?.cacheBlockPhoto(photoID: photoID, photo: photo)
+                    }
                 }
             }
-        }
-        
-        else if let collabID = collabID, let photoID = photoID {
             
-            showProgress = true
-            
-            firebaseStorage.retrieveCollabPhotosFromStorage(collabID: collabID, photoID: photoID) { (photo, error) in
+            else if let collabID = self.collabID, let photoID = self.photoID {
                 
-                if error != nil {
+                self.firebaseStorage.retrieveCollabPhotosFromStorage(collabID: collabID, photoID: photoID) { (photo, error) in
                     
-                    print(error as Any)
-                }
-                
-                else {
+                    if error != nil {
+                        
+                        //If the failure was caused by the object not being found and retrieval hasn't been tried 3 times yet
+                        if error!.retryStorageRetrieval(), failureCount < 3 {
+                            
+                            self.setPhoto(nil, failureCount + 1)
+                        }
+                        
+                        else {
+                            
+                            SVProgressHUD.showError(withStatus: "Sorry, an error occurred while loading this photo")
+                        }
+                    }
                     
-                    self.photoImageView.image = photo
-                    
-                    self.showProgress = false
-                    self.progressView.dismissProgress()
-                    
-                    self.cachePhotoDelegate?.cacheCollabPhoto(photoID: photoID, photo: photo)
+                    else {
+                        
+                        self.photoImageView.image = photo
+                        
+                        self.showProgress = false
+                        self.progressView.dismissProgress()
+                        
+                        self.cachePhotoDelegate?.cacheCollabPhoto(photoID: photoID, photo: photo)
+                    }
                 }
             }
         }
     }
+
     
     @objc func handleLongPress (gesture: UILongPressGestureRecognizer) {
         
