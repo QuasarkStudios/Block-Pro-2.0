@@ -81,6 +81,11 @@ class VoiceMemoRecorder {
                 //Adds the notification that will be fired when the audio is interrupted, and attaches the "handleAudioInterruption" method from the "parentCell" to it
                 NotificationCenter.default.addObserver(cell, selector: #selector(cell.handleAudioInterruption), name: AVAudioSession.interruptionNotification, object: nil)
             }
+            
+            else if let cell = parentCell as? VoiceMemosConfigurationCell {
+                
+                NotificationCenter.default.addObserver(cell, selector: #selector(cell.handleAudioInterruption), name: AVAudioSession.interruptionNotification, object: nil)
+            }
         }
         
         else {
@@ -109,12 +114,32 @@ class VoiceMemoRecorder {
                             cell.attachButtonPressed()
                         }
                     }
+                    
+                    else if let cell = self.parentCell as? VoiceMemosConfigurationCell {
+                        
+                        //Adds the notification that will be fired when the audio is interrupted, and attaches the "handleAudioInterruption" method from the "parentCell" to it
+                        NotificationCenter.default.addObserver(cell, selector: #selector(cell.handleAudioInterruption), name: AVAudioSession.interruptionNotification, object: nil)
+                        
+                        //Performs all the layout modifications on the main thread
+                        DispatchQueue.main.async {
+                            
+                            cell.attachButtonPressed()
+                        }
+                    }
                 }
                 
                 //If permission is denied
                 else {
                     
                     if let cell = self.parentCell as? CreateCollabVoiceMemoCell {
+                        
+                        DispatchQueue.main.async {
+                            
+                            cell.presentDeniedAlert()
+                        }
+                    }
+                    
+                    else if let cell = self.parentCell as? VoiceMemosConfigurationCell {
                         
                         DispatchQueue.main.async {
                             

@@ -57,6 +57,8 @@
 		0D2386CB24C26F6A00876154 /* PhotoMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2386C924C26F6A00876154 /* PhotoMessageCell.swift */; };
 		0D2386CC24C26F6A00876154 /* PhotoMessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D2386CA24C26F6A00876154 /* PhotoMessageCell.xib */; };
 		0D2576EB25C3E00E008C2711 /* Error+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2576EA25C3E00D008C2711 /* Error+Extension.swift */; };
+		0D2576EF25C52E33008C2711 /* HiddenBlocksViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2576EE25C52E33008C2711 /* HiddenBlocksViewController.swift */; };
+		0D2576F325C53127008C2711 /* BlockCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2576F225C53127008C2711 /* BlockCell.swift */; };
 		0D2707FC2326DF9000592EC8 /* PomodoroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2707FB2326DF9000592EC8 /* PomodoroViewController.swift */; };
 		0D2A387B24C2A207008D69F3 /* chat-bubbles-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D2A387A24C2A207008D69F3 /* chat-bubbles-animation.json */; };
 		0D2B5BCE24744AE800FC2536 /* ProfilePicture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2B5BCD24744AE800FC2536 /* ProfilePicture.swift */; };
@@ -414,6 +416,8 @@
 		0D2386C924C26F6A00876154 /* PhotoMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMessageCell.swift; sourceTree = "<group>"; };
 		0D2386CA24C26F6A00876154 /* PhotoMessageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoMessageCell.xib; sourceTree = "<group>"; };
 		0D2576EA25C3E00D008C2711 /* Error+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Error+Extension.swift"; sourceTree = "<group>"; };
+		0D2576EE25C52E33008C2711 /* HiddenBlocksViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenBlocksViewController.swift; sourceTree = "<group>"; };
+		0D2576F225C53127008C2711 /* BlockCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockCell.swift; sourceTree = "<group>"; };
 		0D2707FB2326DF9000592EC8 /* PomodoroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PomodoroViewController.swift; sourceTree = "<group>"; };
 		0D2A387A24C2A207008D69F3 /* chat-bubbles-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "chat-bubbles-animation.json"; sourceTree = "<group>"; };
 		0D2B5BCD24744AE800FC2536 /* ProfilePicture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilePicture.swift; sourceTree = "<group>"; };
@@ -994,6 +998,7 @@
 				0D02C2422443744C00D255D7 /* Create A Collab View Files */,
 				0DE728C1250872A200581048 /* Messaging */,
 				0D5FD0BE25BC01C100E9BA2D /* SelectedBlockViewController.swift */,
+				0D2576EE25C52E33008C2711 /* HiddenBlocksViewController.swift */,
 				0D02C2402443744600D255D7 /* AddMembersViewController.swift */,
 				0D589DE92458C519005AC7BC /* NotificationsViewController.swift */,
 				0D879ACA24B828140037C880 /* FriendProfileViewController.swift */,
@@ -1037,9 +1042,10 @@
 				0D891CC025B51A3F00B04C2F /* FullBlock.swift */,
 				0D891CC625B5547A00B04C2F /* HalfBlock.swift */,
 				0D891CC925B5721700B04C2F /* OneThirdBlock.swift */,
+				0D2576F225C53127008C2711 /* BlockCell.swift */,
 				0D5FD0C725BC0CB800E9BA2D /* SelectedBlock Cells */,
 				0D480F16259BA0F000E14D1E /* Configuration Cells */,
-				0D5FD0D525BD109D00E9BA2D /* Attachments Presentation Cells */,
+				0D5FD0D525BD109D00E9BA2D /* Presentation Cells */,
 				0D45DED0254694E0003E16E3 /* Add Location View Cells */,
 				0DC5D96F253A89DD00151598 /* CollabHome Cells */,
 				0D7868512446AB1100A92DD1 /* AddMembers View */,
@@ -1174,7 +1180,7 @@
 			path = "SelectedBlock Cells";
 			sourceTree = "<group>";
 		};
-		0D5FD0D525BD109D00E9BA2D /* Attachments Presentation Cells */ = {
+		0D5FD0D525BD109D00E9BA2D /* Presentation Cells */ = {
 			isa = PBXGroup;
 			children = (
 				0D5FD0D625BD112800E9BA2D /* LocationsPresentationCell.swift */,
@@ -1183,7 +1189,7 @@
 				0D5FD10F25BF63F700E9BA2D /* LinksPresentationCell.swift */,
 				0D5FD0DD25BDF95600E9BA2D /* CollectionView Cells */,
 			);
-			path = "Attachments Presentation Cells";
+			path = "Presentation Cells";
 			sourceTree = "<group>";
 		};
 		0D5FD0DD25BDF95600E9BA2D /* CollectionView Cells */ = {
@@ -1995,6 +2001,7 @@
 				0DE728C52509751B00581048 /* CachePhotoProtocol.swift in Sources */,
 				0DD9D88D24437A64006AA8AB /* MembersTableViewCell.swift in Sources */,
 				0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */,
+				0D2576F325C53127008C2711 /* BlockCell.swift in Sources */,
 				0D112836234C2BF00080774C /* InfoViewController.swift in Sources */,
 				0DADDAB42355919800E79F89 /* TimeTwentyFiveMinCell.swift in Sources */,
 				0D7CABE9252A69590045006C /* Public Variables.swift in Sources */,
@@ -2019,6 +2026,7 @@
 				0D7CE23E23C43AE7005BB8EE /* CardContainer.swift in Sources */,
 				0DBAB34324204EA00021FE35 /* CategoryProgressBar.swift in Sources */,
 				0DF609CF25B159E600B0BB63 /* Firebase+Block.swift in Sources */,
+				0D2576EF25C52E33008C2711 /* HiddenBlocksViewController.swift in Sources */,
 				0D41F5C02311EC6A00B4B11E /* CollabFifteenMinCell.swift in Sources */,
 				0D41F5C6231376FB00B4B11E /* CollabThirtyMinAndUpCell.swift in Sources */,
 				0D78684524451A0D00A92DD1 /* MembersCollectionViewCell.swift in Sources */,

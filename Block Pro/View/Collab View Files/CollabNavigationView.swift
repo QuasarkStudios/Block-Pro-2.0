@@ -34,6 +34,8 @@ class CollabNavigationView: UIView {
     
     let formatter = DateFormatter()
     
+    var originalTableViewContentOffset: CGFloat?
+    
     weak var collabViewController: AnyObject?
     
     init (collabStartTime: Date?, collabDeadline: Date?) {
@@ -300,6 +302,12 @@ class CollabNavigationView: UIView {
             self.layoutIfNeeded()
             
             self.collabTableView.contentInset = UIEdgeInsets(top: -22, left: 0, bottom: 0, right: 0)
+            
+            //Setting the contentOffset of the tableView back to what it was before the view was expanded
+            if let contentOffset =  self.originalTableViewContentOffset {
+                
+                self.collabTableView.contentOffset.y = contentOffset
+            }
         }
     }
     
@@ -324,8 +332,17 @@ class CollabNavigationView: UIView {
             self.layoutIfNeeded()
             
             self.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-            self.collabTableView.contentOffset = CGPoint(x: 0, y: self.collabTableView.contentOffset.x - 22)
             
+            //Setting the contentOffset of the tableView back to what it was before the view was shrunk
+            if let contentOffset =  self.originalTableViewContentOffset {
+                
+                self.collabTableView.contentOffset.y = contentOffset
+            }
+            
+        } completion: { (finished: Bool) in
+            
+            //Setting this to nil will allow the panGesture to reset the originalContentOffset next time the view is panned
+            self.originalTableViewContentOffset = nil
         }
     }
     
@@ -483,7 +500,10 @@ extension CollabNavigationView: JTAppleCalendarViewDataSource, JTAppleCalendarVi
             
             if let startTime = collabStartTime, let row = Calendar.current.dateComponents([.day], from: startTime, to: date).day {
                 
-                collabTableView.scrollToRow(at: IndexPath(row: row, section: 0), at: .top, animated: true)
+                if let viewController = collabViewController as? CollabViewController {
+                    
+                    viewController.scrollToFirstBlock(indexPathToScrollTo: IndexPath(row: row, section: 0))
+                }
             }
         }
     }

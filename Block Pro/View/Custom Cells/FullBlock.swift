@@ -72,7 +72,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 6
             
-            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 10, height: 15)
+            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 20, height: 15)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 13)
             
             addSubview(nameLabel)
@@ -82,7 +82,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 9
             
-            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 10, height: 22.5)
+            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 20, height: 22.5)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
             
             addSubview(nameLabel)
@@ -92,7 +92,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 10, height: 30)
+            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 20, height: 30)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 17)
 
             addSubview(nameLabel)
@@ -102,7 +102,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 12
             
-            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 10, height: 37.5)
+            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 20, height: 37.5)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
 
             addSubview(nameLabel)
@@ -112,7 +112,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 10, height: 45)
+            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 20, height: 45)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
 
             addSubview(nameLabel)
@@ -122,7 +122,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 10, height: 52.5)
+            nameLabel.frame = CGRect(x: 15, y: 0, width: frame.width - 20, height: 52.5)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
             
             addSubview(nameLabel)
@@ -132,7 +132,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 15, y: 7, width: frame.width - 10, height: 25)
+            nameLabel.frame = CGRect(x: 15, y: 7, width: frame.width - 20, height: 25)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
             
             addSubview(nameLabel)
@@ -147,7 +147,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 15, y: 7, width: frame.width - 10, height: 28.75)
+            nameLabel.frame = CGRect(x: 15, y: 7, width: frame.width - 20, height: 28.75)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
             
             addSubview(nameLabel)
@@ -162,7 +162,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 15, y: 5, width: frame.width - 10, height: 35)
+            nameLabel.frame = CGRect(x: 15, y: 5, width: frame.width - 20, height: 35)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
             
             addSubview(nameLabel)
@@ -177,7 +177,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 15, y: 5, width: frame.width - 10, height: 35)
+            nameLabel.frame = CGRect(x: 15, y: 5, width: frame.width - 20, height: 35)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
             
             addSubview(nameLabel)
@@ -192,7 +192,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 15, y: 5, width: frame.width - 10, height: 35)
+            nameLabel.frame = CGRect(x: 15, y: 5, width: frame.width - 20, height: 35)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
             
             addSubview(nameLabel)
@@ -208,7 +208,7 @@ class FullBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 15, y: 5, width: frame.width - 10, height: 35)
+            nameLabel.frame = CGRect(x: 15, y: 5, width: frame.width - 20, height: 35)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
             
             addSubview(nameLabel)

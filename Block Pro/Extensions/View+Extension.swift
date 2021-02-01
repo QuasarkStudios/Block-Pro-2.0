@@ -59,27 +59,52 @@ extension UIView {
     
     func setCollabBlockColor (_ block: Block?) {
         
-        switch block?.status {
+        if let status = block?.status {
+            
+            switch status {
 
-            case .completed:
+                case .completed:
 
-                self.backgroundColor = UIColor(hexString: "2ECC70", withAlpha: 0.80)
+                    self.backgroundColor = UIColor(hexString: "2ECC70", withAlpha: 0.80)
 
-            case .inProgress:
+                case .inProgress:
 
+                    self.backgroundColor = UIColor(hexString: "5065A0", withAlpha: 0.75)
+
+                case .needsHelp:
+
+                    self.backgroundColor = UIColor(hexString: "FFCC02", withAlpha: 0.75)
+
+                case .late:
+
+                    self.backgroundColor = UIColor(hexString: "E84D3C", withAlpha: 0.75)
+
+                //Not Started
+                default:
+
+                    self.backgroundColor = UIColor(hexString: "AAAAAA", withAlpha: 0.75)
+            }
+        }
+        
+        else if let starts = block?.starts, let ends = block?.ends {
+            
+            if Date().isBetween(startDate: starts, endDate: ends) {
+                
+                //In Progress
                 self.backgroundColor = UIColor(hexString: "5065A0", withAlpha: 0.75)
-
-            case .needsHelp:
-
-                self.backgroundColor = UIColor(hexString: "FFCC02", withAlpha: 0.75)
-
-            case .late:
-
-                self.backgroundColor = UIColor(hexString: "E84D3C", withAlpha: 0.75)
-
-            default:
-
+            }
+            
+            else if Date() < starts {
+                
+                //Not Started
                 self.backgroundColor = UIColor(hexString: "AAAAAA", withAlpha: 0.75)
+            }
+            
+            else if Date() > ends {
+                 
+                //Late
+                self.backgroundColor = UIColor(hexString: "E84D3C", withAlpha: 0.75)
+            }
         }
     }
 }

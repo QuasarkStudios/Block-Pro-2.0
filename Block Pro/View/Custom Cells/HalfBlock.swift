@@ -74,7 +74,7 @@ class HalfBlock: UIView {
             
             layer.cornerRadius = 6
             
-            nameLabel.frame = CGRect(x: 0, y: -0.5, width: frame.width, height: 15)
+            nameLabel.frame = CGRect(x: 5, y: -0.5, width: frame.width - 10, height: 15)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 12)
             
             addSubview(nameLabel)
@@ -84,7 +84,7 @@ class HalfBlock: UIView {
             
             layer.cornerRadius = 9
             
-            nameLabel.frame = CGRect(x: 0, y: 0, width: frame.width, height: 22.5)
+            nameLabel.frame = CGRect(x: 5, y: 0, width: frame.width - 10, height: 22.5)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 13.5)
             
             addSubview(nameLabel)
@@ -94,7 +94,7 @@ class HalfBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 0, y: 0, width: frame.width, height: 30)
+            nameLabel.frame = CGRect(x: 5, y: 0, width: frame.width - 10, height: 30)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 13.5)
 
             addSubview(nameLabel)
@@ -104,7 +104,7 @@ class HalfBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 0, y: 0, width: frame.width, height: 37.5)
+            nameLabel.frame = CGRect(x: 5, y: 0, width: frame.width - 10, height: 37.5)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 14)
 
             addSubview(nameLabel)
@@ -114,7 +114,7 @@ class HalfBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 0, y: 0, width: frame.width, height: 45)
+            nameLabel.frame = CGRect(x: 5, y: 0, width: frame.width - 10, height: 45)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 14)
 
             addSubview(nameLabel)
@@ -124,7 +124,7 @@ class HalfBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 0, y: 0, width: frame.width, height: 52.5)
+            nameLabel.frame = CGRect(x: 5, y: 0, width: frame.width - 10, height: 52.5)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 14)
             
             addSubview(nameLabel)
@@ -134,12 +134,12 @@ class HalfBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 0, y: 3.5, width: frame.width, height: 30)
+            nameLabel.frame = CGRect(x: 5, y: 3.5, width: frame.width - 10, height: 30)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 14)
             
             addSubview(nameLabel)
             
-            timeLabel.frame = CGRect(x: 5, y: nameLabel.frame.maxY + 2, width: frame.width - 10, height: 15)//(frame.height / 2) - 5)
+            timeLabel.frame = CGRect(x: 6.5, y: nameLabel.frame.maxY + 2, width: frame.width - 11.5, height: 15)
             timeLabel.font = UIFont(name: "Poppins-Medium", size: 12)
 
             addSubview(timeLabel)
@@ -149,12 +149,12 @@ class HalfBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 0, y: 7.5, width: frame.width, height: 30)
+            nameLabel.frame = CGRect(x: 5, y: 7.5, width: frame.width - 10, height: 30)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 16)
             
             addSubview(nameLabel)
             
-            timeLabel.frame = CGRect(x: 5, y: nameLabel.frame.maxY + 2.5, width: frame.width - 10, height: 15)//(frame.height / 2) - 5)
+            timeLabel.frame = CGRect(x: 6.5, y: nameLabel.frame.maxY + 2.5, width: frame.width - 11.5, height: 15)
             timeLabel.font = UIFont(name: "Poppins-Medium", size: 12)
 
             addSubview(timeLabel)
@@ -164,12 +164,12 @@ class HalfBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 0, y: 5, width: frame.width, height: 30)
+            nameLabel.frame = CGRect(x: 5, y: 5, width: frame.width - 10, height: 30)
             nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 16)
             
             addSubview(nameLabel)
             
-            timeLabel.frame = CGRect(x: 5, y: nameLabel.frame.maxY + 2.5, width: frame.width - 10, height: 15)//(frame.height / 2) - 5)
+            timeLabel.frame = CGRect(x: 6.5, y: nameLabel.frame.maxY + 2.5, width: frame.width - 11.5, height: 15)
             timeLabel.font = UIFont(name: "Poppins-Medium", size: 12)
 
             addSubview(timeLabel)
@@ -179,14 +179,14 @@ class HalfBlock: UIView {
             
             layer.cornerRadius = 11
             
-            nameLabel.frame = CGRect(x: 0, y: 5, width: frame.width, height: 35)
-            nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 16/*14.5*/)
+            nameLabel.frame = CGRect(x: 5, y: 5, width: frame.width - 10, height: 35)
+            nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 16)
             nameLabel.adjustsFontSizeToFitWidth = true
             nameLabel.minimumScaleFactor = 0.8
             
             addSubview(nameLabel)
             
-            timeLabel.frame = CGRect(x: 5, y: nameLabel.frame.maxY + 2.5, width: frame.width - 10, height: 15)//(frame.height / 2) - 5)
+            timeLabel.frame = CGRect(x: 6.5, y: nameLabel.frame.maxY + 2.5, width: frame.width - 11.5, height: 15)
             timeLabel.font = UIFont(name: "Poppins-Medium", size: 12)
 
             addSubview(timeLabel)

@@ -23,6 +23,8 @@ class BlocksTableViewCell: UITableViewCell {
                 }
             }
             
+            hiddenBlocks = []
+            
             determineBlockIntersections()
             configureBlocks(blocks)
         }
@@ -33,6 +35,8 @@ class BlocksTableViewCell: UITableViewCell {
     var blockIntersections: [String : [[String : Any]]] = [:]
     
     let cellTimes: [String] = ["12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM"]
+    
+    var hiddenBlocks: [Block] = []
     
     weak var blockSelectedDelegate: BlockSelectedProtocol?
     
@@ -104,16 +108,6 @@ class BlocksTableViewCell: UITableViewCell {
                 let fullBlock = FullBlock(frame: CGRect(x: 75, y: yCoord, width: width, height: height))
                 fullBlock.formatter = formatter
                 fullBlock.collab = collab
-                
-                //Remove
-                /////////////////////////////////////////////////////////////////////////////////////
-//                let progress: [BlockStatus] = [.completed, .inProgress, .needsHelp, .late, .notStarted]
-//                
-//                let random = Int.random(in: 0...4)
-//                
-//                blockArray?[count].status = progress[random]
-                /////////////////////////////////////////////////////////////////////////////////////
-                
                 fullBlock.block = blockArray?[count]
                 fullBlock.blockSelectedDelegate = blockSelectedDelegate
                 
@@ -142,16 +136,6 @@ class BlocksTableViewCell: UITableViewCell {
                 
                 let halfBlock = HalfBlock(frame: blockArray?[count].position == .left ? leftFrame : rightFrame)
                 halfBlock.formatter = formatter
-                
-                //Remove
-                /////////////////////////////////////////////////////////////////////////////////////
-//                let progress: [BlockStatus] = [.completed, .inProgress, .needsHelp, .late, .notStarted]
-//
-//                let random = Int.random(in: 0...4)
-//
-//                blockArray?[count].status = progress[random]
-                /////////////////////////////////////////////////////////////////////////////////////
-                
                 halfBlock.block = blockArray?[count]
                 halfBlock.blockSelectedDelegate = blockSelectedDelegate
                 
@@ -202,6 +186,11 @@ class BlocksTableViewCell: UITableViewCell {
                         //If the block positioned to the right also wouldn't work, the block should be hidden
                         if block.frame.intersects(rightFrame), block.frame.minY != rightFrame.maxY && block.frame.maxY != rightFrame.minY {
                             
+                            if let block = blockArray?[count] {
+                                
+                                hiddenBlocks.append(block)
+                            }
+                            
                             blockArray?[count].position = .hidden
                             break
                         }
@@ -226,15 +215,6 @@ class BlocksTableViewCell: UITableViewCell {
                         
                         oneThirdBlock = OneThirdBlock(frame: CGRect(x: ((width / 3) * 2) + 80, y: yCoord, width: (width / 3) - 2.5, height: height))
                     }
-                    
-                    //Remove
-                    /////////////////////////////////////////////////////////////////////////////////////
-//                    let progress: [BlockStatus] = [.completed, .inProgress, .needsHelp, .late, .notStarted]
-//
-//                    let random = Int.random(in: 0...4)
-//
-//                    blockArray?[count].status = progress[random]
-                    /////////////////////////////////////////////////////////////////////////////////////
                     
                     oneThirdBlock?.block = blockArray?[count]
                     oneThirdBlock?.blockSelectedDelegate = blockSelectedDelegate

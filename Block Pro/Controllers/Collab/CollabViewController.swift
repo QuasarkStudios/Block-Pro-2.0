@@ -11,6 +11,8 @@ import SVProgressHUD
 
 class CollabViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    var hiddenBlockVC: HiddenBlocksViewController?
+    
     lazy var collabHeaderView = CollabHeaderView(collab)
     lazy var collabHeaderViewHeightConstraint = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
     
@@ -25,6 +27,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     lazy var deleteCoverButton: UIButton = configureDeleteButton()
     
     let addBlockButton = UIButton(type: .system)
+    let seeHiddenBlocksButton = UIButton(type: .system)
     
     lazy var tabBar = CustomTabBar.sharedInstance
     
@@ -46,6 +49,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     var blocks: [Block]?
     var selectedBlock: Block?
+    var hiddenBlocks: [Block] = []
     
     var messagingMethods: MessagingMethods!
     var messages: [Message]?
@@ -67,6 +71,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     var imageViewBeingZoomed: Bool?
     var keyboardWasPresent: Bool?
     
+    var tabBarWasHidden: Bool = false
+    
 //    var viewAppeared: Bool = false
     
     override func viewDidLoad() {
@@ -82,6 +88,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         configureCollabNavigationView()
         
         configureAddBlockButton()
+        configureSeeHiddenBlocksButton()
         
         configureBlockView()
 //        configureMessagingView()
@@ -100,6 +107,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         retrieveMessageDraft()
         
+        tabBar.shouldHide = tabBarWasHidden
+        
         //Initializing here allows the animationView to be removed and readded multiple times
         copiedAnimationView = CopiedAnimationView()
     }
@@ -107,6 +116,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     override func viewDidAppear(_ animated: Bool) {
         
 //        viewAppeared = true
+        
+        hiddenBlockVC = nil
         
         addObservors()
         
@@ -116,9 +127,13 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     override func viewWillDisappear(_ animated: Bool) {
         
+        tabBarWasHidden = tabBar.alpha == 0
+        
         removeObservors()
         
-        firebaseCollab.messageListener?.remove()
+        #warning("find a better plack to remove these listeners")
+//        firebaseBlock.collabBlocksListener?.remove(); #warning("will stop blocks from being recieved im pretty sure")
+//        firebaseCollab.messageListener?.remove();
         
         setUserInactiveStatus()
         
@@ -722,6 +737,59 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                         collabNavigationView.calendarView.selectDates([startTime])
                     }
                 }
+                
+                determineHiddenBlocks(scrollView)
+            }
+        }
+    }
+    
+    internal func determineHiddenBlocks (_ scrollView: UIScrollView) {
+        
+        //Ensures that the view is expanded
+        if let indexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first, navigationItem.hidesBackButton {
+            
+            //The range of y-Coords that is used to determine which hidden blocks can be presented
+            let range = scrollView.contentOffset.y - CGFloat(2210 * indexPath.row) ... scrollView.contentOffset.y - CGFloat(2210 * indexPath.row) + scrollView.frame.height
+            
+            if let cell = collabNavigationView.collabTableView.cellForRow(at: indexPath) as? BlocksTableViewCell {
+                
+                hiddenBlocks = []
+                
+                for hiddenBlock in cell.hiddenBlocks {
+                    
+                    let blockStartHour = calendar.dateComponents([.hour], from: hiddenBlock.starts!).hour!
+                    let blockStartMinute = calendar.dateComponents([.minute], from: hiddenBlock.starts!).minute!
+                    let yCoord = CGFloat((Double(blockStartHour) * 90) + (Double(blockStartMinute) * 1.5)) + 50
+                    
+                    //If the hidden block's y-Coord is within the range meaning that it would be visible to the user if it wasn't hidden
+                    if range.contains(yCoord) {
+                        
+                        hiddenBlocks.append(hiddenBlock)
+                    }
+                }
+                
+                //If the hiddenBlocksVC is currently in the navigation stack/presented to the user, this will update the hiddenBlocks in that view
+                if let viewController = hiddenBlockVC {
+                    
+                    viewController.hiddenBlocks = hiddenBlocks
+                }
+                
+                //Animating the hiddenBlocksButton based on the number of hiddenBlocks available
+                if hiddenBlocks.count > 0 {
+                    
+                    UIView.animate(withDuration: 0.3) {
+                        
+                        self.seeHiddenBlocksButton.alpha = 1
+                    }
+                }
+                
+                else {
+                    
+                    UIView.animate(withDuration: 0.3) {
+                        
+                        self.seeHiddenBlocksButton.alpha = 0
+                    }
+                }
             }
         }
     }
@@ -736,10 +804,13 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     
                     if let firstVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first {
                         
-                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: firstVisibleCellIndexPath.row, to: startTime) {
+                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: firstVisibleCellIndexPath.row, to: startTime), adjustedDate != collabNavigationView.calendarView.selectedDates.first ?? Date() {
 
                             collabNavigationView.calendarView.scrollToDate(adjustedDate)
                             collabNavigationView.calendarView.selectDates([adjustedDate])
+                            
+                            let vibrateMethods = VibrateMethods()
+                            vibrateMethods.warningVibration()
                         }
                     }
                     
@@ -754,10 +825,13 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     
                     if let lastVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.last {
                         
-                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: lastVisibleCellIndexPath.row, to: startTime) {
-
+                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: lastVisibleCellIndexPath.row, to: startTime), adjustedDate != collabNavigationView.calendarView.selectedDates.first ?? Date() {
+                            
                             collabNavigationView.calendarView.scrollToDate(adjustedDate)
                             collabNavigationView.calendarView.selectDates([adjustedDate])
+                            
+                            let vibrateMethods = VibrateMethods()
+                            vibrateMethods.warningVibration()
                         }
                     }
                     
@@ -954,6 +1028,40 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         addBlockButton.addTarget(self, action: #selector(addBlockButtonPressed), for: .touchUpInside)
     }
     
+    private func configureSeeHiddenBlocksButton () {
+        
+        self.view.addSubview(seeHiddenBlocksButton)
+        seeHiddenBlocksButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            seeHiddenBlocksButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -12.5),
+            seeHiddenBlocksButton.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0),
+            seeHiddenBlocksButton.widthAnchor.constraint(equalToConstant: 35),
+            seeHiddenBlocksButton.heightAnchor.constraint(equalToConstant: 35)
+            
+        ].forEach({ $0.isActive = true })
+        
+        seeHiddenBlocksButton.alpha = 0
+        
+        seeHiddenBlocksButton.tintColor = UIColor(hexString: "222222")
+        seeHiddenBlocksButton.setImage(UIImage(systemName: "chevron.right.circle.fill"), for: .normal)
+        seeHiddenBlocksButton.contentVerticalAlignment = .fill
+        seeHiddenBlocksButton.contentHorizontalAlignment = .fill
+        
+        seeHiddenBlocksButton.addTarget(self, action: #selector(seeHiddenBlocksButtonPressed), for: .touchUpInside)
+        
+        let buttonBackgroundView = UIView(frame: CGRect(x: 5, y: 5, width: 25, height: 25))
+        buttonBackgroundView.backgroundColor = .white
+        buttonBackgroundView.isUserInteractionEnabled = false
+        
+        buttonBackgroundView.layer.cornerRadius = 25 * 0.5
+        buttonBackgroundView.clipsToBounds = true
+        
+        seeHiddenBlocksButton.addSubview(buttonBackgroundView)
+        seeHiddenBlocksButton.bringSubviewToFront(seeHiddenBlocksButton.imageView!)
+    }
+    
     
     internal func addObservors () {
         
@@ -1052,6 +1160,12 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         switch sender.state {
             
         case .began, .changed:
+            
+            if collabNavigationView.originalTableViewContentOffset == nil {
+                
+                //Setting the originalContentOffset so that the collabTableView will be animated back into the correct position once the panGesture has completed
+                collabNavigationView.originalTableViewContentOffset = collabNavigationView.collabTableView.contentOffset.y
+            }
             
             moveWithPan(sender: sender)
             
@@ -1161,6 +1275,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             self.tabBar.alpha = self.selectedTab != "Messages" ? 1 : 0
             self.addBlockButton.alpha = self.selectedTab == "Blocks" ? 1 : 0
+            self.seeHiddenBlocksButton.alpha = 0
         })
         
         collabNavigationViewBottomAnchor?.constant = 0
@@ -1213,6 +1328,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             self.tabBar.alpha = 1
             self.presentCollabNavigationViewButton.alpha = 1
             self.addBlockButton.alpha = 0
+            self.seeHiddenBlocksButton.alpha = 0
             self.messageInputAccesoryView.alpha = 0
         }
     }
@@ -1373,8 +1489,16 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
 //            }
             
             let configureBlockVC: ConfigureBlockViewController = ConfigureBlockViewController()
-            configureBlockVC.collab = collab
             configureBlockVC.title = "Add a Block"
+            
+            configureBlockVC.collab = collab
+            
+            //This will set the block date to be the current selected date
+            if let selectedDate = collabNavigationView.calendarView.selectedDates.first, !calendar.isDate(selectedDate, inSameDayAs: Date()) {
+                
+                configureBlockVC.block.starts = selectedDate
+                configureBlockVC.block.ends = selectedDate.adjustTime(roundDown: false)
+            }
             
             let configureBlockNavigationController = UINavigationController(rootViewController: configureBlockVC)
             configureBlockNavigationController.navigationBar.prefersLargeTitles = true
@@ -1392,6 +1516,46 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             }
         }
     }
+    //MARK: - Add Cover Photo Function
+    
+    func presentAddPhotoAlert (tracker: String, shrinkView: Bool) {
+        
+        if shrinkView {
+            
+            self.shrinkView()
+        }
+        
+        alertTracker = tracker
+        
+        let addCoverPhotoAlert = UIAlertController (title: nil, message: nil, preferredStyle: .actionSheet)
+        
+        let takePhotoAction = UIAlertAction(title: "    Take a Photo", style: .default) { (takePhotoAction) in
+          
+            self.takePhotoSelected()
+        }
+        
+        let cameraImage = UIImage(named: "camera2")
+        takePhotoAction.setValue(cameraImage, forKey: "image")
+        takePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
+        
+        let choosePhotoAction = UIAlertAction(title: "    Choose a Photo", style: .default) { (choosePhotoAction) in
+            
+            self.choosePhotoSelected()
+        }
+        
+        let photoImage = UIImage(named: "image")
+        choosePhotoAction.setValue(photoImage, forKey: "image")
+        choosePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        addCoverPhotoAlert.addAction(takePhotoAction)
+        addCoverPhotoAlert.addAction(choosePhotoAction)
+        addCoverPhotoAlert.addAction(cancelAction)
+        
+        present(addCoverPhotoAlert, animated: true, completion: nil)
+    }
+    
     
     private func prepViewForImageViewZooming () {
         
@@ -1426,6 +1590,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         title = ""
         
         reconfigureGestureRecognizers()
+        
+        //Setting the original contentOffset so that the collabTableView will be animated back to the correct position after the view has returned to it's origin
+        collabNavigationView.originalTableViewContentOffset = collabNavigationView.collabTableView.contentOffset.y
         
         returnToOrigin(scrollTableView: false)
         
@@ -1511,46 +1678,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
 
-    
-    //MARK: - Add Cover Photo Function
-    
-    func presentAddPhotoAlert (tracker: String, shrinkView: Bool) {
-        
-        if shrinkView {
-            
-            self.shrinkView()
-        }
-        
-        alertTracker = tracker
-        
-        let addCoverPhotoAlert = UIAlertController (title: nil, message: nil, preferredStyle: .actionSheet)
-        
-        let takePhotoAction = UIAlertAction(title: "    Take a Photo", style: .default) { (takePhotoAction) in
-          
-            self.takePhotoSelected()
-        }
-        
-        let cameraImage = UIImage(named: "camera2")
-        takePhotoAction.setValue(cameraImage, forKey: "image")
-        takePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
-        
-        let choosePhotoAction = UIAlertAction(title: "    Choose a Photo", style: .default) { (choosePhotoAction) in
-            
-            self.choosePhotoSelected()
-        }
-        
-        let photoImage = UIImage(named: "image")
-        choosePhotoAction.setValue(photoImage, forKey: "image")
-        choosePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        
-        addCoverPhotoAlert.addAction(takePhotoAction)
-        addCoverPhotoAlert.addAction(choosePhotoAction)
-        addCoverPhotoAlert.addAction(cancelAction)
-        
-        present(addCoverPhotoAlert, animated: true, completion: nil)
-    }
+
     
     func progressButtonTouchUpInside () {
         
@@ -1658,6 +1786,19 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
         
         performSegue(withIdentifier: "moveToConfigureBlockView", sender: self)
+    }
+    
+    @objc private func seeHiddenBlocksButtonPressed () {
+        
+        hiddenBlockVC = HiddenBlocksViewController()
+        hiddenBlockVC?.hiddenBlocks = hiddenBlocks
+        hiddenBlockVC?.blockSelectedDelegate = self
+        
+        let backBarButtonItem = UIBarButtonItem()
+        backBarButtonItem.title = ""
+        self.navigationItem.backBarButtonItem = backBarButtonItem
+        
+        self.navigationController?.pushViewController(hiddenBlockVC!, animated: true)
     }
 }
 

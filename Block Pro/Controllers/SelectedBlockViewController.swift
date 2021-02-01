@@ -298,25 +298,44 @@ class SelectedBlockViewController: UIViewController {
                 
                 
                 //Block Status////////////////////////////////////////////////////////////
-                if let status = block?.status, status != self?.block?.status {
-                    
-                    //If the BlockStatusCell is visible
-                    if self?.selectedBlockTableView.indexPathsForVisibleRows?.contains(where: { $0.row == 14 }) ?? false {
-                        
-                        if let statusCell = self?.selectedBlockTableView.cellForRow(at: IndexPath(row: 14, section: 0)) as? SelectedBlockStatusCell {
-                            
-                            statusCell.block = block
-                            
-                            let statusArray: [BlockStatus : Int] = [.notStarted : 0, .inProgress : 1, .completed : 2, .needsHelp : 3, .late : 4]
-                            
-                            if statusArray[status] != nil {
-                                
-                                statusCell.statusCollectionView.scrollToItem(at: IndexPath(item: statusArray[status]!, section: 0), at: .centeredHorizontally, animated: true)
-                            }
-                        }
-                    }
+                if let status = block?.status {
                     
                     self?.block?.status = status
+                }
+                
+                //Attempts to auto configure the block status
+                else if let starts = block?.starts, let ends = block?.ends {
+                    
+                    if Date().isBetween(startDate: starts, endDate: ends) {
+                        
+                        self?.block?.status = .inProgress
+                    }
+                    
+                    else if Date() < starts {
+                        
+                        self?.block?.status = .notStarted
+                    }
+                    
+                    else if Date() > ends {
+                        
+                        self?.block?.status = .late
+                    }
+                }
+                
+                //If the BlockStatusCell is visible
+                if self?.selectedBlockTableView.indexPathsForVisibleRows?.contains(where: { $0.row == 14 }) ?? false {
+                    
+                    if let statusCell = self?.selectedBlockTableView.cellForRow(at: IndexPath(row: 14, section: 0)) as? SelectedBlockStatusCell, let status = self?.block?.status, statusCell.block?.status != status {
+                        
+                        statusCell.block = block
+                        
+                        let statusArray: [BlockStatus : Int] = [.notStarted : 0, .inProgress : 1, .completed : 2, .needsHelp : 3, .late : 4]
+                        
+                        if statusArray[status] != nil {
+                            
+                            statusCell.statusCollectionView.scrollToItem(at: IndexPath(item: statusArray[status]!, section: 0), at: .centeredHorizontally, animated: true)
+                        }
+                    }
                 }
                 //////////////////////////////////////////////////////////////////////////
                 
@@ -689,7 +708,7 @@ extension SelectedBlockViewController: UITableViewDataSource, UITableViewDelegat
                 
                 else {
                     
-                    return 252.5//210 + 27.5
+                    return 252.5
                 }
                
             //Seperator Cell
