@@ -172,6 +172,8 @@ class CollabNavigationView: UIView {
         
         collabTableView.keyboardDismissMode = .interactive
         
+        collabTableView.delaysContentTouches = false
+        
         collabTableView.register(UITableViewCell.self, forCellReuseIdentifier: "seperatorCell")
     }
     
@@ -295,6 +297,8 @@ class CollabNavigationView: UIView {
         }
         
         self.tableViewTopAnchorWithStackView?.isActive = false
+        
+        self.tableViewTopAnchorWithCalendar?.constant = 10
         self.tableViewTopAnchorWithCalendar?.isActive = true
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {

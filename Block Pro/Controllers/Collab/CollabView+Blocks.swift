@@ -43,6 +43,14 @@ extension CollabViewController {
                         }
                     }
                     
+                    else if self?.selectedTab == "Progress" {
+                        
+                        if let cell = self?.collabNavigationView.collabTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CollabProgressCell {
+                            
+                            cell.blocks = retrievedBlocks
+                        }
+                    }
+                    
                     self?.determineHiddenBlocks(self!.collabNavigationView.collabTableView)
                 }
             }

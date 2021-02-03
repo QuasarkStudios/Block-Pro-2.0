@@ -566,6 +566,8 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         tableView.delegate = self
         tableView.separatorStyle = .none
         
+        tableView.scrollsToTop = false
+        
         tableView.alpha = 0
 
         tableView.register(UINib(nibName: "MessageHomeCell", bundle: nil), forCellReuseIdentifier: "messageHomeCell")

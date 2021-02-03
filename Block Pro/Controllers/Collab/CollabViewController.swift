@@ -90,8 +90,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         configureAddBlockButton()
         configureSeeHiddenBlocksButton()
         
+        configureProgressView()
         configureBlockView()
-//        configureMessagingView()
+        configureMessagingView()
         
         retrieveBlocks()
         retrieveMessages()
@@ -235,7 +236,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             else {
                 
-                return 0
+                return 1
             }
         }
     }
@@ -438,6 +439,20 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 }
             }
             
+            else if selectedTab == "Progress" {
+                
+                if tableView == collabNavigationView.collabTableView {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabProgressCell", for: indexPath) as! CollabProgressCell
+                    cell.selectionStyle = .none
+                    
+                    cell.collab = collab
+                    cell.blocks = blocks
+                    
+                    return cell
+                }
+            }
+            
             return messagingMethods.cellForRowAt(indexPath: indexPath, messages: messages, members: collab?.members)
         }
     }
@@ -602,6 +617,12 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     
                     return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages)
                 }
+            }
+            
+            else if selectedTab == "Progress" {
+                
+                //radius of the largest progress circle plus it's track layer width plus the progress label height and a roughly 25 point top buffer
+                return (UIScreen.main.bounds.width * 0.5) + 12 + 55
             }
             
             return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages)
@@ -911,6 +932,12 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
 //        collabNavigationView.collabDeadline = collab?.dates["deadline"]
         
         collabNavigationView.collabViewController = self
+    }
+    
+    //should probably move all these configuration funcs for the navigation view to the navigation class
+    private func configureProgressView () {
+        
+        collabNavigationView.collabTableView.register(CollabProgressCell.self, forCellReuseIdentifier: "collabProgressCell")
     }
     
     private func configureBlockView () {
@@ -1337,11 +1364,14 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
  
         let collabNavigationViewTopAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .top })
         let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
-        let collabTableViewTopAnchor = collabNavigationView.constraints.first(where: { $0.firstItem as? UITableView != nil && $0.firstAttribute == .top })
         
         collabNavigationViewTopAnchor?.constant = 0
         collabNavigationViewBottomAnchor?.constant = 0
-//        collabTableViewTopAnchor?.constant = ((topBarHeight - collabNavigationView.buttonStackView.frame.maxY) + 5)
+        
+        if selectedTab == "Progress" || selectedTab == "Messages" {
+            
+            collabNavigationView.tableViewTopAnchorWithStackView?.constant = ((topBarHeight - collabNavigationView.buttonStackView.frame.maxY) + 5)//30
+        }
         
         title = selectedTab
         
@@ -1363,22 +1393,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 self.collabNavigationView.presentCalendar()
             }
         }
-        
-//        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: .curveEaseInOut) {
-//
-//            self.view.layoutIfNeeded()
-//
-//            self.collabNavigationView.layer.cornerRadius = 0
-//            self.collabNavigationView.panGestureIndicator.alpha = 0
-//            self.collabNavigationView.buttonStackView.alpha = 0
-//
-//        } completion: { (finished: Bool) in
-//
-//            if self.selectedTab == "Blocks" {
-//
-//                self.collabNavigationView.presentCalendar()
-//            }
-//        }
 
     }
     
@@ -1405,26 +1419,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         removeGestureRecognizers()
     }
-    
-//    private func setTableViewTopAnchor () -> CGFloat {
-//
-//        //iPhone 11 Pro Max & iPhone 11
-//        if UIScreen.main.bounds.width == 414.0 && UIScreen.main.bounds.height == 896.0 {
-//
-//            return 30
-//        }
-//
-//        //iPhone 11 Pro
-//        else if UIScreen.main.bounds.width == 375.0 && UIScreen.main.bounds.height == 812.0 {
-//
-//            return 30
-//        }
-//
-//        else {
-//
-//            return 0
-//        }
-//    }
     
     //MARK: - User Activity Functions
     
@@ -1686,13 +1680,22 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
             
+            self.collabNavigationView.collabTableView.alpha = 0
+            self.addBlockButton.alpha = 0
             self.messageInputAccesoryView.alpha = 0
             
         }) { (finished: Bool) in
             
-//            self.messageInputAccesoryView.isHidden = true
+            self.collabNavigationView.collabTableView.reloadData()
             
-            self.collabNavigationView.collabTableView.reloadSections([0], with: .none)
+//            self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+            
+            UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
+                
+                self.collabNavigationView.collabTableView.alpha = 1
+                self.collabNavigationView.collabTableView.contentInset = UIEdgeInsets(top: 22, left: 0, bottom: 0, right: 0)
+                self.tabBar.alpha = 1
+            })
         }
     }
     
@@ -1709,7 +1712,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             self.collabNavigationView.collabTableView.reloadData()
             
-            self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+            self.scrollToCurrentDate()
+            self.scrollToFirstBlock()
+            
+//            self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
                 
@@ -1724,7 +1730,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         selectedTab = "Messages"
         
-        configureMessagingView()
+//        configureMessagingView()
         
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
             

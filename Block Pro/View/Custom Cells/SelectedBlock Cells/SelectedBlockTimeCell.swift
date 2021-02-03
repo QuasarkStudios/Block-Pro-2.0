@@ -60,7 +60,7 @@ class SelectedBlockTimeCell: UITableViewCell {
             let timeText: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font : UIFont(name: "Poppins-Medium", size: 17) as Any, NSAttributedString.Key.foregroundColor : UIColor.lightGray, NSAttributedString.Key.paragraphStyle : paragraphStyle]
             let attributedString = NSMutableAttributedString(string: "")
 
-            formatter!.dateFormat = "EEEE, MMMM dd"
+            formatter!.dateFormat = "EEEE, MMMM d"
             attributedString.append(NSAttributedString(string: formatter!.string(from: starts!), attributes: dateText))
             attributedString.append(NSAttributedString(string: starts!.daySuffix(), attributes: dateText))
             

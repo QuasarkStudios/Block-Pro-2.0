@@ -255,27 +255,52 @@ class FullBlock: UIView {
 
                 else {
                     
-                    switch block?.status {
-            
-                        case .completed:
-            
-                            profilePicOutline.backgroundColor = UIColor(hexString: "7BD293")
-            
-                        case .inProgress:
-            
+                    if let status = block?.status {
+                        
+                        switch status {
+
+                            case .completed:
+
+                                profilePicOutline.backgroundColor = UIColor(hexString: "7BD293")
+
+                            case .inProgress:
+
+                                profilePicOutline.backgroundColor = UIColor(hexString: "7E8CB4")
+
+                            case .needsHelp:
+
+                                profilePicOutline.backgroundColor = UIColor(hexString: "FAD95F")
+
+                            case .late:
+
+                                profilePicOutline.backgroundColor = UIColor(hexString: "E07F72")
+
+                            //Not Started
+                            default:
+
+                                profilePicOutline.backgroundColor = UIColor(hexString: "BFBFBF")
+                        }
+                    }
+                    
+                    else if let starts = block?.starts, let ends = block?.ends {
+                        
+                        if Date().isBetween(startDate: starts, endDate: ends) {
+                            
+                            //In Progress
                             profilePicOutline.backgroundColor = UIColor(hexString: "7E8CB4")
-            
-                        case .needsHelp:
-            
-                            profilePicOutline.backgroundColor = UIColor(hexString: "FAD95F")
-            
-                        case .late:
-            
-                            profilePicOutline.backgroundColor = UIColor(hexString: "E07F72")
-            
-                        default:
-            
+                        }
+                        
+                        else if Date() < starts {
+                            
+                            //Not Started
                             profilePicOutline.backgroundColor = UIColor(hexString: "BFBFBF")
+                        }
+                        
+                        else if Date() > ends {
+                             
+                            //Late
+                            profilePicOutline.backgroundColor = UIColor(hexString: "E07F72")
+                        }
                     }
                 }
                 
