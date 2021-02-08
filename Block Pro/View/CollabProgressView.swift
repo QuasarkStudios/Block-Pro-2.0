@@ -1,14 +1,14 @@
 //
-//  CollabProgressCell.swift
+//  CollabProgressView.swift
 //  Block Pro
 //
-//  Created by Nimat Azeez on 2/1/21.
+//  Created by Nimat Azeez on 2/4/21.
 //  Copyright © 2021 Nimat Azeez. All rights reserved.
 //
 
 import UIKit
 
-class CollabProgressCell: UITableViewCell {
+class CollabProgressView: UIView {
     
     var collabProgressCircle: ProgressCircles?
     var completedProgressCircle: ProgressCircles?
@@ -18,6 +18,8 @@ class CollabProgressCell: UITableViewCell {
     let progressStackView = UIStackView()
     
     let selectedProgressLabel = UILabel()
+    
+    var searchBar: SearchBar?
     
     let calendar = Calendar.current
     
@@ -50,10 +52,15 @@ class CollabProgressCell: UITableViewCell {
     
     weak var collabProgressDelegate: CollabProgressProtocol?
     
-    override init (style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: .default, reuseIdentifier: "collabProgressCell")
+    init (_ collabViewController: AnyObject?) {
+        super.init(frame: .zero)
 
-        self.contentView.clipsToBounds = true
+        self.clipsToBounds = true
+        
+        if let viewController = collabViewController as? CollabProgressProtocol {
+            
+            collabProgressDelegate = viewController
+        }
         
         configureCollabProgressCircle()
         configureCompletedProgressCircle()
@@ -64,6 +71,8 @@ class CollabProgressCell: UITableViewCell {
         configureProgressContainers()
         
         configureSelectedProgressLabel()
+        
+        configureSearchBar()
     }
 
     required init?(coder: NSCoder) {
@@ -102,14 +111,14 @@ class CollabProgressCell: UITableViewCell {
     
     private func configureProgressCircleConstraints (_ progressCircle: UIView?) {
         
-        self.contentView.addSubview(progressCircle!)
+        self.addSubview(progressCircle!)
         progressCircle?.translatesAutoresizingMaskIntoConstraints = false
         
         [
             
             //centerXAnchor is 20 points away left side of the contentView after factoring in the radius of the progressCircle
-            progressCircle?.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor, constant: -(abs(20 - (UIScreen.main.bounds.width * 0.5) / 2))),
-            progressCircle?.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 0),
+            progressCircle?.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: -(abs(20 - (UIScreen.main.bounds.width * 0.5) / 2))),
+            progressCircle?.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -142),
             progressCircle?.widthAnchor.constraint(equalToConstant: (UIScreen.main.bounds.width * 0.5)),
             progressCircle?.heightAnchor.constraint(equalToConstant: (UIScreen.main.bounds.width * 0.5) + 12)
         
@@ -121,13 +130,13 @@ class CollabProgressCell: UITableViewCell {
     
     private func configureProgressStackView () {
         
-        self.contentView.addSubview(progressStackView)
+        self.addSubview(progressStackView)
         progressStackView.translatesAutoresizingMaskIntoConstraints = false
         
         [
         
             progressStackView.leadingAnchor.constraint(equalTo: collabProgressCircle!.trailingAnchor, constant: 22.5),
-            progressStackView.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -10),
+            progressStackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -10),
             progressStackView.centerYAnchor.constraint(equalTo: collabProgressCircle!.centerYAnchor, constant: 0),
             progressStackView.heightAnchor.constraint(equalToConstant: 130)
         
@@ -288,14 +297,14 @@ class CollabProgressCell: UITableViewCell {
     
     private func configureSelectedProgressLabel () {
         
-        self.contentView.addSubview(selectedProgressLabel)
+        self.addSubview(selectedProgressLabel)
         selectedProgressLabel.translatesAutoresizingMaskIntoConstraints = false
         
         [
         
-            selectedProgressLabel.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor, constant: 0),
-            selectedProgressLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 20),
-            selectedProgressLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -20),
+            selectedProgressLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -87),
+            selectedProgressLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            selectedProgressLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             selectedProgressLabel.heightAnchor.constraint(equalToConstant: 25)
         
         ].forEach({ $0.isActive = true })
@@ -309,6 +318,28 @@ class CollabProgressCell: UITableViewCell {
         selectedProgressLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(selectedProgressLabelTapped)))
     }
     
+    
+    //MARK: - Search Bar Configuration
+    
+    private func configureSearchBar () {
+        
+        if let viewController = collabProgressDelegate as? CollabViewController {
+            
+            searchBar = SearchBar(parentViewController: viewController, placeholderText: "Search by name or status")
+            
+            self.addSubview(searchBar!)
+            searchBar?.translatesAutoresizingMaskIntoConstraints = false
+            
+            [
+            
+                searchBar!.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 25),
+                searchBar!.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -25),
+                searchBar!.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -25),
+                searchBar!.heightAnchor.constraint(equalToConstant: 37)
+            
+            ].forEach({ $0.isActive = true })
+        }
+    }
     
     //MARK: - Set Collab Container Text
     //Used to set the text for the collab container in the progressStackView
@@ -420,7 +451,7 @@ class CollabProgressCell: UITableViewCell {
             progressCircle.shapeLayer.add(progressStrokeAnimation, forKey: nil)
         }
         
-        currentCompletedProgressStrokeEnd = Double(completedBlockCount) / Double(blockCount)
+        currentCompletedProgressStrokeEnd = Double(completedBlockCount) / Double(blockCount) > 0 ? Double(completedBlockCount) / Double(blockCount) : 0.0025
     }
     
     
@@ -475,7 +506,7 @@ class CollabProgressCell: UITableViewCell {
             progressCircle.shapeLayer.add(progressStrokeAnimation, forKey: nil)
         }
         
-        currentInProgressProgressStrokeEnd = Double(inProgressBlockCount) / Double(blockCount)
+        currentInProgressProgressStrokeEnd = Double(inProgressBlockCount) / Double(blockCount) > 0 ? Double(inProgressBlockCount) / Double(blockCount) : 0.0025
     }
     
     
@@ -529,13 +560,13 @@ class CollabProgressCell: UITableViewCell {
             progressCircle.shapeLayer.add(progressStrokeAnimation, forKey: nil)
         }
         
-        currentLateProgressStrokeEnd = Double(lateProgressBlockCount) / Double(blockCount)
+        currentLateProgressStrokeEnd = Double(lateProgressBlockCount) / Double(blockCount) > 0 ? Double(lateProgressBlockCount) / Double(blockCount) : 0.0025
     }
     
     
     //MARK: Set Collab Selected Progress Label Text
     
-    private func setCollabSelectedProgressLabelText () {
+    func setCollabSelectedProgressLabelText () {
         
         //Check to see if the collabContainer is currently selected before attempting to change the selectedProgressLabel text
         if let progressContainer = progressStackView.arrangedSubviews.first {
@@ -732,7 +763,7 @@ class CollabProgressCell: UITableViewCell {
         let vibrateMethods = VibrateMethods()
         vibrateMethods.warningVibration()
         
-        UIView.transition(with: self.contentView, duration: 0.2, options: .transitionCrossDissolve) {
+        UIView.transition(with: self, duration: 0.2, options: .transitionCrossDissolve) {
             
             for subview in self.progressStackView.arrangedSubviews {
                 

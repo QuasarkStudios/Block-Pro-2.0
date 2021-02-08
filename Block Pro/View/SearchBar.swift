@@ -78,6 +78,7 @@ class SearchBar: UIView {
         searchTextField.placeholder = placeholderText
         searchTextField.attributedPlaceholder = NSAttributedString(string: placeholderText, attributes: [NSAttributedString.Key.foregroundColor: UIColor(hexString: "AAAAAA") as Any])
         
+        searchTextField.autocorrectionType = .no
         searchTextField.returnKeyType = .done
         
         searchTextField.addTarget(self, action: #selector(searchTextChanged), for: .editingChanged)
@@ -99,6 +100,11 @@ class SearchBar: UIView {
             
             addMemberVC.searchTextChanged(searchText: searchTextField.text ?? "")
         }
+        
+        else if let collabVC = parentViewController as? CollabViewController {
+            
+            collabVC.searchTextChanged(searchText: searchTextField.text ?? "")
+        }
     }
 }
 
@@ -109,12 +115,17 @@ extension SearchBar: UITextFieldDelegate {
         if let addLocationVC = parentViewController as? AddLocationViewController {
             
             addLocationVC.searchBegan()
+        }
+        
+        else if let collabVC = parentViewController as? CollabViewController {
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                
-                let endOfTextField = textField.endOfDocument
-                textField.selectedTextRange = textField.textRange(from: endOfTextField, to: endOfTextField) //Setting the cursor to the end
-            }
+            collabVC.searchBegan()
+        }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+            
+            let endOfTextField = textField.endOfDocument
+            textField.selectedTextRange = textField.textRange(from: endOfTextField, to: endOfTextField) //Setting the cursor to the end
         }
     }
     
@@ -124,11 +135,16 @@ extension SearchBar: UITextFieldDelegate {
             
             addLocationVC.searchEnded()
         }
+        
+        else if let collabVC = parentViewController as? CollabViewController {
+            
+            collabVC.searchEnded(searchText: textField.text ?? "")
+        }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         
-        searchTextField.resignFirstResponder()
+        textField.endEditing(true)
         return true
     }
 }

@@ -30,7 +30,7 @@ extension CollabViewController {
                         self?.blocks = []
                     }
                     
-                    self?.blocks = retrievedBlocks
+                    self?.blocks = retrievedBlocks?.sorted(by: { $0.starts! < $1.starts! })
                     
                     if self?.selectedTab == "Blocks" {
                         
@@ -45,9 +45,38 @@ extension CollabViewController {
                     
                     else if self?.selectedTab == "Progress" {
                         
-                        if let cell = self?.collabNavigationView.collabTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? CollabProgressCell {
+                        self?.collabNavigationView.collabProgressView.blocks = retrievedBlocks
+                        
+                        //If the blocks aren't filtered meaning no search is ongoing and the block haven't been filtered by a status
+                        if !(self?.blocksFiltered ?? true) {
                             
-                            cell.blocks = retrievedBlocks
+                            self?.collabNavigationView.collabTableView.reloadData()
+                        }
+                        
+                        else {
+                            
+                            for block in self?.filteredBlocks ?? [] {
+                                
+                                //Find the blockIndex for a certain filtered block
+                                if let blockIndex = self?.filteredBlocks.firstIndex(where: { $0.blockID == block.blockID }) {
+                                    
+                                    //If this filtered block exists in the retrievedBlocks
+                                    if let retrievedBlock = retrievedBlocks?.first(where: { $0.blockID == block.blockID }) {
+                                        
+                                        self?.filteredBlocks[blockIndex] = retrievedBlock
+                                    }
+                                    
+                                    //If this filtered block doesn't exist in the retrievedBlocks signaling that this block was deleted
+                                    else {
+                                        
+                                        self?.filteredBlocks.remove(at: blockIndex)
+                                    }
+                                }
+                            }
+                            
+                            self?.filteredBlocks.sort(by: { $0.starts! < $1.starts! })
+                            
+                            self?.collabNavigationView.collabTableView.reloadData()
                         }
                     }
                     

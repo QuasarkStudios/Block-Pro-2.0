@@ -16,7 +16,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     lazy var collabHeaderView = CollabHeaderView(collab)
     lazy var collabHeaderViewHeightConstraint = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
     
-    lazy var collabNavigationView = CollabNavigationView(collabStartTime: collab?.dates["startTime"], collabDeadline: collab?.dates["deadline"])
+    lazy var collabNavigationView = CollabNavigationView(self, collabStartTime: collab?.dates["startTime"], collabDeadline: collab?.dates["deadline"])
     let presentCollabNavigationViewButton = UIButton(type: .system)
     
     var editCollabBarButton: UIBarButtonItem?
@@ -44,12 +44,13 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     let firebaseMessaging = FirebaseMessaging.sharedInstance
     var collab: Collab?
     
-//    let formatter = DateFormatter()
+    let formatter = DateFormatter()
     let calendar = Calendar.current
     
     var blocks: [Block]?
     var selectedBlock: Block?
     var hiddenBlocks: [Block] = []
+    var filteredBlocks: [Block] = []
     
     var messagingMethods: MessagingMethods!
     var messages: [Message]?
@@ -73,6 +74,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     var tabBarWasHidden: Bool = false
     
+    var searchBeingConducted: Bool = false
+    var blocksFiltered: Bool = false
+    
 //    var viewAppeared: Bool = false
     
     override func viewDidLoad() {
@@ -90,9 +94,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         configureAddBlockButton()
         configureSeeHiddenBlocksButton()
         
+        configureMessagingView() //Call first
         configureProgressView()
         configureBlockView()
-        configureMessagingView()
         
         retrieveBlocks()
         retrieveMessages()
@@ -236,7 +240,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             else {
                 
-                return 1
+                return blocksFiltered ? filteredBlocks.count : blocks?.count ?? 0
             }
         }
     }
@@ -433,27 +437,19 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             else if selectedTab == "Messages" {
                 
-                if tableView == collabNavigationView.collabTableView {
-                    
-                    return messagingMethods.cellForRowAt(indexPath: indexPath, messages: messages, members: collab?.members)
-                }
+                return messagingMethods.cellForRowAt(indexPath: indexPath, messages: messages, members: collab?.members)
             }
             
-            else if selectedTab == "Progress" {
+            else {
                 
-                if tableView == collabNavigationView.collabTableView {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabProgressCell", for: indexPath) as! CollabProgressCell
-                    cell.selectionStyle = .none
-                    
-                    cell.collab = collab
-                    cell.blocks = blocks
-                    
-                    return cell
-                }
+                let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! BlockCell
+                cell.selectionStyle = .none
+                
+                cell.formatter = formatter
+                cell.block = blocksFiltered ? filteredBlocks[indexPath.row] : blocks?[indexPath.row]
+                
+                return cell
             }
-            
-            return messagingMethods.cellForRowAt(indexPath: indexPath, messages: messages, members: collab?.members)
         }
     }
     
@@ -613,19 +609,37 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             else if selectedTab == "Messages" {
                 
-                if tableView == collabNavigationView.collabTableView {
+                return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages)
+            }
+            
+            else {
+                
+                if blocksFiltered {
                     
-                    return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages)
+                    if filteredBlocks[indexPath.row].members?.count ?? 0 > 0 {
+                        
+                        return 210
+                    }
+                    
+                    else {
+                        
+                        return 175
+                    }
+                }
+                
+                else {
+                    
+                    if blocks?[indexPath.row].members?.count ?? 0 > 0 {
+                        
+                        return 210
+                    }
+                    
+                    else {
+                        
+                        return 175
+                    }
                 }
             }
-            
-            else if selectedTab == "Progress" {
-                
-                //radius of the largest progress circle plus it's track layer width plus the progress label height and a roughly 25 point top buffer
-                return (UIScreen.main.bounds.width * 0.5) + 12 + 55
-            }
-            
-            return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages)
         }
     }
     
@@ -635,55 +649,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                 
-//                self.collabHomeTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-//                self.collabHomeTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-                
                 self.presentCollabNavigationViewButton.alpha = 0
                 self.tabBar.alpha = 0
             }
         }
-        
-        else {
-            
-//            if selectedTab == "Blocks" {
-//
-//                if viewAppeared {
-//
-//                    if let lastVisibleCellIndexPath = tableView.indexPathsForVisibleRows?.last {
-//
-//                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: lastVisibleCellIndexPath.row, to: startTime) {
-//
-//                            collabNavigationView.calendarView.scrollToDate(adjustedDate)
-//                            collabNavigationView.calendarView.selectDates([adjustedDate])
-//                        }
-//                    }
-//                }
-//            }
-        }
-        
-//        let tableViewExpandedHeight = self.view.frame.height - topBarHeight
-//
-//        if tableView.contentSize.height > tableViewExpandedHeight {
-//
-//            if indexPath.section == 3 {
-//
-//                print("check")
-//
-//                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-//
-//                    self.collabHomeTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-//                    self.collabHomeTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-//
-//                    self.presentCollabNavigationViewButton.alpha = 0
-//                    self.tabBar.alpha = 0
-//                }
-//            }
-//
-//            else {
-//
-//
-//            }
-//        }
     }
     
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -694,6 +663,27 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 self.presentCollabNavigationViewButton.alpha = 1
                 self.tabBar.alpha = 1
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if tableView == collabNavigationView.collabTableView, selectedTab == "Progress" {
+            
+            if let cell = tableView.cellForRow(at: indexPath) as? BlockCell {
+                
+                if let block = blocks?.first(where: { $0.blockID == cell.block?.blockID }) {
+                    
+                    selectedBlock = block
+                    
+                    performSegue(withIdentifier: "moveToSelectedBlockView", sender: self)
+                }
+                
+                else {
+                    
+                    SVProgressHUD.showError(withStatus: "Sorry, this block may have been deleted")
+                }
             }
         }
     }
@@ -747,7 +737,76 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         else {
             
-            if selectedTab == "Blocks" {
+            if selectedTab == "Progress" {
+                
+                if scrollView.contentOffset.y >= 0 {
+                    
+                    //If the progress view height minus the scrollView contentOffset is larger than 67, it's minimum allowable height
+                    if (collabNavigationView.progressViewHeightConstraint?.constant ?? 67) - scrollView.contentOffset.y > 67 {
+                        
+                        collabNavigationView.progressViewHeightConstraint?.constant -= scrollView.contentOffset.y //Decrementing the height of the progressView
+                        
+                        collabNavigationView.tableViewTopAnchorWithStackView?.constant -= scrollView.contentOffset.y //Decrementing the topAnchor of the tableView
+                        
+                        scrollView.contentOffset.y = 0
+                    }
+                    
+                    //If the progress view height minus the scrollView contentOffset is less than 67
+                    else {
+                        
+                        //This height will only allow the searchBar to be shown
+                        collabNavigationView.progressViewHeightConstraint?.constant = 67
+                        
+                        //If the collabNavigationView is expanded
+                        if navigationItem.hidesBackButton {
+                            
+                            //Setting the top anchor based on if the iPhone has a notch -- an iPhone with a notch will cause the progressView to have a larger topAnchor
+                            //Therefore the top anchor of the tableView will also have to be larger by 20 points to compensate
+                            collabNavigationView.tableViewTopAnchorWithStackView?.constant = keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 92 : 72
+                        }
+                        
+                        //The collabNavigationView isn't expanded
+                        else {
+                            
+                            //Setting the topAnchor when only the searchBar of the collabProgress view is shown
+                            collabNavigationView.tableViewTopAnchorWithStackView?.constant = 72
+                        }
+                    }
+                }
+                
+                else {
+                    
+                    let maximumProgressViewHeight: CGFloat = ((UIScreen.main.bounds.width * 0.5) + 12 + 55) + 87
+                    
+                    //If the progressView height is less than the maximum allowable height for the progressView
+                    if collabNavigationView.progressViewHeightConstraint?.constant ?? 87 < maximumProgressViewHeight {
+                        
+                        collabNavigationView.progressViewHeightConstraint?.constant = maximumProgressViewHeight
+                        
+                        //If the collabNavigationView is expanded
+                        if navigationItem.hidesBackButton {
+                            
+                            //Setting the top anchor based on if the iPhone has a notch -- an iPhone with a notch will cause the progressView to have a larger topAnchor
+                            //Therefore the top anchor of the tableView will also have to be larger by 20 points to compensate
+                            collabNavigationView.tableViewTopAnchorWithStackView?.constant = maximumProgressViewHeight + (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0)
+                        }
+                        
+                        //The collabNavigationView isn't expanded
+                        else {
+                            
+                            //Setting to the value that won't cause the tableView constraints to break
+                            collabNavigationView.tableViewTopAnchorWithStackView?.constant = collabNavigationView.maximumTableViewTopAnchorWithStackView
+                        }
+                        
+                        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                            
+                            self.collabNavigationView.layoutIfNeeded()
+                        }
+                    }
+                }
+            }
+            
+            else if selectedTab == "Blocks" {
                 
                 //22 is the top contentInset of the collabTableView; this will be required to be updated if that ever changes
                 if scrollView.contentOffset.y == 22 {
@@ -937,7 +996,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     //should probably move all these configuration funcs for the navigation view to the navigation class
     private func configureProgressView () {
         
+        collabNavigationView.collabTableView.scrollsToTop = true
+        
         collabNavigationView.collabTableView.register(CollabProgressCell.self, forCellReuseIdentifier: "collabProgressCell")
+        collabNavigationView.collabTableView.register(BlocksSearchCell.self, forCellReuseIdentifier: "blocksSearchCell")
+        collabNavigationView.collabTableView.register(BlockCell.self, forCellReuseIdentifier: "blockCell")
     }
     
     private func configureBlockView () {
@@ -948,6 +1011,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabNavigationView.collabTableView.separatorStyle = .none
         
         collabNavigationView.collabTableView.estimatedRowHeight = 0
+        
+        collabNavigationView.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0, right: 0)
+        collabNavigationView.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 0, right: 0)
         
         collabNavigationView.collabTableView.scrollsToTop = true
         
@@ -1093,17 +1159,17 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     internal func addObservors () {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingPresented), name: UIResponder.keyboardWillShowNotification, object: nil)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingDismissed), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(setUserActiveStatus), name: UIApplication.didBecomeActiveNotification, object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(setUserInactiveStatus), name: UIApplication.willResignActiveNotification, object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(saveMessageDraft), name: UIApplication.willTerminateNotification, object: nil)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(sendMessage), name: .userDidSendMessage, object: nil)
-        
+
         NotificationCenter.default.addObserver(self, selector: #selector(addAttachment), name: .userDidAddMessageAttachment, object: nil)
     }
     
@@ -1165,8 +1231,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic, userID) in
                         
                         self.collab?.members[memberIndex].profilePictureImage = profilePic
-                        
-                        
                     }
                 }
                 
@@ -1286,7 +1350,23 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabNavigationViewTopAnchor?.constant = collabHeaderView.configureViewHeight() - 80
 //        collabNavigationViewBottomAnchor?.constant = 0
         presentNavViewButtonBottomAnchor?.constant = 40
-        collabTableViewTopAnchor?.constant = 10
+        
+        if selectedTab != "Progress" {
+            
+            collabTableViewTopAnchor?.constant = 10
+        }
+        
+        else {
+            
+            collabNavigationView.progressViewTopAnchorWithStackView?.constant = 10
+            
+            //Checks to see if the currentHeight of the progressView will cause the height of the tableView to be less than 0
+            //Explanation for the math in this statement is in the collabNavigationView when initializing the computed property "maximumTableViewTopAnchorWithStackView"
+            if (collabHeaderView.configureViewHeight() - 80) + (27.5 + 40) + (collabNavigationView.progressViewHeightConstraint?.constant ?? 0) + 10 > UIScreen.main.bounds.height {
+                
+                collabNavigationView.tableViewTopAnchorWithStackView?.constant = collabNavigationView.maximumTableViewTopAnchorWithStackView
+            }
+        }
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.65, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
 
@@ -1311,15 +1391,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             self.view.layoutIfNeeded()
         }
-
-        
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//
-//            if self.selectedTab == "Blocks" {
-//
-//                self.collabNavigationView.dismissCalendar()
-//            }
-//        }
         
         if selectedTab == "Blocks" {
 
@@ -1335,8 +1406,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     private func shrinkView () {
         
         self.resignFirstResponder()
-        
-//        self.navigationItem.rightBarButtonItem = editCollabBarButton
         
         let collabHeaderViewHeightAnchor = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
         let collabNavigationViewTopAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .top })
@@ -1361,16 +1430,31 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     internal func expandView () {
- 
+        
         let collabNavigationViewTopAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .top })
         let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
         
         collabNavigationViewTopAnchor?.constant = 0
         collabNavigationViewBottomAnchor?.constant = 0
         
-        if selectedTab == "Progress" || selectedTab == "Messages" {
+        if selectedTab == "Messages" {
             
             collabNavigationView.tableViewTopAnchorWithStackView?.constant = ((topBarHeight - collabNavigationView.buttonStackView.frame.maxY) + 5)//30
+        }
+        
+        else if selectedTab == "Progress" {
+            
+            collabNavigationView.progressViewTopAnchorWithStackView?.constant = keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 10
+            
+            let progressViewHeight: CGFloat = ((UIScreen.main.bounds.width * 0.5) + 12 + 55) + 87
+            
+            //Adjusts the topAnchor of the tableView when the progressView is completly present as the view is being expanded
+            if (collabNavigationView.progressViewHeightConstraint?.constant ?? 0) == progressViewHeight {
+                
+                //Setting the top anchor based on if the iPhone has a notch -- an iPhone with a notch will cause the progressView to have a larger topAnchor
+                //Therefore the top anchor of the tableView will also have to be larger by 20 points to compensate
+                collabNavigationView.tableViewTopAnchorWithStackView?.constant = progressViewHeight + (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0)
+            }
         }
         
         title = selectedTab
@@ -1475,12 +1559,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
         
         else if segue.identifier == "moveToConfigureBlockView" {
-            
-//            if let navController = segue.destination as? UINavigationController {
-//                
-//                let configureBlockVC = navController.viewControllers.first as! ConfigureBlockViewController
-//                configureBlockVC.collab = collab
-//            }
             
             let configureBlockVC: ConfigureBlockViewController = ConfigureBlockViewController()
             configureBlockVC.title = "Add a Block"
@@ -1590,7 +1668,12 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         returnToOrigin(scrollTableView: false)
         
-        if selectedTab == "Messages" {
+        if selectedTab == "Progress" {
+            
+            collabNavigationView.collabProgressView.searchBar?.endEditing(true)
+        }
+        
+        else if selectedTab == "Messages" {
 
             dismissKeyboard ()
             
@@ -1678,6 +1761,13 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         selectedTab = "Progress"
         
+        collabNavigationView.collabTableView.scrollsToTop = true
+        collabNavigationView.collabTableView.keyboardDismissMode = .onDrag
+        
+        collabNavigationView.collabProgressView.collab = collab
+        collabNavigationView.collabProgressView.blocks = blocks
+        collabNavigationView.presentProgressView()
+        
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
             
             self.collabNavigationView.collabTableView.alpha = 0
@@ -1688,12 +1778,16 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             self.collabNavigationView.collabTableView.reloadData()
             
-//            self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+            if self.collabNavigationView.collabTableView.numberOfRows(inSection: 0) > 0 {
+                
+                self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+            }
             
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
                 
                 self.collabNavigationView.collabTableView.alpha = 1
-                self.collabNavigationView.collabTableView.contentInset = UIEdgeInsets(top: 22, left: 0, bottom: 0, right: 0)
+                self.collabNavigationView.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40, right: 0)
+                self.collabNavigationView.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40, right: 0)
                 self.tabBar.alpha = 1
             })
         }
@@ -1702,6 +1796,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     func blocksButtonTouchUpInside () {
         
         selectedTab = "Blocks"
+        
+        collabNavigationView.collabTableView.scrollsToTop = true
+        
+        collabNavigationView.dismissProgressView()
         
         UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
                      
@@ -1715,46 +1813,65 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             self.scrollToCurrentDate()
             self.scrollToFirstBlock()
             
-//            self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-            
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
                 
                 self.collabNavigationView.collabTableView.alpha = 1
                 self.tabBar.alpha = 1
                 self.addBlockButton.alpha = 1
+                
+                self.collabNavigationView.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0, right: 0)
+                self.collabNavigationView.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 0, right: 0)
             })
         }
     }
     
     func messagesButtonTouchUpInside () {
         
-        selectedTab = "Messages"
+        var delay: Double = 0
         
-//        configureMessagingView()
+        //If the selectedTab is "Progress", will cause a 0.3 second delay to allow for the progressView to be dismissed before moving to the messages view
+        //Fixes bug that was causing a crash when animating tableView change
+        if selectedTab == "Progress" {
+            
+            //Fixes bug that wouldn't allow for the progressView to be dismissed when it was shrunken to only show it's searchBar
+            //The scrollViewDidScroll method would be called overridding the dismissal of the progressView
+            selectedTab = ""
+            
+            delay = 0.3
+            collabNavigationView.dismissProgressView()
+        }
         
-        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             
-            self.collabNavigationView.collabTableView.alpha = 0
-            self.tabBar.alpha = 0
-            self.addBlockButton.alpha = 0
-            //self.tabBar.shouldHide = true
-
-        }) { (finished: Bool) in
-            
-            self.collabNavigationView.collabTableView.reloadData()
-            
-            if self.messages?.count ?? 0 > 0 {
-                
-                self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: ((self.messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: false)
-            }
-            
+            self.selectedTab = "Messages"
+    
+            self.collabNavigationView.collabTableView.scrollsToTop = false
+            self.collabNavigationView.collabTableView.keyboardDismissMode = .interactive
+    
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
-
-//                self.messageInputAccesoryView.isHidden = false
-                self.messageInputAccesoryView.alpha = 1
-                
-                self.collabNavigationView.collabTableView.alpha = 1
-            })
+    
+                self.collabNavigationView.collabTableView.alpha = 0
+                self.tabBar.alpha = 0
+                self.addBlockButton.alpha = 0
+                //self.tabBar.shouldHide = true
+    
+            }) { (finished: Bool) in
+    
+                self.collabNavigationView.collabTableView.reloadData()
+    
+                if self.messages?.count ?? 0 > 0 {
+    
+                    self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: ((self.messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: false)
+                }
+    
+                UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
+    
+    //                self.messageInputAccesoryView.isHidden = false
+                    self.messageInputAccesoryView.alpha = 1
+    
+                    self.collabNavigationView.collabTableView.alpha = 1
+                })
+            }
         }
     }
     
@@ -1833,6 +1950,205 @@ extension CollabViewController: BlockSelectedProtocol {
         selectedBlock = block
         
         performSegue(withIdentifier: "moveToSelectedBlockView", sender: self)
+    }
+}
+
+
+//MARK: - Collab Progress Protocol
+
+extension CollabViewController: CollabProgressProtocol {
+    
+    func filterBlocks (status: BlockStatus?) {
+        
+        //Stops any ongoing search
+        collabNavigationView.collabProgressView.searchBar?.searchTextField.text = ""
+        collabNavigationView.collabProgressView.searchBar?.searchTextField.resignFirstResponder()
+        
+        filteredBlocks.removeAll()
+        
+        //Evident that one of the "progressContainers" and not the "collabContainer" was selected
+        if status != nil {
+            
+            searchBeingConducted = false
+            blocksFiltered = true
+            
+            for block in blocks ?? [] {
+                
+                //If this block has a status
+                if let blockStatus = block.status {
+                    
+                    if blockStatus == status! {
+                        
+                        filteredBlocks.append(block)
+                    }
+                }
+                
+                //If this block doesn't have a status
+                else if let starts = block.starts, let ends = block.ends {
+
+                    //In Progress
+                    if Date().isBetween(startDate: starts, endDate: ends) {
+
+                        if status == .inProgress {
+
+                            filteredBlocks.append(block)
+                        }
+                    }
+
+                    //Late
+                    else if Date() > ends {
+
+                        if status == .late {
+
+                            filteredBlocks.append(block)
+                        }
+                    }
+                }
+            }
+            
+            filteredBlocks.sort(by: { $0.starts! < $1.starts! })
+        }
+        
+        //Evident that the "collabContainer" was selected
+        else {
+            
+            blocksFiltered = false
+        }
+        
+        UIView.transition(with: collabNavigationView.collabTableView, duration: 0.3, options: .transitionCrossDissolve) {
+            
+            self.collabNavigationView.collabTableView.reloadData()
+        }
+    }
+    
+    func searchBegan() {
+        
+        //If all previous searches have been completed
+        if !searchBeingConducted {
+            
+            if blocks != nil/*, !blocksFiltered*/ {
+                
+                filteredBlocks = blocks!
+            }
+            
+            searchBeingConducted = true
+            blocksFiltered = true
+            
+            UIView.transition(with: collabNavigationView.collabTableView, duration: 0.3, options: .transitionCrossDissolve) {
+
+                self.collabNavigationView.collabTableView.reloadData()
+            }
+            
+            //Selecting the "collabContainer" in the "collabProgressView"
+            collabNavigationView.collabProgressView.progressStackView.arrangedSubviews.forEach { (container) in
+                
+                if container.tag == 0 {
+                    
+                    let label = container.subviews.first(where: { $0 as? UILabel != nil }) as? UILabel
+                    label?.textColor = .black
+                }
+                
+                else {
+                    
+                    let label = container.subviews.first(where: { $0 as? UILabel != nil }) as? UILabel
+                    label?.textColor = .placeholderText
+                }
+            }
+            
+            collabNavigationView.collabProgressView.setCollabSelectedProgressLabelText()
+        }
+        
+        //Must set here
+        collabNavigationView.progressViewHeightConstraint?.constant = 67
+        collabNavigationView.tableViewTopAnchorWithStackView?.constant = keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 92 : 72
+        
+        expandView()
+    }
+    
+    func searchTextChanged(searchText: String) {
+        
+        filteredBlocks.removeAll()
+        
+        if searchText.leniantValidationOfTextEntered() {
+            
+            for block in blocks ?? [] {
+                
+                //If the name of the block contains the searchText
+                if let name = block.name, name.localizedCaseInsensitiveContains(searchText) {
+                    
+                    filteredBlocks.append(block)
+                }
+                
+                else {
+                    
+                    //If the block has status assigned
+                    if let blockStatus = block.status {
+                        
+                        let statusDictionary: [BlockStatus : String] = [.notStarted : "Not Started", .inProgress : "In Progress", .completed : "Completed", .needsHelp : "Needs Help", .late : "Late"]
+                        
+                        if let status = statusDictionary[blockStatus], status.localizedCaseInsensitiveContains(searchText) {
+                            
+                            filteredBlocks.append(block)
+                        }
+                    }
+                    
+                    //If the block doesn't have a status assigned
+                    else if let starts = block.starts, let ends = block.ends {
+                        
+                        var status: String?
+                        
+                        if Date().isBetween(startDate: starts, endDate: ends) {
+                            
+                            status = "In Progress"
+                        }
+                        
+                        else if Date() < starts {
+                            
+                            status = "Not Started"
+                        }
+                        
+                        else if Date() > ends {
+                             
+                            status = "Late"
+                        }
+                        
+                        if status?.localizedCaseInsensitiveContains(searchText) ?? false {
+                            
+                            filteredBlocks.append(block)
+                        }
+                    }
+                }
+            }
+        }
+        
+        else {
+            
+            if blocks != nil {
+                
+                filteredBlocks = blocks!
+            }
+        }
+        
+        filteredBlocks.sort(by: { $0.starts! < $1.starts! })
+        
+        UIView.transition(with: collabNavigationView.collabTableView, duration: 0.3, options: .transitionCrossDissolve) {
+
+            self.collabNavigationView.collabTableView.reloadData()
+        }
+    }
+    
+    func searchEnded (searchText: String) {
+        
+        //Ensures that the searchBar is empty signaling the search has concluded
+        if !searchText.leniantValidationOfTextEntered() {
+            
+            searchBeingConducted = false
+            blocksFiltered = false
+
+            filteredBlocks = []
+            
+            collabNavigationView.collabTableView.reloadData()
+        }
     }
 }
 

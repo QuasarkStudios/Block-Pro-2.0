@@ -67,6 +67,8 @@ class BlockCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .default, reuseIdentifier: "blockCell")
+        
+        self.contentView.backgroundColor = .white
     }
 
     required init?(coder: NSCoder) {
@@ -227,7 +229,7 @@ class BlockCell: UITableViewCell {
             
             attributedString.append(NSAttributedString(string: "Ends:  ", attributes: semiBoldText))
             
-            formatter?.dateFormat = "MMMM dd"
+            formatter?.dateFormat = "MMMM d"
             attributedString.append(NSAttributedString(string: formatter!.string(from: ends), attributes: regularText))
             
             attributedString.append(NSAttributedString(string: ends.daySuffix() + ", ", attributes: regularText))

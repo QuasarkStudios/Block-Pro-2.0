@@ -24,8 +24,11 @@ class CollabNavigationView: UIView {
     let calendarHeaderLabel = UILabel()
     let calendarView = JTAppleCalendarView()
     
-    let collabTableView = UITableView()
+    lazy var collabProgressView = CollabProgressView(collabViewController)
+    var progressViewTopAnchorWithStackView: NSLayoutConstraint?
+    var progressViewHeightConstraint: NSLayoutConstraint?
     
+    let collabTableView = UITableView()
     var tableViewTopAnchorWithStackView: NSLayoutConstraint?
     var tableViewTopAnchorWithCalendar: NSLayoutConstraint?
     
@@ -36,13 +39,42 @@ class CollabNavigationView: UIView {
     
     var originalTableViewContentOffset: CGFloat?
     
+    let progressViewHeight: CGFloat = ((UIScreen.main.bounds.width * 0.5) + 12 + 55) + 87
+    
+    //Only used when collabProgressView is present
+    var maximumTableViewTopAnchorWithStackView: CGFloat {
+        
+        if let viewController = collabViewController as? CollabViewController {
+            
+            //Top anchor of the collabNavigationView + the top anchor and height of the panGestureIndicator + the height of buttonStackView + the progressViewHeight and it's topAnchor
+            if (viewController.collabHeaderView.configureViewHeight() - 80) + (27.5 + 40) + progressViewHeight + 10 > UIScreen.main.bounds.height {
+                
+                //Means that the height of the tableView will be less than zero if the topAnchor is set to the height of the progressViewHeight
+                return UIScreen.main.bounds.height - (viewController.collabHeaderView.configureViewHeight() - 80) - (27.5 + 40)
+            }
+            
+            else {
+                
+                //Height of the progressView + it's topAnchor
+                return progressViewHeight + 10
+            }
+        }
+        
+        else {
+            
+            return 0
+        }
+    }
+    
     weak var collabViewController: AnyObject?
     
-    init (collabStartTime: Date?, collabDeadline: Date?) {
+    init (_ collabViewController: AnyObject, collabStartTime: Date?, collabDeadline: Date?) {
         super.init(frame: .zero)
         
         self.collabStartTime = collabStartTime
         self.collabDeadline = collabDeadline
+        
+        self.collabViewController = collabViewController
         
         configureView()
         configurePanGestureView()
@@ -51,6 +83,7 @@ class CollabNavigationView: UIView {
         configureCalendarContainer()
         configureCalendarHeader()
         configureCalendarView()
+        configureCollabProgressView()
         configureTableView()
     }
 
@@ -283,6 +316,224 @@ class CollabNavigationView: UIView {
         }
     }
     
+    
+    //MARK: - Configure Progress View
+    
+    private func configureCollabProgressView () {
+        
+        self.addSubview(collabProgressView)
+        collabProgressView.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            collabProgressView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
+            collabProgressView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
+            
+        ].forEach({ $0.isActive = true })
+        
+        progressViewTopAnchorWithStackView = collabProgressView.topAnchor.constraint(equalTo: buttonStackView.bottomAnchor, constant:  10)
+        progressViewTopAnchorWithStackView?.isActive = true
+        
+        progressViewHeightConstraint = collabProgressView.heightAnchor.constraint(equalToConstant: 0)
+        progressViewHeightConstraint?.isActive = true
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
+        collabProgressView.addGestureRecognizer(panGesture)
+    }
+    
+    
+    //MARK: - Pan Gesture Functions
+    
+    @objc private func handlePan (sender: UIPanGestureRecognizer) {
+        
+        switch sender.state {
+        
+        case .began, .changed:
+            
+            //Ensures that the tableView hasn't been scrolled before allowing the panGesture
+            if collabTableView.contentOffset.y == 0 {
+                
+                moveWithPan(sender)
+            }
+          
+        case .ended:
+            
+            if (progressViewHeightConstraint?.constant ?? 0) < progressViewHeight / 2 {
+                
+                shrinkView()
+            }
+            
+            else {
+                
+                returnToOrigin()
+            }
+            
+        default:
+            
+            break
+        }
+    }
+    
+    private func moveWithPan (_ sender: UIPanGestureRecognizer) {
+        
+        let translation = sender.translation(in: self)
+        
+        if translation.y > 0 {
+            
+            //The progressView's maximum height hasn't been reached
+            if (progressViewHeightConstraint?.constant ?? 87) + translation.y < progressViewHeight {
+                
+                progressViewHeightConstraint?.constant += translation.y
+                
+                //If the collabNavigationView is expanded, i.e. the topAnchor of the tableView can be adjusted as neccasary
+                if let viewController = collabViewController as? CollabViewController, viewController.navigationItem.hidesBackButton {
+                    
+                    tableViewTopAnchorWithStackView?.constant += translation.y
+                }
+                
+                else {
+                    
+                    //If the topAnchor of the tableView + the translation will be less than the maximum allowable topAnchor of the tableView
+                    if (tableViewTopAnchorWithStackView?.constant ?? 0) + translation.y < maximumTableViewTopAnchorWithStackView {
+                        
+                        tableViewTopAnchorWithStackView?.constant += translation.y
+                    }
+                    
+                    else {
+                        
+                        tableViewTopAnchorWithStackView?.constant = maximumTableViewTopAnchorWithStackView
+                    }
+                }
+            }
+            
+            //The progressView's maximum height has been reached
+            else {
+                
+                progressViewHeightConstraint?.constant = progressViewHeight
+                
+                //If the collabNavigationView is expanded, i.e. the topAnchor of the tableView can be adjusted as neccasary
+                if let viewController = collabViewController as? CollabViewController, viewController.navigationItem.hidesBackButton {
+                    
+                    //Setting the top anchor based on if the iPhone has a notch -- an iPhone with a notch will cause the progressView to have a larger topAnchor
+                    //Therefore the top anchor of the tableView will also have to be larger by 20 points to compensate
+                    tableViewTopAnchorWithStackView?.constant = progressViewHeight + (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0)
+                }
+                
+                else {
+                    
+                    tableViewTopAnchorWithStackView?.constant = maximumTableViewTopAnchorWithStackView
+                }
+            }
+        }
+        
+        else {
+            
+            //If the height of the progressView after being subtracted by the tranlation will be greater than 0
+            if (progressViewHeightConstraint?.constant ?? 87) + translation.y > 0 {
+                
+                progressViewHeightConstraint?.constant += translation.y
+                
+                tableViewTopAnchorWithStackView?.constant += translation.y
+            }
+            
+            else {
+                
+                progressViewHeightConstraint?.constant = 0
+                
+                //If the collabNavigationView is expanded
+                if let viewController = collabViewController as? CollabViewController, viewController.navigationItem.hidesBackButton {
+                    
+                    //Will be animated to it's proper value when "returnToOrigin" is called
+                    tableViewTopAnchorWithStackView?.constant = keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 0
+                }
+                
+                else {
+                    
+                    //Will be animated to it's proper value when "returnToOrigin" is called
+                    tableViewTopAnchorWithStackView?.constant = 0
+                }
+            }
+        }
+        
+        sender.setTranslation(CGPoint.zero, in: self)
+    }
+    
+    private func shrinkView () {
+        
+        progressViewHeightConstraint?.constant = 67 //Will only allow the searchBar to be shown
+        
+        //If the collabNavigationView is expanded
+        if let viewController = collabViewController as? CollabViewController, viewController.navigationItem.hidesBackButton {
+            
+            //Setting the top anchor based on if the iPhone has a notch -- an iPhone with a notch will cause the progressView to have a larger topAnchor
+            //Therefore the top anchor of the tableView will also have to be larger by 20 points to compensate
+            tableViewTopAnchorWithStackView?.constant = keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 92 : 72
+        }
+        
+        else {
+            
+            tableViewTopAnchorWithStackView?.constant = 72
+        }
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            
+            self.layoutIfNeeded()
+        }
+    }
+    
+    private func returnToOrigin () {
+        
+        progressViewHeightConstraint?.constant = progressViewHeight //Maximum height of the progressView
+        
+        //If the collabNavigationView is expanded
+        if let viewController = collabViewController as? CollabViewController, viewController.navigationItem.hidesBackButton {
+            
+            //Setting the top anchor based on if the iPhone has a notch -- an iPhone with a notch will cause the progressView to have a larger topAnchor
+            //Therefore the top anchor of the tableView will also have to be larger by 20 points to compensate
+            tableViewTopAnchorWithStackView?.constant = progressViewHeight + (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0)
+        }
+        
+        else {
+            
+            tableViewTopAnchorWithStackView?.constant = maximumTableViewTopAnchorWithStackView
+        }
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            
+            self.layoutIfNeeded()
+        }
+    }
+    
+    
+    //MARK: - Present Progress Container
+    
+    func presentProgressView () {
+        
+        progressViewHeightConstraint?.constant = progressViewHeight
+        
+        tableViewTopAnchorWithStackView?.constant = maximumTableViewTopAnchorWithStackView
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            
+            self.layoutIfNeeded()
+        }
+    }
+    
+    
+    //MARK: - Dismiss Progress Container
+    
+    func dismissProgressView (animate: Bool = true) {
+        
+        progressViewHeightConstraint?.constant = 0
+        
+        tableViewTopAnchorWithStackView?.constant = 10
+
+        UIView.animate(withDuration: animate ? 0.3 : 0, delay: 0, options: .curveEaseInOut) {
+
+            self.layoutIfNeeded()
+        }
+    }
+    
 
     //MARK: - Present Calendar
     
@@ -305,7 +556,8 @@ class CollabNavigationView: UIView {
             
             self.layoutIfNeeded()
             
-            self.collabTableView.contentInset = UIEdgeInsets(top: -22, left: 0, bottom: 0, right: 0)
+            self.collabTableView.contentInset = UIEdgeInsets(top: -22, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0, right: 0)
+            self.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 0, right: 0)
             
             //Setting the contentOffset of the tableView back to what it was before the view was expanded
             if let contentOffset =  self.originalTableViewContentOffset {
@@ -335,7 +587,8 @@ class CollabNavigationView: UIView {
             
             self.layoutIfNeeded()
             
-            self.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            self.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0, right: 0)
+            self.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 0, right: 0)
             
             //Setting the contentOffset of the tableView back to what it was before the view was shrunk
             if let contentOffset =  self.originalTableViewContentOffset {
