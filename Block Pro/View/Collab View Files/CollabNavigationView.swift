@@ -32,6 +32,10 @@ class CollabNavigationView: UIView {
     var tableViewTopAnchorWithStackView: NSLayoutConstraint?
     var tableViewTopAnchorWithCalendar: NSLayoutConstraint?
     
+    lazy var progressAnimationView = ProgressAnimationView()
+    var progressAnimationViewTopAnchor: NSLayoutConstraint?
+    var progressAnimationViewHeightConstraint: NSLayoutConstraint?
+    
     var collabStartTime: Date?
     var collabDeadline: Date?
     
@@ -40,6 +44,9 @@ class CollabNavigationView: UIView {
     var originalTableViewContentOffset: CGFloat?
     
     let progressViewHeight: CGFloat = ((UIScreen.main.bounds.width * 0.5) + 12 + 55) + 87
+    
+    var animationViewShrunkenHeight: CGFloat = 0
+    var animationViewExpandedHeight: CGFloat = 0
     
     //Only used when collabProgressView is present
     var maximumTableViewTopAnchorWithStackView: CGFloat {
@@ -85,6 +92,7 @@ class CollabNavigationView: UIView {
         configureCalendarView()
         configureCollabProgressView()
         configureTableView()
+        configureProgressAnimationView() //Call here
     }
 
     
@@ -342,6 +350,56 @@ class CollabNavigationView: UIView {
     }
     
     
+    //MARK: - Configure Progress Animation View
+    
+    private func configureProgressAnimationView () {
+        
+        let tabBar = CustomTabBar.sharedInstance
+        
+        //The height of the buttonStackView factoring in the top and bottom anchors (67.5) + the topAnchor of the tableView
+        animationViewExpandedHeight = ((27.5 + 40) + ((keyWindow?.safeAreaInsets.bottom ?? 0) > 0 ? 92 : 72)).distance(to: tabBar.frame.minY)
+        
+        if let viewController = collabViewController as? CollabViewController {
+            
+            //Min-Y of the collabNavigationView + the height of the buttonStackView factoring in the top and bottom anchors (67.5)
+            animationViewShrunkenHeight = ((viewController.collabHeaderView.configureViewHeight() - 80) + (27.5 + 40)).distance(to: tabBar.frame.minY)
+        }
+        
+        //iPhone SE
+        if UIScreen.main.bounds.width == 320 && UIScreen.main.bounds.height == 568 {
+            
+            progressAnimationView.shrunkenHeight = animationViewShrunkenHeight * 0.9
+            progressAnimationView.expandedHeight = animationViewExpandedHeight
+        }
+        
+        else {
+            
+            progressAnimationView.shrunkenHeight = animationViewShrunkenHeight * 0.75
+            progressAnimationView.expandedHeight = animationViewExpandedHeight
+        }
+        
+        self.addSubview(progressAnimationView)
+        progressAnimationView.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            progressAnimationView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
+            progressAnimationView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
+        
+        ].forEach({ $0.isActive = true })
+        
+        //Height of the progressView when only the searchBar is showing plus 10
+        progressAnimationViewTopAnchor = progressAnimationView.topAnchor.constraint(equalTo: collabProgressView.bottomAnchor, constant: -77)
+        progressAnimationViewTopAnchor?.isActive = true
+        
+        progressAnimationViewHeightConstraint = progressAnimationView.heightAnchor.constraint(equalToConstant: animationViewShrunkenHeight)
+        progressAnimationViewHeightConstraint?.isActive = true
+        
+        progressAnimationView.clipsToBounds = true
+        progressAnimationView.isUserInteractionEnabled = false
+    }
+    
+    
     //MARK: - Pan Gesture Functions
     
     @objc private func handlePan (sender: UIPanGestureRecognizer) {
@@ -477,6 +535,8 @@ class CollabNavigationView: UIView {
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
             
+            self.handleProgressAnimation()
+            
             self.layoutIfNeeded()
         }
     }
@@ -499,6 +559,8 @@ class CollabNavigationView: UIView {
         }
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            
+            self.handleProgressAnimation()
             
             self.layoutIfNeeded()
         }
@@ -531,6 +593,52 @@ class CollabNavigationView: UIView {
         UIView.animate(withDuration: animate ? 0.3 : 0, delay: 0, options: .curveEaseInOut) {
 
             self.layoutIfNeeded()
+        }
+    }
+    
+    
+    //MARK: - Handle Progress Animation
+    
+    func handleProgressAnimation (selectedTab: String = "") {
+        
+        if let viewController = self.collabViewController as? CollabViewController {
+
+            //If the "selectedTab" that was passed in is equal to Progress or the viewControllers "selectedTab" is equal to Progress and there are no blocks
+            if (selectedTab == "Progress" || viewController.selectedTab == "Progress") && viewController.blocks?.count ?? 0 == 0 {
+
+                self.progressAnimationView.animationView.alpha = 1
+
+                //If the animation isn't already playing
+                if !self.progressAnimationView.animationView.isAnimationPlaying {
+
+                    self.progressAnimationView.animationView.play()
+                }
+
+                //If the view is expanded
+                if viewController.navigationItem.hidesBackButton && (self.progressViewHeightConstraint?.constant ?? 0) <= 67 {
+
+                    self.progressAnimationViewHeightConstraint?.constant = self.animationViewExpandedHeight
+                    self.progressAnimationView.animationViewCenterYAnchor?.constant = -35 //Random value that was the most visually appealing
+                    self.progressAnimationView.animationTitleLabel.alpha = 1
+                }
+
+                //If the view isn't expanded
+                else {
+
+                    self.progressAnimationViewHeightConstraint?.constant = self.animationViewShrunkenHeight
+                    self.progressAnimationView.animationViewCenterYAnchor?.constant = 0
+                    self.progressAnimationView.animationTitleLabel.alpha = 0
+                }
+            }
+
+            //Dismissing the animation
+            else {
+
+                self.progressAnimationView.animationView.stop()
+
+                self.progressAnimationView.animationView.alpha = 0
+                self.progressAnimationView.animationTitleLabel.alpha = 0
+            }
         }
     }
     

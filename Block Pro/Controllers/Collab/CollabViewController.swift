@@ -823,62 +823,54 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
-    internal func determineHiddenBlocks (_ scrollView: UIScrollView) {
-        
-        //Ensures that the view is expanded
-        if let indexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first, navigationItem.hidesBackButton {
-            
-            //The range of y-Coords that is used to determine which hidden blocks can be presented
-            let range = scrollView.contentOffset.y - CGFloat(2210 * indexPath.row) ... scrollView.contentOffset.y - CGFloat(2210 * indexPath.row) + scrollView.frame.height
-            
-            if let cell = collabNavigationView.collabTableView.cellForRow(at: indexPath) as? BlocksTableViewCell {
-                
-                hiddenBlocks = []
-                
-                for hiddenBlock in cell.hiddenBlocks {
-                    
-                    let blockStartHour = calendar.dateComponents([.hour], from: hiddenBlock.starts!).hour!
-                    let blockStartMinute = calendar.dateComponents([.minute], from: hiddenBlock.starts!).minute!
-                    let yCoord = CGFloat((Double(blockStartHour) * 90) + (Double(blockStartMinute) * 1.5)) + 50
-                    
-                    //If the hidden block's y-Coord is within the range meaning that it would be visible to the user if it wasn't hidden
-                    if range.contains(yCoord) {
-                        
-                        hiddenBlocks.append(hiddenBlock)
-                    }
-                }
-                
-                //If the hiddenBlocksVC is currently in the navigation stack/presented to the user, this will update the hiddenBlocks in that view
-                if let viewController = hiddenBlockVC {
-                    
-                    viewController.hiddenBlocks = hiddenBlocks
-                }
-                
-                //Animating the hiddenBlocksButton based on the number of hiddenBlocks available
-                if hiddenBlocks.count > 0 {
-                    
-                    UIView.animate(withDuration: 0.3) {
-                        
-                        self.seeHiddenBlocksButton.alpha = 1
-                    }
-                }
-                
-                else {
-                    
-                    UIView.animate(withDuration: 0.3) {
-                        
-                        self.seeHiddenBlocksButton.alpha = 0
-                    }
-                }
-            }
-        }
-    }
-    
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
         if scrollView == collabNavigationView.collabTableView {
             
-            if selectedTab == "Blocks" {
+            if selectedTab == "Progress" {
+                
+                let progressViewHeight: CGFloat = ((UIScreen.main.bounds.width * 0.5) + 12 + 55) + 87
+                
+                if (collabNavigationView.progressViewHeightConstraint?.constant ?? 0) < progressViewHeight * 0.7 && (collabNavigationView.progressViewHeightConstraint?.constant ?? 0) != 67 {
+                    
+                    //This height will only allow the searchBar to be shown
+                    collabNavigationView.progressViewHeightConstraint?.constant = 67
+                    
+                    //If the collabNavigationView is expanded
+                    if navigationItem.hidesBackButton {
+                        
+                        //Setting the top anchor based on if the iPhone has a notch -- an iPhone with a notch will cause the progressView to have a larger topAnchor
+                        //Therefore the top anchor of the tableView will also have to be larger by 20 points to compensate
+                        collabNavigationView.tableViewTopAnchorWithStackView?.constant = keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 92 : 72
+                    }
+                    
+                    //The collabNavigationView isn't expanded
+                    else {
+                        
+                        //Setting the topAnchor when only the searchBar of the collabProgress view is shown
+                        collabNavigationView.tableViewTopAnchorWithStackView?.constant = 72
+                    }
+                    
+                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                        
+                        self.view.layoutIfNeeded()
+                    }
+
+                }
+                
+                //Will handle the progress animation
+                if blocks?.count ?? 0 == 0 {
+                    
+                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                        
+                        self.collabNavigationView.handleProgressAnimation()
+                        
+                        self.view.layoutIfNeeded()
+                    }
+                }
+            }
+            
+            else if selectedTab == "Blocks" {
                 
                 if velocity.y < 0 {
                     
@@ -998,8 +990,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         collabNavigationView.collabTableView.scrollsToTop = true
         
-        collabNavigationView.collabTableView.register(CollabProgressCell.self, forCellReuseIdentifier: "collabProgressCell")
-        collabNavigationView.collabTableView.register(BlocksSearchCell.self, forCellReuseIdentifier: "blocksSearchCell")
         collabNavigationView.collabTableView.register(BlockCell.self, forCellReuseIdentifier: "blockCell")
     }
     
@@ -1366,6 +1356,12 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 collabNavigationView.tableViewTopAnchorWithStackView?.constant = collabNavigationView.maximumTableViewTopAnchorWithStackView
             }
+            
+            if blocks?.count ?? 0 == 0 {
+                
+                //Should be fine being called from here instead of from the animation block
+                collabNavigationView.handleProgressAnimation()
+            }
         }
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.65, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
@@ -1455,6 +1451,12 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 //Therefore the top anchor of the tableView will also have to be larger by 20 points to compensate
                 collabNavigationView.tableViewTopAnchorWithStackView?.constant = progressViewHeight + (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0)
             }
+            
+            if blocks?.count ?? 0 == 0 {
+                
+                //Should be fine being called from here instead of from the animation block
+                collabNavigationView.handleProgressAnimation()
+            }
         }
         
         title = selectedTab
@@ -1526,6 +1528,57 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 firebaseMessaging.setActivityStatus(collabID: collabID, Date())
             }
         //}
+    }
+    
+    internal func determineHiddenBlocks (_ scrollView: UIScrollView) {
+        
+        //Ensures that the view is expanded
+        if let indexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first, navigationItem.hidesBackButton {
+            
+            //The range of y-Coords that is used to determine which hidden blocks can be presented
+            let range = scrollView.contentOffset.y - CGFloat(2210 * indexPath.row) ... scrollView.contentOffset.y - CGFloat(2210 * indexPath.row) + scrollView.frame.height
+            
+            if let cell = collabNavigationView.collabTableView.cellForRow(at: indexPath) as? BlocksTableViewCell {
+                
+                hiddenBlocks = []
+                
+                for hiddenBlock in cell.hiddenBlocks {
+                    
+                    let blockStartHour = calendar.dateComponents([.hour], from: hiddenBlock.starts!).hour!
+                    let blockStartMinute = calendar.dateComponents([.minute], from: hiddenBlock.starts!).minute!
+                    let yCoord = CGFloat((Double(blockStartHour) * 90) + (Double(blockStartMinute) * 1.5)) + 50
+                    
+                    //If the hidden block's y-Coord is within the range meaning that it would be visible to the user if it wasn't hidden
+                    if range.contains(yCoord) {
+                        
+                        hiddenBlocks.append(hiddenBlock)
+                    }
+                }
+                
+                //If the hiddenBlocksVC is currently in the navigation stack/presented to the user, this will update the hiddenBlocks in that view
+                if let viewController = hiddenBlockVC {
+                    
+                    viewController.hiddenBlocks = hiddenBlocks
+                }
+                
+                //Animating the hiddenBlocksButton based on the number of hiddenBlocks available
+                if hiddenBlocks.count > 0 {
+                    
+                    UIView.animate(withDuration: 0.3) {
+                        
+                        self.seeHiddenBlocksButton.alpha = 1
+                    }
+                }
+                
+                else {
+                    
+                    UIView.animate(withDuration: 0.3) {
+                        
+                        self.seeHiddenBlocksButton.alpha = 0
+                    }
+                }
+            }
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -1759,7 +1812,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     func progressButtonTouchUpInside () {
         
-        selectedTab = "Progress"
+//        selectedTab = "Progress"
         
         collabNavigationView.collabTableView.scrollsToTop = true
         collabNavigationView.collabTableView.keyboardDismissMode = .onDrag
@@ -1774,14 +1827,19 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             self.addBlockButton.alpha = 0
             self.messageInputAccesoryView.alpha = 0
             
+            //Passed in the "selectedTab" because it hasn't been set for this view yet to prevent the "scrollViewDidScroll" method
+            //from interferring with the animations of the "collabProgressView"
+            self.collabNavigationView.handleProgressAnimation(selectedTab: "Progress")
+            
+            self.view.layoutIfNeeded()
+            
         }) { (finished: Bool) in
             
-            self.collabNavigationView.collabTableView.reloadData()
+            self.collabNavigationView.collabTableView.contentOffset = CGPoint(x: 0, y: 0) //Prevents interference from the scrollViewDidScroll func
             
-            if self.collabNavigationView.collabTableView.numberOfRows(inSection: 0) > 0 {
-                
-                self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-            }
+            self.selectedTab = "Progress" //Should be set here to prevent interference from the "scrollViewDidScroll" method
+            
+            self.collabNavigationView.collabTableView.reloadData()
             
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
                 
@@ -1805,6 +1863,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                      
             self.collabNavigationView.collabTableView.alpha = 0
             self.messageInputAccesoryView.alpha = 0
+            
+            //Calling inside animation blocks allows for all animations to be performed seamlessly
+            self.collabNavigationView.handleProgressAnimation()
+            
+            self.view.layoutIfNeeded()
             
         }) { (finished: Bool) in
             
@@ -1839,6 +1902,14 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             delay = 0.3
             collabNavigationView.dismissProgressView()
+            
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                
+                //Calling inside animation blocks allows for all animations to be performed seamlessly
+                self.collabNavigationView.handleProgressAnimation()
+                
+                self.view.layoutIfNeeded()
+            }
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {

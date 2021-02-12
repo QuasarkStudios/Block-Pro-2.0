@@ -72,11 +72,24 @@ extension CollabViewController {
                                         self?.filteredBlocks.remove(at: blockIndex)
                                     }
                                 }
+                                
+                                //If this block doesn't exist in the filteredBlocks array, signaling that it was just created
+                                else {
+                                    
+                                    self?.filteredBlocks.append(block)
+                                }
                             }
                             
                             self?.filteredBlocks.sort(by: { $0.starts! < $1.starts! })
                             
                             self?.collabNavigationView.collabTableView.reloadData()
+                        }
+                        
+                        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                            
+                            self?.collabNavigationView.handleProgressAnimation()
+                            
+                            self?.view.layoutIfNeeded()
                         }
                     }
                     

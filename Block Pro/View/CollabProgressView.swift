@@ -30,7 +30,10 @@ class CollabProgressView: UIView {
             
             animateCollabProgress()
             
-            setCollabSelectedProgressLabelText()
+            if selectedStatus == nil {
+                
+                setCollabSelectedProgressLabelText()
+            }
         }
     }
     
@@ -40,6 +43,25 @@ class CollabProgressView: UIView {
             animateCompletedProgress()
             animateInProgressProgress()
             animateLateProgress()
+            
+            if selectedStatus == .completed {
+                
+                setCompletedSelectedProgressLabelText()
+            }
+            
+            else if selectedStatus == .inProgress {
+                
+                setInProgressSelectedProgressLabelText()
+            }
+            
+            else if selectedStatus == .late {
+                
+                setLateSelectedProgressLabelText()
+            }
+            
+            collabProgressDelegate?.filterBlocks(status: selectedStatus)
+            
+            searchBar?.alpha = blocks?.count ?? 0 > 0 ? 1 : 0
         }
     }
     
@@ -48,6 +70,7 @@ class CollabProgressView: UIView {
     var currentInProgressProgressStrokeEnd: Double = 0.0025
     var currentLateProgressStrokeEnd: Double = 0.0025
     
+    var selectedStatus: BlockStatus?
     var selectedProgressLabelFormatIsPercentage: Bool = true
     
     weak var collabProgressDelegate: CollabProgressProtocol?
@@ -664,9 +687,17 @@ class CollabProgressView: UIView {
         
         if selectedProgressLabelFormatIsPercentage {
             
-            let completedPercentage = round((Double(completedBlockCount) / Double(blockCount)) * 100)
-
-            selectedProgressLabel.text = "\(Int(completedPercentage))% of blocks completed"
+            if blockCount > 0 {
+                
+                let completedPercentage = round((Double(completedBlockCount) / Double(blockCount)) * 100)
+                
+                selectedProgressLabel.text = "\(Int(completedPercentage))% of blocks completed"
+            }
+            
+            else {
+                
+                selectedProgressLabel.text = "0% of blocks completed"
+            }
         }
         
         else {
@@ -704,9 +735,17 @@ class CollabProgressView: UIView {
         
         if selectedProgressLabelFormatIsPercentage {
             
-            let completedPercentage = round((Double(inProgressBlockCount) / Double(blockCount)) * 100)
+            if blockCount > 0 {
+                
+                let completedPercentage = round((Double(inProgressBlockCount) / Double(blockCount)) * 100)
+                
+                selectedProgressLabel.text = "\(Int(completedPercentage))% of blocks in progress"
+            }
             
-            selectedProgressLabel.text = "\(Int(completedPercentage))% of blocks in progress"
+            else {
+                
+                selectedProgressLabel.text = "0% of blocks in progress"
+            }
         }
         
         else {
@@ -744,9 +783,17 @@ class CollabProgressView: UIView {
         
         if selectedProgressLabelFormatIsPercentage {
             
-            let completedPercentage = round((Double(lateProgressBlockCount) / Double(blockCount)) * 100)
+            if blockCount > 0 {
+                
+                let completedPercentage = round((Double(lateProgressBlockCount) / Double(blockCount)) * 100)
+                
+                selectedProgressLabel.text = "\(Int(completedPercentage))% of blocks late"
+            }
             
-            selectedProgressLabel.text = "\(Int(completedPercentage))% of blocks late"
+            else {
+                
+                selectedProgressLabel.text = "0% of blocks late"
+            }
         }
         
         else {
@@ -794,12 +841,16 @@ class CollabProgressView: UIView {
             
             if sender.view!.tag == 0 {
                 
+                self.selectedStatus = nil
+                
                 self.setCollabSelectedProgressLabelText()
                 
                 self.collabProgressDelegate?.filterBlocks(status: nil)
             }
             
             else if sender.view!.tag == 1 {
+                
+                self.selectedStatus = .completed
                 
                 self.setCompletedSelectedProgressLabelText()
                 
@@ -808,12 +859,16 @@ class CollabProgressView: UIView {
             
             else if sender.view!.tag == 2 {
                 
+                self.selectedStatus = .inProgress
+                
                 self.setInProgressSelectedProgressLabelText()
                 
                 self.collabProgressDelegate?.filterBlocks(status: .inProgress)
             }
             
             else {
+                
+                self.selectedStatus = .late
                 
                 self.setLateSelectedProgressLabelText()
                 
