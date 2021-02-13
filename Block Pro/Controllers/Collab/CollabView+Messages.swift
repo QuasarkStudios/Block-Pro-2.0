@@ -30,6 +30,8 @@ extension CollabViewController: UITextViewDelegate {
                     
                     else {
                         
+                        self?.collabNavigationView.messagesAnimationView.removeNoMessagesAnimation()
+                        
                         for message in messages {
                             
                             if self?.messages == nil {
@@ -221,63 +223,6 @@ extension CollabViewController: UITextViewDelegate {
         present(addAttachmentAlert, animated: true, completion: nil)
     }
 }
-
-//extension CollabViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-//    
-//    func takePhotoSelected () {
-//          
-//          let imagePicker = UIImagePickerController()
-//          imagePicker.navigationBar.configureNavBar()
-//          imagePicker.delegate = self
-//          imagePicker.sourceType = .camera
-//          imagePicker.allowsEditing = false
-//          
-//          self.present(imagePicker, animated: true, completion: nil)
-//      }
-//      
-//      func choosePhotoSelected () {
-//          
-//          let imagePicker = UIImagePickerController()
-//          imagePicker.navigationBar.configureNavBar()
-//          imagePicker.delegate = self
-//          imagePicker.sourceType = .photoLibrary
-//          imagePicker.allowsEditing = true
-//          
-//          present(imagePicker, animated: true, completion: nil)
-//      }
-//      
-//      func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-//          
-//          var selectedImageFromPicker: UIImage?
-//          
-//          if let editedImage = info[.editedImage] {
-//              
-//              selectedImageFromPicker = editedImage as? UIImage
-//          }
-//          
-//          else if let originalImage = info[.originalImage] {
-//              
-//              selectedImageFromPicker = originalImage as? UIImage
-//          }
-//          
-//          if let selectedImage = selectedImageFromPicker {
-//              
-//              selectedPhoto = selectedImage
-//              
-//              dismiss(animated: true, completion: nil)
-//              
-//              performSegue(withIdentifier: "moveToSendPhotoView", sender: self)
-//          }
-//          
-//          else {
-//              
-//              dismiss(animated: true) {
-//                  
-//                  SVProgressHUD.showError(withStatus: "Sorry, something went wrong selecting this photo")
-//              }
-//          }
-//      }
-//}
 
 extension CollabViewController: ReconfigureCollabViewFromSendPhotoVC{
     

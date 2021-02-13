@@ -122,6 +122,8 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         configureNavBar()
         
+        tabBar.shouldHide = false
+        
 //        configureTabBar()
     }
     

@@ -46,6 +46,8 @@ class ConfigureBlockViewController: UIViewController {
     
     var zoomingMethods: ZoomingImageViewMethods?
     
+    weak var blockCreatedDelegate: BlockCreatedProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -428,6 +430,8 @@ class ConfigureBlockViewController: UIViewController {
                     
                     let notificationScheduler = NotificationScheduler()
                     notificationScheduler.scheduleBlockNotification(collab: self!.collab, self!.block)
+                    
+                    self?.blockCreatedDelegate?.blockCreated(self!.block)
                     
                     self?.dismiss(animated: true, completion: nil)
                 }

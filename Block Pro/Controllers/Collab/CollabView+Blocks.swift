@@ -203,3 +203,35 @@ extension CollabViewController {
         }
     }
 }
+
+extension CollabViewController: BlockCreatedProtocol {
+    
+    func blockCreated (_ block: Block) {
+        
+        if let collabStartTime = collab?.dates["startTime"], let blockStartTime = block.starts {
+            
+            //yCoordForDay
+            let yCoordForDay: CGFloat = CGFloat(calendar.dateComponents([.day], from: collabStartTime, to: blockStartTime).day ?? 0) * 2210
+            
+            //yCoordForBlockTime
+            let blockStartHour = calendar.dateComponents([.hour], from: blockStartTime).hour!
+            let blockStartMinute = calendar.dateComponents([.minute], from: blockStartTime).minute!
+            let yCoordForBlockTime = CGFloat((Double(blockStartHour) * 90) + (Double(blockStartMinute) * 1.5)) + 50
+            
+            //Minus 22 to account for the top contentInset
+            collabNavigationView.collabTableView.scrollRectToVisible(CGRect(x: 0, y: yCoordForDay + yCoordForBlockTime - 22, width: self.view.frame.width, height: collabNavigationView.collabTableView.frame.height), animated: true)
+            
+            collabNavigationView.calendarView.selectDates([blockStartTime])
+        }
+    }
+}
+
+extension CollabViewController: BlockSelectedProtocol {
+    
+    func blockSelected (_ block: Block) {
+        
+        selectedBlock = block
+        
+        performSegue(withIdentifier: "moveToSelectedBlockView", sender: self)
+    }
+}

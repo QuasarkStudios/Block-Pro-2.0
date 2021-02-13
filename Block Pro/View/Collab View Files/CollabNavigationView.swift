@@ -36,6 +36,9 @@ class CollabNavigationView: UIView {
     var progressAnimationViewTopAnchor: NSLayoutConstraint?
     var progressAnimationViewHeightConstraint: NSLayoutConstraint?
     
+    let messagesAnimationView = MessagesAnimationView()
+    var messagesAnimationViewCenterYAnchor: NSLayoutConstraint?
+    
     var collabStartTime: Date?
     var collabDeadline: Date?
     
@@ -93,6 +96,7 @@ class CollabNavigationView: UIView {
         configureCollabProgressView()
         configureTableView()
         configureProgressAnimationView() //Call here
+        configureMessagesAnimationView()
     }
 
     
@@ -399,6 +403,29 @@ class CollabNavigationView: UIView {
         progressAnimationView.isUserInteractionEnabled = false
     }
     
+    
+    //MARK: - Configure Messages Animation View
+    
+    private func configureMessagesAnimationView () {
+        
+        self.addSubview(messagesAnimationView)
+        messagesAnimationView.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            messagesAnimationView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            messagesAnimationView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
+            messagesAnimationView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
+            
+        ].forEach({ $0.isActive = true })
+        
+        messagesAnimationViewCenterYAnchor = messagesAnimationView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0)
+        messagesAnimationViewCenterYAnchor?.isActive = true
+        
+        messagesAnimationView.alpha = 0
+        
+        messagesAnimationView.isUserInteractionEnabled = false
+    }
     
     //MARK: - Pan Gesture Functions
     

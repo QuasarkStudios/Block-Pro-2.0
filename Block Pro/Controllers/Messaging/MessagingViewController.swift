@@ -419,6 +419,7 @@ class MessagingViewController: UIViewController {
         
         //Configuring the container
         noMessagesAnimationContainer.alpha = noMessagesAnimationContainer.superview == nil ? 0 : 1
+        noMessagesAnimationContainer.isUserInteractionEnabled = false
         
         self.view.addSubview(noMessagesAnimationContainer)
         noMessagesAnimationContainer.translatesAutoresizingMaskIntoConstraints = false

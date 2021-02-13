@@ -264,12 +264,12 @@ class CollabHeaderView: UIView {
         
             expandButton.topAnchor.constraint(equalTo: deadlineHeaderLabel.topAnchor, constant: 12.5),
             expandButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -30),
-            expandButton.widthAnchor.constraint(equalToConstant: 20),
-            expandButton.heightAnchor.constraint(equalToConstant: 20)
+            expandButton.widthAnchor.constraint(equalToConstant: 32.5),
+            expandButton.heightAnchor.constraint(equalToConstant: 32.5)
         
         ].forEach({ $0.isActive = true })
         
-        expandButton.setImage(UIImage(named: "expand"), for: .normal)
+        expandButton.setImage(UIImage(systemName: "calendar.circle"), for: .normal)//.setImage(UIImage(named: "expand"), for: .normal)
         expandButton.contentVerticalAlignment = .fill
         expandButton.contentHorizontalAlignment = .fill
         expandButton.tintColor = .white
