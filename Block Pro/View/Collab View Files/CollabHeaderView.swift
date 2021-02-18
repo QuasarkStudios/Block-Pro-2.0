@@ -28,7 +28,7 @@ class CollabHeaderView: UIView {
     let deadlineHeaderLabel = UILabel()
     let deadlineTextLabel = UILabel()
     
-    let expandButton = UIButton(type: .system)
+    let calendarButton = UIButton(type: .system)
     
     var collab: Collab?
     let formatter = DateFormatter()
@@ -45,7 +45,7 @@ class CollabHeaderView: UIView {
         configureNameLabel()
         configureObjectiveLabel()
         configureDeadlineLabel()
-        configureExpandButton()
+        configureCalendarButton()
         
         setCoverPhoto(collab)
     }
@@ -255,24 +255,26 @@ class CollabHeaderView: UIView {
 //        deadlineTextLabel.font = UIFont(name: "Poppins-Regular", size: 13)
     }
     
-    private func configureExpandButton () {
+    private func configureCalendarButton () {
         
-        self.addSubview(expandButton)
-        expandButton.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(calendarButton)
+        calendarButton.translatesAutoresizingMaskIntoConstraints = false
         
         [
         
-            expandButton.topAnchor.constraint(equalTo: deadlineHeaderLabel.topAnchor, constant: 12.5),
-            expandButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -30),
-            expandButton.widthAnchor.constraint(equalToConstant: 32.5),
-            expandButton.heightAnchor.constraint(equalToConstant: 32.5)
+            calendarButton.topAnchor.constraint(equalTo: deadlineHeaderLabel.topAnchor, constant: 12.5),
+            calendarButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -30),
+            calendarButton.widthAnchor.constraint(equalToConstant: 32.5),
+            calendarButton.heightAnchor.constraint(equalToConstant: 32.5)
         
         ].forEach({ $0.isActive = true })
         
-        expandButton.setImage(UIImage(systemName: "calendar.circle"), for: .normal)//.setImage(UIImage(named: "expand"), for: .normal)
-        expandButton.contentVerticalAlignment = .fill
-        expandButton.contentHorizontalAlignment = .fill
-        expandButton.tintColor = .white
+        calendarButton.setImage(UIImage(systemName: "calendar.circle"), for: .normal)//.setImage(UIImage(named: "expand"), for: .normal)
+        calendarButton.contentVerticalAlignment = .fill
+        calendarButton.contentHorizontalAlignment = .fill
+        calendarButton.tintColor = .white
+        
+        calendarButton.addTarget(self, action: #selector(calendarButtonPressed), for: .touchUpInside)
     }
     
     func configureViewHeight () -> CGFloat {
@@ -370,6 +372,8 @@ class CollabHeaderView: UIView {
 //            viewController.editCoverButton.addTarget(viewController, action: #selector(viewController.editCoverButtonPressed), for: .touchUpInside)
 //            viewController.deleteCoverButton.addTarget(viewController, action: #selector(viewController.deleteCoverButtonPressed), for: .touchUpInside)
             
+            viewController.resignFirstResponder()
+            
             if let imageView = coverPhoto?.profilePicImageView {
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
@@ -379,6 +383,8 @@ class CollabHeaderView: UIView {
                 }
                 
                 viewController.zoomingMethods = ZoomingImageViewMethods(on: imageView, cornerRadius: 53 * 0.5, with: [viewController.editCoverButton, viewController.deleteCoverButton], completion: {
+                    
+                    viewController.becomeFirstResponder()
                     
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         
@@ -400,6 +406,14 @@ class CollabHeaderView: UIView {
                 
                 viewController.zoomingMethods?.performZoom()
             }
+        }
+    }
+    
+    @objc private func calendarButtonPressed () {
+        
+        if let viewController = collabViewController as? CollabViewController {
+            
+            viewController.presentCalendar()
         }
     }
 }

@@ -42,9 +42,10 @@ class CollabNavigationView: UIView {
     var collabStartTime: Date?
     var collabDeadline: Date?
     
+    let calendar = Calendar.current
     let formatter = DateFormatter()
     
-    var originalTableViewContentOffset: CGFloat?
+//    var originalTableViewContentOffset: CGFloat?
     
     let progressViewHeight: CGFloat = ((UIScreen.main.bounds.width * 0.5) + 12 + 55) + 87
     
@@ -695,10 +696,10 @@ class CollabNavigationView: UIView {
             self.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 0, right: 0)
             
             //Setting the contentOffset of the tableView back to what it was before the view was expanded
-            if let contentOffset =  self.originalTableViewContentOffset {
-                
-                self.collabTableView.contentOffset.y = contentOffset
-            }
+//            if let contentOffset =  self.originalTableViewContentOffset {
+//
+//                self.collabTableView.contentOffset.y = contentOffset
+//            }
         }
     }
     
@@ -726,15 +727,15 @@ class CollabNavigationView: UIView {
             self.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 0, right: 0)
             
             //Setting the contentOffset of the tableView back to what it was before the view was shrunk
-            if let contentOffset =  self.originalTableViewContentOffset {
-                
-                self.collabTableView.contentOffset.y = contentOffset
-            }
+//            if let contentOffset =  self.originalTableViewContentOffset {
+//                
+//                self.collabTableView.contentOffset.y = contentOffset
+//            }
             
         } completion: { (finished: Bool) in
             
             //Setting this to nil will allow the panGesture to reset the originalContentOffset next time the view is panned
-            self.originalTableViewContentOffset = nil
+//            self.originalTableViewContentOffset = nil
         }
     }
     
@@ -759,7 +760,7 @@ class CollabNavigationView: UIView {
     
     //MARK: - Blocks Button Action
     
-    @objc private func blocksButtonTouchUpInside () {
+    @objc func blocksButtonTouchUpInside () {
         
         if let viewController = collabViewController as? CollabViewController {
             
@@ -850,6 +851,17 @@ extension CollabNavigationView: JTAppleCalendarViewDataSource, JTAppleCalendarVi
                             
                             calendar.selectDates([deadline])
                             
+                            //Must perform these steps here because the "didSelectDate" func won't allow for them to be completed because the "deadline" was
+                            //selected programatically
+                            if let viewController = collabViewController as? CollabViewController {
+                                
+                                //Scrolling to the last row
+                                viewController.scrollToFirstBlock(indexPathToScrollTo: IndexPath(row: viewController.collabNavigationView.collabTableView.numberOfRows(inSection: 0) - 1, section: 0))
+                                
+                                viewController.collabCalendarView.calendarView.selectDates([deadline])
+                                viewController.collabCalendarView.calendarView.scrollToDate(deadline)
+                            }
+                            
                             return false
                         }
                     }
@@ -868,6 +880,16 @@ extension CollabNavigationView: JTAppleCalendarViewDataSource, JTAppleCalendarVi
                     vibrateMethods.warningVibration()
                     
                     calendar.selectDates([startTime])
+                    
+                    //Must perform these steps here because the "didSelectDate" funt won't allow for them to be completed because the "startTime" was
+                    //selected programatically
+                    if let viewController = collabViewController as? CollabViewController {
+                        
+                        viewController.scrollToFirstBlock(indexPathToScrollTo: IndexPath(row: 0, section: 0))
+                        
+                        viewController.collabCalendarView.calendarView.selectDates([startTime])
+                        viewController.collabCalendarView.calendarView.scrollToDate(startTime)
+                    }
                     
                     return false
                 }
@@ -888,11 +910,20 @@ extension CollabNavigationView: JTAppleCalendarViewDataSource, JTAppleCalendarVi
         
         configureCell(view: cell, cellState: cellState)
         
-        if cellState.selectionType != .programatic {
+        if let viewController = collabViewController as? CollabViewController {
             
-            if let startTime = collabStartTime, let row = Calendar.current.dateComponents([.day], from: startTime, to: date).day {
+            formatter.dateFormat = "MMMM"
+            calendarHeaderLabel.text = formatter.string(from: date)
+            
+            if cellState.selectionType != .programatic {
                 
-                if let viewController = collabViewController as? CollabViewController {
+                viewController.collabCalendarView.calendarView.selectDates([date])
+                viewController.collabCalendarView.calendarView.scrollToDate(date)
+                
+                formatter.dateFormat = "yyyy MM dd"
+                
+                //Formats the collabStartTime so that only the date and not the time is used
+                if let startTime = formatter.date(from: formatter.string(from: collabStartTime ?? Date())), let row = Calendar.current.dateComponents([.day], from: startTime, to: date).day {
                     
                     viewController.scrollToFirstBlock(indexPathToScrollTo: IndexPath(row: row, section: 0))
                 }
@@ -935,26 +966,69 @@ extension CollabNavigationView: JTAppleCalendarViewDataSource, JTAppleCalendarVi
     
     //MARK: - Configure Calendar Cell
     
-    func configureCell(view: JTAppleCell?, cellState: CellState) {
+    private func configureCell(view: JTAppleCell?, cellState: CellState) {
         
         guard let cell = view as? DateCell else { return }
         
+            cell.dateLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
             cell.dateLabel.text = cellState.text
             cell.rangeSelectionView.isHidden = true
         
-            handleCellSelected(cell: cell, cellState: cellState)
+            handleCellDotView(cell: cell, cellState: cellState)
+            handleCellSelection(cell: cell, cellState: cellState)
+    }
+    
+    
+    //MARK: - Handle Cell Dot View
+    
+    private func handleCellDotView (cell: DateCell, cellState: CellState) {
+        
+        if let viewController = collabViewController as? CollabViewController, let startTime = collabStartTime, let deadline = collabDeadline {
+            
+            if calendar.isDate(cellState.date, inSameDayAs: startTime) || calendar.isDate(cellState.date, inSameDayAs: deadline) {
+                
+                cell.dotView.isHidden = false
+                
+                cell.dotView.backgroundColor = calendar.isDate(cellState.date, inSameDayAs: startTime) ? UIColor(hexString: "5065A0")?.lighten(byPercentage: 0.1) : UIColor(hexString: "2ECC70")
+                
+                cell.dotView.layer.cornerRadius = 2.5
+                cell.dotView.clipsToBounds = true
+                
+                cell.dotViewBottomAnchor.constant = 2.5
+            }
+                
+            else if viewController.blocks?.contains(where: { calendar.isDate($0.starts!, inSameDayAs: cellState.date) }) ?? false {
+                
+                cell.dotView.isHidden = false
+                
+                cell.dotView.layer.cornerRadius = 2.5
+                cell.dotView.clipsToBounds = true
+                
+                cell.dotView.backgroundColor = .black
+                cell.dotViewBottomAnchor.constant = 2.5
+            }
+            
+            else {
+                
+                cell.dotView.isHidden = true
+            }
+        }
+        
+        else {
+            
+            cell.dotView.isHidden = true
+        }
     }
     
     
     //MARK: - Handle Cell Selected
     
-    func handleCellSelected (cell: DateCell, cellState: CellState) {
-        
+    private func handleCellSelection (cell: DateCell, cellState: CellState) {
+
         cell.singleSelectionView.isHidden = cellState.isSelected ? false : true
+        cell.singleSelectionView.layer.cornerRadius = 0.5 * cell.singleSelectionView.frame.width
         
         cell.dateLabel.textColor = cellState.isSelected ? .white : UIColor(hexString: "222222")
         cell.dateLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
-        
-        cell.singleSelectionView.layer.cornerRadius = 0.5 * cell.singleSelectionView.frame.width
     }
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -47,6 +48,14 @@
                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="275-7G-QnS">
+                        <rect key="frame" x="22.5" y="36.5" width="5" height="5"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="5" id="SZ5-8m-Puu"/>
+                            <constraint firstAttribute="height" constant="5" id="jCp-dy-B8F"/>
+                        </constraints>
+                    </view>
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
@@ -55,13 +64,17 @@
                 <constraint firstAttribute="trailing" secondItem="SZD-IE-D3b" secondAttribute="trailing" id="3fa-3h-qbC"/>
                 <constraint firstItem="t7n-oD-0Od" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="FrX-N5-4jb"/>
                 <constraint firstItem="fwH-VV-MKL" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="G0j-XY-h11"/>
+                <constraint firstItem="275-7G-QnS" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="Ip6-lu-y1B"/>
                 <constraint firstItem="SZD-IE-D3b" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="LaM-jH-ICt"/>
                 <constraint firstItem="fwH-VV-MKL" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="X5v-cP-hZc"/>
+                <constraint firstAttribute="bottom" secondItem="275-7G-QnS" secondAttribute="bottom" constant="8.5" id="cxU-pK-TjM"/>
                 <constraint firstItem="t7n-oD-0Od" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="iZI-ru-epE"/>
                 <constraint firstItem="SZD-IE-D3b" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="m5y-I0-LMo"/>
             </constraints>
             <connections>
                 <outlet property="dateLabel" destination="fwH-VV-MKL" id="PuH-qt-AjK"/>
+                <outlet property="dotView" destination="275-7G-QnS" id="tEG-5A-ikR"/>
+                <outlet property="dotViewBottomAnchor" destination="cxU-pK-TjM" id="dUU-9I-2Xm"/>
                 <outlet property="rangeSelectionView" destination="SZD-IE-D3b" id="6or-Wn-H3d"/>
                 <outlet property="rangeViewLeadingAnchor" destination="LaM-jH-ICt" id="O5I-mZ-mLW"/>
                 <outlet property="rangeViewTrailingAnchor" destination="3fa-3h-qbC" id="sbq-NY-nkW"/>
@@ -70,4 +83,9 @@
             <point key="canvasLocation" x="137.68115942028987" y="153.34821428571428"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

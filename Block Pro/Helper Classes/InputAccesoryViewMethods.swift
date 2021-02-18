@@ -286,7 +286,7 @@ class InputAccesoryViewMethods {
         resetMessageContainerHeights()
     }
     
-    private func setTextViewBottomAnchor () -> CGFloat {
+   func setTextViewBottomAnchor () -> CGFloat {
         
         if (keyWindow?.safeAreaInsets.bottom ?? 0) > 0 {
             

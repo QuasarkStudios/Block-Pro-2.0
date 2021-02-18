@@ -19,7 +19,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     lazy var collabNavigationView = CollabNavigationView(self, collabStartTime: collab?.dates["startTime"], collabDeadline: collab?.dates["deadline"])
     let presentCollabNavigationViewButton = UIButton(type: .system)
     
-    var editCollabBarButton: UIBarButtonItem?
+    lazy var collabCalendarView = CollabCalendarView(self, collabStartTime: collab?.dates["startTime"], collabDeadline: collab?.dates["deadline"])
     
     let collabHomeTableView = UITableView()
     
@@ -69,6 +69,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     var zoomingMethods: ZoomingImageViewMethods?
 
+    var calendarPresented: Bool = false
+    
     var imageViewBeingZoomed: Bool?
     var keyboardWasPresent: Bool?
     
@@ -77,19 +79,24 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     var searchBeingConducted: Bool = false
     var blocksFiltered: Bool = false
     
+    var collabNavigationViewTopAnchor: NSLayoutConstraint?
+    
 //    var viewAppeared: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavBar()
         configureGestureRecognizers()
         
         configureHeaderView()
         configureCollabHomeTableView()
         
+        configureCalendarView()
+        
         configurePresentCollabNavigationViewButton()
         configureCollabNavigationView()
+        
+//        configureCalendarView()
         
         configureAddBlockButton()
         configureSeeHiddenBlocksButton()
@@ -106,9 +113,13 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         retrieveMemberProfilePics()
         
         messageInputAccesoryView.alpha = 0
+        
+//        print(collab?.collabID)
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        
+        configureNavBar()
         
         retrieveMessageDraft()
         
@@ -217,42 +228,47 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         else {
             
-            if selectedTab == "Blocks" {
+            if selectedTab == "Progress" {
+                
+                return blocksFiltered ? filteredBlocks.count : blocks?.count ?? 0
+            }
+            
+            else if selectedTab == "Blocks" {
                 
                 //still needs testing
-                if let startTime = collab?.dates["startTime"], let deadline = collab?.dates["deadline"] {
+                if var startTime = collab?.dates["startTime"], var deadline = collab?.dates["deadline"] {
+
+                    //Formatting the startTime and deadline so that the only the date and not the time is truly used
+                    formatter.dateFormat = "yyyy MM dd"
+                    startTime = formatter.date(from: formatter.string(from: startTime)) ?? Date()
+                    deadline = formatter.date(from: formatter.string(from: deadline)) ?? Date()
                     
                     if let days = calendar.dateComponents([.day], from: startTime, to: deadline).day, days != 0 {
-                        
+
                         return days + 1
                     }
-                    
+
                     else {
-                        
+
                         //this can only be tested once create a collab view is reconfigured giving users the ability to set a collab to start and end on the same day
                         return 1
                     }
                 }
-                
+
                 else {
-                    
+
                     return 1
                 }
             }
             
             else if selectedTab == "Messages" {
                 
-                if tableView == collabNavigationView.collabTableView {
-
-                    return messagingMethods.numberOfRowsInSection(messages: messages)
-                }
-                
                 return messagingMethods.numberOfRowsInSection(messages: messages)
             }
             
             else {
                 
-                return blocksFiltered ? filteredBlocks.count : blocks?.count ?? 0
+                return 1 //Will be used to during tab transitions
             }
         }
     }
@@ -431,7 +447,18 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         else {
             
-            if selectedTab == "Blocks" {
+            if selectedTab == "Progress" {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! BlockCell
+                cell.selectionStyle = .none
+                
+                cell.formatter = formatter
+                cell.block = blocksFiltered ? filteredBlocks[indexPath.row] : blocks?[indexPath.row]
+                
+                return cell
+            }
+            
+            else if selectedTab == "Blocks" {
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "blocksTableViewCell", for: indexPath) as! BlocksTableViewCell
                 cell.selectionStyle = .none
@@ -454,12 +481,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             else {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! BlockCell
-                cell.selectionStyle = .none
-                
-                cell.formatter = formatter
-                cell.block = blocksFiltered ? filteredBlocks[indexPath.row] : blocks?[indexPath.row]
-                
+                //Will be used to during tab transitions
+                let cell = UITableViewCell()
+                cell.isUserInteractionEnabled = false
                 return cell
             }
         }
@@ -614,17 +638,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         else {
             
-            if selectedTab == "Blocks" {
-                
-                return 2210
-            }
-            
-            else if selectedTab == "Messages" {
-                
-                return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages)
-            }
-            
-            else {
+            if selectedTab == "Progress" {
                 
                 if blocksFiltered {
                     
@@ -651,6 +665,23 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                         return 175
                     }
                 }
+                
+                
+            }
+            
+            else if selectedTab == "Blocks" {
+                
+                return 2210
+            }
+            
+            else if selectedTab == "Messages" {
+                
+                return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages)
+            }
+            
+            else {
+                
+                return 500 //Will be used to during tab transitions
             }
         }
     }
@@ -699,6 +730,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             }
         }
     }
+    
+    var previousContentOffsetYCoord: CGFloat = 0
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
@@ -820,19 +853,65 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             else if selectedTab == "Blocks" {
                 
-                //22 is the top contentInset of the collabTableView; this will be required to be updated if that ever changes
-                if scrollView.contentOffset.y == 22 {
+                //If the tableView is scrolling down
+                if previousContentOffsetYCoord < scrollView.contentOffset.y {
                     
-                    if let startTime = collab?.dates["startTime"] {
+                    if let firstVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first {
                         
-                        collabNavigationView.calendarView.scrollToDate(startTime)
-                        collabNavigationView.calendarView.selectDates([startTime])
+                        //"isDragging" checks if the user is the one who caused the scrollView to scroll
+                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: firstVisibleCellIndexPath.row, to: startTime), !calendar.isDate(adjustedDate, inSameDayAs: collabNavigationView.calendarView.selectedDates.first ?? Date()), scrollView.isDragging {
+                            
+                            collabCalendarView.calendarView.selectDates([adjustedDate])
+                            collabCalendarView.calendarView.scrollToDate(adjustedDate)
+                            
+                            collabNavigationView.calendarView.selectDates([adjustedDate])
+                            collabNavigationView.calendarView.scrollToDate(adjustedDate)
+
+                            let vibrateMethods = VibrateMethods()
+                            vibrateMethods.warningVibration()
+                        }
                     }
                 }
+                
+                //If the tableView is scrolling up
+                else {
+                    
+                    if let lastVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.last {
+                
+                        //"isDragging" checks if the user is the one who caused the scrollView to scroll
+                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: lastVisibleCellIndexPath.row, to: startTime), !calendar.isDate(adjustedDate, inSameDayAs: collabNavigationView.calendarView.selectedDates.first ?? Date()), scrollView.isDragging {
+                            
+                            collabCalendarView.calendarView.selectDates([adjustedDate])
+                            collabCalendarView.calendarView.scrollToDate(adjustedDate)
+                            
+                            collabNavigationView.calendarView.selectDates([adjustedDate])
+                            collabNavigationView.calendarView.scrollToDate(adjustedDate)
+                
+                            let vibrateMethods = VibrateMethods()
+                            vibrateMethods.warningVibration()
+                        }
+                    }
+                }
+                
+                previousContentOffsetYCoord = scrollView.contentOffset.y
                 
                 determineHiddenBlocks(scrollView)
             }
         }
+    }
+    
+    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+        
+        if let startTime = collab?.dates["startTime"] {
+            
+            collabCalendarView.calendarView.selectDates([startTime])
+            collabCalendarView.calendarView.scrollToDate(startTime)
+            
+            collabNavigationView.calendarView.selectDates([startTime])
+            collabNavigationView.calendarView.scrollToDate(startTime)
+        }
+        
+        return true
     }
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
@@ -884,42 +963,21 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             else if selectedTab == "Blocks" {
                 
-                if velocity.y < 0 {
+                //If the calendar isn't presented
+                //If the calendar is presented and the "collabNavigationView" has a height that doesn't require the "addBlockButton" and "tabBar" to be hidden
+                //If the calendar is presented and the view is expanded
+                if !calendarPresented || (calendarPresented && (self.addBlockButton.frame.minY - 330 >= 200 || collabNavigationViewTopAnchor?.constant ?? 0 == 0)) {
                     
-                    if let firstVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first {
+                    if velocity.y < 0 {
                         
-                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: firstVisibleCellIndexPath.row, to: startTime), adjustedDate != collabNavigationView.calendarView.selectedDates.first ?? Date() {
-
-                            collabNavigationView.calendarView.scrollToDate(adjustedDate)
-                            collabNavigationView.calendarView.selectDates([adjustedDate])
+                        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                             
-                            let vibrateMethods = VibrateMethods()
-                            vibrateMethods.warningVibration()
+                            self.addBlockButton.alpha = 1
+                            self.tabBar.alpha = 1
                         }
                     }
                     
-                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                        
-                        self.addBlockButton.alpha = 1
-                        self.tabBar.alpha = 1
-                    }
-                }
-                
-                else {
-                    
-                    if let lastVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.last {
-                        
-                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: lastVisibleCellIndexPath.row, to: startTime), adjustedDate != collabNavigationView.calendarView.selectedDates.first ?? Date() {
-                            
-                            collabNavigationView.calendarView.scrollToDate(adjustedDate)
-                            collabNavigationView.calendarView.selectDates([adjustedDate])
-                            
-                            let vibrateMethods = VibrateMethods()
-                            vibrateMethods.warningVibration()
-                        }
-                    }
-                    
-                    if velocity.y > 0.5 {
+                    else if velocity.y > 0.5 {
                         
                         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                             
@@ -934,9 +992,34 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     private func configureNavBar () {
         
-        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+        //If the collabNavigationView is expanded or the calendar is present
+        if navigationItem.hidesBackButton == true {
+
+            //If the collabNavigationView is expanded
+            if collabNavigationViewTopAnchor?.constant == 0 {
+
+                self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black, barStyleColor: .default)
+            }
+
+            else {
+
+                self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+            }
+        }
         
-        editCollabBarButton = UIBarButtonItem(title: "Edit", style: .done, target: self, action: #selector(editCollabButtonPressed))
+        else {
+            
+            //If the view has a title evident that the collabHeaderView or collabCalendarView is hidden
+            if self.title?.leniantValidationOfTextEntered() ?? false {
+                
+                self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black, barStyleColor: .default)
+            }
+            
+            else {
+                
+                self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+            }
+        }
     }
     
     private func configureHeaderView () {
@@ -985,16 +1068,31 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
             collabNavigationView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
             collabNavigationView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
-//            collabNavigationView.topAnchor.constraint(equalTo: collabHeaderView.bottomAnchor, constant: /*-50*/-80),
-            collabNavigationView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: collabHeaderView.configureViewHeight() - 80),
             collabNavigationView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
         
         ].forEach({ $0.isActive = true })
         
-//        collabNavigationView.collabStartTime = collab?.dates["startTime"]
-//        collabNavigationView.collabDeadline = collab?.dates["deadline"]
+        collabNavigationViewTopAnchor = collabNavigationView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: collabHeaderView.configureViewHeight() - 80)
+        collabNavigationViewTopAnchor?.isActive = true
         
         collabNavigationView.collabViewController = self
+    }
+    
+    private func configureCalendarView () {
+
+        self.view.addSubview(collabCalendarView)
+        collabCalendarView.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            collabCalendarView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
+            collabCalendarView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
+            collabCalendarView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0),
+            collabCalendarView.heightAnchor.constraint(equalToConstant: topBarHeight + 425)
+        
+        ].forEach({ $0.isActive = true })
+        
+        collabCalendarView.isHidden = true
     }
     
     //should probably move all these configuration funcs for the navigation view to the navigation class
@@ -1015,7 +1113,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabNavigationView.collabTableView.estimatedRowHeight = 0
         
         collabNavigationView.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0, right: 0)
-        collabNavigationView.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 0, right: 0)
+        collabNavigationView.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 40 : 0, right: 0)
         
         collabNavigationView.collabTableView.scrollsToTop = true
         
@@ -1258,31 +1356,48 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
         case .began, .changed:
             
-            if selectedTab == "Blocks" && collabNavigationView.originalTableViewContentOffset == nil {
-                
-                //Setting the originalContentOffset so that the collabTableView will be animated back into the correct position once the panGesture has completed
-                collabNavigationView.originalTableViewContentOffset = collabNavigationView.collabTableView.contentOffset.y
-            }
+//            if selectedTab == "Blocks" && collabNavigationView.originalTableViewContentOffset == nil {
+//
+//                //Setting the originalContentOffset so that the collabTableView will be animated back into the correct position once the panGesture has completed
+//                collabNavigationView.originalTableViewContentOffset = collabNavigationView.collabTableView.contentOffset.y
+//            }
             
             moveWithPan(sender: sender)
             
         case .ended:
             
-            if (collabNavigationView.frame.minY > (collabHeaderView.frame.height / 2)) && (collabNavigationView.frame.minY < (UIScreen.main.bounds.height / 2)) {
+            if !calendarPresented {
                 
-                returnToOrigin()
+                if (collabNavigationView.frame.minY > (collabHeaderView.frame.height / 2)) && (collabNavigationView.frame.minY < (UIScreen.main.bounds.height / 2)) {
+                    
+                    returnToOrigin()
+                }
+                
+                else if (collabNavigationView.frame.minY < (collabHeaderView.frame.height / 2)) {
+                    
+                    expandView()
+                }
+                
+                else if (collabNavigationView.frame.minY > (UIScreen.main.bounds.height / 2)) {
+                    
+                    shrinkView()
+                }
             }
             
-            else if (collabNavigationView.frame.minY < (collabHeaderView.frame.height / 2)) {
+            else {
                 
-                expandView()
+                //If the minY of the collabNavigationView is less than half of it's preset anchor when the calendar is present
+                if collabNavigationView.frame.minY < (topBarHeight + (collabCalendarView.calendarView.visibleDates().monthDates.first?.date.determineNumberOfWeeks() == 4 ? 330 : 376)) / 2 {
+                    
+                    expandView()
+                }
+                
+                else {
+                    
+                    returnToOrigin()
+                }
             }
             
-            else if (collabNavigationView.frame.minY > (UIScreen.main.bounds.height / 2)) {
-                
-                shrinkView()
-            }
-
         default:
             
             break
@@ -1294,46 +1409,70 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         let translation = sender.translation(in: view)
         
         let collabHeaderViewHeightConstraint = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
-        let collabNavigationViewTopAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .top })
         let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
         
-        if (collabNavigationView.frame.minY + translation.y) < (collabHeaderView.configureViewHeight() - 80) {
+        if !calendarPresented {
             
-            //where you should do the nav view animation
-            
-            if collabNavigationViewBottomAnchor?.constant == 0 {
+            if (collabNavigationView.frame.minY + translation.y) < (collabHeaderView.configureViewHeight() - 80) {
                 
-                collabNavigationView.collabTableView.contentOffset.y = collabNavigationView.collabTableView.contentOffset.y + translation.y
+                //where you should do the nav view animation
+                
+                //Took this away because I couldn't find a reason to keep it; remove towards the completion of the view
+                //ProgressView animation now requires some updates as a result and other areas also may require updates *updated*
+//                if collabNavigationViewBottomAnchor?.constant == 0 {
+//
+//                    collabNavigationView.collabTableView.contentOffset.y = collabNavigationView.collabTableView.contentOffset.y + translation.y
+//                }
+//
+//                else {
+//
+//                    collabNavigationView.collabTableView.contentOffset.y += abs(collabNavigationViewBottomAnchor?.constant ?? 0)
+//                }
+                
+                collabNavigationViewTopAnchor?.constant += translation.y
+                collabNavigationViewBottomAnchor?.constant = 0
+                
+    //            the alpha animation stuff
+                let collabNavigationViewMinY = collabNavigationView.frame.minY - 44 > 0 ? collabNavigationView.frame.minY - 44 : 0
+                let adjustedAlpha: CGFloat = ((1 / (collabHeaderView.configureViewHeight() - 80)) * collabNavigationViewMinY)
+                collabNavigationView.panGestureIndicator.alpha = adjustedAlpha > 0 ? adjustedAlpha : 0
+                collabNavigationView.buttonStackView.alpha = adjustedAlpha > 0 ? adjustedAlpha : 0
             }
             
             else {
                 
-                collabNavigationView.collabTableView.contentOffset.y += abs(collabNavigationViewBottomAnchor?.constant ?? 0)
+                //where you should do the header view animation
+                
+                collabNavigationViewTopAnchor?.constant += translation.y
+                collabNavigationViewBottomAnchor?.constant = collabNavigationView.frame.minY - (collabHeaderView.configureViewHeight() - 80)
+            
+                let collabNavViewOriginMinY = collabHeaderView.configureViewHeight() - 80
+                let collabNavViewDistanceFromBottom = (collabNavigationViewTopAnchor!.constant - collabNavViewOriginMinY) / (self.view.frame.height - collabNavViewOriginMinY)
+                
+                collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight() - (70 * collabNavViewDistanceFromBottom)
+                
+                if selectedTab == "Messages" {
+                    
+                    messageInputAccesoryView.alpha = 1 - (1 * collabNavViewDistanceFromBottom) // was commented out but i am reversing that and seeing what happens (Feb. 17)
+                }
             }
-            
-            collabNavigationViewTopAnchor?.constant += translation.y
-            collabNavigationViewBottomAnchor?.constant = 0
-            
-//            the alpha animation stuff
-            let collabNavigationViewMinY = collabNavigationView.frame.minY - 44 > 0 ? collabNavigationView.frame.minY - 44 : 0
-            let adjustedAlpha: CGFloat = ((1 / (collabHeaderView.configureViewHeight() - 80)) * collabNavigationViewMinY)
-            collabNavigationView.panGestureIndicator.alpha = adjustedAlpha > 0 ? adjustedAlpha : 0
-            collabNavigationView.buttonStackView.alpha = adjustedAlpha > 0 ? adjustedAlpha : 0
         }
         
+        //If the calendar is presented
         else {
             
-            //where you should do the header view animation
+            //If the navigationViewTopAnchor + the translation is less than 330/376, the preset anchor for when the calendar view is presented
+            if ((collabNavigationViewTopAnchor?.constant ?? 0) + translation.y) < topBarHeight + (collabCalendarView.calendarView.visibleDates().monthDates.first?.date.determineNumberOfWeeks() == 4 ? 330 : 376) {
+                
+                collabNavigationViewTopAnchor?.constant += translation.y
+                collabNavigationViewBottomAnchor?.constant = 0
+            }
             
-            collabNavigationViewTopAnchor?.constant += translation.y
-            collabNavigationViewBottomAnchor?.constant = collabNavigationView.frame.minY - (collabHeaderView.configureViewHeight() - 80)
-        
-            let collabNavViewOriginMinY = collabHeaderView.configureViewHeight() - 80
-            let collabNavViewDistanceFromBottom = (collabNavigationViewTopAnchor!.constant - collabNavViewOriginMinY) / (self.view.frame.height - collabNavViewOriginMinY)
-            
-            collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight() - (70 * collabNavViewDistanceFromBottom)
-            
-//            messageInputAccesoryView.alpha = 1 - (1 * collabNavViewDistanceFromBottom)
+            else {
+                
+                collabNavigationViewTopAnchor?.constant = topBarHeight + (collabCalendarView.calendarView.visibleDates().monthDates.first?.date.determineNumberOfWeeks() == 4 ? 330 : 376)
+                collabNavigationViewBottomAnchor?.constant = 0
+            }
         }
         
         sender.setTranslation(CGPoint.zero, in: view)
@@ -1341,50 +1480,17 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     @objc private func returnToOrigin (animateCollabHeaderView: Bool = true, scrollTableView: Bool = true) {
         
-//        self.navigationItem.rightBarButtonItem = nil
+        collabNavigationView.panGestureView.isUserInteractionEnabled = true
         
-        let collabNavigationViewTopAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .top })
-        let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
-        let presentNavViewButtonBottomAnchor = self.view.constraints.first(where: { $0.firstItem?.tag == 1 && $0.firstAttribute == .bottom })
-        let collabTableViewTopAnchor = collabNavigationView.constraints.first(where: { $0.firstItem as? UITableView != nil && $0.firstAttribute == .top })
-        
-        if animateCollabHeaderView {
-            
-            collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight()
-        }
-    
-        collabNavigationViewTopAnchor?.constant = collabHeaderView.configureViewHeight() - 80
-//        collabNavigationViewBottomAnchor?.constant = 0
-        presentNavViewButtonBottomAnchor?.constant = 40
+        resetConstraintsForReturnToOrigin(animateCollabHeaderView)
         
         if selectedTab == "Progress" {
-            
-            collabNavigationView.progressViewTopAnchorWithStackView?.constant = 10
-            
-            //Checks to see if the currentHeight of the progressView will cause the height of the tableView to be less than 0
-            //Explanation for the math in this statement is in the collabNavigationView when initializing the computed property "maximumTableViewTopAnchorWithStackView"
-            if (collabHeaderView.configureViewHeight() - 80) + (27.5 + 40) + (collabNavigationView.progressViewHeightConstraint?.constant ?? 0) + 10 > UIScreen.main.bounds.height {
-                
-                collabNavigationView.tableViewTopAnchorWithStackView?.constant = collabNavigationView.maximumTableViewTopAnchorWithStackView
-            }
             
             if blocks?.count ?? 0 == 0 {
                 
                 //Should be fine being called from here instead of from the animation block
                 collabNavigationView.handleProgressAnimation()
             }
-        }
-        
-        else if selectedTab == "Blocks" {
-            
-            collabTableViewTopAnchor?.constant = 10
-        }
-        
-        else if selectedTab == "Messages" {
-            
-            collabTableViewTopAnchor?.constant = 10
-            
-            collabNavigationView.messagesAnimationViewCenterYAnchor?.constant = 0
         }
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.65, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
@@ -1397,14 +1503,26 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
 
             self.collabNavigationView.layer.cornerRadius = 27.5
             self.collabNavigationView.panGestureIndicator.alpha = 1
-            self.collabNavigationView.buttonStackView.alpha = 1
+            self.collabNavigationView.buttonStackView.alpha = !self.calendarPresented ? 1 : 0
             self.collabNavigationView.messagesAnimationView.animationTitleLabel.alpha = 0
             
-            self.tabBar.alpha = self.selectedTab != "Messages" ? 1 : 0
-            self.addBlockButton.alpha = self.selectedTab == "Blocks" ? 1 : 0
             self.seeHiddenBlocksButton.alpha = 0
+            
+            if !self.calendarPresented {
+                
+                self.tabBar.alpha = self.selectedTab != "Messages" ? 1 : 0
+                self.addBlockButton.alpha = self.selectedTab == "Blocks" ? 1 : 0
+            }
+            
+            else {
+                
+                //Will remove the "addBlockButton" and the "tabBar" if the collabNavigationView will be too small once the calendar is presented
+                self.tabBar.alpha = (self.addBlockButton.frame.minY - 330 >= 200) ? 1 : 0
+                self.addBlockButton.alpha = (self.addBlockButton.frame.minY - 330 >= 200) ? 1 : 0
+            }
         })
         
+        let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
         collabNavigationViewBottomAnchor?.constant = 0
         
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
@@ -1428,7 +1546,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         self.resignFirstResponder()
         
         let collabHeaderViewHeightAnchor = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
-        let collabNavigationViewTopAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .top })
         let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
         let presentNavViewButtonBottomAnchor = self.view.constraints.first(where: { $0.firstItem?.tag == 1 && $0.firstAttribute == .bottom })
         
@@ -1451,7 +1568,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     internal func expandView () {
         
-        let collabNavigationViewTopAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .top })
+        viewExpanded() //Call here
+        
+        collabNavigationView.panGestureView.isUserInteractionEnabled = false
+        
         let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
         
         collabNavigationViewTopAnchor?.constant = 0
@@ -1470,7 +1590,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             let progressViewHeight: CGFloat = ((UIScreen.main.bounds.width * 0.5) + 12 + 55) + 87
             
-            //Adjusts the topAnchor of the tableView when the progressView is completly present as the view is being expanded
+            //Adjusts the topAnchor of the tableView when the progressView is completely present as the view is being expanded
             if (collabNavigationView.progressViewHeightConstraint?.constant ?? 0) == progressViewHeight {
                 
                 //Setting the top anchor based on if the iPhone has a notch -- an iPhone with a notch will cause the progressView to have a larger topAnchor
@@ -1487,7 +1607,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         title = selectedTab
         
-        viewExpanded()
+//        viewExpanded()
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
 
@@ -1498,6 +1618,12 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             self.collabNavigationView.buttonStackView.alpha = 0
             
             self.collabNavigationView.messagesAnimationView.animationTitleLabel.alpha = self.messages?.count ?? 0 == 0 ? 1 : 0
+            
+            if self.selectedTab == "Blocks" {
+                
+                self.addBlockButton.alpha = 1
+                self.tabBar.alpha = 1
+            }
         })
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
@@ -1505,6 +1631,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             if self.selectedTab == "Blocks" {
                 
                 self.collabNavigationView.presentCalendar()
+                
+                self.determineHiddenBlocks(self.collabNavigationView.collabTableView)
             }
         }
 
@@ -1519,19 +1647,60 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         cancelButton.style = .done
         navigationItem.leftBarButtonItem = cancelButton
         
-        if selectedTab == "Blocks" {
-            
-            let attachmentButton = UIBarButtonItem(image: UIImage(named: "info"), style: .done, target: self, action: #selector(infoButtonPressed))
-            navigationItem.setRightBarButton(attachmentButton, animated: true)
-        }
-        
-        else if selectedTab == "Messages" {
+        if selectedTab == "Messages" {
             
             let attachmentButton = UIBarButtonItem(image: UIImage(named: "attach"), style: .done, target: self, action: #selector(attachmentButtonPressed))
             navigationItem.setRightBarButton(attachmentButton, animated: true)
         }
         
         removeGestureRecognizers()
+    }
+    
+    private func resetConstraintsForReturnToOrigin (_ animateCollabHeaderView: Bool) {
+        
+        let presentNavViewButtonBottomAnchor = self.view.constraints.first(where: { $0.firstItem?.tag == 1 && $0.firstAttribute == .bottom })
+        let collabTableViewTopAnchor = collabNavigationView.constraints.first(where: { $0.firstItem as? UITableView != nil && $0.firstAttribute == .top })
+        
+        if animateCollabHeaderView {
+            
+            collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight()
+        }
+    
+        if calendarPresented {
+            
+            collabNavigationViewTopAnchor?.constant = topBarHeight + (collabCalendarView.calendarView.visibleDates().monthDates.first?.date.determineNumberOfWeeks() == 4 ? 330 : 376)
+        }
+        
+        else {
+            
+            collabNavigationViewTopAnchor?.constant = collabHeaderView.configureViewHeight() - 80
+        }
+        
+        presentNavViewButtonBottomAnchor?.constant = 40
+        
+        if selectedTab == "Progress" {
+            
+            collabNavigationView.progressViewTopAnchorWithStackView?.constant = 10
+            
+            //Checks to see if the currentHeight of the progressView will cause the height of the tableView to be less than 0
+            //Explanation for the math in this statement is in the collabNavigationView when initializing the computed property "maximumTableViewTopAnchorWithStackView"
+            if (collabHeaderView.configureViewHeight() - 80) + (27.5 + 40) + (collabNavigationView.progressViewHeightConstraint?.constant ?? 0) + 10 > UIScreen.main.bounds.height {
+                
+                collabNavigationView.tableViewTopAnchorWithStackView?.constant = collabNavigationView.maximumTableViewTopAnchorWithStackView
+            }
+        }
+        
+        else if selectedTab == "Blocks" {
+            
+            collabTableViewTopAnchor?.constant = 10
+        }
+        
+        else if selectedTab == "Messages" {
+            
+            collabTableViewTopAnchor?.constant = 10
+            
+            collabNavigationView.messagesAnimationViewCenterYAnchor?.constant = 0
+        }
     }
     
     //MARK: - User Activity Functions
@@ -1558,10 +1727,113 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         //}
     }
     
+    func presentCalendar () {
+        
+        var delay: Double = 0
+        
+        calendarPresented = true
+        
+        collabCalendarView.blocks = blocks
+        collabCalendarView.selectedDate = collabNavigationView.calendarView.selectedDates.first
+
+        if selectedTab == "Progress" || selectedTab == "Messages" {
+            
+            //Calling this func will allow for the buttons to be animated to their correct color as well as allow for the tableView to be changed
+            collabNavigationView.blocksButtonTouchUpInside()
+            
+            delay = 0.25 //Slight delay to improve animations
+        }
+        
+        //Adjusting the position of the panGetsureView
+        collabNavigationView.insertSubview(collabNavigationView.panGestureView, aboveSubview: collabNavigationView.collabTableView)
+        
+        //Reconfiguring constraints
+        collabNavigationViewTopAnchor?.constant = topBarHeight + (collabNavigationView.calendarView.selectedDates.first?.determineNumberOfWeeks() == 4 ? 330 : 376)
+        collabNavigationView.buttonStackView.constraints.forEach { (constraint) in
+
+            if constraint.firstAttribute == .height {
+
+                constraint.constant = 0
+            }
+        }
+        
+        //Animations
+        UIView.animate(withDuration: 0.5, delay: delay, usingSpringWithDamping: 0.65, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
+
+            self.view.layoutIfNeeded()
+
+            self.collabNavigationView.buttonStackView.alpha = 0
+        })
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+
+            UIView.transition(from: self.collabHeaderView, to: self.collabCalendarView, duration: 0.35, options: [.transitionCrossDissolve, .showHideTransitionViews], completion: nil)
+
+            self.navigationItem.hidesBackButton = true
+
+            let cancelButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.stop, target: self, action: #selector(self.dismissCalendar))
+            cancelButton.style = .done
+            self.navigationItem.leftBarButtonItem = cancelButton
+        }
+        
+        UIView.animate(withDuration: 0.35, delay: delay, options: .curveEaseInOut) {
+            
+            //Will remove the "addBlockButton" and the "tabBar" if the collabNavigationView will be too small once the calendar is presented
+            self.addBlockButton.alpha = (self.addBlockButton.frame.minY - 330 >= 200) ? 1 : 0
+            self.tabBar.alpha = (self.addBlockButton.frame.minY - 330 >= 200) ? 1 : 0
+        }
+    }
+    
+    @objc private func dismissCalendar () {
+        
+        calendarPresented = false
+        
+        navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+        navigationItem.leftBarButtonItem = nil
+        navigationItem.rightBarButtonItem = nil
+        navigationItem.hidesBackButton = false
+        
+        //Adjusting the position of the panGetsureView
+        collabNavigationView.insertSubview(collabNavigationView.panGestureView, aboveSubview: collabNavigationView.panGestureIndicator)
+        
+//        collabNavigationView.originalTableViewContentOffset = collabNavigationView.collabTableView.contentOffset.y
+//        returnToOrigin(scrollTableView: false)
+        
+        //Resetting constraints
+        collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight()
+        collabNavigationViewTopAnchor?.constant = collabHeaderView.configureViewHeight() - 80
+        
+        collabNavigationView.buttonStackView.constraints.forEach { (constraint) in
+
+            if constraint.firstAttribute == .height {
+
+                constraint.constant = 40
+            }
+        }
+
+        //Animations
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.65, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
+
+            self.view.layoutIfNeeded()
+
+            self.collabNavigationView.buttonStackView.alpha = 1
+        })
+
+        UIView.transition(from: collabCalendarView, to: collabHeaderView, duration: 0.35, options: [.transitionCrossDissolve, .showHideTransitionViews]) { (finished: Bool) in
+            
+            //Once transition is completed
+            UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut) {
+
+                self.addBlockButton.alpha = 1
+                self.tabBar.alpha = 1
+            }
+        }
+    }
+    
     internal func determineHiddenBlocks (_ scrollView: UIScrollView) {
         
         //Ensures that the view is expanded
-        if let indexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first, navigationItem.hidesBackButton {
+        if let indexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first, navigationItem.hidesBackButton, collabNavigationViewTopAnchor?.constant ?? 0 == 0 {
             
             //The range of y-Coords that is used to determine which hidden blocks can be presented
             let range = scrollView.contentOffset.y - CGFloat(2210 * indexPath.row) ... scrollView.contentOffset.y - CGFloat(2210 * indexPath.row) + scrollView.frame.height
@@ -1745,13 +2017,25 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     @objc private func cancelButtonPressed () {
         
         navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
-        navigationItem.leftBarButtonItem = nil
-        navigationItem.rightBarButtonItem = nil
-        navigationItem.hidesBackButton = false
-
         title = ""
         
-        reconfigureGestureRecognizers()
+        //Dismissing the expanded view
+        if !calendarPresented {
+            
+            navigationItem.leftBarButtonItem = nil
+            navigationItem.rightBarButtonItem = nil
+            navigationItem.hidesBackButton = false
+        }
+        
+        //Dismissing the expanded view to go back to the calendarPresented view
+        else {
+            
+            let cancelButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.stop, target: self, action: #selector(dismissCalendar))
+            cancelButton.style = .done
+            navigationItem.leftBarButtonItem = cancelButton
+        }
+        
+//        reconfigureGestureRecognizers()
         
         if selectedTab == "Progress" {
             
@@ -1761,7 +2045,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         else if selectedTab == "Blocks" {
             
             //Setting the original contentOffset so that the collabTableView will be animated back to the correct position after the view has returned to it's origin
-            collabNavigationView.originalTableViewContentOffset = collabNavigationView.collabTableView.contentOffset.y
+//            collabNavigationView.originalTableViewContentOffset = collabNavigationView.collabTableView.contentOffset.y
         }
         
         else if selectedTab == "Messages" {
@@ -1785,10 +2069,27 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     @objc private func dismissExpandedView () {
-
-        if navigationItem.hidesBackButton == true /*&& tabBar.shouldHide == true */{
+        
+        if navigationItem.hidesBackButton == true {
             
-            cancelButtonPressed()
+            if calendarPresented {
+                
+                //If the "collabNavigationView" is expanded
+                if collabNavigationViewTopAnchor?.constant == 0 {
+                    
+                    cancelButtonPressed()
+                }
+                
+                else {
+                    
+                    dismissCalendar()
+                }
+            }
+            
+            else {
+                
+                cancelButtonPressed()
+            }
         }
     }
     
@@ -1854,7 +2155,15 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     func progressButtonTouchUpInside () {
         
-//        selectedTab = "Progress"
+        if selectedTab == "Progress" {
+            
+            if blocks?.count ?? 0 > 0 {
+                
+                collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            }
+            
+            return
+        }
         
         collabNavigationView.collabTableView.scrollsToTop = true
         collabNavigationView.collabTableView.keyboardDismissMode = .onDrag
@@ -1880,17 +2189,19 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             self.collabNavigationView.messagesAnimationView.animationView.stop()
             
-            self.collabNavigationView.collabTableView.contentOffset = CGPoint(x: 0, y: 0) //Prevents interference from the scrollViewDidScroll func
+            //Prevents interference from the scrollViewDidScroll func
+            //Stops the scrolling of the tableView
+            self.collabNavigationView.collabTableView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
             
             self.selectedTab = "Progress" //Should be set here to prevent interference from the "scrollViewDidScroll" method
-            
             self.collabNavigationView.collabTableView.reloadData()
+            
+            self.collabNavigationView.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40, right: 0)
+            self.collabNavigationView.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40, right: 0)
             
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
                 
                 self.collabNavigationView.collabTableView.alpha = 1
-                self.collabNavigationView.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40, right: 0)
-                self.collabNavigationView.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40, right: 0)
                 self.tabBar.alpha = 1
             })
         }
@@ -1898,7 +2209,36 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     func blocksButtonTouchUpInside () {
         
-        selectedTab = "Blocks"
+        if selectedTab == "Blocks" {
+            
+            //Helps with the animations
+            UIView.transition(with: collabNavigationView.collabTableView, duration: 0.3, options: .transitionCrossDissolve) {
+
+                self.scrollToCurrentDate()
+                self.scrollToFirstBlock()
+            }
+            
+            if var startTime = collab?.dates["startTime"] {
+                
+                //Formatting the startTime so that the only the date and not the time is truly used
+                formatter.dateFormat = "yyyy MM dd"
+                startTime = formatter.date(from: formatter.string(from: startTime)) ?? Date()
+                
+                if let date = calendar.date(byAdding: .day, value: collabNavigationView.collabTableView.indexPathsForVisibleRows?.last?.row ?? 0, to: startTime) {
+                    
+                    collabCalendarView.calendarView.selectDates([date])
+                    collabCalendarView.calendarView.scrollToDate(date)
+                    
+                    collabNavigationView.calendarView.selectDates([date])
+                    collabNavigationView.calendarView.scrollToDate(date)
+                }
+            }
+            
+            return
+        }
+        
+        //If the tableView is scrolling, this will help configure a placeholder cell before the tableView gets reloaded
+        selectedTab = ""
         
         collabNavigationView.collabTableView.scrollsToTop = true
         
@@ -1917,26 +2257,62 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
         }) { (finished: Bool) in
             
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             self.collabNavigationView.messagesAnimationView.animationView.stop()
             
-            self.collabNavigationView.collabTableView.reloadData()
+            //Stops the scrolling of the tableView
+            self.collabNavigationView.collabTableView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             
-            self.scrollToCurrentDate()
-            self.scrollToFirstBlock()
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            //Setting here prevents the tableView from trying to use cells from a different tab for the blocks tab
+            //averting a possible outOfBounds error (has not yet occured but this is precautionary because it was occuring when moving
+            //to the messages tab)
+            self.selectedTab = "Blocks"
+            self.collabNavigationView.collabTableView.reloadData()
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            if var startTime = self.collab?.dates["startTime"], let currentSelectedDate = self.collabNavigationView.calendarView.selectedDates.first {
+
+                //Formatting the startTime so that the only the date and not the time is truly used
+                self.formatter.dateFormat = "yyyy MM dd"
+                startTime = self.formatter.date(from: self.formatter.string(from: startTime)) ?? Date()
+
+                //Scrolling to the first block of the currently selected date
+                self.scrollToFirstBlock(indexPathToScrollTo: IndexPath(row: self.calendar.dateComponents([.day], from: startTime, to: currentSelectedDate).day ?? 0, section: 0), animate: false)
+            }
+            //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            
+            self.collabNavigationView.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0, right: 0)
+            self.collabNavigationView.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 40 : 0, right: 0)
             
             UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
                 
                 self.collabNavigationView.collabTableView.alpha = 1
-                self.tabBar.alpha = 1
-                self.addBlockButton.alpha = 1
                 
-                self.collabNavigationView.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0, right: 0)
-                self.collabNavigationView.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 0, right: 0)
+                //The present calendar func decides whether the "tabBar" and "addBlockButton" should be hidden or not
+                if !self.calendarPresented {
+                    
+                    self.tabBar.alpha = 1
+                    self.addBlockButton.alpha = 1
+                }
             })
         }
     }
     
     func messagesButtonTouchUpInside () {
+        
+        if selectedTab == "Messages" {
+            
+            if messages?.count ?? 0 > 0 {
+                
+                //Scrolling to the last message
+                collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: ((messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: true)
+            }
+            
+            return
+        }
         
         var delay: Double = 0
         
@@ -1961,8 +2337,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
         
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            
-            self.selectedTab = "Messages"
     
             self.collabNavigationView.collabTableView.scrollsToTop = false
             self.collabNavigationView.collabTableView.keyboardDismissMode = .interactive
@@ -1977,20 +2351,34 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 self.collabNavigationView.collabTableView.alpha = 0
                 self.tabBar.alpha = 0
                 self.addBlockButton.alpha = 0
-                //self.tabBar.shouldHide = true
                 
             }) { (finished: Bool) in
     
+                //Stops the tableView from scrolling to prevent the "messages" array in the messaging methods from going out of bounds
+                //with a indexPath.row that was going to be used by either the "Progress" or "Block" tab
+                self.collabNavigationView.collabTableView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+                
+                //Setting here prevents the tableView from trying to use cells from a different tab for the messages tab
+                //averting a outOfBounds error in the messagingMethods
+                self.selectedTab = "Messages"
                 self.collabNavigationView.collabTableView.reloadData()
     
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                //Borrowed from the inputAccesoryViewMethods class
+                let messageViewHeight = (self.messageInputAccesoryView.textViewContainer.frame.height + abs(self.inputAccesoryViewMethods.setTextViewBottomAnchor())) + 5
+                
+                self.collabNavigationView.collabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: messageViewHeight + 5, right: 0)
+                self.collabNavigationView.collabTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: messageViewHeight, right: 0)
+                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                
                 if self.messages?.count ?? 0 > 0 {
     
+                    //Scrolling to the last message
                     self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: ((self.messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: false)
                 }
     
                 UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: {
     
-    //                self.messageInputAccesoryView.isHidden = false
                     self.messageInputAccesoryView.alpha = 1
     
                     self.collabNavigationView.collabTableView.alpha = 1
@@ -2029,7 +2417,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     @objc private func addBlockButtonPressed () {
         
-        if navigationItem.hidesBackButton == false {
+        //Ensures that the collabNavigationView is expanded
+        if collabNavigationViewTopAnchor?.constant ?? 0 != 0 {
             
             expandView()
         }
@@ -2091,16 +2480,7 @@ extension CollabViewController: PresentCopiedAnimationProtocol {
     
     func presentCopiedAnimation() {
         
-        var collabNavigationViewTopAnchor: NSLayoutConstraint?
         var topAnchor: CGFloat
-        
-        self.view.constraints.forEach { (constraint) in
-            
-            if constraint.firstItem as? CollabNavigationView != nil && constraint.firstAttribute == .top {
-                
-                collabNavigationViewTopAnchor = constraint
-            }
-        }
         
         //The view hasn't been expanded
         if collabNavigationViewTopAnchor?.constant != 0 {

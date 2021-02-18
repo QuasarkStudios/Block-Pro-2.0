@@ -310,6 +310,7 @@
 		0DB52ACD25D66DF000645D27 /* MessagesAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52ACC25D66DF000645D27 /* MessagesAnimationView.swift */; };
 		0DB52AD025D793CA00645D27 /* BlockCreatedProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52ACF25D793CA00645D27 /* BlockCreatedProtocol.swift */; };
 		0DB52AD325D79F3600645D27 /* CollabView+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52AD225D79F3600645D27 /* CollabView+Progress.swift */; };
+		0DB52AD625D7ABA100645D27 /* CollabCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52AD525D7ABA100645D27 /* CollabCalendarView.swift */; };
 		0DBAB33E242039CC0021FE35 /* CategoriesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBAB33C242039CC0021FE35 /* CategoriesCell.swift */; };
 		0DBAB33F242039CC0021FE35 /* CategoriesCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DBAB33D242039CC0021FE35 /* CategoriesCell.xib */; };
 		0DBAB34124204E8F0021FE35 /* CategoryTrackBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBAB34024204E8F0021FE35 /* CategoryTrackBar.swift */; };
@@ -679,6 +680,7 @@
 		0DB52ACC25D66DF000645D27 /* MessagesAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesAnimationView.swift; sourceTree = "<group>"; };
 		0DB52ACF25D793CA00645D27 /* BlockCreatedProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockCreatedProtocol.swift; sourceTree = "<group>"; };
 		0DB52AD225D79F3600645D27 /* CollabView+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabView+Progress.swift"; sourceTree = "<group>"; };
+		0DB52AD525D7ABA100645D27 /* CollabCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabCalendarView.swift; sourceTree = "<group>"; };
 		0DBAB33C242039CC0021FE35 /* CategoriesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesCell.swift; sourceTree = "<group>"; };
 		0DBAB33D242039CC0021FE35 /* CategoriesCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoriesCell.xib; sourceTree = "<group>"; };
 		0DBAB34024204E8F0021FE35 /* CategoryTrackBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTrackBar.swift; sourceTree = "<group>"; };
@@ -888,6 +890,7 @@
 			children = (
 				0D48468025281744002CF201 /* CollabHeaderView.swift */,
 				0D4846792523D79A002CF201 /* CollabNavigationView.swift */,
+				0DB52AD525D7ABA100645D27 /* CollabCalendarView.swift */,
 			);
 			path = "Collab View Files";
 			sourceTree = "<group>";
@@ -2112,6 +2115,7 @@
 				0D3F29372486027300C7763F /* SendButton.swift in Sources */,
 				0D5FD10C25BF575100E9BA2D /* VoiceMemosPresentationCollectionViewCell.swift in Sources */,
 				0DF609C325AF76AF00B0BB63 /* VoiceMemosConfigurationCell.swift in Sources */,
+				0DB52AD625D7ABA100645D27 /* CollabCalendarView.swift in Sources */,
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
 				0D2707FC2326DF9000592EC8 /* PomodoroViewController.swift in Sources */,
 				0D86386725ACCC11000DB1A3 /* ReminderConfigurationCollectionViewCell.swift in Sources */,

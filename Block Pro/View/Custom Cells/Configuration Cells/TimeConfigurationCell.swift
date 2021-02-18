@@ -820,7 +820,7 @@ class TimeConfigurationCell: UITableViewCell {
             let enteredTime = (textField.text ?? "12") + formatter.string(from: starts!)
             
             formatter.dateFormat = "h:mm a yyyy MMMM dd"
-            var components = calendar.dateComponents(in: .current, from: formatter.date(from: enteredTime) ?? Date())
+            var components = calendar.dateComponents(in: .current, from: formatter.date(from: enteredTime) ?? Date().adjustTime(roundDown: true))
 
             //If this is a start time, setting it to be 11:55 PM isn't permitted
             if components.hour == 23 && components.minute == 55 {
@@ -841,7 +841,7 @@ class TimeConfigurationCell: UITableViewCell {
             let enteredTime = (textField.text ?? "12") + formatter.string(from: ends!)
             
             formatter.dateFormat = "h:mm a yyyy MMMM dd"
-            var components = calendar.dateComponents(in: .current, from: formatter.date(from: enteredTime) ?? Date())
+            var components = calendar.dateComponents(in: .current, from: formatter.date(from: enteredTime) ?? Date().adjustTime(roundDown: false))
             
             //If this is a end time, setting it to be 12:00 AM isn't permitted
             if components.hour == 0 && components.minute == 0 {
@@ -1234,21 +1234,22 @@ extension TimeConfigurationCell: JTAppleCalendarViewDataSource, JTAppleCalendarV
     
     //MARK: - Configure Calendar Cell
     
-    func configureCell(view: JTAppleCell?, cellState: CellState) {
+    private func configureCell(view: JTAppleCell?, cellState: CellState) {
         
         guard let cell = view as? DateCell else { return }
         
             cell.dateLabel.text = cellState.text
         
             handleCellVisibility(cell: cell, cellState: cellState)
-            handleCellSelected(cell: cell, cellState: cellState)
+            handleCellDotView(cell: cell, cellState: cellState)
+            handleCellSelection(cell: cell, cellState: cellState)
 //            handleCellTextColor(cell: cell, cellState: cellState)
     }
     
     
     //MARK: - Handle Cell Visibility
     
-    func handleCellVisibility (cell: DateCell, cellState: CellState) {
+    private func handleCellVisibility (cell: DateCell, cellState: CellState) {
         
         if cellState.dateBelongsTo == .thisMonth {
             
@@ -1262,9 +1263,39 @@ extension TimeConfigurationCell: JTAppleCalendarViewDataSource, JTAppleCalendarV
     }
     
     
+    //MARK: Handle Cell Dot View
+    
+    private func handleCellDotView (cell: DateCell, cellState: CellState) {
+        
+        if let startTime = collab?.dates["startTime"], let deadline = collab?.dates["deadline"] {
+            
+            if calendar.isDate(cellState.date, inSameDayAs: startTime) || calendar.isDate(cellState.date, inSameDayAs: deadline) {
+                
+                cell.dotView.isHidden = false
+                
+                cell.dotView.backgroundColor = calendar.isDate(cellState.date, inSameDayAs: startTime) ? UIColor(hexString: "5065A0")?.lighten(byPercentage: 0.1) : UIColor(hexString: "2ECC70")
+                
+                cell.dotView.layer.cornerRadius = 2.5
+                cell.dotView.clipsToBounds = true
+                
+                cell.dotViewBottomAnchor.constant = cellState.isSelected ? 8.5 : 2.5
+            }
+            
+            else {
+                
+                cell.dotView.isHidden = true
+            }
+        }
+        
+        else {
+            
+            cell.dotView.isHidden = true
+        }
+    }
+    
     //MARK: - Handle Cell Selected
     
-    func handleCellSelected (cell: DateCell, cellState: CellState) {
+    private func handleCellSelection (cell: DateCell, cellState: CellState) {
         
         cell.dateLabel.textColor = cellState.isSelected ? .white : UIColor(hexString: "222222")
         cell.dateLabel.font = cellState.isSelected ? UIFont(name: "Poppins-SemiBold", size: 19) : UIFont(name: "Poppins-Medium", size: 19)

@@ -35,6 +35,13 @@ extension CollabViewController {
                     if self?.selectedTab == "Blocks" {
                         
                         self?.collabNavigationView.collabTableView.reloadData()
+                        self?.collabNavigationView.calendarView.reloadData()
+                        
+                        if self?.calendarPresented ?? false {
+                            
+                            //Will reload the calendar when the blocks are set
+                            self?.collabCalendarView.blocks = self?.blocks
+                        }
                         
                         if scrollToFirstBlock {
                             
@@ -105,7 +112,13 @@ extension CollabViewController {
         
         if collab != nil {
             
-            if let startTime = collab?.dates["startTime"], let deadline = collab?.dates["deadline"] {
+            if var startTime = collab?.dates["startTime"], var deadline = collab?.dates["deadline"] {
+                
+                //Formatting the startTime and deadline so that the only the date and not the time is truly used
+                formatter.dateFormat = "yyyy MM dd"
+                
+                startTime = formatter.date(from: formatter.string(from: startTime)) ?? Date()
+                deadline = formatter.date(from: formatter.string(from: deadline)) ?? Date()
                 
                 let currentDate = Date()
                 
@@ -127,7 +140,7 @@ extension CollabViewController {
         }
     }
     
-    func scrollToFirstBlock (indexPathToScrollTo: IndexPath? = nil) {
+    func scrollToFirstBlock (indexPathToScrollTo: IndexPath? = nil, animate: Bool = true) {
         
         //If an indexPath was passed in, likely meaning this func was called after a new date was selected
         if let collabStartTime = collab?.dates["startTime"], let indexPath = indexPathToScrollTo, let date = calendar.date(byAdding: .day, value: indexPath.row, to: collabStartTime) {
@@ -153,28 +166,13 @@ extension CollabViewController {
                 let blockStartMinute = calendar.dateComponents([.minute], from: firstBlock.starts!).minute!
                 let yCoord = CGFloat((Double(blockStartHour) * 90) + (Double(blockStartMinute) * 1.5)) + 50
                 
-                var visibleRect: CGRect?
-                
-                //If adjusted contentOffset y-Coord is greater than the current contentOffset y-Coord meaning the tableView will be scrolling down
-                if (CGFloat(2210 * indexPath.row)) + yCoord > collabNavigationView.collabTableView.contentOffset.y {
-                    
-                    //Subtracting 35 from the visibleRect height to fix misalignment
-                    visibleRect = CGRect(x: 0, y: (CGFloat(2210 * indexPath.row)) + yCoord, width: self.view.frame.width, height: collabNavigationView.collabTableView.frame.height - 35)
-                }
-                
-                //If adjusted contentOffset y-Coord is less than the current contentOffset y-Coord meaning the tableView will be scrolling up
-                else {
-                    
-                    visibleRect = CGRect(x: 0, y: (CGFloat(2210 * indexPath.row)) + yCoord, width: self.view.frame.width, height: collabNavigationView.collabTableView.frame.height)
-                }
-                
-                self.collabNavigationView.collabTableView.scrollRectToVisible(visibleRect!, animated: true)
+                collabNavigationView.collabTableView.setContentOffset(CGPoint(x: 0, y: (CGFloat(2210 * indexPath.row)) + yCoord), animated: animate)
             }
             
             //If no block has yet been created for the selected date
             else {
                 
-                self.collabNavigationView.collabTableView.scrollToRow(at: indexPath, at: .top, animated: true)
+                self.collabNavigationView.collabTableView.scrollToRow(at: indexPath, at: .top, animated: animate)
             }
         }
         
@@ -208,7 +206,9 @@ extension CollabViewController: BlockCreatedProtocol {
     
     func blockCreated (_ block: Block) {
         
-        if let collabStartTime = collab?.dates["startTime"], let blockStartTime = block.starts {
+        formatter.dateFormat = "yyyy MM dd"
+        
+        if let collabStartTime = formatter.date(from: formatter.string(from: collab?.dates["startTime"] ?? Date())), let blockStartTime = block.starts {
             
             //yCoordForDay
             let yCoordForDay: CGFloat = CGFloat(calendar.dateComponents([.day], from: collabStartTime, to: blockStartTime).day ?? 0) * 2210
@@ -218,10 +218,13 @@ extension CollabViewController: BlockCreatedProtocol {
             let blockStartMinute = calendar.dateComponents([.minute], from: blockStartTime).minute!
             let yCoordForBlockTime = CGFloat((Double(blockStartHour) * 90) + (Double(blockStartMinute) * 1.5)) + 50
             
-            //Minus 22 to account for the top contentInset
-            collabNavigationView.collabTableView.scrollRectToVisible(CGRect(x: 0, y: yCoordForDay + yCoordForBlockTime - 22, width: self.view.frame.width, height: collabNavigationView.collabTableView.frame.height), animated: true)
+            collabNavigationView.collabTableView.contentOffset.y = yCoordForDay + yCoordForBlockTime
+            
+            collabCalendarView.calendarView.selectDates([blockStartTime])
+            collabCalendarView.calendarView.scrollToDate(blockStartTime)
             
             collabNavigationView.calendarView.selectDates([blockStartTime])
+            collabNavigationView.calendarView.scrollToDate(blockStartTime)
         }
     }
 }
