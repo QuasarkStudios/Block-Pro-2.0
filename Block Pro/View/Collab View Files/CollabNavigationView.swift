@@ -675,6 +675,8 @@ class CollabNavigationView: UIView {
     
     func presentCalendar () {
         
+        calendarView.reloadData()
+        
         calendarContainer.constraints.forEach { (constraint) in
             
             if constraint.firstAttribute == .height {

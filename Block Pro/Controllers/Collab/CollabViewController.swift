@@ -12,6 +12,7 @@ import SVProgressHUD
 class CollabViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     var hiddenBlockVC: HiddenBlocksViewController?
+    var memberProfileVC: CollabMemberProfileViewController?
     
     lazy var collabHeaderView = CollabHeaderView(collab)
     lazy var collabHeaderViewHeightConstraint = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
@@ -197,7 +198,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             if section == 0 {
                 
-                return 3
+                return 2//3
             }
             
             else if section == 1 {
@@ -279,17 +280,17 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
             if indexPath.section == 0 {
                 
-                if indexPath.row == 0 {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
-                    cell.selectionStyle = .none
-                    
-                    cell.sectionNameLabel.text = "Members"
-                    
-                    return cell
-                }
+//                if indexPath.row == 0 {
+//
+//                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
+//                    cell.selectionStyle = .none
+//
+//                    cell.sectionNameLabel.text = "Members"
+//
+//                    return cell
+//                }
                 
-                else if indexPath.row == 1 {
+                if indexPath.row == 0 {
                     
                     let cell = UITableViewCell()
                     cell.isUserInteractionEnabled = false
@@ -300,10 +301,40 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     
                     let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeMembersCell", for: indexPath) as! CollabHomeMembersCell
                     cell.selectionStyle = .none
+                    
+                    cell.collabMemberDelegate = self
+                    
                     cell.collab = collab
+                    cell.blocks = blocks
                     
                     return cell
                 }
+                
+//                if indexPath.row == 0 {
+//
+//                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeMembersCell", for: indexPath) as! CollabHomeMembersCell2
+//                    cell.selectionStyle = .none
+//
+//                    cell.collab = collab
+//
+//                    return cell
+//                }
+//
+//                else if indexPath.row == 1 {
+//
+//                    let cell = UITableViewCell()
+//                    cell.isUserInteractionEnabled = false
+//                    return cell
+//                }
+//
+//                else {
+//
+//                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeMembersCell", for: indexPath) as! CollabHomeMembersCell
+//                    cell.selectionStyle = .none
+//                    cell.collab = collab
+//
+//                    return cell
+//                }
             }
             
             else if indexPath.section == 1 {
@@ -497,22 +528,20 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 if indexPath.row == 0 {
                     
-                    return 20
-                }
-                
-                else if indexPath.row == 1 {
-                    
                     return 10
-                }
-                
-                else if indexPath.row == 2 {
-                    
-                    return 170//200
                 }
                 
                 else {
                     
-                    return 200
+                    if collab?.members.count ?? 0 > 1 {
+                        
+                        return 185
+                    }
+                    
+                    else {
+                        
+                        return 160
+                    }
                 }
             }
             
@@ -744,7 +773,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                     collabHeaderViewHeightConstraint?.constant -= scrollView.contentOffset.y
                     scrollView.contentOffset.y = 0
                     
-                    let alphaPart = 1 / (collabHeaderView.configureViewHeight() - 80 - topBarHeight)
+                    let alphaPart = 1 / (collabHeaderView.configureViewHeight() - 70/*80*/ - topBarHeight)
                     collabHeaderView.alpha = alphaPart * (collabHeaderViewHeightConstraint!.constant - topBarHeight)
                 }
                 
@@ -763,9 +792,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 self.title = nil
                 navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
                 
-                if (collabHeaderViewHeightConstraint?.constant ?? 0) < collabHeaderView.configureViewHeight() - 80 {
+                if (collabHeaderViewHeightConstraint?.constant ?? 0) < collabHeaderView.configureViewHeight() - 70/*80*/ {
                     
-                    collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight() - 80
+                    collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight() - 70//80
                     
                     UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
 
@@ -1045,13 +1074,14 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabHomeTableView.dataSource = self
         collabHomeTableView.delegate = self
         
-//        collabHomeTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 200, right: 0)
+//        collabHomeTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         collabHomeTableView.separatorStyle = .none
         collabHomeTableView.showsVerticalScrollIndicator = false
         collabHomeTableView.delaysContentTouches = false
         
         collabHomeTableView.register(CollabHomeSectionHeaderCell.self, forCellReuseIdentifier: "collabHomeSectionHeaderCell")
-        collabHomeTableView.register(UINib(nibName: "CollabHomeMembersCell", bundle: nil), forCellReuseIdentifier: "collabHomeMembersCell")
+//        collabHomeTableView.register(UINib(nibName: "CollabHomeMembersCell", bundle: nil), forCellReuseIdentifier: "collabHomeMembersCell")
+        collabHomeTableView.register(CollabHomeMembersCell.self, forCellReuseIdentifier: "collabHomeMembersCell")
         collabHomeTableView.register(UINib(nibName: "CollabHomeLocationsCell", bundle: nil), forCellReuseIdentifier: "collabHomeLocationsCell")
         collabHomeTableView.register(UINib(nibName: "CollabHomePhotosCell", bundle: nil), forCellReuseIdentifier: "collabHomePhotosCell")
         collabHomeTableView.register(CollabHomeVoiceMemosCell.self, forCellReuseIdentifier: "collabHomeVoiceMemosCell")
@@ -1729,6 +1759,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     func presentCalendar () {
         
+        self.becomeFirstResponder() //Fixes bug that was causing the messageInputAccesoryView from being shown once the calendar was presented when the collabNavigationView was shrunken
+        
         var delay: Double = 0
         
         calendarPresented = true
@@ -1942,6 +1974,15 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             }
         }
     }
+    
+    func moveToObjectiveView () {
+        
+        let collabObjectiveViewController = CollabObjectiveViewController()
+        collabObjectiveViewController.objective = collab?.objective
+        
+        self.present(collabObjectiveViewController, animated: true, completion: nil)
+    }
+    
     //MARK: - Add Cover Photo Function
     
     func presentAddPhotoAlert (tracker: String, shrinkView: Bool) {
@@ -1955,7 +1996,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         let addCoverPhotoAlert = UIAlertController (title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let takePhotoAction = UIAlertAction(title: "    Take a Photo", style: .default) { (takePhotoAction) in
+        let takePhotoAction = UIAlertAction(title: "    Take a Cover Photo", style: .default) { (takePhotoAction) in
           
             self.takePhotoSelected()
         }
@@ -1964,7 +2005,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         takePhotoAction.setValue(cameraImage, forKey: "image")
         takePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
         
-        let choosePhotoAction = UIAlertAction(title: "    Choose a Photo", style: .default) { (choosePhotoAction) in
+        let choosePhotoAction = UIAlertAction(title: "    Choose a Cover Photo", style: .default) { (choosePhotoAction) in
             
             self.choosePhotoSelected()
         }
@@ -2598,6 +2639,29 @@ extension CollabViewController: UIImagePickerControllerDelegate, UINavigationCon
 
                 SVProgressHUD.showError(withStatus: "Sorry, something went wrong selecting this photo")
             }
+        }
+    }
+}
+
+extension CollabViewController: CollabMemberProtocol {
+    
+    func moveToProfileView (_ member: Member, _ memberContainerView: UIView/*_ profilePicture: ProfilePicture?*/) {
+        
+        tabBar.shouldHide = true
+        
+        memberProfileVC = CollabMemberProfileViewController()
+        memberProfileVC?.modalPresentationStyle = .overCurrentContext
+        
+        memberProfileVC?.collabViewController = self
+        
+        memberProfileVC?.member = member
+        memberProfileVC?.memberActivity = collab?.memberActivity?[member.userID]
+        memberProfileVC?.blocks = blocks
+        memberProfileVC?.memberContainerView = memberContainerView
+        
+        self.present(memberProfileVC!, animated: false) {
+            
+            self.memberProfileVC?.performZoomPresentationAnimation()
         }
     }
 }

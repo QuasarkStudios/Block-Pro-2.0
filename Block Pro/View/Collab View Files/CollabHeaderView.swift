@@ -15,7 +15,7 @@ class CollabHeaderView: UIView {
     let firebaseStorage = FirebaseStorage()
     
     lazy var addCoverButton = UIButton(type: .system)
-    var coverPhoto: ProfilePicture? //= ProfilePicture(profilePic: UIImage(named: "Mountains"), shadowRadius: 0, shadowColor: UIColor.clear.cgColor, borderWidth: 0)
+    var coverPhoto: ProfilePicture?
     
     let coverPhotoContainer = UIView()
     let coverPhotoImageView = UIImageView()
@@ -33,6 +33,12 @@ class CollabHeaderView: UIView {
     var collab: Collab?
     let formatter = DateFormatter()
     
+    var nameLabelTrailingAnchorWithCoverButton: NSLayoutConstraint?
+    var nameLabelTrailingAnchorWithCover: NSLayoutConstraint?
+    
+    var objectiveLabelTapGesture: UITapGestureRecognizer?
+    var objectiveLabelLongPressGesture: UILongPressGestureRecognizer?
+    
     weak var collabViewController: AnyObject?
     
     init (_ collab: Collab?) {
@@ -40,12 +46,11 @@ class CollabHeaderView: UIView {
         
         self.collab = collab
         
-//        configureCoverPhoto()
-//        configureAddCoverButton()
         configureNameLabel()
         configureObjectiveLabel()
         configureDeadlineLabel()
         configureCalendarButton()
+        configureGestureRecognizors()
         
         setCoverPhoto(collab)
     }
@@ -71,7 +76,6 @@ class CollabHeaderView: UIView {
                 self.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 0),
                 self.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: 0),
                 self.topAnchor.constraint(equalTo: view.topAnchor, constant: 0),
-//                self.heightAnchor.constraint(equalToConstant: 325)
                 self.heightAnchor.constraint(equalToConstant: configureViewHeight())
                 
             ].forEach({ $0.isActive = true })
@@ -97,24 +101,21 @@ class CollabHeaderView: UIView {
         
         [
         
-            addCoverButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 86.66),
             addCoverButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -30),
-            addCoverButton.widthAnchor.constraint(equalToConstant: 53),
-            addCoverButton.heightAnchor.constraint(equalToConstant: 53)
+            addCoverButton.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor, constant: 2),
+            addCoverButton.widthAnchor.constraint(equalToConstant: 40),
+            addCoverButton.heightAnchor.constraint(equalToConstant: 40)
         
         ].forEach({ $0.isActive = true })
         
-        addCoverButton.backgroundColor = .white
-        addCoverButton.tintColor = .black
+        nameLabelTrailingAnchorWithCover?.isActive = false
         
-        addCoverButton.layer.shadowColor = UIColor.white.cgColor
-        addCoverButton.layer.shadowOpacity = 0.5
-        addCoverButton.layer.shadowRadius = 2.5
-        addCoverButton.layer.shadowOffset = CGSize(width: 0, height: 0)
-        addCoverButton.layer.cornerRadius = 53 * 0.5
+        nameLabelTrailingAnchorWithCoverButton = nameLabel.trailingAnchor.constraint(equalTo: addCoverButton.leadingAnchor, constant: -20)
+        nameLabelTrailingAnchorWithCoverButton?.isActive = true
+        
+        addCoverButton.tintColor = .white
         
         addCoverButton.setImage(UIImage(named: "add_a_cover"), for: .normal)
-        addCoverButton.imageEdgeInsets = UIEdgeInsets(top: 11, left: 9.5, bottom: 9, right: 10.5)
         
         addCoverButton.addTarget(self, action: #selector(addCoverPressed), for: .touchUpInside)
     }
@@ -140,12 +141,17 @@ class CollabHeaderView: UIView {
         
         [
         
-            coverPhoto?.topAnchor.constraint(equalTo: self.topAnchor, constant: 86.66),
             coverPhoto?.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -30),
+            coverPhoto?.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor, constant: 0),
             coverPhoto?.widthAnchor.constraint(equalToConstant: 53),
             coverPhoto?.heightAnchor.constraint(equalToConstant: 53)
         
         ].forEach({ $0?.isActive = true })
+        
+        nameLabelTrailingAnchorWithCoverButton?.isActive = false
+        
+        nameLabelTrailingAnchorWithCover = nameLabel.trailingAnchor.constraint(equalTo: coverPhoto!.leadingAnchor, constant: -10)
+        nameLabelTrailingAnchorWithCover?.isActive = true
     }
     
     private func configureNameLabel () {
@@ -154,20 +160,17 @@ class CollabHeaderView: UIView {
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
         [
-        
-//            coverPhotoContainer.centerYAnchor.constraint(equalTo: nameLabel.centerYAnchor),
             
             nameLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 34),
-            nameLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -34),
             nameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: topBarHeight + 10),
-            nameLabel.heightAnchor.constraint(equalToConstant: 30)
+            nameLabel.heightAnchor.constraint(equalToConstant: 33)
         
         ].forEach({ $0.isActive = true })
         
         nameLabel.text = collab?.name ?? "Collab Name"
         nameLabel.textColor = .white
         nameLabel.textAlignment = .left
-        nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 23)
+        nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 25)
     }
     
     private func configureObjectiveLabel () {
@@ -182,7 +185,7 @@ class CollabHeaderView: UIView {
         
             objectiveHeaderLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 34),
             objectiveHeaderLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -34),
-            objectiveHeaderLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 13),
+            objectiveHeaderLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 15),
             objectiveHeaderLabel.heightAnchor.constraint(equalToConstant: 20),
         
             objectiveTextLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 34),
@@ -194,12 +197,12 @@ class CollabHeaderView: UIView {
         
         objectiveHeaderLabel.text = "Objective:"
         objectiveHeaderLabel.textColor = .white
-        objectiveHeaderLabel.font = UIFont(name: "Poppins-Medium", size: 16)
+        objectiveHeaderLabel.font = UIFont(name: "Poppins-SemiBold", size: 17.5)
         
+        objectiveTextLabel.isUserInteractionEnabled = true
         objectiveTextLabel.textColor = .white
-//        objectiveTextLabel.font = UIFont(name: "Poppins-Regular", size: 13)
         objectiveTextLabel.numberOfLines = 0
-            
+        
         setObjectiveLabelText()
     }
     
@@ -227,11 +230,11 @@ class CollabHeaderView: UIView {
         
         deadlineHeaderLabel.text = "Deadline:"
         deadlineHeaderLabel.textColor = .white
-        deadlineHeaderLabel.font = UIFont(name: "Poppins-Medium", size: 16)
+        deadlineHeaderLabel.font = UIFont(name: "Poppins-SemiBold", size: 17.5)
         
         if let deadline = collab?.dates["deadline"] {
              
-            deadlineTextLabel.font = UIFont(name: "Poppins-Regular", size: 13)
+            deadlineTextLabel.font = UIFont(name: "Poppins-Regular", size: 14)
             
             formatter.dateFormat = "d MMMM yyyy"
             var deadlineText = formatter.string(from: deadline)
@@ -246,13 +249,12 @@ class CollabHeaderView: UIView {
         
         else {
             
-            deadlineTextLabel.font = UIFont(name: "Poppins-Italic", size: 13)
+            deadlineTextLabel.font = UIFont(name: "Poppins-Italic", size: 14)
             
             deadlineTextLabel.text = "No Deadline Yet"
         }
         
         deadlineTextLabel.textColor = .white
-//        deadlineTextLabel.font = UIFont(name: "Poppins-Regular", size: 13)
     }
     
     private func configureCalendarButton () {
@@ -263,18 +265,34 @@ class CollabHeaderView: UIView {
         [
         
             calendarButton.topAnchor.constraint(equalTo: deadlineHeaderLabel.topAnchor, constant: 12.5),
-            calendarButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -30),
+            calendarButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -29),
             calendarButton.widthAnchor.constraint(equalToConstant: 32.5),
             calendarButton.heightAnchor.constraint(equalToConstant: 32.5)
         
         ].forEach({ $0.isActive = true })
         
-        calendarButton.setImage(UIImage(systemName: "calendar.circle"), for: .normal)//.setImage(UIImage(named: "expand"), for: .normal)
+        calendarButton.setImage(UIImage(systemName: "calendar"), for: .normal)
+        calendarButton.imageEdgeInsets = UIEdgeInsets(top: 2.5, left: 2.5, bottom: 2.5, right: 2.5)
         calendarButton.contentVerticalAlignment = .fill
         calendarButton.contentHorizontalAlignment = .fill
         calendarButton.tintColor = .white
         
         calendarButton.addTarget(self, action: #selector(calendarButtonPressed), for: .touchUpInside)
+    }
+    
+    private func configureGestureRecognizors () {
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(objectivePressed))
+        tapGesture.delegate = self
+        objectiveLabelTapGesture = tapGesture
+        objectiveTextLabel.addGestureRecognizer(objectiveLabelTapGesture!)
+        
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(objectiveCopied(gesture:)))
+        longPressGesture.delegate = self
+        longPressGesture.minimumPressDuration = 0.3
+        objectiveLabelLongPressGesture = longPressGesture
+        objectiveTextLabel.addGestureRecognizer(objectiveLabelLongPressGesture!)
     }
     
     func configureViewHeight () -> CGFloat {
@@ -283,13 +301,13 @@ class CollabHeaderView: UIView {
         
         if let objective = collab?.objective {
             
-            let objectiveTextLabelHeight = objective.estimateHeightForObjectiveTextLabel().height < 55 ? objective.estimateHeightForObjectiveTextLabel().height : 55
+            let objectiveTextLabelHeight = objective.estimateHeightForObjectiveTextLabel().height <= 42 ? objective.estimateHeightForObjectiveTextLabel().height : 42
             return viewHeightWithoutDeadlineText + objectiveTextLabelHeight + 100//70
         }
         
         else {
             
-            return viewHeightWithoutDeadlineText + 20 + 100//70
+            return viewHeightWithoutDeadlineText + 21 + 100//70
         }
     }
     
@@ -337,14 +355,14 @@ class CollabHeaderView: UIView {
     
     func setObjectiveLabelText() {
         
-        objectiveTextLabel.text = collab?.objective ?? "No Objective Yet"
-        objectiveTextLabel.font = collab?.objective != nil ? UIFont(name: "Poppins-Regular", size: 13) : UIFont(name: "Poppins-Italic", size: 13)
+        objectiveTextLabel.text = collab?.objective?.leniantValidationOfTextEntered() ?? false ? collab?.objective : "No Objective Yet"
+        objectiveTextLabel.font = collab?.objective?.leniantValidationOfTextEntered() ?? false ? UIFont(name: "Poppins-Regular", size: 14) : UIFont(name: "Poppins-Italic", size: 14)
         
         let objectiveTextLabelHeightConstraint = objectiveTextLabel.constraints.first(where: { $0.firstAttribute == .height })
         
         if let objective = collab?.objective {
             
-            let objectiveTextLabelHeight = objective.estimateHeightForObjectiveTextLabel().height < 55 ? objective.estimateHeightForObjectiveTextLabel().height : 55
+            let objectiveTextLabelHeight = objective.estimateHeightForObjectiveTextLabel().height <= 42 ? objective.estimateHeightForObjectiveTextLabel().height : 42
             objectiveTextLabelHeightConstraint?.constant = objectiveTextLabelHeight
         }
         
@@ -365,12 +383,6 @@ class CollabHeaderView: UIView {
     @objc private func coverPhotoPressed () {
         
         if let viewController = collabViewController as? CollabViewController {
-//
-//            viewController.editCoverButton.removeTarget(nil, action: nil, for: .allEvents)
-//            viewController.deleteCoverButton.removeTarget(nil, action: nil, for: .allEvents)
-//
-//            viewController.editCoverButton.addTarget(viewController, action: #selector(viewController.editCoverButtonPressed), for: .touchUpInside)
-//            viewController.deleteCoverButton.addTarget(viewController, action: #selector(viewController.deleteCoverButtonPressed), for: .touchUpInside)
             
             viewController.resignFirstResponder()
             
@@ -409,11 +421,53 @@ class CollabHeaderView: UIView {
         }
     }
     
+    @objc private func objectivePressed () {
+        
+        if let objective = collab?.objective, objective.estimateHeightForObjectiveTextLabel().height > 42 {
+            
+            if let viewController = collabViewController as? CollabViewController {
+                
+                viewController.moveToObjectiveView()
+            }
+        }
+    }
+    
+    @objc private func objectiveCopied (gesture: UILongPressGestureRecognizer) {
+        
+        if collab?.objective?.leniantValidationOfTextEntered() ?? false, gesture.state == .began {
+            
+            if let viewController = collabViewController as? CollabViewController {
+                
+                let pasteboard = UIPasteboard.general
+                pasteboard.string = collab?.objective
+                
+                objectiveTextLabel.performCopyAnimationOnView()
+                viewController.presentCopiedAnimation()
+            }
+        }
+    }
+    
     @objc private func calendarButtonPressed () {
         
         if let viewController = collabViewController as? CollabViewController {
             
             viewController.presentCalendar()
+        }
+    }
+}
+
+extension CollabHeaderView: UIGestureRecognizerDelegate {
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRequireFailureOf otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+
+        if gestureRecognizer == objectiveLabelTapGesture && otherGestureRecognizer == objectiveLabelLongPressGesture {
+
+            return true
+        }
+
+        else {
+
+            return false
         }
     }
 }

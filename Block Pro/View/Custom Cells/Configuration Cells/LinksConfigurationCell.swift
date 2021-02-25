@@ -797,7 +797,7 @@ extension LinksConfigurationCell: UITextFieldDelegate {
                     textField.keyboardType = .URL
                     textField.text = url
                     
-//                    linkBeingEdited = true
+                    linkBeingEdited = true
                     
                     //Stops the user from deleting links or opening url's while the keyboard is present
                     cancelButton.isUserInteractionEnabled = false
@@ -811,7 +811,7 @@ extension LinksConfigurationCell: UITextFieldDelegate {
                 textField.keyboardType = .URL
                 textField.text = url
                 
-//                linkBeingEdited = true
+                linkBeingEdited = true
                 
                 //Stops the user from deleting links or opening url's while the keyboard is present
                 cancelButton.isUserInteractionEnabled = false

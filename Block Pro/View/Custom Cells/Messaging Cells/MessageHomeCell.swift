@@ -458,7 +458,15 @@ class MessageHomeCell: UITableViewCell {
             
             //setLastMessageLabel(date: conversation!.dateCreated!)
             
-            setLastMessageLabel(date: firebaseMessaging.convertTimestampToDate(conversation!.memberGainedAccessOn?[currentUser.userID] as Any))
+            if conversation?.memberGainedAccessOn?[currentUser.userID] != nil {
+                
+                setLastMessageLabel(date: firebaseMessaging.convertTimestampToDate(conversation!.memberGainedAccessOn?[currentUser.userID] as Any))
+            }
+            
+            else if let dateCreated = conversation?.dateCreated {
+                
+                setLastMessageLabel(date: dateCreated)
+            }
             
             unreadMessageIndicator.isHidden = true
         }

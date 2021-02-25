@@ -32,6 +32,14 @@ extension CollabViewController {
                     
                     self?.blocks = retrievedBlocks?.sorted(by: { $0.starts! < $1.starts! })
                     
+                    if let cell = self?.collabHomeTableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? CollabHomeMembersCell {
+                        
+                        cell.blocks = self?.blocks
+                    }
+                    
+                    //Sets the blocks for the memberProfileVC only if it is presented
+                    self?.memberProfileVC?.blocks = self?.blocks
+                    
                     if self?.selectedTab == "Blocks" {
                         
                         self?.collabNavigationView.collabTableView.reloadData()

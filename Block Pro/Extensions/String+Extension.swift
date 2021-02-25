@@ -39,6 +39,6 @@ extension String {
         let size = CGSize(width: UIScreen.main.bounds.size.width - 64, height: 500)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         
-        return NSString(string: self).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont(name: "Poppins-Regular", size: 13) as Any], context: nil)
+        return NSString(string: self).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont(name: "Poppins-Regular", size: 14) as Any], context: nil)
     }
 }
