@@ -184,12 +184,12 @@ class AddLocationViewController: UIViewController {
         
         let disabledLocationServicesAlert = UIAlertController(title: "Location Services are Currently Disabled" , message: "You can change this is your settings", preferredStyle: .alert)
         
-        let okAction = UIAlertAction(title: "Ok", style: .default) { (okAction) in
+        let okAction = UIAlertAction(title: "Ok", style: .default) { [weak self] (okAction) in
             
             //Doubles checks to ensure user didn't just turn on location services using the previous system alert
             if !CLLocationManager.locationServicesEnabled() {
                 
-                self.navigationController?.popViewController(animated: true)
+                self?.navigationController?.popViewController(animated: true)
             }
         }
         
@@ -202,9 +202,9 @@ class AddLocationViewController: UIViewController {
         
         let restrictedAlert = UIAlertController(title: "\"Block Pro\" cannot access your location due to a certain restriction; possibly a parental one", message: nil, preferredStyle: .alert)
         
-        let okAction = UIAlertAction(title: "Ok", style: .default) { (okAction) in
+        let okAction = UIAlertAction(title: "Ok", style: .default) { [weak self] (okAction) in
             
-            self.navigationController?.popViewController(animated: true)
+            self?.navigationController?.popViewController(animated: true)
         }
         
         restrictedAlert.addAction(okAction)
@@ -216,7 +216,7 @@ class AddLocationViewController: UIViewController {
         
         let deniedAlert = UIAlertController(title: "\"Block Pro\" doesn't have access to your location", message: "Would you like to change this in your settings?", preferredStyle: .alert)
         
-        let goToSettingsAction = UIAlertAction(title: "Ok", style: .default) { (goToSettingsAction) in
+        let goToSettingsAction = UIAlertAction(title: "Ok", style: .default) { [weak self] (goToSettingsAction) in
             
             //Opens Block Pro's app settings
             if let appSettings = URL(string: UIApplication.openSettingsURLString)  {
@@ -224,12 +224,12 @@ class AddLocationViewController: UIViewController {
                 UIApplication.shared.open(appSettings)
             }
             
-            self.navigationController?.popViewController(animated: true)
+            self?.navigationController?.popViewController(animated: true)
         }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (cancelAction) in
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [weak self] (cancelAction) in
             
-            self.navigationController?.popViewController(animated: true)
+            self?.navigationController?.popViewController(animated: true)
         }
         
         deniedAlert.addAction(cancelAction)

@@ -1188,18 +1188,18 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         
         let addCoverPhotoAlert = UIAlertController (title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let takePhotoAction = UIAlertAction(title: "    Take a Photo", style: .default) { (takePhotoAction) in
+        let takePhotoAction = UIAlertAction(title: "    Take a Photo", style: .default) { [weak self] (takePhotoAction) in
           
-            self.takePhotoSelected()
+            self?.takePhotoSelected()
         }
         
         let cameraImage = UIImage(named: "camera2")
         takePhotoAction.setValue(cameraImage, forKey: "image")
         takePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
         
-        let choosePhotoAction = UIAlertAction(title: "    Choose a Photo", style: .default) { (choosePhotoAction) in
+        let choosePhotoAction = UIAlertAction(title: "    Choose a Photo", style: .default) { [weak self] (choosePhotoAction) in
             
-            self.choosePhotoSelected()
+            self?.choosePhotoSelected()
         }
         
         let photoImage = UIImage(named: "image")
@@ -1353,9 +1353,9 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         
         let leaveConversationAlert = UIAlertController(title: "Leave this Conversation?", message: "You will also lose access to all the messages from this conversation", preferredStyle: .actionSheet)
         
-        let leaveAction = UIAlertAction(title: "Leave", style: .destructive) { (leaveAction) in
+        let leaveAction = UIAlertAction(title: "Leave", style: .destructive) { [weak self] (leaveAction) in
             
-            self.leaveConversation()
+            self?.leaveConversation()
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)

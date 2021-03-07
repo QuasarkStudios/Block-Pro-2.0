@@ -185,8 +185,6 @@ class FirebaseCollab {
         }
 
         return locationDict
-        
-//        batch.setData(["locations": locationDict], forDocument: db.collection("Collaborations").document(collabID), merge: true)
     }
     
     private func setCollabVoiceMemos (collabID: String, voiceMemos: [VoiceMemo]?) -> [String : [String : Any]]{
@@ -470,6 +468,11 @@ class FirebaseCollab {
                                         member.username = document.data()["username"] as! String
                                         member.role = document.data()["role"] as! String
                                         
+                                        if let dateJoined = document.data()["dateJoined"] as? Timestamp {
+                                            
+                                            member.dateJoined = Date(timeIntervalSince1970: TimeInterval(dateJoined.seconds))
+                                        }
+                                        
                                         member.accepted = document.data()["accepted"] as? Bool
                                         
                                         historicMembers.append(member)
@@ -567,12 +570,12 @@ class FirebaseCollab {
                                 
                                 historicMembers.append(member)
                             }
-                            
-                            //Filters out members that are no longer active in the conversation
-                            let currentMembers = self.filterCurrentMembers(currentMembers: collab.currentMembersIDs, historicMembers: historicMembers)
-                            
-                            completion(historicMembers, currentMembers, nil)
                         }
+                        
+                        //Filters out members that are no longer active in the conversation
+                        let currentMembers = self.filterCurrentMembers(currentMembers: collab.currentMembersIDs, historicMembers: historicMembers)
+                        
+                        completion(historicMembers, currentMembers, nil)
                     }
                     
                     else {
@@ -734,6 +737,75 @@ class FirebaseCollab {
                 }
             }
         })
+    }
+    
+    func leaveCollab (_ collab: Collab, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        let batch = db.batch()
+        
+        var filteredMembers = collab.currentMembers
+        filteredMembers.removeAll(where: { $0.userID == currentUser.userID })
+        
+        if let member = collab.currentMembers.first(where: { $0.userID == currentUser.userID }), let newLead = filteredMembers.max(by: { $0.dateJoined ?? Date() > $1.dateJoined ?? Date()}) {
+            
+            if member.role == "Lead" {
+                
+                //Reassigning the "Lead" for the collab if the currentUser is currently the "Lead"
+                batch.updateData(["role" : "Lead"], forDocument: db.collection("Collaborations").document(collab.collabID).collection("Members").document(newLead.userID))
+            }
+        }
+        
+        //Changing the role of the currentUser
+        batch.updateData(["role" : "Inactive"], forDocument: db.collection("Collaborations").document(collab.collabID).collection("Members").document(currentUser.userID))
+
+        //Removing currentUser from the Members array in the conversation fields; not from the Members collection
+        batch.updateData(["Members" : FieldValue.arrayRemove([currentUser.userID])], forDocument: db.collection("Collaborations").document(collab.collabID))
+
+        //Removing the "dateJoined" value from the currentUser's document in this collab
+        batch.updateData(["dateJoined" : FieldValue.delete()], forDocument: db.collection("Collaborations").document(collab.collabID).collection("Members").document(currentUser.userID))
+        
+        //Will leave currentUser in the "memberActivity" map in case they are added again
+        batch.updateData(["memberActivity.\(currentUser.userID)" : Date()], forDocument: db.collection("Collaborations").document(collab.collabID))
+        
+        batch.commit { (error) in
+            
+            if error != nil {
+                
+                completion(error)
+            }
+            
+            else {
+                
+                completion(nil)
+            }
+        }
+    }
+    
+    func deleteCollab (_ collab: Collab, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        let batch = db.batch()
+        
+        batch.updateData(["Members" : []], forDocument: db.collection("Collaborations").document(collab.collabID))
+        
+        for member in collab.currentMembersIDs {
+            
+            batch.updateData(["role" : "Inactive"], forDocument: db.collection("Collaborations").document(collab.collabID).collection("Members").document(member))
+        }
+        
+        batch.commit { (error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+                
+                completion(error)
+            }
+            
+            else {
+                
+                completion(nil)
+            }
+        }
     }
     
     func retrieveCollabRequests (completion: @escaping ((_ requests: [CollabRequest]) -> Void)) {

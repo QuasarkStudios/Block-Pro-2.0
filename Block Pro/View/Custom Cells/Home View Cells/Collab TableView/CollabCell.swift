@@ -205,11 +205,11 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
                         
                         firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic, userID) in
                             
-                            profilePics[self.memberContainer[member.userID]!] = profilePic
-                            
-                            self.setProfilePics(container: self.memberContainer[member.userID]!, profilePic: profilePics[self.memberContainer[member.userID]!])
-                            
-                            self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: profilePic)
+//                            profilePics[self.memberContainer[member.userID]!] = profilePic
+//                            
+//                            self.setProfilePics(container: self.memberContainer[member.userID]!, profilePic: profilePics[self.memberContainer[member.userID]!])
+//                            
+//                            self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: profilePic)
                         }
                     }
                     

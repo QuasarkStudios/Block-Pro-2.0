@@ -364,6 +364,7 @@
 		0DE79A1F244E467600F25440 /* BarCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DE79A1E244E467600F25440 /* BarCell.xib */; };
 		0DE79A22244E490000F25440 /* SegmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE79A20244E490000F25440 /* SegmentCell.swift */; };
 		0DE79A23244E490000F25440 /* SegmentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DE79A21244E490000F25440 /* SegmentCell.xib */; };
+		0DE8953225F4BA1E00E0D643 /* DeleteConfigurationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8953125F4BA1E00E0D643 /* DeleteConfigurationCell.swift */; };
 		0DEB9726241C480D004F7422 /* DetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEB9725241C480D004F7422 /* DetailsViewController.swift */; };
 		0DEB972C241CBBB7004F7422 /* ProgressCirclesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEB972A241CBBB7004F7422 /* ProgressCirclesCell.swift */; };
 		0DEB972D241CBBB7004F7422 /* ProgressCirclesCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DEB972B241CBBB7004F7422 /* ProgressCirclesCell.xib */; };
@@ -742,6 +743,7 @@
 		0DE79A1E244E467600F25440 /* BarCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BarCell.xib; sourceTree = "<group>"; };
 		0DE79A20244E490000F25440 /* SegmentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentCell.swift; sourceTree = "<group>"; };
 		0DE79A21244E490000F25440 /* SegmentCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SegmentCell.xib; sourceTree = "<group>"; };
+		0DE8953125F4BA1E00E0D643 /* DeleteConfigurationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteConfigurationCell.swift; sourceTree = "<group>"; };
 		0DEB9725241C480D004F7422 /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		0DEB972A241CBBB7004F7422 /* ProgressCirclesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCirclesCell.swift; sourceTree = "<group>"; };
 		0DEB972B241CBBB7004F7422 /* ProgressCirclesCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProgressCirclesCell.xib; sourceTree = "<group>"; };
@@ -1195,6 +1197,7 @@
 				0D480F44259BC59A00E14D1E /* TimeConfigurationCell.swift */,
 				0D480F4725A7A47C00E14D1E /* MemberConfigurationCell.swift */,
 				0D86386325AAAB69000DB1A3 /* ReminderConfigurationCell.swift */,
+				0DE8953125F4BA1E00E0D643 /* DeleteConfigurationCell.swift */,
 				0D39A67525AEC8D100D9840B /* PhotosConfigurationCell.swift */,
 				0D39A67B25AEE63600D9840B /* LocationsConfigurationCell.swift */,
 				0DF609C225AF76AF00B0BB63 /* VoiceMemosConfigurationCell.swift */,
@@ -2016,6 +2019,7 @@
 				0D3A9E2722F3EE560052BCB6 /* CollabBlockPopoverViewController.swift in Sources */,
 				0D7271252460DE1B0033C196 /* MessageTextViewContainer.swift in Sources */,
 				0DDE6FDB253BCDC900A9DF71 /* CreateCollabLocationsCell.swift in Sources */,
+				0DE8953225F4BA1E00E0D643 /* DeleteConfigurationCell.swift in Sources */,
 				0DB3FEC2249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift in Sources */,
 				0D480F18259BA13500E14D1E /* NameConfigurationCell.swift in Sources */,
 				0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */,

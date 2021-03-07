@@ -144,6 +144,7 @@ class ConfigureCollabViewController: UIViewController {
         tableView.register(TimeConfigurationCell.self, forCellReuseIdentifier: "timeConfigurationCell")
         tableView.register(MemberConfigurationCell.self, forCellReuseIdentifier: "memberConfigurationCell")
         tableView.register(ReminderConfigurationCell.self, forCellReuseIdentifier: "reminderConfigurationCell")
+        tableView.register(DeleteConfigurationCell.self, forCellReuseIdentifier: "deleteConfigurationCell")
         
         tableView.register(PhotosConfigurationCell.self, forCellReuseIdentifier: "photosConfigurationCell")
         tableView.register(LocationsConfigurationCell.self, forCellReuseIdentifier: "locationsConfigurationCell")
@@ -309,6 +310,46 @@ class ConfigureCollabViewController: UIViewController {
         }
     }
     
+    
+    //MARK: - Present Delete Alert
+    
+    func presentDeleteCollabAlert () {
+        
+        let deleteCollabAlert = UIAlertController(title: "Delete this Collab?", message: "All members will also lose access to all the data associated with this Collab", preferredStyle: .actionSheet)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self] (deleteAction) in
+            
+            self?.deleteCollab()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        deleteCollabAlert.addAction(deleteAction)
+        deleteCollabAlert.addAction(cancelAction)
+        
+        self.present(deleteCollabAlert, animated: true, completion: nil)
+    }
+    
+    
+    //MARK: - Delete Collab
+    
+    private func deleteCollab () {
+        
+        SVProgressHUD.show()
+        
+        firebaseCollab.deleteCollab(collab) { [weak self] (error) in
+            
+            if error != nil {
+                
+                SVProgressHUD.showError(withStatus: "Sorry, something went wrong while deleting this Collab")
+            }
+            
+            else {
+                
+                self?.dismiss(animated: true)
+            }
+        }
+    }
     
     //MARK: - Move to Add Members View
     
@@ -502,7 +543,7 @@ extension ConfigureCollabViewController: UITableViewDataSource, UITableViewDeleg
         
         if selectedTableView == "details" {
             
-            return 12
+            return configurationView ? 12 : 14
         }
         
         else {
@@ -614,6 +655,16 @@ extension ConfigureCollabViewController: UITableViewDataSource, UITableViewDeleg
                 cell.remindersCountLabel.text = "\(collab.reminders.count)/2"
                 
                 cell.reminderConfigurationDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 13 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "deleteConfigurationCell", for: indexPath) as! DeleteConfigurationCell
+                cell.selectionStyle = .none
+                
+                cell.configureCollabViewController = self
                 
                 return cell
             }
@@ -767,7 +818,17 @@ extension ConfigureCollabViewController: UITableViewDataSource, UITableViewDeleg
                 case 11:
                     
                     return 130
-                 
+                
+                //Buffer Cell
+                case 12:
+                
+                    return 30
+             
+                //Delete Configuration Cell
+                case 13:
+                
+                    return 50
+                    
                 //Buffer Cells
                 default:
                     

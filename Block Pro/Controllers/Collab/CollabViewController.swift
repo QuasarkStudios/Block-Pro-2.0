@@ -190,6 +190,8 @@ class CollabViewController: UIViewController {
         
         firebaseBlock.collabBlocksListener?.remove()
         firebaseMessaging.messageListener?.remove()
+        
+        firebaseBlock.cachedCollabBlocks = []
     }
     
     
@@ -858,24 +860,65 @@ class CollabViewController: UIViewController {
                     self?.collabHomeTableView.reloadRows(at: indexPathsToReload, with: .none)
                 }
                 
-                //Members have been updated
+                //Members///////////////////////////////////////////////////////////////////
                 if let historicMembers = monitoredCollab["historicMembers"] as? [Member], let currentMembers = monitoredCollab["currentMembers"] as? [Member] {
                     
-                    self?.collab?.historicMembers = historicMembers
-                    self?.collab?.currentMembers = currentMembers
-                    
-                    //If the currentUser has been removed from this collab
-                    if !currentMembers.contains(where: { $0.userID == self?.currentUser.userID }) {
+                    //This collab has been deleted or the currentUser has been removed
+                    if currentMembers.count == 0 || !currentMembers.contains(where: { $0.userID == self?.currentUser.userID }) {
                         
-                        self?.navigationController?.popViewController(animated: true)
+                        self?.firebaseCollab.singularCollabListener?.remove()
                         
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        //Zooming out of any photo that may be zoomed in on
+                        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
                             
-                            SVProgressHUD.showInfo(withStatus: "You've been removed from this collab")
+                            self?.zoomingMethods?.blackBackground?.backgroundColor = .clear
+                            self?.zoomingMethods?.optionalButtons.forEach({ $0?.alpha = 0 })
+                            self?.zoomingMethods?.zoomedInImageView?.alpha = 0
+                            
+                        } completion: { (finished: Bool) in
+                            
+                            self?.zoomingMethods?.blackBackground?.removeFromSuperview()
+                            self?.zoomingMethods?.optionalButtons.forEach({ $0?.removeFromSuperview() })
+                            self?.zoomingMethods?.zoomedInImageView?.removeFromSuperview()
                         }
+                        
+                        //Dismissing any view that has been modally presented
+                        if self?.navigationController?.visibleViewController != self {
+                            
+                            self?.navigationController?.visibleViewController?.dismiss(animated: true, completion: nil)
+                        }
+                        
+                        //Ensuring that the user hasn't moved to another tab
+                        //Ensuring that the current user wasn't the lead, meaning that they couldn't have been the one that deleted the collab
+                        if self?.tabBar.selectedIndex == 0, self?.collab?.currentMembers.first(where: { $0.userID == self?.currentUser.userID })?.role != "Lead" {
+                            
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                
+                                //The collab has been deleted
+                                if currentMembers.count == 0 {
+                                    
+                                    SVProgressHUD.showInfo(withStatus: "\(self?.collab?.name ?? "This collab") has been deleted")
+                                }
+                                
+                                //The currentUser has been removed
+                                else {
+                                    
+                                    SVProgressHUD.showInfo(withStatus: "You've been removed from \(self?.collab?.name ?? "this collab")")
+                                }
+                            }
+                        }
+                        
+                        self?.navigationController?.popToRootViewController(animated: true)
                     }
                     
-                    self?.collabHomeTableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+                    //The members have simply been updated
+                    else {
+                        
+                        self?.collab?.historicMembers = historicMembers
+                        self?.collab?.currentMembers = currentMembers
+                        
+                        self?.collabHomeTableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+                    }
                 }
             }
         }
@@ -1416,7 +1459,7 @@ class CollabViewController: UIViewController {
     }
     
     
-    //MARK: - Add Cover Photo Function
+    //MARK: - Add Cover Photo Alert
     
     func presentAddPhotoAlert (tracker: String, shrinkView: Bool) {
         
@@ -1429,18 +1472,18 @@ class CollabViewController: UIViewController {
         
         let addCoverPhotoAlert = UIAlertController (title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let takePhotoAction = UIAlertAction(title: "    Take a Cover Photo", style: .default) { (takePhotoAction) in
+        let takePhotoAction = UIAlertAction(title: "    Take a Cover Photo", style: .default) { [weak self] (takePhotoAction) in
           
-            self.takePhotoSelected()
+            self?.takePhotoSelected()
         }
         
         let cameraImage = UIImage(named: "camera2")
         takePhotoAction.setValue(cameraImage, forKey: "image")
         takePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
         
-        let choosePhotoAction = UIAlertAction(title: "    Choose a Cover Photo", style: .default) { (choosePhotoAction) in
+        let choosePhotoAction = UIAlertAction(title: "    Choose a Cover Photo", style: .default) { [weak self] (choosePhotoAction) in
             
-            self.choosePhotoSelected()
+            self?.choosePhotoSelected()
         }
         
         let photoImage = UIImage(named: "image")
@@ -1454,6 +1497,26 @@ class CollabViewController: UIViewController {
         addCoverPhotoAlert.addAction(cancelAction)
         
         present(addCoverPhotoAlert, animated: true, completion: nil)
+    }
+    
+    
+    //MARK: - Leave Collab Alert
+    
+    func presentLeaveCollabAlert () {
+        
+        let leaveCollabAlert = UIAlertController(title: "Leave this Collab?", message: "You will also lose access to all the data associated with this Collab", preferredStyle: .actionSheet)
+        
+        let leaveAction = UIAlertAction(title: "Leave", style: .destructive) { [weak self] (leaveAction) in
+            
+            self?.leaveCollab()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        leaveCollabAlert.addAction(leaveAction)
+        leaveCollabAlert.addAction(cancelAction)
+        
+        self.present(leaveCollabAlert, animated: true, completion: nil)
     }
     
     
@@ -1525,6 +1588,36 @@ class CollabViewController: UIViewController {
                             print(error?.localizedDescription as Any)
                         }
                     }
+                }
+            }
+        }
+    }
+    
+    
+    //MARK: - Leave Collab
+    
+    private func leaveCollab () {
+        
+        if collab != nil {
+            
+            firebaseCollab.singularCollabListener?.remove()
+            
+            SVProgressHUD.show()
+            
+            firebaseCollab.leaveCollab(collab!) { [weak self] (error) in
+                
+                SVProgressHUD.dismiss()
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription as Any)
+                    
+                    SVProgressHUD.showError(withStatus: "Sorry, something went wrong while attempting to remove you from this Collab")
+                }
+                
+                else {
+                    
+                    self?.navigationController?.popViewController(animated: true)
                 }
             }
         }
@@ -1954,7 +2047,7 @@ class CollabViewController: UIViewController {
     
     func leaveCollabButtonPressed () {
         
-        print("leave")
+        presentLeaveCollabAlert()
     }
     
     

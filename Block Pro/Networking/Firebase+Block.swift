@@ -17,7 +17,7 @@ class FirebaseBlock {
     
     var db = Firestore.firestore()
     
-    var cachedBlocks: [Block] = []
+    var cachedCollabBlocks: [Block] = []
     
     var collabBlocksListener: ListenerRegistration?
     var blockListener: ListenerRegistration?
@@ -57,7 +57,7 @@ class FirebaseBlock {
     
     func editCollabBlock (collabID: String, block: Block, completion: @escaping ((_ error: Error?) -> Void)) {
         
-        if let cachedBlock = cachedBlocks.first(where: { $0.blockID == block.blockID }) {
+        if let cachedBlock = cachedCollabBlocks.first(where: { $0.blockID == block.blockID }) {
             
             editCollabBlockPhotosSavedInStorage(collabID: collabID, cachedBlock: cachedBlock, editedBlock: block)
             
@@ -258,7 +258,7 @@ class FirebaseBlock {
                     blocks.append(block)
                 }
                 
-                self.cachedBlocks = blocks
+                self.cachedCollabBlocks = blocks
                 
                 completion(nil, blocks)
             }
@@ -476,7 +476,7 @@ class FirebaseBlock {
         
         let batch = db.batch()
         
-        for block in cachedBlocks {
+        for block in cachedCollabBlocks {
             
             var membersRemoved: Bool = false
             var members: [String] = []

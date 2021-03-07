@@ -1047,9 +1047,9 @@ class MessagingViewController: UIViewController {
         
         let addAttachmentAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         
-        let takePhotoAction = UIAlertAction(title: "    Take a Photo", style: .default) { (takePhotoAction) in
+        let takePhotoAction = UIAlertAction(title: "    Take a Photo", style: .default) { [weak self] (takePhotoAction) in
           
-            self.takePhotoSelected()
+            self?.takePhotoSelected()
         }
         
         let cameraImage = UIImage(named: "camera2")
@@ -1057,9 +1057,9 @@ class MessagingViewController: UIViewController {
         takePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment") //Aligning text to the left
         
         
-        let choosePhotoAction = UIAlertAction(title: "    Choose a Photo", style: .default) { (choosePhotoAction) in
+        let choosePhotoAction = UIAlertAction(title: "    Choose a Photo", style: .default) { [weak self] (choosePhotoAction) in
             
-            self.choosePhotoSelected()
+            self?.choosePhotoSelected()
         }
         
         let photoImage = UIImage(named: "image")
@@ -1067,7 +1067,7 @@ class MessagingViewController: UIViewController {
         choosePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment") //Aligning text to the left
         
         
-        let shareScheduleAction = UIAlertAction(title: "    Share your Schedule", style: .default) { (shareScheduleAction) in
+        let shareScheduleAction = UIAlertAction(title: "    Share your Schedule", style: .default) { [weak self] (shareScheduleAction) in
             
         }
         

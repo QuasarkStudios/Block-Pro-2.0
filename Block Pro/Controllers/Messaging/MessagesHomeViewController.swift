@@ -1297,9 +1297,9 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         let sortAlertController = UIAlertController(title: "Sort Messages By:", message: nil, preferredStyle: .actionSheet)
         
         //Default Action
-        let defaultAction = UIAlertAction(title: "     Default", style: .default) { (defaultAction) in
+        let defaultAction = UIAlertAction(title: "     Default", style: .default) { [weak self] (defaultAction) in
             
-            self.sortActionPressed(sortBy: .defaultSort)
+            self?.sortActionPressed(sortBy: .defaultSort)
         }
         
         let defaultImage = UIImage(systemName: "line.horizontal.3")
@@ -1308,9 +1308,9 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         defaultAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
         
         //Unread Messages Action
-        let unreadMessagesAction = UIAlertAction(title: "     Unread Messages", style: .default) { (newMessagesAction) in
+        let unreadMessagesAction = UIAlertAction(title: "     Unread Messages", style: .default) { [weak self] (newMessagesAction) in
             
-            self.sortActionPressed(sortBy: .unreadMessages)
+            self?.sortActionPressed(sortBy: .unreadMessages)
         }
         
         let unreadMessageImage = UIImage(systemName: "message.circle.fill")
@@ -1320,9 +1320,9 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         
         //Date Joined/Created Action
         let dateJoined_CreatedTitle: String = selectedView == "personal" ? "     Date Joined" : "     Date Created"
-        let dateJoinedAction = UIAlertAction(title: dateJoined_CreatedTitle, style: .default) { (dateJoinedAction) in
+        let dateJoinedAction = UIAlertAction(title: dateJoined_CreatedTitle, style: .default) { [weak self] (dateJoinedAction) in
             
-            self.sortActionPressed(sortBy: self.sortConversationsBy != .dateJoined_CreatedAscending ? .dateJoined_CreatedAscending : .dateJoined_CreatedDescending)
+            self?.sortActionPressed(sortBy: self?.sortConversationsBy != .dateJoined_CreatedAscending ? .dateJoined_CreatedAscending : .dateJoined_CreatedDescending)
         }
         
         let dateJoinedImage = sortConversationsBy != .dateJoined_CreatedAscending ? UIImage(systemName: "arrow.up") : UIImage(systemName: "arrow.down")
@@ -1331,9 +1331,9 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         dateJoinedAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment")
         
         //Name Action
-        let nameAction = UIAlertAction(title: "     Name", style: .default) { (nameAction) in
+        let nameAction = UIAlertAction(title: "     Name", style: .default) { [weak self] (nameAction) in
             
-            self.sortActionPressed(sortBy: self.sortConversationsBy != .nameAscending ? .nameAscending : .nameDescending)
+            self?.sortActionPressed(sortBy: self?.sortConversationsBy != .nameAscending ? .nameAscending : .nameDescending)
         }
         
         let nameImage = sortConversationsBy != .nameAscending ? UIImage(systemName: "arrow.up") : UIImage(systemName: "arrow.down")
