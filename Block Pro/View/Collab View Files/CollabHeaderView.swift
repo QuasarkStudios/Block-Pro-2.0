@@ -36,6 +36,8 @@ class CollabHeaderView: UIView {
     var nameLabelTrailingAnchorWithCoverButton: NSLayoutConstraint?
     var nameLabelTrailingAnchorWithCover: NSLayoutConstraint?
     
+    var objectiveTextLabelHeightConstraint: NSLayoutConstraint?
+    
     var objectiveLabelTapGesture: UITapGestureRecognizer?
     var objectiveLabelLongPressGesture: UILongPressGestureRecognizer?
     
@@ -191,9 +193,11 @@ class CollabHeaderView: UIView {
             objectiveTextLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 34),
             objectiveTextLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -30),
             objectiveTextLabel.topAnchor.constraint(equalTo: objectiveHeaderLabel.bottomAnchor, constant: 5),
-            objectiveTextLabel.heightAnchor.constraint(equalToConstant: 50)
             
         ].forEach({ $0.isActive = true })
+        
+        objectiveTextLabelHeightConstraint = objectiveTextLabel.heightAnchor.constraint(equalToConstant: 50)
+        objectiveTextLabelHeightConstraint?.isActive = true
         
         objectiveHeaderLabel.text = "Objective:"
         objectiveHeaderLabel.textColor = .white
@@ -357,8 +361,6 @@ class CollabHeaderView: UIView {
         
         objectiveTextLabel.text = collab?.objective?.leniantValidationOfTextEntered() ?? false ? collab?.objective : "No Objective Yet"
         objectiveTextLabel.font = collab?.objective?.leniantValidationOfTextEntered() ?? false ? UIFont(name: "Poppins-Regular", size: 14) : UIFont(name: "Poppins-Italic", size: 14)
-        
-        let objectiveTextLabelHeightConstraint = objectiveTextLabel.constraints.first(where: { $0.firstAttribute == .height })
         
         if let objective = collab?.objective {
             

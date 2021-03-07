@@ -21,6 +21,8 @@ class CollabObjectiveViewController: UIViewController {
         }
     }
     
+    weak var collabViewController: AnyObject?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -28,6 +30,15 @@ class CollabObjectiveViewController: UIViewController {
         
         configureNavBar()
         configureObjectiveTextView()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        if let viewController = collabViewController as? CollabViewController {
+
+            viewController.collabObjectiveVC = nil
+        }
     }
     
     private func configureNavBar () {

@@ -123,7 +123,42 @@ class ConvoCoverInfoCell: UITableViewCell {
         
         else if let conversation = collabConversation {
             
-            self.configureCover(nil)
+            if conversation.coverPhotoID != nil {
+                
+                if let conversationIndex = firebaseMessaging.collabConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                    
+                    if let cover = firebaseMessaging.collabConversations[conversationIndex].conversationCoverPhoto {
+                        
+                        configureCover(cover)
+                    }
+                    
+                    else {
+                        
+                        firebaseStorage.retrieveCollabCoverPhoto(collabID: conversation.conversationID) { (cover, error) in
+                            
+                            if error != nil {
+                                
+                                SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                            }
+                            
+                            else {
+                                
+                                self.configureCover(cover)
+                                
+                                if let conversationIndex = self.firebaseMessaging.collabConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                                    
+                                    self.firebaseMessaging.collabConversations[conversationIndex].conversationCoverPhoto = cover
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            else {
+                
+                self.configureCover(nil)
+            }
         }
     }
     

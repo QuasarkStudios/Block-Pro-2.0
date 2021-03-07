@@ -207,9 +207,9 @@ class FirebaseStorage {
         }
     }
     
-    func saveNewCollabPhotosToStorage (_ collabID: String, _ photoID: String, _ photo: UIImage)  {
+    func saveCollabPhotosToStorage (_ collabID: String, _ photoID: String, _ photo: UIImage?)  {
         
-        let photoData = photo.jpegData(compressionQuality: 0.2)
+        let photoData = photo?.jpegData(compressionQuality: 0.2)
         
         if let data = photoData {
             
@@ -242,7 +242,7 @@ class FirebaseStorage {
         }
     }
     
-    func saveNewCollabVoiceMemosToStorage (_ collabID: String, _ voiceMemoID: String) {
+    func saveCollabVoiceMemosToStorage (_ collabID: String, _ voiceMemoID: String) {
         
         let voiceMemoURL = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
         
@@ -282,6 +282,22 @@ class FirebaseStorage {
         }
     }
     
+    func deleteCollabPhoto (_ collabID: String, photoID: String, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        collabStorageRef.child(collabID).child("photos").child("\(photoID).jpeg").delete { (error) in
+            
+            completion(error)
+        }
+    }
+    
+    func deleteCollabVoiceMemo (_ collabID: String, voiceMemoID: String, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        collabStorageRef.child(collabID).child("voiceMemos").child(voiceMemoID + ".m4a").delete { (error) in
+            
+            completion(error)
+        }
+    }
+    
     func saveCollabBlockPhotosToStorage (_ collabID: String, _ blockID: String, _ photoID: String, _ photo: UIImage?) {
         
         let photoData = photo?.jpegData(compressionQuality: 0.2)
@@ -315,11 +331,6 @@ class FirebaseStorage {
                 }
             }
         }
-    }
-    
-    func getStorageErrorCode (_ error: NSError) -> StorageErrorCode? {
-        
-        return StorageErrorCode(rawValue: error.code)
     }
     
     func saveCollabBlockVoiceMemosToStorage (_ collabID: String, _ blockID: String, _ voiceMemoID: String) {
@@ -526,5 +537,10 @@ class FirebaseStorage {
                 }
             }
         }
+    }
+    
+    func getStorageErrorCode (_ error: NSError) -> StorageErrorCode? {
+        
+        return StorageErrorCode(rawValue: error.code)
     }
 }

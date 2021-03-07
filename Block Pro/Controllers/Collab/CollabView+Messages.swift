@@ -11,7 +11,9 @@ import SVProgressHUD
 
 extension CollabViewController: UITextViewDelegate {
     
-    internal func retrieveMessages () {
+    //MARK: - Retrieve Messages
+    
+    func retrieveMessages () {
         
         guard let collabID = collab?.collabID else { return }
          
@@ -56,12 +58,18 @@ extension CollabViewController: UITextViewDelegate {
             }
     }
     
+    
+    //MARK: - Text View Did Being Editing
+    
     func textViewDidBeginEditing(_ textView: UITextView) {
         
         expandView()
         
         inputAccesoryViewMethods.textViewBeganEditing(textView: textView, keyboardHeight: keyboardHeight)
     }
+    
+    
+    //MARK: - Text View Did Change
     
     func textViewDidChange(_ textView: UITextView) {
         
@@ -70,10 +78,15 @@ extension CollabViewController: UITextViewDelegate {
         inputAccesoryViewMethods.textViewTextChanged(textView: textView, keyboardHeight: keyboardHeight)
     }
     
+    //MARK: - Text View Did End Editing
+    
     func textViewDidEndEditing(_ textView: UITextView) {
         
         inputAccesoryViewMethods.textViewEndedEditing(textView: textView)
     }
+    
+    
+    //MARK: - Keyboard Being Presented
     
     @objc internal func keyboardBeingPresented (notification: NSNotification) {
         
@@ -83,6 +96,9 @@ extension CollabViewController: UITextViewDelegate {
             inputAccesoryViewMethods?.keyboardBeingPresented(notification: notification, keyboardHeight: &keyboardHeight, messagesCount: messages?.count ?? 0)
         }
     }
+    
+    
+    //MARK: - Keyboard Being Dismissed
     
     @objc internal func keyboardBeingDismissed (notification: NSNotification) {
         
@@ -130,6 +146,9 @@ extension CollabViewController: UITextViewDelegate {
             }
         }
     }
+    
+    
+    //MARK: - Send Message
     
     @objc internal func sendMessage () {
         
@@ -224,7 +243,7 @@ extension CollabViewController: UITextViewDelegate {
     }
 }
 
-extension CollabViewController: ReconfigureCollabViewFromSendPhotoVC{
+extension CollabViewController: ReconfigureCollabViewFromSendPhotoVC {
     
     func reconfigureView() {
         

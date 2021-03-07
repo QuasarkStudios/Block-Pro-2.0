@@ -13,6 +13,11 @@ protocol NameConfigurationProtocol: AnyObject {
     func nameEntered (_ text: String)
 }
 
+protocol ObjectiveConfigurationProtocol: AnyObject {
+    
+    func objectiveEntered (_ text: String)
+}
+
 protocol TimeConfigurationProtocol: AnyObject {
     
     func presentCalendar (startsCalendar: Bool)

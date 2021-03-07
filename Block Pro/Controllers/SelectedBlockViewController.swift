@@ -44,6 +44,16 @@ class SelectedBlockViewController: UIViewController {
         self.navigationItem.largeTitleDisplayMode = .never
         
         copiedAnimationView = CopiedAnimationView() //Intialize here
+        
+        determineBlockReminders(block?.blockID) { [weak self] (reminders) in
+            
+            self?.block?.reminders = reminders
+            
+            DispatchQueue.main.async {
+                
+                self?.selectedBlockTableView.reloadRows(at: [IndexPath(row: 2, section: 0)], with: .none)
+            }
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -227,6 +237,15 @@ class SelectedBlockViewController: UIViewController {
                     }
                     
                     self?.block?.photoIDs = block?.photoIDs
+                    
+                    //Important
+                    for photo in self?.block?.photos ?? [:] {
+                        
+                        if block?.photoIDs?.contains(where: { $0 == photo.key }) == false {
+                            
+                            self?.block?.photos?.removeValue(forKey: photo.key)
+                        }
+                    }
                 }
                 //////////////////////////////////////////////////////////////////////////
                 
@@ -283,8 +302,8 @@ class SelectedBlockViewController: UIViewController {
                                 break
                             }
                             
-                            //If a link has had its name changed
-                            else if let cachedLink = self?.block?.links?.first(where: { $0.linkID == link.linkID }), cachedLink.name != link.name {
+                            //If a link has had its name or url changed
+                            else if let cachedLink = self?.block?.links?.first(where: { $0.linkID == link.linkID }), cachedLink.name != link.name || cachedLink.url != link.url {
                                 
                                 indexPathsToReload.append(IndexPath(row: 12, section: 0))
                                 break
@@ -338,7 +357,6 @@ class SelectedBlockViewController: UIViewController {
                     }
                 }
                 //////////////////////////////////////////////////////////////////////////
-                
                 
                 //Block Reminders////////////////////////////////////////////////////////////
                 self?.determineBlockReminders(block?.blockID) { [weak self] (reminders) in

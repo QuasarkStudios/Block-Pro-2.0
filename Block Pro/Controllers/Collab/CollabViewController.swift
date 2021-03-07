@@ -9,30 +9,32 @@
 import UIKit
 import SVProgressHUD
 
-class CollabViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class CollabViewController: UIViewController {
     
-    var hiddenBlockVC: HiddenBlocksViewController?
+    var collabObjectiveVC: CollabObjectiveViewController?
     var memberProfileVC: CollabMemberProfileViewController?
+    var hiddenBlockVC: HiddenBlocksViewController?
     
     lazy var collabHeaderView = CollabHeaderView(collab)
     lazy var collabHeaderViewHeightConstraint = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
     
-    lazy var collabNavigationView = CollabNavigationView(self, collabStartTime: collab?.dates["startTime"], collabDeadline: collab?.dates["deadline"])
-    let presentCollabNavigationViewButton = UIButton(type: .system)
-    
     lazy var collabCalendarView = CollabCalendarView(self, collabStartTime: collab?.dates["startTime"], collabDeadline: collab?.dates["deadline"])
+    
+    lazy var collabNavigationView = CollabNavigationView(self, collabStartTime: collab?.dates["startTime"], collabDeadline: collab?.dates["deadline"])
     
     let collabHomeTableView = UITableView()
     
     lazy var editCoverButton: UIButton = configureEditButton()
     lazy var deleteCoverButton: UIButton = configureDeleteButton()
     
+    let presentCollabNavigationViewButton = UIButton(type: .system)
+    
     let addBlockButton = UIButton(type: .system)
     let seeHiddenBlocksButton = UIButton(type: .system)
     
-    lazy var tabBar = CustomTabBar.sharedInstance
-    
     var copiedAnimationView: CopiedAnimationView?
+    
+    lazy var tabBar = CustomTabBar.sharedInstance
     
     let messageInputAccesoryView = InputAccesoryView(textViewPlaceholderText: "Send a message", showsAddButton: true)
     var inputAccesoryViewMethods: InputAccesoryViewMethods!
@@ -44,6 +46,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     let firebaseBlock = FirebaseBlock.sharedInstance
     let firebaseMessaging = FirebaseMessaging.sharedInstance
     var collab: Collab?
+    
+    let notificationScheduler = NotificationScheduler()
     
     let formatter = DateFormatter()
     let calendar = Calendar.current
@@ -60,6 +64,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     var alertTracker: String = ""
     
     var keyboardHeight: CGFloat?
+    var keyboardWasPresent: Bool?
     
     var messageTextViewText: String = ""
     var selectedPhoto: UIImage?
@@ -69,20 +74,19 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     var dismissExpandedViewGesture: UISwipeGestureRecognizer?
     
     var zoomingMethods: ZoomingImageViewMethods?
-
+    var imageViewBeingZoomed: Bool?
+    
     var calendarPresented: Bool = false
     
-    var imageViewBeingZoomed: Bool?
-    var keyboardWasPresent: Bool?
-    
+    var enableTabBarVisibiltyHandeling: Bool = false
     var tabBarWasHidden: Bool = false
     
     var searchBeingConducted: Bool = false
     var blocksFiltered: Bool = false
     
-    var collabNavigationViewTopAnchor: NSLayoutConstraint?
+    var previousContentOffsetYCoord: CGFloat = 0
     
-//    var viewAppeared: Bool = false
+    var collabNavigationViewTopAnchor: NSLayoutConstraint?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -97,8 +101,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         configurePresentCollabNavigationViewButton()
         configureCollabNavigationView()
         
-//        configureCalendarView()
-        
         configureAddBlockButton()
         configureSeeHiddenBlocksButton()
         
@@ -106,19 +108,20 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         configureProgressView()
         configureBlockView()
         
+        messageInputAccesoryView.alpha = 0
+        
+        monitorCollab()
+        
         retrieveBlocks()
         retrieveMessages()
         
         setUserActiveStatus()
         
-        retrieveMemberProfilePics()
-        
-        messageInputAccesoryView.alpha = 0
-        
 //        print(collab?.collabID)
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         
         configureNavBar()
         
@@ -131,8 +134,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
-//        viewAppeared = true
+        //Prevents the tabBar from flashing when this view is being presented for the first time
+        enableTabBarVisibiltyHandeling = true
         
         hiddenBlockVC = nil
         
@@ -143,14 +148,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
         tabBarWasHidden = tabBar.alpha == 0
         
         removeObservors()
-        
-        #warning("find a better plack to remove these listeners")
-//        firebaseBlock.collabBlocksListener?.remove(); #warning("will stop blocks from being recieved im pretty sure")
-//        firebaseCollab.messageListener?.remove();
         
         setUserInactiveStatus()
         
@@ -160,6 +162,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
         
         var count = 0
         
@@ -179,845 +182,18 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         return true
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
+    deinit {
         
-        if tableView == collabHomeTableView {
-            
-            return 6
-        }
+        print("deinit")
         
-        else {
-            
-            return 1
-        }
+        firebaseCollab.singularCollabListener?.remove()
+        
+        firebaseBlock.collabBlocksListener?.remove()
+        firebaseMessaging.messageListener?.remove()
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        if tableView == collabHomeTableView {
-            
-            if section == 0 {
-                
-                return 2//3
-            }
-            
-            else if section == 1 {
-                
-                return 4
-            }
-            
-            else if section == 2 {
-                
-                return 3
-            }
-            
-            else if section == 3 {
-                
-                return 3
-            }
-            
-            else if section == 4 {
-                
-                return 3
-            }
-            
-            else {
-                
-                return 1
-            }
-        }
-        
-        else {
-            
-            if selectedTab == "Progress" {
-                
-                return blocksFiltered ? filteredBlocks.count : blocks?.count ?? 0
-            }
-            
-            else if selectedTab == "Blocks" {
-                
-                //still needs testing
-                if var startTime = collab?.dates["startTime"], var deadline = collab?.dates["deadline"] {
-
-                    //Formatting the startTime and deadline so that the only the date and not the time is truly used
-                    formatter.dateFormat = "yyyy MM dd"
-                    startTime = formatter.date(from: formatter.string(from: startTime)) ?? Date()
-                    deadline = formatter.date(from: formatter.string(from: deadline)) ?? Date()
-                    
-                    if let days = calendar.dateComponents([.day], from: startTime, to: deadline).day, days != 0 {
-
-                        return days + 1
-                    }
-
-                    else {
-
-                        //this can only be tested once create a collab view is reconfigured giving users the ability to set a collab to start and end on the same day
-                        return 1
-                    }
-                }
-
-                else {
-
-                    return 1
-                }
-            }
-            
-            else if selectedTab == "Messages" {
-                
-                return messagingMethods.numberOfRowsInSection(messages: messages)
-            }
-            
-            else {
-                
-                return 1 //Will be used to during tab transitions
-            }
-        }
-    }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            
-        if tableView == collabHomeTableView {
-            
-            if indexPath.section == 0 {
-                
-//                if indexPath.row == 0 {
-//
-//                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
-//                    cell.selectionStyle = .none
-//
-//                    cell.sectionNameLabel.text = "Members"
-//
-//                    return cell
-//                }
-                
-                if indexPath.row == 0 {
-                    
-                    let cell = UITableViewCell()
-                    cell.isUserInteractionEnabled = false
-                    return cell
-                }
-                
-                else {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeMembersCell", for: indexPath) as! CollabHomeMembersCell
-                    cell.selectionStyle = .none
-                    
-                    cell.collabMemberDelegate = self
-                    
-                    cell.collab = collab
-                    cell.blocks = blocks
-                    
-                    return cell
-                }
-                
-//                if indexPath.row == 0 {
-//
-//                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeMembersCell", for: indexPath) as! CollabHomeMembersCell2
-//                    cell.selectionStyle = .none
-//
-//                    cell.collab = collab
-//
-//                    return cell
-//                }
-//
-//                else if indexPath.row == 1 {
-//
-//                    let cell = UITableViewCell()
-//                    cell.isUserInteractionEnabled = false
-//                    return cell
-//                }
-//
-//                else {
-//
-//                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeMembersCell", for: indexPath) as! CollabHomeMembersCell
-//                    cell.selectionStyle = .none
-//                    cell.collab = collab
-//
-//                    return cell
-//                }
-            }
-            
-            else if indexPath.section == 1 {
-                
-                if indexPath.row == 0 {
-                    
-                    let cell = UITableViewCell()
-                    cell.isUserInteractionEnabled = false
-                    return cell
-                }
-                
-                else if indexPath.row == 1 {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
-                    cell.selectionStyle = .none
-                    
-                    cell.sectionNameLabel.text = "Locations"
-                    return cell
-                }
-                
-                else if indexPath.row == 2 {
-                    
-                    let cell = UITableViewCell()
-                    cell.isUserInteractionEnabled = false
-                    return cell
-                }
-                
-                else {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeLocationsCell", for: indexPath) as! CollabHomeLocationsCell
-                    cell.selectionStyle = .none
-                    
-                    cell.locations = collab?.locations
-                    
-                    cell.locationSelectedDelegate = self
-                    
-                    return cell
-                }
-            }
-            
-            else if indexPath.section == 2 {
-                
-                if indexPath.row == 0 {
-                    
-                    let cell = UITableViewCell()
-                    cell.isUserInteractionEnabled = false
-                    return cell
-                }
-                
-                else if indexPath.row == 1 {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
-                    cell.selectionStyle = .none
-                    
-                    cell.sectionNameLabel.text = "Photos"
-                    return cell
-                }
-                
-                else {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomePhotosCell", for: indexPath) as! CollabHomePhotosCell
-                    cell.selectionStyle = .none
-                    
-                    cell.collab = collab
-
-                    cell.cachePhotoDelegate = self
-                    cell.zoomInDelegate = self
-                    cell.presentCopiedAnimationDelegate = self
-                    
-                    return cell
-                }
-            }
-            
-            else if indexPath.section == 3 {
-                
-                if indexPath.row == 0 {
-                    
-                    let cell = UITableViewCell()
-                    cell.isUserInteractionEnabled = false
-                    return cell
-                }
-                
-                else if indexPath.row == 1 {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
-                    cell.selectionStyle = .none
-                    
-                    cell.sectionNameLabel.text = "Voice Memos"
-                    return cell
-                }
-                
-                else {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeVoiceMemosCell", for: indexPath) as! CollabHomeVoiceMemosCell
-                    cell.selectionStyle = .none
-                    
-                    cell.collab = collab
-                    
-                    return cell
-                }
-            }
-            
-            else if indexPath.section == 4 {
-                
-                if indexPath.row == 0 {
-                    
-                    let cell = UITableViewCell()
-                    cell.isUserInteractionEnabled = false
-                    return cell
-                }
-                
-                else if indexPath.row == 1 {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeSectionHeaderCell", for: indexPath) as! CollabHomeSectionHeaderCell
-                    cell.selectionStyle = .none
-                    
-                    cell.sectionNameLabel.text = "Links"
-                    return cell
-                }
-                
-                else {
-                    
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "collabHomeLinksCell", for: indexPath) as! CollabHomeLinksCell
-                    cell.selectionStyle = .none
-                    
-                    cell.links = collab?.links//?.sorted(by: { ($0.name ?? $0.url)! < ($1.name ?? $1.url)! })
-                    
-                    cell.cacheIconDelegate = self
-                    
-                    return cell
-                }
-            }
-            
-            else {
-                
-                let cell = tableView.dequeueReusableCell(withIdentifier: "leaveCollabCell", for: indexPath) as! LeaveCollabCell
-                cell.selectionStyle = .none
-                return cell
-            }
-        }
-        
-        else {
-            
-            if selectedTab == "Progress" {
-                
-                let cell = tableView.dequeueReusableCell(withIdentifier: "blockCell", for: indexPath) as! BlockCell
-                cell.selectionStyle = .none
-                
-                cell.formatter = formatter
-                cell.block = blocksFiltered ? filteredBlocks[indexPath.row] : blocks?[indexPath.row]
-                
-                return cell
-            }
-            
-            else if selectedTab == "Blocks" {
-                
-                let cell = tableView.dequeueReusableCell(withIdentifier: "blocksTableViewCell", for: indexPath) as! BlocksTableViewCell
-                cell.selectionStyle = .none
-                
-                cell.collab = collab
-                cell.blockSelectedDelegate = self
-                
-                if let startTime = collab?.dates["startTime"], let dateForCell = calendar.date(byAdding: .day, value: indexPath.row, to: startTime) {
-                    
-                    cell.blocks = blocks?.filter({ calendar.isDate($0.starts!, inSameDayAs: dateForCell) }).sorted(by: { $0.starts! < $1.starts! })
-                }
-                
-                return cell
-            }
-            
-            else if selectedTab == "Messages" {
-                
-                return messagingMethods.cellForRowAt(indexPath: indexPath, messages: messages, members: collab?.members)
-            }
-            
-            else {
-                
-                //Will be used to during tab transitions
-                let cell = UITableViewCell()
-                cell.isUserInteractionEnabled = false
-                return cell
-            }
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        if tableView == collabHomeTableView {
-            
-            if indexPath.section == 0 {
-                
-                if indexPath.row == 0 {
-                    
-                    return 10
-                }
-                
-                else {
-                    
-                    if collab?.members.count ?? 0 > 1 {
-                        
-                        return 185
-                    }
-                    
-                    else {
-                        
-                        return 160
-                    }
-                }
-            }
-            
-            else if indexPath.section == 1 {
-                
-                if indexPath.row == 0 {
-                    
-                    return 20
-                }
-                
-                else if indexPath.row == 1 {
-                    
-                    return 20
-                }
-                
-                else if indexPath.row == 2 {
-                    
-                    return 10
-                }
-                
-                else {
-                    
-                    if collab?.locations?.count ?? 0 == 0 {
-                        
-//                        let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
-                        return itemSize + 20 + 20 //This is borrowed from the collabPhotos cell to allow both cells to look the same
-                    }
-                    
-                    else if collab?.locations?.count == 1 {
-                        
-                        return 200
-                    }
-                    
-                    else {
-                        
-                        return 232.5
-                    }
-                }
-            }
-            
-            else if indexPath.section == 2 {
-                
-                if indexPath.row == 0 {
-                    
-                    return 2.5
-                }
-                
-                else if indexPath.row == 1 {
-                    
-                    return 25
-                }
-                
-                else {
-                    
-//                    let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
-                    
-                    if collab?.photoIDs.count ?? 0 <= 3 {
-                        
-                        return itemSize + 20 + 20// The item size plus the top and bottom edge insets, i.e. 20 and the top and bottom anchors i.e. 20
-                    }
-                    
-                    else {
-                        
-                        return (itemSize * 2) + 20 + 20 + 5 //The height of the two rows of items that'll be displayed plus the edge insets, i.e. 20, the top and bottom anchors i.e. 20, and the line spacing i.e. 5
-                    }
-                }
-            }
-            
-            else if indexPath.section == 3 {
-                
-                if indexPath.row == 0 {
-                    
-                    return 2.5
-                }
-                
-                else if indexPath.row == 1 {
-                    
-                    return 25
-                }
-                
-                else {
-                    
-                    return itemSize + 42
-                }
-            }
-            
-            else if indexPath.section == 4 {
-                
-                if indexPath.row == 0 {
-                    
-                    return 2.5
-                }
-                
-                else if indexPath.row == 1 {
-                    
-                    return 25
-                }
-                
-                else {
-                    
-                    if collab?.links?.count ?? 0 == 0 {
-                        
-                        return itemSize + 42
-                    }
-                    
-                    else if collab?.links?.count ?? 0 < 3 {
-                        
-                        return 120
-                    }
-                    
-                    else {
-                        
-                        return 147.5
-                    }
-                }
-            }
-            
-            else {
-                
-                return 80
-            }
-        }
-        
-        else {
-            
-            if selectedTab == "Progress" {
-                
-                if blocksFiltered {
-                    
-                    if filteredBlocks[indexPath.row].members?.count ?? 0 > 0 {
-                        
-                        return 210
-                    }
-                    
-                    else {
-                        
-                        return 175
-                    }
-                }
-                
-                else {
-                    
-                    if blocks?[indexPath.row].members?.count ?? 0 > 0 {
-                        
-                        return 210
-                    }
-                    
-                    else {
-                        
-                        return 175
-                    }
-                }
-                
-                
-            }
-            
-            else if selectedTab == "Blocks" {
-                
-                return 2210
-            }
-            
-            else if selectedTab == "Messages" {
-                
-                return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages)
-            }
-            
-            else {
-                
-                return 500 //Will be used to during tab transitions
-            }
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-        if tableView == collabHomeTableView && indexPath.section == (tableView.numberOfSections - 1) {
-            
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                
-                self.presentCollabNavigationViewButton.alpha = 0
-                self.tabBar.alpha = 0
-            }
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-        if tableView == collabHomeTableView && indexPath.section == (tableView.numberOfSections - 1) {
-            
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                
-                self.presentCollabNavigationViewButton.alpha = 1
-                self.tabBar.alpha = 1
-            }
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        if tableView == collabNavigationView.collabTableView, selectedTab == "Progress" {
-            
-            if let cell = tableView.cellForRow(at: indexPath) as? BlockCell {
-                
-                if let block = blocks?.first(where: { $0.blockID == cell.block?.blockID }) {
-                    
-                    selectedBlock = block
-                    
-                    performSegue(withIdentifier: "moveToSelectedBlockView", sender: self)
-                }
-                
-                else {
-                    
-                    SVProgressHUD.showError(withStatus: "Sorry, this block may have been deleted")
-                }
-            }
-        }
-    }
-    
-    var previousContentOffsetYCoord: CGFloat = 0
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
-        if scrollView == collabHomeTableView {
-            
-            if scrollView.contentOffset.y >= 0 {
-                
-                if ((collabHeaderViewHeightConstraint?.constant ?? 0) - scrollView.contentOffset.y) > topBarHeight {
-                    
-                    collabHeaderViewHeightConstraint?.constant -= scrollView.contentOffset.y
-                    scrollView.contentOffset.y = 0
-                    
-                    let alphaPart = 1 / (collabHeaderView.configureViewHeight() - 70/*80*/ - topBarHeight)
-                    collabHeaderView.alpha = alphaPart * (collabHeaderViewHeightConstraint!.constant - topBarHeight)
-                }
-                
-                else {
-                    
-                    collabHeaderViewHeightConstraint?.constant = topBarHeight
-                    collabHeaderView.alpha = 0
-                    
-                    self.title = collab?.name
-                    navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black, barStyleColor: .default)
-                }
-            }
-            
-            else {
-                
-                self.title = nil
-                navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
-                
-                if (collabHeaderViewHeightConstraint?.constant ?? 0) < collabHeaderView.configureViewHeight() - 70/*80*/ {
-                    
-                    collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight() - 70//80
-                    
-                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
-
-                        self.view.layoutIfNeeded()
-                    })
-                }
-
-                else {
-                    
-//                    collabHeaderViewHeightConstraint?.constant = (collabHeaderView.configureViewHeight() - 80) + abs(scrollView.contentOffset.y)
-                }
-            }
-        }
-        
-        else {
-            
-            if selectedTab == "Progress" {
-                
-                if scrollView.contentOffset.y >= 0 {
-                    
-                    //If the progress view height minus the scrollView contentOffset is larger than 67, it's minimum allowable height
-                    if (collabNavigationView.progressViewHeightConstraint?.constant ?? 67) - scrollView.contentOffset.y > 67 {
-                        
-                        collabNavigationView.progressViewHeightConstraint?.constant -= scrollView.contentOffset.y //Decrementing the height of the progressView
-                        
-                        collabNavigationView.tableViewTopAnchorWithStackView?.constant -= scrollView.contentOffset.y //Decrementing the topAnchor of the tableView
-                        
-                        scrollView.contentOffset.y = 0
-                    }
-                    
-                    //If the progress view height minus the scrollView contentOffset is less than 67
-                    else {
-                        
-                        //This height will only allow the searchBar to be shown
-                        collabNavigationView.progressViewHeightConstraint?.constant = 67
-                        
-                        //If the collabNavigationView is expanded
-                        if navigationItem.hidesBackButton {
-                            
-                            //Setting the top anchor based on if the iPhone has a notch -- an iPhone with a notch will cause the progressView to have a larger topAnchor
-                            //Therefore the top anchor of the tableView will also have to be larger by 20 points to compensate
-                            collabNavigationView.tableViewTopAnchorWithStackView?.constant = keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 92 : 72
-                        }
-                        
-                        //The collabNavigationView isn't expanded
-                        else {
-                            
-                            //Setting the topAnchor when only the searchBar of the collabProgress view is shown
-                            collabNavigationView.tableViewTopAnchorWithStackView?.constant = 72
-                        }
-                    }
-                }
-                
-                else {
-                    
-                    let maximumProgressViewHeight: CGFloat = ((UIScreen.main.bounds.width * 0.5) + 12 + 55) + 87
-                    
-                    //If the progressView height is less than the maximum allowable height for the progressView
-                    if collabNavigationView.progressViewHeightConstraint?.constant ?? 87 < maximumProgressViewHeight {
-                        
-                        collabNavigationView.progressViewHeightConstraint?.constant = maximumProgressViewHeight
-                        
-                        //If the collabNavigationView is expanded
-                        if navigationItem.hidesBackButton {
-                            
-                            //Setting the top anchor based on if the iPhone has a notch -- an iPhone with a notch will cause the progressView to have a larger topAnchor
-                            //Therefore the top anchor of the tableView will also have to be larger by 20 points to compensate
-                            collabNavigationView.tableViewTopAnchorWithStackView?.constant = maximumProgressViewHeight + (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 20 : 0)
-                        }
-                        
-                        //The collabNavigationView isn't expanded
-                        else {
-                            
-                            //Setting to the value that won't cause the tableView constraints to break
-                            collabNavigationView.tableViewTopAnchorWithStackView?.constant = collabNavigationView.maximumTableViewTopAnchorWithStackView
-                        }
-                        
-                        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                            
-                            self.collabNavigationView.layoutIfNeeded()
-                        }
-                    }
-                }
-            }
-            
-            else if selectedTab == "Blocks" {
-                
-                //If the tableView is scrolling down
-                if previousContentOffsetYCoord < scrollView.contentOffset.y {
-                    
-                    if let firstVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first {
-                        
-                        //"isDragging" checks if the user is the one who caused the scrollView to scroll
-                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: firstVisibleCellIndexPath.row, to: startTime), !calendar.isDate(adjustedDate, inSameDayAs: collabNavigationView.calendarView.selectedDates.first ?? Date()), scrollView.isDragging {
-                            
-                            collabCalendarView.calendarView.selectDates([adjustedDate])
-                            collabCalendarView.calendarView.scrollToDate(adjustedDate)
-                            
-                            collabNavigationView.calendarView.selectDates([adjustedDate])
-                            collabNavigationView.calendarView.scrollToDate(adjustedDate)
-
-                            let vibrateMethods = VibrateMethods()
-                            vibrateMethods.warningVibration()
-                        }
-                    }
-                }
-                
-                //If the tableView is scrolling up
-                else {
-                    
-                    if let lastVisibleCellIndexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.last {
-                
-                        //"isDragging" checks if the user is the one who caused the scrollView to scroll
-                        if let startTime = collab?.dates["startTime"], let adjustedDate = calendar.date(byAdding: .day, value: lastVisibleCellIndexPath.row, to: startTime), !calendar.isDate(adjustedDate, inSameDayAs: collabNavigationView.calendarView.selectedDates.first ?? Date()), scrollView.isDragging {
-                            
-                            collabCalendarView.calendarView.selectDates([adjustedDate])
-                            collabCalendarView.calendarView.scrollToDate(adjustedDate)
-                            
-                            collabNavigationView.calendarView.selectDates([adjustedDate])
-                            collabNavigationView.calendarView.scrollToDate(adjustedDate)
-                
-                            let vibrateMethods = VibrateMethods()
-                            vibrateMethods.warningVibration()
-                        }
-                    }
-                }
-                
-                previousContentOffsetYCoord = scrollView.contentOffset.y
-                
-                determineHiddenBlocks(scrollView)
-            }
-        }
-    }
-    
-    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        
-        if let startTime = collab?.dates["startTime"] {
-            
-            collabCalendarView.calendarView.selectDates([startTime])
-            collabCalendarView.calendarView.scrollToDate(startTime)
-            
-            collabNavigationView.calendarView.selectDates([startTime])
-            collabNavigationView.calendarView.scrollToDate(startTime)
-        }
-        
-        return true
-    }
-    
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        
-        if scrollView == collabNavigationView.collabTableView {
-            
-            if selectedTab == "Progress" {
-                
-                let progressViewHeight: CGFloat = ((UIScreen.main.bounds.width * 0.5) + 12 + 55) + 87
-                
-                if (collabNavigationView.progressViewHeightConstraint?.constant ?? 0) < progressViewHeight * 0.7 && (collabNavigationView.progressViewHeightConstraint?.constant ?? 0) != 67 {
-                    
-                    //This height will only allow the searchBar to be shown
-                    collabNavigationView.progressViewHeightConstraint?.constant = 67
-                    
-                    //If the collabNavigationView is expanded
-                    if navigationItem.hidesBackButton {
-                        
-                        //Setting the top anchor based on if the iPhone has a notch -- an iPhone with a notch will cause the progressView to have a larger topAnchor
-                        //Therefore the top anchor of the tableView will also have to be larger by 20 points to compensate
-                        collabNavigationView.tableViewTopAnchorWithStackView?.constant = keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 92 : 72
-                    }
-                    
-                    //The collabNavigationView isn't expanded
-                    else {
-                        
-                        //Setting the topAnchor when only the searchBar of the collabProgress view is shown
-                        collabNavigationView.tableViewTopAnchorWithStackView?.constant = 72
-                    }
-                    
-                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                        
-                        self.view.layoutIfNeeded()
-                    }
-
-                }
-                
-                //Will handle the progress animation
-                if blocks?.count ?? 0 == 0 {
-                    
-                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                        
-                        self.collabNavigationView.handleProgressAnimation()
-                        
-                        self.view.layoutIfNeeded()
-                    }
-                }
-            }
-            
-            else if selectedTab == "Blocks" {
-                
-                //If the calendar isn't presented
-                //If the calendar is presented and the "collabNavigationView" has a height that doesn't require the "addBlockButton" and "tabBar" to be hidden
-                //If the calendar is presented and the view is expanded
-                if !calendarPresented || (calendarPresented && (self.addBlockButton.frame.minY - 330 >= 200 || collabNavigationViewTopAnchor?.constant ?? 0 == 0)) {
-                    
-                    if velocity.y < 0 {
-                        
-                        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                            
-                            self.addBlockButton.alpha = 1
-                            self.tabBar.alpha = 1
-                        }
-                    }
-                    
-                    else if velocity.y > 0.5 {
-                        
-                        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                            
-                            self.addBlockButton.alpha = 0
-                            self.tabBar.alpha = 0
-                        }
-                    }
-                }
-            }
-        }
-    }
+    //MARK: - Configure Nav Bar
     
     private func configureNavBar () {
         
@@ -1051,43 +227,17 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    
+    //MARK: - Configure Header View
+    
     private func configureHeaderView () {
         
         self.view.addSubview(collabHeaderView)
         collabHeaderView.collabViewController = self
     }
     
-    private func configureCollabHomeTableView () {
-        
-        self.view.addSubview(collabHomeTableView)
-        collabHomeTableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            collabHomeTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
-            collabHomeTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
-            collabHomeTableView.topAnchor.constraint(equalTo: collabHeaderView.bottomAnchor, constant: 5),
-            collabHomeTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
-        
-        ].forEach({ $0.isActive = true })
-        
-        collabHomeTableView.dataSource = self
-        collabHomeTableView.delegate = self
-        
-//        collabHomeTableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
-        collabHomeTableView.separatorStyle = .none
-        collabHomeTableView.showsVerticalScrollIndicator = false
-        collabHomeTableView.delaysContentTouches = false
-        
-        collabHomeTableView.register(CollabHomeSectionHeaderCell.self, forCellReuseIdentifier: "collabHomeSectionHeaderCell")
-//        collabHomeTableView.register(UINib(nibName: "CollabHomeMembersCell", bundle: nil), forCellReuseIdentifier: "collabHomeMembersCell")
-        collabHomeTableView.register(CollabHomeMembersCell.self, forCellReuseIdentifier: "collabHomeMembersCell")
-        collabHomeTableView.register(UINib(nibName: "CollabHomeLocationsCell", bundle: nil), forCellReuseIdentifier: "collabHomeLocationsCell")
-        collabHomeTableView.register(UINib(nibName: "CollabHomePhotosCell", bundle: nil), forCellReuseIdentifier: "collabHomePhotosCell")
-        collabHomeTableView.register(CollabHomeVoiceMemosCell.self, forCellReuseIdentifier: "collabHomeVoiceMemosCell")
-        collabHomeTableView.register(CollabHomeLinksCell.self, forCellReuseIdentifier: "collabHomeLinksCell")
-        collabHomeTableView.register(UINib(nibName: "LeaveCollabCell", bundle: nil), forCellReuseIdentifier: "leaveCollabCell")
-    }
+    
+    //MARK: - Configure Collab Navigation View
     
     private func configureCollabNavigationView () {
         
@@ -1108,6 +258,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabNavigationView.collabViewController = self
     }
     
+    
+    //MARK: - Configure Calendar View
+    
     private func configureCalendarView () {
 
         self.view.addSubview(collabCalendarView)
@@ -1125,13 +278,51 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabCalendarView.isHidden = true
     }
     
-    //should probably move all these configuration funcs for the navigation view to the navigation class
+    
+    //MARK: - Configure Home Table View
+    
+    private func configureCollabHomeTableView () {
+        
+        self.view.addSubview(collabHomeTableView)
+        collabHomeTableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            collabHomeTableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
+            collabHomeTableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
+            collabHomeTableView.topAnchor.constraint(equalTo: collabHeaderView.bottomAnchor, constant: 5),
+            collabHomeTableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
+        
+        ].forEach({ $0.isActive = true })
+        
+        collabHomeTableView.dataSource = self
+        collabHomeTableView.delegate = self
+        
+        collabHomeTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 15 : 30, right: 0)
+        collabHomeTableView.separatorStyle = .none
+        collabHomeTableView.showsVerticalScrollIndicator = false
+        collabHomeTableView.delaysContentTouches = false
+        
+        collabHomeTableView.register(CollabHomeMembersCell.self, forCellReuseIdentifier: "collabHomeMembersCell")
+        collabHomeTableView.register(LocationsPresentationCell.self, forCellReuseIdentifier: "locationsPresentationCell")
+        collabHomeTableView.register(PhotosPresentationCell.self, forCellReuseIdentifier: "photosPresentationCell")
+        collabHomeTableView.register(VoiceMemosPresentationCell.self, forCellReuseIdentifier: "voiceMemosPresentationCell")
+        collabHomeTableView.register(LinksPresentationCell.self, forCellReuseIdentifier: "linksPresentationCell")
+        collabHomeTableView.register(CollabHomeEdit_LeaveCell.self, forCellReuseIdentifier: "collabHomeEdit_LeaveCell")
+    }
+    
+    
+    //MARK: - Configure Progress View
+    
     private func configureProgressView () {
         
         collabNavigationView.collabTableView.scrollsToTop = true
         
         collabNavigationView.collabTableView.register(BlockCell.self, forCellReuseIdentifier: "blockCell")
     }
+    
+    
+    //MARK: - Configure Block View
     
     private func configureBlockView () {
         
@@ -1150,16 +341,21 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         collabNavigationView.collabTableView.register(BlocksTableViewCell.self, forCellReuseIdentifier: "blocksTableViewCell")
     }
     
+    
+    //MARK: - Configure Messaging View
+    
     private func configureMessagingView () {
         
         messageInputAccesoryView.parentViewController = self
-//        messageInputAccesoryView.isHidden = true
         
         messagingMethods = MessagingMethods(parentViewController: self, tableView: collabNavigationView.collabTableView, collabID: collab?.collabID ?? "")
         messagingMethods.configureTableView()
         
         inputAccesoryViewMethods = InputAccesoryViewMethods(accesoryView: messageInputAccesoryView, textViewPlaceholderText: "Send a message", tableView: collabNavigationView.collabTableView)
     }
+    
+    
+    //MARK: - Configure Present Collab NavView Button
     
     private func configurePresentCollabNavigationViewButton () {
         
@@ -1195,6 +391,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         presentCollabNavigationViewButton.bringSubviewToFront(presentCollabNavigationViewButton.imageView!)
     }
     
+    
+    //MARK: - Configure Edit Button
+    
     private func configureEditButton () -> UIButton {
         
         let button = UIButton(type: .system)
@@ -1210,6 +409,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         return button
     }
+    
+    
+    //MARK: - Configure Delete Button
     
     private func configureDeleteButton () -> UIButton {
         
@@ -1227,6 +429,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         return button
     }
+    
+    
+    //MARK: - Configure Add Block Button
     
     private func configureAddBlockButton () {
         
@@ -1250,6 +455,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
 
         addBlockButton.addTarget(self, action: #selector(addBlockButtonPressed), for: .touchUpInside)
     }
+    
+    
+    //MARK: - Configure See Hidden Blocks Button
     
     private func configureSeeHiddenBlocksButton () {
         
@@ -1286,7 +494,31 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     
-    internal func addObservors () {
+    //MARK: - Configure Gesture Recognizors
+    
+    private func configureGestureRecognizers () {
+
+        let dismissKeyboardTapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboardTap))
+        dismissKeyboardTapGesture.cancelsTouchesInView = false
+        self.view.addGestureRecognizer(dismissKeyboardTapGesture)
+        
+        dismissExpandedViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(dismissExpandedView))
+        dismissExpandedViewGesture?.delegate = self
+        dismissExpandedViewGesture?.cancelsTouchesInView = true
+        dismissExpandedViewGesture?.direction = .right
+        view.addGestureRecognizer(dismissExpandedViewGesture!)
+        
+        gestureViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
+        collabNavigationView.panGestureView.addGestureRecognizer(gestureViewPanGesture!)
+        
+        stackViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
+        collabNavigationView.buttonStackView.addGestureRecognizer(stackViewPanGesture!)
+    }
+    
+    
+    //MARK: - Add Observors
+    
+    func addObservors () {
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardBeingPresented), name: UIResponder.keyboardWillShowNotification, object: nil)
 
@@ -1303,82 +535,354 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         NotificationCenter.default.addObserver(self, selector: #selector(addAttachment), name: .userDidAddMessageAttachment, object: nil)
     }
     
+    
+    //MARK: - Remove Observors
+    
     private func removeObservors () {
         
         NotificationCenter.default.removeObserver(self)
     }
+        
     
-    private func configureGestureRecognizers () {
-
-        let dismissKeyboardTapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboardTap))
-        dismissKeyboardTapGesture.cancelsTouchesInView = false
-        self.view.addGestureRecognizer(dismissKeyboardTapGesture)
-        
-        dismissExpandedViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(dismissExpandedView))
-        dismissExpandedViewGesture?.delegate = self
-        dismissExpandedViewGesture?.cancelsTouchesInView = true
-        dismissExpandedViewGesture?.direction = .right
-        view.addGestureRecognizer(dismissExpandedViewGesture!)
-        
-        gestureViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
-        //panGestureView.addGestureRecognizer(gestureViewPanGesture!)
-        collabNavigationView.panGestureView.addGestureRecognizer(gestureViewPanGesture!)
-        
-        stackViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
-//        buttonStackView.addGestureRecognizer(stackViewPanGesture!)
-        collabNavigationView.buttonStackView.addGestureRecognizer(stackViewPanGesture!)
-    }
-        
-    private func reconfigureGestureRecognizers () {
-        
-//        panGestureView.addGestureRecognizer(gestureViewPanGesture!)
-//        buttonStackView.addGestureRecognizer(stackViewPanGesture!)
-    }
+    //MARK: - Monitor Collab
     
-    private func removeGestureRecognizers () {
+    private func monitorCollab () {
         
-        if let gestureViewGesture = gestureViewPanGesture, let stackViewGesture = stackViewPanGesture {
+        firebaseCollab.monitorCollab(collabID: collab?.collabID ?? "") { [weak self] (monitoredCollab) in
             
-//            panGestureView.removeGestureRecognizer(gestureViewGesture)
-//            buttonStackView.removeGestureRecognizer(stackViewGesture)
-        }
-    }
-    
-    //May not be neccasary because profile pics may already be obtained from the home view; leaving it here for now tho. Mainly because there may be cases where the user hasnt allowed for all the pics to be loaded yet, and its not the time for me to be setting up observors 
-    private func retrieveMemberProfilePics () {
-
-        if let members = collab?.members {
-            
-            var count = 0
-            
-            for member in members {
+            if let error = monitoredCollab["error"] as? Error {
                 
-                if let memberIndex = firebaseCollab.friends.firstIndex(where: {$0.userID == member.userID}) {
-
-                    collab?.members[count].profilePictureImage = firebaseCollab.friends[memberIndex].profilePictureImage
-                }
+                print(error.localizedDescription as Any)
+            }
+            
+            else {
                 
-                else {
+                if let updatedCollab = monitoredCollab["collab"] as? Collab {
                     
-                    let memberIndex = count
+                    var indexPathsToReload: [IndexPath] = []
                     
-                    firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic, userID) in
+                    //Collab Name////////////////////////////////////////////////////////////
+                    if updatedCollab.name != self?.collab?.name {
                         
-                        self.collab?.members[memberIndex].profilePictureImage = profilePic
+                        self?.collab?.name = updatedCollab.name
+                        self?.collabHeaderView.collab?.name = updatedCollab.name
+                        self?.collabHeaderView.nameLabel.text = updatedCollab.name
+                        
+                        //Ensures that the collabNavigationView is shrunken and the title is currently displaying the name of the collab
+                        if self?.title != nil && self?.collabNavigationViewTopAnchor?.constant != 0 {
+                            
+                            self?.title = updatedCollab.name
+                        }
                     }
+                    ////////////////////////////////////////////////////////////////////////
+                    
+                    
+                    //Cover Photo///////////////////////////////////////////////////////////
+                    if updatedCollab.coverPhotoID != self?.collab?.coverPhotoID {
+                        
+                        self?.collab?.coverPhotoID = updatedCollab.coverPhotoID
+                        
+                        self?.collabHeaderView.setCoverPhoto(self?.collab)
+                    }
+                    ////////////////////////////////////////////////////////////////////////
+                    
+                    
+                    //Collab Objective/////////////////////////////////////////////////////
+                    if updatedCollab.objective != self?.collab?.objective {
+                        
+                        self?.collab?.objective = updatedCollab.objective
+                        self?.collabHeaderView.collab?.objective = updatedCollab.objective
+                        
+                        self?.collabHeaderView.setObjectiveLabelText()
+                        
+                        self?.collabObjectiveVC?.objective = updatedCollab.objective
+                    }
+                    ////////////////////////////////////////////////////////////////////////
+                    
+                    
+                    //Collab Time///////////////////////////////////////////////////////////
+                    if updatedCollab.dates["startTime"] != self?.collab?.dates["startTime"] || updatedCollab.dates["deadline"] != self?.collab?.dates["deadline"] {
+                        
+                        self?.collab?.dates = updatedCollab.dates
+                        
+                        //Keeping a reference to the date that was previously selected by the user
+                        let previouslySelectedDate = self?.collabCalendarView.calendarView.selectedDates.first
+                        
+                        self?.collabCalendarView.collabStartTime = self?.collab?.dates["startTime"]
+                        self?.collabCalendarView.collabDeadline = self?.collab?.dates["deadline"]
+                        self?.collabCalendarView.calendarView.reloadData()
+                        
+                        self?.collabNavigationView.collabStartTime = self?.collab?.dates["startTime"]
+                        self?.collabNavigationView.collabDeadline = self?.collab?.dates["deadline"]
+                        self?.collabNavigationView.calendarView.reloadData()
+                        
+                        self?.collabNavigationView.collabTableView.reloadData()
+                        
+                        if let date = previouslySelectedDate {
+                            
+                            self?.collabCalendarView.calendarView.selectDates([date])
+                            self?.collabCalendarView.calendarView.scrollToDate(date, animateScroll: false)
+
+                            self?.collabNavigationView.calendarView.selectDates([date])
+                            self?.collabNavigationView.calendarView.scrollToDate(date, animateScroll: false)
+                            
+                            if let formatter = self?.formatter, var startTime = updatedCollab.dates["startTime"], var deadline = updatedCollab.dates["deadline"] {
+                                
+                                //Formatting the startTime and deadline so that the only the date and not the time is truly used
+                                formatter.dateFormat = "yyyy MM dd"
+                                
+                                startTime = formatter.date(from: formatter.string(from: startTime)) ?? Date()
+                                deadline = formatter.date(from: formatter.string(from: deadline)) ?? Date()
+                                
+                                //Delaying slightly presumably allows the tableView time to reload its cell and prevents it from scrolling to the wrong cell once these statements are ran
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    
+                                    //If the preselected date is between the new startTime and deadline
+                                    if date.isBetween(startDate: startTime, endDate: deadline) {
+
+                                        self?.scrollToFirstBlock(indexPathToScrollTo: IndexPath(row: self?.calendar.dateComponents([.day], from: startTime, to: date).day ?? 0, section: 0), animate: false)
+                                    }
+
+                                    //If the preselected date is less than or equal to the new startTime
+                                    else if date <= startTime {
+
+                                        self?.scrollToFirstBlock(indexPathToScrollTo: IndexPath(row: 0, section: 0), animate: false)
+                                    }
+
+                                    //If the preselected date is greater than or equal to the deadline
+                                    else if date >= deadline {
+
+                                        self?.scrollToFirstBlock(indexPathToScrollTo: IndexPath(row: self?.calendar.dateComponents([.day], from: startTime, to: deadline).day ?? 0, section: 0), animate: false)
+                                    }
+                                }
+                            }
+                        }
+
+                        //Resetting the deadline text in the collabHeaderView
+                        if let formatter = self?.formatter {
+                            
+                            formatter.dateFormat = "d MMMM yyyy"
+                            var deadlineText = formatter.string(from: updatedCollab.dates["deadline"]!)
+                            deadlineText += " at "
+                            
+                            formatter.dateFormat = "h:mm a"
+                            deadlineText += formatter.string(from: updatedCollab.dates["deadline"]!)
+                            
+                            self?.collabHeaderView.deadlineTextLabel.text = deadlineText
+                        }
+                    }
+                    ////////////////////////////////////////////////////////////////////////
+                    
+                    
+                    //Member Activity///////////////////////////////////////////////////////
+                    if updatedCollab.memberActivity?.count != self?.collab?.memberActivity?.count {
+                        
+                        self?.collab?.memberActivity = updatedCollab.memberActivity
+                        
+                        indexPathsToReload.append(IndexPath(row: 1, section: 0))
+                    }
+                    
+                    else {
+                        
+                        for status in updatedCollab.memberActivity ?? [:] {
+                            
+                            if status.value as? Date != self?.collab?.memberActivity?[status.key] as? Date {
+                                
+                                self?.collab?.memberActivity = updatedCollab.memberActivity
+                                
+                                indexPathsToReload.append(IndexPath(row: 1, section: 0))
+                                
+                                break
+                            }
+                        }
+                    }
+                    ////////////////////////////////////////////////////////////////////////
+                    
+                    
+                    //Reminders/////////////////////////////////////////////////////////////
+                    self?.collab?.reminders = updatedCollab.reminders
+                    
+                    self?.notificationScheduler.removePendingCollabNotifications(collabID: updatedCollab.collabID) {
+                        
+                        self?.notificationScheduler.scheduleCollabNotifications(collab: updatedCollab)
+                    }
+                    ////////////////////////////////////////////////////////////////////////
+                    
+                    
+                    //Locations/////////////////////////////////////////////////////////////
+                    if let locations = updatedCollab.locations {
+                        
+                        if locations.count != self?.collab?.locations?.count ?? 0 {
+                            
+                            indexPathsToReload.append(IndexPath(row: 3, section: 0))
+                            indexPathsToReload.append(IndexPath(row: 4, section: 0))
+                        }
+                        
+                        else {
+                            
+                            for location in locations {
+                                
+                                //If there is a location that isn't currently in the cachedCollab location array
+                                if !(self?.collab?.locations?.contains(where: { $0.locationID == location.locationID }) ?? false) {
+                                    
+                                    indexPathsToReload.append(IndexPath(row: 3, section: 0))
+                                    indexPathsToReload.append(IndexPath(row: 4, section: 0))
+                                    break
+                                }
+                                
+                                //If a location has had it's name changed
+                                else if let cachedLocation = self?.collab?.locations?.first(where: { $0.locationID == location.locationID }), cachedLocation.name != location.name {
+                                    
+                                    indexPathsToReload.append(IndexPath(row: 3, section: 0))
+                                    indexPathsToReload.append(IndexPath(row: 4, section: 0))
+                                    break
+                                }
+                            }
+                        }
+                        
+                        self?.collab?.locations = updatedCollab.locations
+                    }
+                    ////////////////////////////////////////////////////////////////////////
+                    
+                    
+                    //Photos////////////////////////////////////////////////////////////////
+                    if updatedCollab.photoIDs.count != self?.collab?.photoIDs.count ?? 0 {
+                        
+                        self?.collab?.photoIDs = updatedCollab.photoIDs
+                        
+                        for photo in self?.collab?.photos ?? [:] {
+                            
+                            //If the updatedCollab photoIDs does not contain a key from the photosDict in the cachedCollab
+                            if !(updatedCollab.photoIDs.contains(where: { $0 == photo.key })) {
+                                
+                                //Removing the photo that no longer exists
+                                self?.collab?.photos.removeValue(forKey: photo.key)
+                            }
+                        }
+                        
+                        indexPathsToReload.append(IndexPath(row: 5, section: 0))
+                    }
+                    
+                    else {
+                        
+                        for photoID in updatedCollab.photoIDs {
+                            
+                            //If the photoIDs from the cachedCollab contains a photoID not contained in the updatedCollab
+                            if !(self?.collab?.photoIDs.contains(where: { $0 == photoID }) ?? false) {
+                                
+                                self?.collab?.photoIDs = updatedCollab.photoIDs
+                                
+                                indexPathsToReload.append(IndexPath(row: 5, section: 0))
+                                break
+                            }
+                        }
+                        
+                        //If the updatedCollab photoIDs does not contain a key from the photosDict in the cachedCollab
+                        for photo in self?.collab?.photos ?? [:] {
+                            
+                            if !(updatedCollab.photoIDs.contains(where: { $0 == photo.key })) {
+                                
+                                //Removing the photo that no longer exists
+                                self?.collab?.photos.removeValue(forKey: photo.key)
+                            }
+                        }
+                    }
+                    ////////////////////////////////////////////////////////////////////////
+                    
+                    
+                    //Voice Memos///////////////////////////////////////////////////////////
+                    if let voiceMemos = updatedCollab.voiceMemos {
+                        
+                        if voiceMemos.count != self?.collab?.voiceMemos?.count {
+                            
+                            indexPathsToReload.append(IndexPath(row: 7, section: 0))
+                        }
+                        
+                        else {
+                            
+                            for voiceMemo in voiceMemos {
+                                
+                                //If there is a voiceMemo that isn't currently in the cachedCollab voiceMemo array
+                                if !(self?.collab?.voiceMemos?.contains(where: { $0.voiceMemoID == voiceMemo.voiceMemoID }) ?? false) {
+                                    
+                                    indexPathsToReload.append(IndexPath(row: 7, section: 0))
+                                    break
+                                }
+                                
+                                //If a voice memo has had it's name changed
+                                else if let cachedVoiceMemo = self?.collab?.voiceMemos?.first(where: { $0.voiceMemoID == voiceMemo.voiceMemoID }), cachedVoiceMemo.name != voiceMemo.name {
+                                    
+                                    indexPathsToReload.append(IndexPath(row: 7, section: 0))
+                                    break
+                                }
+                            }
+                        }
+                        
+                        self?.collab?.voiceMemos = updatedCollab.voiceMemos
+                    }
+                    ////////////////////////////////////////////////////////////////////////
+                    
+                    
+                    //Links/////////////////////////////////////////////////////////////////
+                    if let links = updatedCollab.links {
+                        
+                        if links.count != self?.collab?.links?.count ?? 0 {
+                            
+                            indexPathsToReload.append(IndexPath(row: 9, section: 0))
+                        }
+                        
+                        else {
+                            
+                            for link in links {
+                                
+                                //If there is a link that isn't currently in the cachedCollab link array
+                                if !(self?.collab?.links?.contains(where: { $0.linkID == link.linkID }) ?? false) {
+                                    
+                                    indexPathsToReload.append(IndexPath(row: 9, section: 0))
+                                    break
+                                }
+                                
+                                //If a link has had its name or url changed
+                                else if let cachedLink = self?.collab?.links?.first(where: { $0.linkID == link.linkID }), cachedLink.name != link.name || cachedLink.url != link.url {
+                                    
+                                    indexPathsToReload.append(IndexPath(row: 9, section: 0))
+                                    break
+                                }
+                            }
+                        }
+                        
+                        self?.collab?.links = updatedCollab.links
+                    }
+                    ////////////////////////////////////////////////////////////////////////
+                    
+                    self?.collabHomeTableView.reloadRows(at: indexPathsToReload, with: .none)
                 }
                 
-                count += 1
+                //Members have been updated
+                if let historicMembers = monitoredCollab["historicMembers"] as? [Member], let currentMembers = monitoredCollab["currentMembers"] as? [Member] {
+                    
+                    self?.collab?.historicMembers = historicMembers
+                    self?.collab?.currentMembers = currentMembers
+                    
+                    //If the currentUser has been removed from this collab
+                    if !currentMembers.contains(where: { $0.userID == self?.currentUser.userID }) {
+                        
+                        self?.navigationController?.popViewController(animated: true)
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            
+                            SVProgressHUD.showInfo(withStatus: "You've been removed from this collab")
+                        }
+                    }
+                    
+                    self?.collabHomeTableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+                }
             }
         }
-        
-        else {
-            
-            print("something went wrong")
-        }
     }
     
-
+    
+    //MARK: - Handle Pan
     
     @objc private func handlePan (sender: UIPanGestureRecognizer) {
         
@@ -1386,16 +890,11 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             
         case .began, .changed:
             
-//            if selectedTab == "Blocks" && collabNavigationView.originalTableViewContentOffset == nil {
-//
-//                //Setting the originalContentOffset so that the collabTableView will be animated back into the correct position once the panGesture has completed
-//                collabNavigationView.originalTableViewContentOffset = collabNavigationView.collabTableView.contentOffset.y
-//            }
-            
             moveWithPan(sender: sender)
             
         case .ended:
             
+            //If the calendar isn't presented
             if !calendarPresented {
                 
                 if (collabNavigationView.frame.minY > (collabHeaderView.frame.height / 2)) && (collabNavigationView.frame.minY < (UIScreen.main.bounds.height / 2)) {
@@ -1414,9 +913,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 }
             }
             
+            //If the calendar is present
             else {
                 
-                //If the minY of the collabNavigationView is less than half of it's preset anchor when the calendar is present
+                //If the minY of the collabNavigationView is less than half of its preset anchor when the calendar is present
                 if collabNavigationView.frame.minY < (topBarHeight + (collabCalendarView.calendarView.visibleDates().monthDates.first?.date.determineNumberOfWeeks() == 4 ? 330 : 376)) / 2 {
                     
                     expandView()
@@ -1434,6 +934,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    
+    //MARK: - Move with Pan
+    
     private func moveWithPan (sender: UIPanGestureRecognizer) {
         
         let translation = sender.translation(in: view)
@@ -1441,37 +944,24 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         let collabHeaderViewHeightConstraint = collabHeaderView.constraints.first(where: { $0.firstAttribute == .height })
         let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
         
+        //If the calendar isn't present
         if !calendarPresented {
             
+            //If the collabNavigationView is moving upwards above its origin
             if (collabNavigationView.frame.minY + translation.y) < (collabHeaderView.configureViewHeight() - 80) {
-                
-                //where you should do the nav view animation
-                
-                //Took this away because I couldn't find a reason to keep it; remove towards the completion of the view
-                //ProgressView animation now requires some updates as a result and other areas also may require updates *updated*
-//                if collabNavigationViewBottomAnchor?.constant == 0 {
-//
-//                    collabNavigationView.collabTableView.contentOffset.y = collabNavigationView.collabTableView.contentOffset.y + translation.y
-//                }
-//
-//                else {
-//
-//                    collabNavigationView.collabTableView.contentOffset.y += abs(collabNavigationViewBottomAnchor?.constant ?? 0)
-//                }
                 
                 collabNavigationViewTopAnchor?.constant += translation.y
                 collabNavigationViewBottomAnchor?.constant = 0
                 
-    //            the alpha animation stuff
+                //Alpha animation
                 let collabNavigationViewMinY = collabNavigationView.frame.minY - 44 > 0 ? collabNavigationView.frame.minY - 44 : 0
                 let adjustedAlpha: CGFloat = ((1 / (collabHeaderView.configureViewHeight() - 80)) * collabNavigationViewMinY)
                 collabNavigationView.panGestureIndicator.alpha = adjustedAlpha > 0 ? adjustedAlpha : 0
                 collabNavigationView.buttonStackView.alpha = adjustedAlpha > 0 ? adjustedAlpha : 0
             }
             
+            //If the collabNavigationView is moving downwards below its origin
             else {
-                
-                //where you should do the header view animation
                 
                 collabNavigationViewTopAnchor?.constant += translation.y
                 collabNavigationViewBottomAnchor?.constant = collabNavigationView.frame.minY - (collabHeaderView.configureViewHeight() - 80)
@@ -1483,7 +973,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 if selectedTab == "Messages" {
                     
-                    messageInputAccesoryView.alpha = 1 - (1 * collabNavViewDistanceFromBottom) // was commented out but i am reversing that and seeing what happens (Feb. 17)
+                    messageInputAccesoryView.alpha = 1 - (1 * collabNavViewDistanceFromBottom)
                 }
             }
         }
@@ -1507,6 +997,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         sender.setTranslation(CGPoint.zero, in: view)
     }
+    
+    
+    //MARK: - Return to Origin
     
     @objc private func returnToOrigin (animateCollabHeaderView: Bool = true, scrollTableView: Bool = true) {
         
@@ -1555,6 +1048,7 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
         collabNavigationViewBottomAnchor?.constant = 0
         
+        //Prevents the bottom of the collabNavigationView from bouncing
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
             
             self.view.layoutIfNeeded()
@@ -1570,6 +1064,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: ((self.messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: true)
         }
     }
+    
+    
+    //MARK: - Shrink View
     
     private func shrinkView () {
         
@@ -1596,16 +1093,16 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    
+    //MARK: - Expand View
+    
     internal func expandView () {
         
         viewExpanded() //Call here
         
+        title = selectedTab
+        
         collabNavigationView.panGestureView.isUserInteractionEnabled = false
-        
-        let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
-        
-        collabNavigationViewTopAnchor?.constant = 0
-        collabNavigationViewBottomAnchor?.constant = 0
         
         if selectedTab == "Messages" {
             
@@ -1635,9 +1132,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             }
         }
         
-        title = selectedTab
+        let collabNavigationViewBottomAnchor = self.view.constraints.first(where: { $0.firstItem as? CollabNavigationView != nil && $0.firstAttribute == .bottom })
         
-//        viewExpanded()
+        collabNavigationViewTopAnchor?.constant = 0
+        collabNavigationViewBottomAnchor?.constant = 0
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 0, options: [.curveEaseInOut], animations: {
 
@@ -1665,26 +1163,10 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
                 self.determineHiddenBlocks(self.collabNavigationView.collabTableView)
             }
         }
-
     }
     
-    internal func viewExpanded () {
-        
-        navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black, barStyleColor: .default)
-        navigationItem.hidesBackButton = true
-
-        let cancelButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.stop, target: self, action: #selector(cancelButtonPressed))
-        cancelButton.style = .done
-        navigationItem.leftBarButtonItem = cancelButton
-        
-        if selectedTab == "Messages" {
-            
-            let attachmentButton = UIBarButtonItem(image: UIImage(named: "attach"), style: .done, target: self, action: #selector(attachmentButtonPressed))
-            navigationItem.setRightBarButton(attachmentButton, animated: true)
-        }
-        
-        removeGestureRecognizers()
-    }
+    
+    //MARK: - Reset Constraints for Return to Origin
     
     private func resetConstraintsForReturnToOrigin (_ animateCollabHeaderView: Bool) {
         
@@ -1733,29 +1215,46 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    
+    //MARK: - View Expanded
+    
+    internal func viewExpanded () {
+        
+        navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black, barStyleColor: .default)
+        navigationItem.hidesBackButton = true
+
+        let cancelButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.stop, target: self, action: #selector(cancelButtonPressed))
+        cancelButton.style = .done
+        navigationItem.leftBarButtonItem = cancelButton
+        
+        if selectedTab == "Messages" {
+            
+            let attachmentButton = UIBarButtonItem(image: UIImage(named: "attach"), style: .done, target: self, action: #selector(attachmentButtonPressed))
+            navigationItem.setRightBarButton(attachmentButton, animated: true)
+        }
+    }
+    
+    
     //MARK: - User Activity Functions
     
-    #warning("yo this is a quick reminder that this works a little weird in this view; basically it'll always cause the messages in the messagehomeview to appear read even if the user hasn't moved to the messages tab in this view yet... sumn to look at and decide whether or not to fix in da future")
     @objc private func setUserActiveStatus () {
         
         if let collabID = collab?.collabID {
             
-            //Probably move this func to firebaseCollab as well as firebaseMessaging; little weird using firebaseMessaging this weird imo
             firebaseMessaging.setActivityStatus(collabID: collabID, "now")
         }
     }
     
     @objc private func setUserInactiveStatus () {
-          
-        //if !infoViewBeingPresented {
             
         if let collabID = collab?.collabID {
-                
-                //Probably move this func to firebaseCollab as well as firebaseMessaging; little weird using firebaseMessaging this weird imo
-                firebaseMessaging.setActivityStatus(collabID: collabID, Date())
-            }
-        //}
+            
+            firebaseMessaging.setActivityStatus(collabID: collabID, Date())
+        }
     }
+    
+    
+    //MARK: - Present Calendar
     
     func presentCalendar () {
         
@@ -1816,6 +1315,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    
+    //MARK: - Dismiss Calendar
+    
     @objc private func dismissCalendar () {
         
         calendarPresented = false
@@ -1827,9 +1329,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         
         //Adjusting the position of the panGetsureView
         collabNavigationView.insertSubview(collabNavigationView.panGestureView, aboveSubview: collabNavigationView.panGestureIndicator)
-        
-//        collabNavigationView.originalTableViewContentOffset = collabNavigationView.collabTableView.contentOffset.y
-//        returnToOrigin(scrollTableView: false)
         
         //Resetting constraints
         collabHeaderViewHeightConstraint?.constant = collabHeaderView.configureViewHeight()
@@ -1861,6 +1360,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             }
         }
     }
+    
+    
+    //MARK: - Determine Hidden Blocks
     
     internal func determineHiddenBlocks (_ scrollView: UIScrollView) {
         
@@ -1913,75 +1415,6 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == "moveToSendPhotoView" {
-            
-            let sendPhotoVC = segue.destination as! SendPhotoMessageViewController
-            sendPhotoVC.collabConversationID = collab?.collabID
-            sendPhotoVC.reconfigureCollabViewDelegate = self
-            sendPhotoVC.selectedPhoto = selectedPhoto
-            
-            removeObservors()
-        }
-        
-        else if segue.identifier == "moveToAttachmentsView" {
-            
-            let attachmentsView = segue.destination as! CollabMessagesAttachmentsView
-            attachmentsView.collabID = collab?.collabID
-            attachmentsView.photoMessages = firebaseMessaging.filterPhotoMessages(messages: messages).sorted(by: { $0.timestamp > $1.timestamp })
-        }
-        
-        else if segue.identifier == "moveToLocationsView" {
-            
-            let locationVC = segue.destination as! LocationsViewController
-            locationVC.locations = collab?.locations
-            
-            if let cell = collabHomeTableView.cellForRow(at: IndexPath(row: 3, section: 1)) as? CollabHomeLocationsCell {
-                
-                locationVC.selectedLocationIndex = cell.selectedLocationIndex
-            }
-        }
-        
-        else if segue.identifier == "moveToConfigureBlockView" {
-            
-            let configureBlockVC: ConfigureBlockViewController = ConfigureBlockViewController()
-            configureBlockVC.title = "Add a Block"
-            
-            configureBlockVC.collab = collab
-            configureBlockVC.blockCreatedDelegate = self
-            
-            //This will set the block date to be the current selected date
-            if let selectedDate = collabNavigationView.calendarView.selectedDates.first, !calendar.isDate(selectedDate, inSameDayAs: Date()) {
-                
-                configureBlockVC.block.starts = selectedDate
-                configureBlockVC.block.ends = selectedDate.adjustTime(roundDown: false)
-            }
-            
-            let configureBlockNavigationController = UINavigationController(rootViewController: configureBlockVC)
-            configureBlockNavigationController.navigationBar.prefersLargeTitles = true
-            
-            self.present(configureBlockNavigationController, animated: true, completion: nil)
-        }
-        
-        else if segue.identifier == "moveToSelectedBlockView" {
-            
-            if let navController = segue.destination as? UINavigationController {
-                
-                let selectedBlockVC = navController.viewControllers.first as! SelectedBlockViewController
-                selectedBlockVC.collab = collab
-                selectedBlockVC.block = selectedBlock
-            }
-        }
-    }
-    
-    func moveToObjectiveView () {
-        
-        let collabObjectiveViewController = CollabObjectiveViewController()
-        collabObjectiveViewController.objective = collab?.objective
-        
-        self.present(collabObjectiveViewController, animated: true, completion: nil)
-    }
     
     //MARK: - Add Cover Photo Function
     
@@ -2024,6 +1457,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
     }
     
     
+    //MARK: - Prep for Image Zooming
+    
     private func prepViewForImageViewZooming () {
         
         imageViewBeingZoomed = true
@@ -2042,72 +1477,8 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         self.resignFirstResponder()
     }
     
-    private func dismissKeyboard () {
-        
-        messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
-    }
     
-    @objc private func dismissKeyboardTap () {
-        
-        if selectedTab == "Messages", messages?.count ?? 0 == 0 {
-            
-            messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
-        }
-    }
-    
-    @objc private func cancelButtonPressed () {
-        
-        navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
-        title = ""
-        
-        //Dismissing the expanded view
-        if !calendarPresented {
-            
-            navigationItem.leftBarButtonItem = nil
-            navigationItem.rightBarButtonItem = nil
-            navigationItem.hidesBackButton = false
-        }
-        
-        //Dismissing the expanded view to go back to the calendarPresented view
-        else {
-            
-            let cancelButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.stop, target: self, action: #selector(dismissCalendar))
-            cancelButton.style = .done
-            navigationItem.leftBarButtonItem = cancelButton
-        }
-        
-//        reconfigureGestureRecognizers()
-        
-        if selectedTab == "Progress" {
-            
-            collabNavigationView.collabProgressView.searchBar?.endEditing(true)
-        }
-        
-        else if selectedTab == "Blocks" {
-            
-            //Setting the original contentOffset so that the collabTableView will be animated back to the correct position after the view has returned to it's origin
-//            collabNavigationView.originalTableViewContentOffset = collabNavigationView.collabTableView.contentOffset.y
-        }
-        
-        else if selectedTab == "Messages" {
-
-            dismissKeyboard ()
-            
-            messageInputAccesoryView.size = messageInputAccesoryView.configureSize()
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                
-                if self.messages?.count ?? 0 > 0 {
-                    
-                    self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: ((self.messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: true)
-                }
-            }
-        }
-        
-        //Experimenting with calling this after the if statements above... was previously before those statements but was causing issues with the "Blocks" condition
-        //Allows for the "originalTableViewContentOffset" to be set by the "Blocks" condition
-        returnToOrigin(scrollTableView: false)
-    }
+    //MARK: - Dismiss Expanded View
     
     @objc private func dismissExpandedView () {
         
@@ -2134,65 +1505,33 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
-    @objc private func editCollabButtonPressed () {
-        
-        print("edit")
-    }
     
-    @objc private func infoButtonPressed () {
-        
-    }
+    //MARK: - Load Remaining Voice Memos
     
-    @objc private func attachmentButtonPressed () {
+    private func loadRemainingVoiceMemos () {
         
-        performSegue(withIdentifier: "moveToAttachmentsView", sender: self)
-    }
-    
-    
-    
-    @objc func editCoverButtonPressed () {
-        
-        zoomingMethods?.handleZoomOutOnImageView()
-        
-        presentAddPhotoAlert(tracker: "coverAlert", shrinkView: false)
-    }
-    
-    @objc func deleteCoverButtonPressed () {
-        
-        SVProgressHUD.show()
-        
-        firebaseCollab.deleteCollabCoverPhoto(collabID: collab!.collabID) { [weak self] (error) in
+        //Loads all the voiceMemos so they can be played in the EditCollabViewController
+        for voiceMemo in collab?.voiceMemos ?? [] {
             
-            if error != nil {
+            //If this voiceMemo hasn't yet been loaded
+            if !FileManager.default.fileExists(atPath: documentsDirectory.path + "/VoiceMemos" + "\(voiceMemo.voiceMemoID ?? "").m4a") {
                 
-                SVProgressHUD.showError(withStatus: error?.localizedDescription)
-            }
-            
-            else {
-                
-                SVProgressHUD.dismiss()
-                
-                self?.collab?.coverPhotoID = nil
-                self?.collab?.coverPhoto = nil
-                self?.collabHeaderView.setCoverPhoto(self?.collab)
-                
-                UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+                if let collabID = collab?.collabID, let voiceMemoID = voiceMemo.voiceMemoID {
                     
-                    self?.zoomingMethods?.blackBackground?.backgroundColor = .clear
-                    self?.zoomingMethods?.optionalButtons.forEach({ $0?.alpha = 0 })
-                    self?.zoomingMethods?.zoomedInImageView?.alpha = 0
-                    
-                } completion: { (finished: Bool) in
-                    
-                    self?.zoomingMethods?.blackBackground?.removeFromSuperview()
-                    self?.zoomingMethods?.optionalButtons.forEach({ $0?.removeFromSuperview() })
-                    self?.zoomingMethods?.zoomedInImageView?.removeFromSuperview()
+                    firebaseStorage.retrieveCollabVoiceMemoFromStorage(collabID, voiceMemoID) { (progress, error) in
+                        
+                        if error != nil {
+                            
+                            print(error?.localizedDescription as Any)
+                        }
+                    }
                 }
             }
         }
     }
-
-
+    
+    
+    //MARK: - Progress Button Tapped
     
     func progressButtonTouchUpInside () {
         
@@ -2247,6 +1586,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
             })
         }
     }
+    
+    
+    //MARK: - Blocks Button Tapped
     
     func blocksButtonTouchUpInside () {
         
@@ -2342,6 +1684,9 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    
+    //MARK: - Messages Button Tapped
+    
     func messagesButtonTouchUpInside () {
         
         if selectedTab == "Messages" {
@@ -2430,6 +1775,144 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
+    
+    //MARK: - Edit Cover Pressed
+    
+    @objc func editCoverButtonPressed () {
+        
+        zoomingMethods?.handleZoomOutOnImageView()
+        
+        presentAddPhotoAlert(tracker: "coverAlert", shrinkView: false)
+    }
+    
+    
+    //MARK: - Delete Cover Pressed
+    
+    @objc func deleteCoverButtonPressed () {
+        
+        SVProgressHUD.show()
+        
+        firebaseCollab.deleteCollabCoverPhoto(collabID: collab!.collabID) { [weak self] (error) in
+            
+            if error != nil {
+                
+                SVProgressHUD.showError(withStatus: error?.localizedDescription)
+            }
+            
+            else {
+                
+                SVProgressHUD.dismiss()
+                
+                self?.collab?.coverPhotoID = nil
+                self?.collab?.coverPhoto = nil
+                self?.collabHeaderView.setCoverPhoto(self?.collab)
+                
+                UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+                    
+                    self?.zoomingMethods?.blackBackground?.backgroundColor = .clear
+                    self?.zoomingMethods?.optionalButtons.forEach({ $0?.alpha = 0 })
+                    self?.zoomingMethods?.zoomedInImageView?.alpha = 0
+                    
+                } completion: { (finished: Bool) in
+                    
+                    self?.zoomingMethods?.blackBackground?.removeFromSuperview()
+                    self?.zoomingMethods?.optionalButtons.forEach({ $0?.removeFromSuperview() })
+                    self?.zoomingMethods?.zoomedInImageView?.removeFromSuperview()
+                }
+            }
+        }
+    }
+    
+    
+    //MARK: - Cancel Button Pressed
+    
+    @objc private func cancelButtonPressed () {
+        
+        navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .black)
+        title = ""
+        
+        //Dismissing the expanded view
+        if !calendarPresented {
+            
+            navigationItem.leftBarButtonItem = nil
+            navigationItem.rightBarButtonItem = nil
+            navigationItem.hidesBackButton = false
+        }
+        
+        //Dismissing the expanded view to go back to the calendarPresented view
+        else {
+            
+            let cancelButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.stop, target: self, action: #selector(dismissCalendar))
+            cancelButton.style = .done
+            navigationItem.leftBarButtonItem = cancelButton
+        }
+        
+        if selectedTab == "Progress" {
+            
+            collabNavigationView.collabProgressView.searchBar?.endEditing(true)
+        }
+        
+        else if selectedTab == "Messages" {
+
+            dismissKeyboard ()
+            
+            messageInputAccesoryView.size = messageInputAccesoryView.configureSize()
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                
+                if self.messages?.count ?? 0 > 0 {
+                    
+                    self.collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: ((self.messages?.count ?? 0) * 2) - 1, section: 0), at: .top, animated: true)
+                }
+            }
+        }
+        
+        //Experimenting with calling this after the if statements above... was previously before those statements but was causing issues with the "Blocks" condition
+        //Allows for the "originalTableViewContentOffset" to be set by the "Blocks" condition
+        returnToOrigin(scrollTableView: false)
+    }
+    
+    
+    //MARK: - Attachment Button Pressed
+    
+    @objc private func attachmentButtonPressed () {
+        
+        performSegue(withIdentifier: "moveToAttachmentsView", sender: self)
+    }
+    
+    
+    //MARK: - Add Block Button
+    
+    @objc private func addBlockButtonPressed () {
+        
+        //Ensures that the collabNavigationView is expanded
+        if collabNavigationViewTopAnchor?.constant ?? 0 != 0 {
+            
+            expandView()
+        }
+        
+        performSegue(withIdentifier: "moveToConfigureBlockView", sender: self)
+    }
+    
+    
+    //MARK: - See Hidden Blocks Button
+    
+    @objc private func seeHiddenBlocksButtonPressed () {
+        
+        hiddenBlockVC = HiddenBlocksViewController()
+        hiddenBlockVC?.hiddenBlocks = hiddenBlocks
+        hiddenBlockVC?.blockSelectedDelegate = self
+        
+        let backBarButtonItem = UIBarButtonItem()
+        backBarButtonItem.title = ""
+        self.navigationItem.backBarButtonItem = backBarButtonItem
+        
+        self.navigationController?.pushViewController(hiddenBlockVC!, animated: true)
+    }
+    
+    
+    //MARK: - Present Nav View Button
+    
     @objc private func presentNavViewButtonPressed () {
         
         returnToOrigin(animateCollabHeaderView: false)
@@ -2456,48 +1939,155 @@ class CollabViewController: UIViewController, UITableViewDataSource, UITableView
         }
     }
     
-    @objc private func addBlockButtonPressed () {
+    
+    //MARK: - Edit Collab Pressed
+    
+    func editCollabButtonPressed () {
         
-        //Ensures that the collabNavigationView is expanded
-        if collabNavigationViewTopAnchor?.constant ?? 0 != 0 {
-            
-            expandView()
-        }
+        loadRemainingVoiceMemos()
         
-        performSegue(withIdentifier: "moveToConfigureBlockView", sender: self)
+        moveToEditCollabView()
     }
     
-    @objc private func seeHiddenBlocksButtonPressed () {
+    
+    //MARK: - Leave Collab Pressed
+    
+    func leaveCollabButtonPressed () {
         
-        hiddenBlockVC = HiddenBlocksViewController()
-        hiddenBlockVC?.hiddenBlocks = hiddenBlocks
-        hiddenBlockVC?.blockSelectedDelegate = self
+        print("leave")
+    }
+    
+    
+    //MARK: - Dismiss Keyboard
+    
+    private func dismissKeyboard () {
         
-        let backBarButtonItem = UIBarButtonItem()
-        backBarButtonItem.title = ""
-        self.navigationItem.backBarButtonItem = backBarButtonItem
+        messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
+    }
+    
+    
+    //MARK: - Dismiss Keyboard Tap
+    
+    @objc private func dismissKeyboardTap () {
         
-        self.navigationController?.pushViewController(hiddenBlockVC!, animated: true)
+        if selectedTab == "Messages", messages?.count ?? 0 == 0 {
+            
+            messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
+        }
+    }
+    
+    
+    //MARK: - Move to Objective View
+    
+    func moveToObjectiveView () {
+        
+        collabObjectiveVC = CollabObjectiveViewController()
+        collabObjectiveVC?.collabViewController = self
+        collabObjectiveVC?.objective = collab?.objective
+        
+        self.present(collabObjectiveVC!, animated: true, completion: nil)
+    }
+    
+    
+    //MARK: - Move to Edit Collab View
+    
+    private func moveToEditCollabView () {
+        
+        if collab != nil {
+            
+            let configureCollabVC = ConfigureCollabViewController()
+            configureCollabVC.title = "Edit a Collab"
+            configureCollabVC.collab = collab!
+            
+            configureCollabVC.configurationView = false
+            configureCollabVC.configureBarButtonItems()
+            
+            let configureCollabNavigationController = UINavigationController(rootViewController: configureCollabVC)
+            configureCollabNavigationController.navigationBar.prefersLargeTitles = true
+            
+            self.present(configureCollabNavigationController, animated: true, completion: nil)
+        }
+    }
+    
+    
+    //MARK: - Prepare for Segue
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "moveToSendPhotoView" {
+            
+            let sendPhotoVC = segue.destination as! SendPhotoMessageViewController
+            sendPhotoVC.collabConversationID = collab?.collabID
+            sendPhotoVC.reconfigureCollabViewDelegate = self
+            sendPhotoVC.selectedPhoto = selectedPhoto
+            
+            removeObservors()
+        }
+        
+        else if segue.identifier == "moveToAttachmentsView" {
+            
+            let attachmentsView = segue.destination as! CollabMessagesAttachmentsView
+            attachmentsView.collabID = collab?.collabID
+            attachmentsView.photoMessages = firebaseMessaging.filterPhotoMessages(messages: messages).sorted(by: { $0.timestamp > $1.timestamp })
+        }
+        
+        else if segue.identifier == "moveToLocationsView" {
+            
+            let locationVC = segue.destination as! LocationsViewController
+            locationVC.locations = collab?.locations
+            
+            if let cell = collabHomeTableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? LocationsPresentationCell {
+                
+                locationVC.selectedLocationIndex = cell.selectedLocationIndex
+            }
+        }
+        
+        else if segue.identifier == "moveToConfigureBlockView" {
+            
+            let configureBlockVC: ConfigureBlockViewController = ConfigureBlockViewController()
+            configureBlockVC.title = "Add a Block"
+            
+            configureBlockVC.collab = collab
+            configureBlockVC.blockCreatedDelegate = self
+            
+            //This will set the block date to be the current selected date
+            if let selectedDate = collabNavigationView.calendarView.selectedDates.first, !calendar.isDate(selectedDate, inSameDayAs: Date()) {
+                
+                configureBlockVC.block.starts = selectedDate
+                configureBlockVC.block.ends = selectedDate.adjustTime(roundDown: false)
+            }
+            
+            let configureBlockNavigationController = UINavigationController(rootViewController: configureBlockVC)
+            configureBlockNavigationController.navigationBar.prefersLargeTitles = true
+            
+            self.present(configureBlockNavigationController, animated: true, completion: nil)
+        }
+        
+        else if segue.identifier == "moveToSelectedBlockView" {
+            
+            if let navController = segue.destination as? UINavigationController {
+                
+                let selectedBlockVC = navController.viewControllers.first as! SelectedBlockViewController
+                selectedBlockVC.collab = collab
+                selectedBlockVC.block = selectedBlock
+            }
+        }
     }
 }
+
+
+//MARK: - Gesture Recognizor Extension
 
 extension CollabViewController: UIGestureRecognizerDelegate {
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 
-//        if gestureRecognizer == tabBar.dismissActiveTabBarSwipeGesture && otherGestureRecognizer == dismissExpandedViewGesture {
-//
-//            return true
-//        }
-//
-//        else if gestureRecognizer == dismissExpandedViewGesture && otherGestureRecognizer == tabBar.dismissActiveTabBarSwipeGesture {
-//
-//            return true
-//        }
-
         return false
     }
 }
+
+
+//MARK: - Cache Photo Protocol Extension
 
 extension CollabViewController: CachePhotoProtocol {
     
@@ -2516,6 +2106,9 @@ extension CollabViewController: CachePhotoProtocol {
     
     func cacheBlockPhoto(photoID: String, photo: UIImage?) {}
 }
+
+
+//MARK: - Present Copied Animation Protocol Extension
 
 extension CollabViewController: PresentCopiedAnimationProtocol {
     
@@ -2539,6 +2132,9 @@ extension CollabViewController: PresentCopiedAnimationProtocol {
     }
 }
 
+
+//MARK: - Zoom In Protocol Extension
+
 extension CollabViewController: ZoomInProtocol {
     
     func zoomInOnPhotoImageView(photoImageView: UIImageView) {
@@ -2560,6 +2156,9 @@ extension CollabViewController: ZoomInProtocol {
         zoomingMethods?.performZoom()
     }
 }
+
+
+//MARK: - Image Picker Extension
 
 extension CollabViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -2643,9 +2242,12 @@ extension CollabViewController: UIImagePickerControllerDelegate, UINavigationCon
     }
 }
 
+
+//MARK: - Collab Member Protocol Extension
+
 extension CollabViewController: CollabMemberProtocol {
     
-    func moveToProfileView (_ member: Member, _ memberContainerView: UIView/*_ profilePicture: ProfilePicture?*/) {
+    func moveToProfileView (_ member: Member, _ memberContainerView: UIView) {
         
         tabBar.shouldHide = true
         
@@ -2666,6 +2268,9 @@ extension CollabViewController: CollabMemberProtocol {
     }
 }
 
+
+//MARK: - Location Selected Extension
+
 extension CollabViewController: LocationSelectedProtocol {
     
     func locationSelected(_ location: Location?) {
@@ -2673,7 +2278,7 @@ extension CollabViewController: LocationSelectedProtocol {
         let locationsVC: LocationsViewController = LocationsViewController()
         locationsVC.locations = collab?.locations
     
-        if let cell = collabHomeTableView.cellForRow(at: IndexPath(row: 3, section: 1)) as? CollabHomeLocationsCell {
+        if let cell = collabHomeTableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? LocationsPresentationCell {
             
             locationsVC.selectedLocationIndex = cell.selectedLocationIndex
         }
@@ -2682,10 +2287,11 @@ extension CollabViewController: LocationSelectedProtocol {
         let locationsNavigationController = UINavigationController(rootViewController: locationsVC)
         
         self.present(locationsNavigationController, animated: true, completion: nil)
-        
-//        performSegue(withIdentifier: "moveToLocationsView", sender: self)
     }
 }
+
+
+//MARK: - Cache Icon Protocol Extension
 
 extension CollabViewController: CacheIconProtocol {
     
@@ -2695,7 +2301,7 @@ extension CollabViewController: CacheIconProtocol {
             
             collab?.links?[linkIndex].icon = icon != nil ? icon : UIImage(named: "link")
             
-            if let cell = collabHomeTableView.cellForRow(at: IndexPath(row: 2, section: 4)) as? CollabHomeLinksCell {
+            if let cell = collabHomeTableView.cellForRow(at: IndexPath(row: 9, section: 0)) as? LinksPresentationCell {
                 
                 cell.links = collab?.links
             }

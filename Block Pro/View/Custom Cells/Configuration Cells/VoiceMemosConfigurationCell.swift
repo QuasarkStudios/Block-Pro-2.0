@@ -651,7 +651,7 @@ class VoiceMemosConfigurationCell: UITableViewCell {
         deniedAlert.addAction(cancelAction)
         deniedAlert.addAction(goToSettingsAction)
         
-        if let viewController = voiceMemosConfigurationDelegate as? CreateCollabViewController {
+        if let viewController = voiceMemosConfigurationDelegate as? ConfigureCollabViewController {
             
             viewController.present(deniedAlert, animated: true) //Has to be presented by a viewController
         }
@@ -962,18 +962,20 @@ class VoiceMemosConfigurationCell: UITableViewCell {
                 
                 keyboardPresent = true
                 
-                if let viewController = voiceMemosConfigurationDelegate as? CreateCollabViewController, let tableView = viewController.details_attachmentsTableView {
+                if let viewController = voiceMemosConfigurationDelegate as? ConfigureCollabViewController {
+                    
+                    let tableView = viewController.configureCollabTableView
                     
                     let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
                     let keyboardHeight = keyboardFrame.cgRectValue.height
                     
-                    //y-coord for the voiceMemoConfigurationCell in the CreateCollabViewController
+                    //y-coord for the voiceMemoConfigurationCell in the ConfigureCollabViewController
                     let createMemoCellMinY = tableView.rectForRow(at: IndexPath(row: 4, section: 0)).minY
                     
                     //Distance from the top of the voiceMemoConfigurationCell to the top of the VoiceMemo collection view cell, i.e. 40; + the itemSize; - (half the height of the nameTextField + the bottomAnchor of the nameTextField), i.e. 10.5
                     let nameTextFieldCenter = 40 + floor(itemSize) - 10.5
                     
-                    //y-coord of the details_attachmentsTableView in regards to the keyWindow
+                    //y-coord of the configureCollabTableView in regards to the keyWindow
                     let tableViewMinY = viewController.view.convert(tableView.frame, to: keyWindow).minY
                     
                     let keyboardMinY = UIScreen.main.bounds.height - keyboardHeight
@@ -1030,7 +1032,9 @@ class VoiceMemosConfigurationCell: UITableViewCell {
             
             keyboardPresent = false
             
-            if let viewController = voiceMemosConfigurationDelegate as? CreateCollabViewController, let tableView = viewController.details_attachmentsTableView {
+            if let viewController = voiceMemosConfigurationDelegate as? ConfigureCollabViewController {
+                
+                let tableView = viewController.configureCollabTableView
                 
                 UIView.animate(withDuration: 0.3) {
                     

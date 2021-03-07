@@ -241,7 +241,34 @@ class MessagingViewController: UIViewController {
         
         else if let conversation = collabConversation {
             
-            
+            if let conversationIndex = firebaseMessaging.collabConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                
+                if let cover = firebaseMessaging.collabConversations[conversationIndex].conversationCoverPhoto {
+                    
+                    coverPicture.profilePic = cover
+                }
+                
+                else {
+                    
+                    firebaseStorage.retrieveCollabCoverPhoto(collabID: conversation.conversationID) { [weak self] (cover, error) in
+                        
+                        if error != nil {
+                            
+                            SVProgressHUD.showError(withStatus: "Sorry, something went wrong retrieving the Cover Photo")
+                        }
+                        
+                        else {
+                            
+                            coverPicture.profilePic = cover
+                            
+                            if let conversationIndex = self?.firebaseMessaging.collabConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                                
+                                self?.firebaseMessaging.collabConversations[conversationIndex].conversationCoverPhoto = cover
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         self.navigationItem.titleView = coverContainer

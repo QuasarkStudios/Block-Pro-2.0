@@ -75,6 +75,11 @@ class TimeConfigurationCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    deinit {
+        
+        NotificationCenter.default.removeObserver(self)
+    }
+    
     
     //MARK: - Configure Title Label
     
@@ -754,6 +759,34 @@ class TimeConfigurationCell: UITableViewCell {
                         tableView.contentOffset.y = (timeConfigurationCellMinY + timeTextFieldCenter - middleOfTableViewAndKeyboard)
                     }
                 }
+                
+                else if let viewController = timeConfigurationDelegate as? ConfigureCollabViewController {
+                    
+                    let tableView = viewController.configureCollabTableView
+                    
+                    let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
+                    let keyboardHeight = keyboardFrame.cgRectValue.height
+                    
+                    //y-coord the timeConfigurationCell that called the keyboard
+                    let timeConfigurationCellMinY = starts != nil ? tableView.rectForRow(at: IndexPath(row: 5, section: 0)).minY : tableView.rectForRow(at: IndexPath(row: 7, section: 0)).minY
+                    
+                    //Center of the hourTextField/minuteTextField
+                    let timeTextFieldCenter = timeSelectorContainer.frame.minY + 30
+                    
+                    let tableViewMinY = viewController.view.convert(tableView.frame, to: keyWindow).minY
+                    
+                    let keyboardMinY = UIScreen.main.bounds.height - keyboardHeight
+                    
+                    let middleOfTableViewAndKeyboard = tableViewMinY.distance(to: keyboardMinY) / 2
+                    
+                    originalContentOffsetOfTableView = tableView.contentOffset.y
+                    
+                    UIView.animate(withDuration: 0.3) {
+                        
+                        tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+                        tableView.contentOffset.y = (timeConfigurationCellMinY + timeTextFieldCenter - middleOfTableViewAndKeyboard)
+                    }
+                }
             }
         }
     }
@@ -775,6 +808,16 @@ class TimeConfigurationCell: UITableViewCell {
                 }
                 
                 viewController.configureBlockTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
+            }
+            
+            else if let viewController = timeConfigurationDelegate as? ConfigureCollabViewController {
+                
+                UIView.animate(withDuration: 0.3) {
+                    
+                    viewController.configureCollabTableView.contentOffset.y = self.originalContentOffsetOfTableView
+                }
+                
+                viewController.configureCollabTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
             }
         }
     }
@@ -822,8 +865,8 @@ class TimeConfigurationCell: UITableViewCell {
             formatter.dateFormat = "h:mm a yyyy MMMM dd"
             var components = calendar.dateComponents(in: .current, from: formatter.date(from: enteredTime) ?? Date().adjustTime(roundDown: true))
 
-            //If this is a start time, setting it to be 11:55 PM isn't permitted
-            if components.hour == 23 && components.minute == 55 {
+            //If this is a start time, setting it to be 11:55 PM isn't permitted; this is only the case when configuring blocks not collabs
+            if timeConfigurationDelegate as? ConfigureBlockViewController != nil, components.hour == 23 && components.minute == 55 {
                 
                 //Setting the time to be 11:50 PM instead
                 minuteTextField.text = "50"
@@ -843,8 +886,8 @@ class TimeConfigurationCell: UITableViewCell {
             formatter.dateFormat = "h:mm a yyyy MMMM dd"
             var components = calendar.dateComponents(in: .current, from: formatter.date(from: enteredTime) ?? Date().adjustTime(roundDown: false))
             
-            //If this is a end time, setting it to be 12:00 AM isn't permitted
-            if components.hour == 0 && components.minute == 0 {
+            //If this is a end time, setting it to be 12:00 AM isn't permitted; this is only the case when configuring blocks not collabs
+            if timeConfigurationDelegate as? ConfigureBlockViewController != nil, components.hour == 0 && components.minute == 0 {
                 
                 //Setting the time to be 12:05 AM instead
                 minuteTextField.text = "05"
@@ -858,9 +901,153 @@ class TimeConfigurationCell: UITableViewCell {
     }
     
     
-    //MARK: - Minute Input Verification
+    //MARK: - Collab Minute Input Verification
     
-    private func minuteInputVerification(_ textField: UITextField) {
+    private func collabMinuteInputVerification (_ textField: UITextField) {
+        
+        //If the textField has had text entered
+        if textField.text?.leniantValidationOfTextEntered() ?? false, let minutes = Int(textField.text ?? "0") {
+            
+            var components = calendar.dateComponents(in: .current, from: starts != nil ? starts! : ends ?? Date())
+            
+            //If the entered minute isn't already in a increment of 5
+            if minutes % 5 != 0 {
+                
+                //If the remainder is less than 3, signifying it should be rounded down
+                if minutes % 5 < 3 {
+                    
+                    //If the minutes rounded down is less than or equal to 0
+                    if minutes - (minutes % 5) <= 0 {
+                        
+                        textField.text = "00"
+                        
+                        components.minute = 0
+                    }
+                    
+                    //If the minutes rounded down is greater than or equal to 60
+                    else if minutes - (minutes % 5) >= 60 {
+                        
+                        textField.text = "00"
+                        
+                        components.minute = 0
+                        
+                        //Adding one hour to the selected time
+                        components = calendar.dateComponents(in: .current, from: calendar.date(byAdding: .hour, value: 1, to: components.date ?? Date().adjustTime(roundDown: false)) ?? Date().adjustTime(roundDown: false))
+                    }
+                    
+                    else {
+                        
+                        textField.text = "\(minutes - (minutes % 5))"
+                        
+                        components.minute = Int("\(minutes - (minutes % 5))")
+                    }
+                }
+                
+                //If the remainder is greater than 3, signifying it should be rounded up
+                else {
+                    
+                    //If the minutes rounded up is less than or equal to 0
+                    if minutes + (5 - (minutes % 5)) <= 0 {
+                        
+                        textField.text = "00"
+                        
+                        components.minute = 0
+                    }
+                    
+                    //If the minutes rounded up is greater than or equal to 60
+                    else if minutes + (5 - (minutes % 5)) >= 60 {
+                        
+                        textField.text = "00"
+                        
+                        components.minute = 0
+                        
+                        //Adding one hour to the selected time
+                        components = calendar.dateComponents(in: .current, from: calendar.date(byAdding: .hour, value: 1, to: components.date ?? Date().adjustTime(roundDown: false)) ?? Date().adjustTime(roundDown: false))
+                    }
+                    
+                    else {
+                        
+                        textField.text = "\(minutes + (5 - (minutes % 5)))"
+                        
+                        components.minute = Int("\(minutes + (5 - (minutes % 5)))")
+                    }
+                }
+            }
+            
+            //If the entered minute is already in a increment of 5
+            else {
+                
+                //If the minutes is less than or equal to 0
+                if minutes <= 0 {
+                    
+                    textField.text = "00"
+                    
+                    components.minute = 0
+                }
+                
+                //If the minutes is greater than or equal to 60
+                else if minutes >= 60 {
+                    
+                    textField.text = "00"
+                    
+                    components.minute = 0
+                    
+                    //Adding one hour to the selected time
+                    components = calendar.dateComponents(in: .current, from: calendar.date(byAdding: .hour, value: 1, to: components.date ?? Date().adjustTime(roundDown: false)) ?? Date().adjustTime(roundDown: false))
+                }
+                
+                else {
+                    
+                    components.minute = Int(textField.text ?? "0")
+                }
+            }
+            
+            //Updating the hourTextField, the periodButton and the calendarView
+            if let date = components.date {
+                
+                formatter.dateFormat = "h"
+                hourTextField.text = formatter.string(from: date)
+                
+                formatter.dateFormat = "a"
+                periodButton.setTitle(formatter.string(from: date), for: .normal)
+                
+                calendarView.selectDates([date])
+                calendarView.scrollToDate(date)
+            }
+            
+            if starts != nil {
+                
+                starts = components.date
+            }
+            
+            else {
+                
+                ends = components.date
+            }
+        }
+        
+        //If the textField hasn't had text entered
+        else {
+            
+            formatter.dateFormat = "mm"
+             
+            //Re-entering the previously selected time
+            if starts != nil {
+                
+                textField.text = formatter.string(from: starts!)
+            }
+            
+            else if ends != nil {
+                
+                textField.text = formatter.string(from: ends!)
+            }
+        }
+    }
+    
+    
+    //MARK: - Block Minute Input Verification
+    
+    private func blockMinuteInputVerication (_ textField: UITextField) {
         
         //If the textField has had text entered
         if textField.text?.leniantValidationOfTextEntered() ?? false, let minutes = Int(textField.text ?? "0") {
@@ -999,6 +1186,45 @@ class TimeConfigurationCell: UITableViewCell {
 
                 formatter.dateFormat = "MMM yyyy"
                 calendarHeaderLabel.text = formatter.string(from: previousMonth)
+                
+                if previousMonth.determineNumberOfWeeks() == 4 {
+                    
+                    timeConfigurationDelegate?.expandCalendarCellHeight(expand: false)
+                }
+                
+                else {
+                    
+                    timeConfigurationDelegate?.expandCalendarCellHeight(expand: true)
+                }
+            }
+            
+            else {
+                
+                let vibrateMethods = VibrateMethods()
+                vibrateMethods.warningVibration()
+            }
+        }
+        
+        else if let date = firstVisibleDate?.date, let previousMonth = calendar.date(byAdding: .month, value: -1, to: date) {
+            
+            formatter.dateFormat = "yyyy MM dd"
+            
+            if previousMonth > formatter.date(from: "2010 01 01") ?? Date() {
+                
+                calendarView.scrollToDate(previousMonth)
+                
+                formatter.dateFormat = "MMM yyyy"
+                calendarHeaderLabel.text = formatter.string(from: previousMonth)
+                
+                if previousMonth.determineNumberOfWeeks() == 4 {
+                    
+                    timeConfigurationDelegate?.expandCalendarCellHeight(expand: false)
+                }
+                
+                else {
+                    
+                    timeConfigurationDelegate?.expandCalendarCellHeight(expand: true)
+                }
             }
             
             else {
@@ -1028,6 +1254,45 @@ class TimeConfigurationCell: UITableViewCell {
                 
                 formatter.dateFormat = "MMM yyyy"
                 calendarHeaderLabel.text = formatter.string(from: nextMonth)
+                
+                if nextMonth.determineNumberOfWeeks() == 4 {
+                    
+                    timeConfigurationDelegate?.expandCalendarCellHeight(expand: false)
+                }
+                
+                else {
+                    
+                    timeConfigurationDelegate?.expandCalendarCellHeight(expand: true)
+                }
+            }
+            
+            else {
+                
+                let vibrateMethods = VibrateMethods()
+                vibrateMethods.warningVibration()
+            }
+        }
+        
+        else if let date = firstVisibleDate?.date, let nextMonth = calendar.date(byAdding: .month, value: 1, to: date) {
+            
+            formatter.dateFormat = "yyyy MM dd"
+            
+            if nextMonth < formatter.date(from: "2050 01 01") ?? Date() {
+                
+                calendarView.scrollToDate(nextMonth)
+                
+                formatter.dateFormat = "MMM yyyy"
+                calendarHeaderLabel.text = formatter.string(from: nextMonth)
+                
+                if nextMonth.determineNumberOfWeeks() == 4 {
+                    
+                    timeConfigurationDelegate?.expandCalendarCellHeight(expand: false)
+                }
+                
+                else {
+                    
+                    timeConfigurationDelegate?.expandCalendarCellHeight(expand: true)
+                }
             }
             
             else {
@@ -1060,13 +1325,33 @@ class TimeConfigurationCell: UITableViewCell {
         //Setting the updated time
         if starts != nil, let date = dateComponents.date {
             
-            starts = date
+            if timeConfigurationDelegate as? ConfigureBlockViewController != nil {
+                
+                starts = date
+                blockMinuteInputVerication(minuteTextField)
+            }
+            
+            else {
+                
+                starts = date
+            }
+            
             timeConfigurationDelegate?.timeEntered(startTime: starts, endTime: nil)
         }
         
         else if ends != nil, let date = dateComponents.date {
             
-            ends = date
+            if timeConfigurationDelegate as? ConfigureBlockViewController != nil {
+                
+                ends = date
+                blockMinuteInputVerication(minuteTextField)
+            }
+            
+            else {
+                
+                ends = date
+            }
+            
             timeConfigurationDelegate?.timeEntered(startTime: nil, endTime: ends!)
         }
     }
@@ -1165,10 +1450,12 @@ extension TimeConfigurationCell: JTAppleCalendarViewDataSource, JTAppleCalendarV
         
         else {
             
-            let vibrateMethods = VibrateMethods()
-            vibrateMethods.warningVibration()
+            return true
             
-            return false
+//            let vibrateMethods = VibrateMethods()
+//            vibrateMethods.warningVibration()
+            
+//            return false
         }
     }
     
@@ -1365,7 +1652,17 @@ extension TimeConfigurationCell: UITextFieldDelegate {
         
         else if textField == minuteTextField {
             
-            minuteInputVerification(minuteTextField)
+            if timeConfigurationDelegate as? ConfigureCollabViewController != nil {
+                
+                collabMinuteInputVerification(textField)
+            }
+            
+            else {
+                
+                blockMinuteInputVerication(textField)
+            }
+            
+//            minuteInputVerification(minuteTextField)
         }
         
         //Setting the time in the parentViewController

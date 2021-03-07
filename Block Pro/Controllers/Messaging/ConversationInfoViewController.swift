@@ -646,7 +646,18 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             else if let conversation = collabConversation {
                 
-                //perform zoom once cover is available here
+                if conversation.coverPhotoID != nil {
+                    
+                    let cell = messagingInfoTableView.cellForRow(at: indexPath) as! ConvoCoverInfoCell
+                    
+                    if let conversationIndex = firebaseMessaging.collabConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                        
+                        if firebaseMessaging.collabConversations[conversationIndex].conversationCoverPhoto != nil {
+                            
+                            performZoomOnCoverImageView(coverImageView: cell.coverPhotoImageView)
+                        }
+                    }
+                }
             }
         }
         
@@ -1278,12 +1289,6 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 editCoverButton = configureEditCoverButton()
                 deleteCoverButton = configureDeleteCoverButton()
             }
-        }
-
-        else {
-
-            editCoverButton = configureEditCoverButton()
-            deleteCoverButton = configureDeleteCoverButton()
         }
 
         zoomingMethods = ZoomingImageViewMethods(on: coverImageView, cornerRadius: 100, with: [editCoverButton, deleteCoverButton])

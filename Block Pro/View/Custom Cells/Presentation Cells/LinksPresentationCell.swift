@@ -25,6 +25,8 @@ class LinksPresentationCell: UITableViewCell {
             links = links?.sorted(by: { ($0.name ?? $0.url)! < ($1.name ?? $1.url)! })
             
             reconfigureCell()
+            
+            linkCollectionView.reloadData()
         }
     }
     
@@ -124,36 +126,33 @@ class LinksPresentationCell: UITableViewCell {
         
         if links?.count ?? 0 > 2 {
             
-            if linkPageControl.superview == nil {
+            linkContainer.addSubview(linkPageControl)
+            linkPageControl.translatesAutoresizingMaskIntoConstraints = false
+            
+            [
+            
+                linkPageControl.topAnchor.constraint(equalTo: linkCollectionView.bottomAnchor, constant: 7.5),
+                linkPageControl.centerXAnchor.constraint(equalTo: linkContainer.centerXAnchor),
+                linkPageControl.widthAnchor.constraint(equalToConstant: 125),
+                linkPageControl.heightAnchor.constraint(equalToConstant: 27.5)
+            
+            ].forEach({ $0.isActive = true })
+            
+            if links?.count ?? 0 >= 3 && links?.count ?? 0 < 5 {
                 
-                linkContainer.addSubview(linkPageControl)
-                linkPageControl.translatesAutoresizingMaskIntoConstraints = false
-                
-                [
-                
-                    linkPageControl.topAnchor.constraint(equalTo: linkCollectionView.bottomAnchor, constant: 7.5),
-                    linkPageControl.centerXAnchor.constraint(equalTo: linkContainer.centerXAnchor),
-                    linkPageControl.widthAnchor.constraint(equalToConstant: 125),
-                    linkPageControl.heightAnchor.constraint(equalToConstant: 27.5)
-                
-                ].forEach({ $0.isActive = true })
-                
-                if links?.count ?? 0 >= 3 && links?.count ?? 0 < 5 {
-                    
-                    linkPageControl.numberOfPages = 2
-                }
-                
-                else if links?.count ?? 0 >= 5 {
-                    
-                    linkPageControl.numberOfPages = 3
-                }
-                
-                linkPageControl.pageIndicatorTintColor = UIColor(hexString: "D8D8D8")
-                linkPageControl.currentPageIndicatorTintColor = UIColor(hexString: "222222")
-                linkPageControl.currentPage = linkCollectionView.indexPathsForVisibleItems.first?.row ?? 0
-                
-                linkPageControl.addTarget(self, action: #selector(pageSelected), for: .valueChanged)
+                linkPageControl.numberOfPages = 2
             }
+            
+            else if links?.count ?? 0 >= 5 {
+                
+                linkPageControl.numberOfPages = 3
+            }
+            
+            linkPageControl.pageIndicatorTintColor = UIColor(hexString: "D8D8D8")
+            linkPageControl.currentPageIndicatorTintColor = UIColor(hexString: "222222")
+            linkPageControl.currentPage = linkCollectionView.indexPathsForVisibleItems.first?.row ?? 0
+            
+            linkPageControl.addTarget(self, action: #selector(pageSelected), for: .valueChanged)
         }
         
         else {
@@ -173,6 +172,9 @@ class LinksPresentationCell: UITableViewCell {
         }
         
         else {
+            
+            noLinksImageView.removeFromSuperview()
+            noLinksLabel.removeFromSuperview()
             
             configureLinkCollectionView()
             configureLinkPageControl()

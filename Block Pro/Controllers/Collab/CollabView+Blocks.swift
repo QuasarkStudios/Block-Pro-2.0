@@ -10,6 +10,8 @@ import Foundation
 
 extension CollabViewController {
     
+    //MARK: - Retrieve Blocks
+    
     func retrieveBlocks () {
         
         var scrollToFirstBlock: Bool = true
@@ -30,13 +32,22 @@ extension CollabViewController {
                         self?.blocks = []
                     }
                     
+                    //Setting the sorted retrievedBlocks to the blocks array for the collabViewController
                     self?.blocks = retrievedBlocks?.sorted(by: { $0.starts! < $1.starts! })
                     
+                    //Setting the blocks to the collabHomeMembersCell so each members progress can be recalculated
                     if let cell = self?.collabHomeTableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? CollabHomeMembersCell {
                         
                         cell.blocks = self?.blocks
                     }
                     
+                    //Removing any deleted blocks notifications and rescheduling all blocks notifications just in case their times may have changed
+                    self?.removeDeletedBlockNotifications(self?.collab?.collabID ?? "", self?.blocks, completion: {
+                        
+                        self?.rescheduleBlockNotifications(self?.blocks)
+                    })
+                                                 
+                                                         
                     //Sets the blocks for the memberProfileVC only if it is presented
                     self?.memberProfileVC?.blocks = self?.blocks
                     
@@ -108,6 +119,7 @@ extension CollabViewController {
                         }
                     }
                     
+                    //Determining which blocks should be hidden in the collabNavigationView
                     self?.determineHiddenBlocks(self!.collabNavigationView.collabTableView)
                 }
             }
@@ -115,6 +127,9 @@ extension CollabViewController {
             scrollToCurrentDate()
         }
     }
+    
+    
+    //MARK: - Scroll To Current Date
     
     func scrollToCurrentDate () {
         
@@ -137,16 +152,21 @@ extension CollabViewController {
                 
                 else if currentDate <= startTime {
                     
+                    //Scrolls to the first row
                     collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
                 }
                 
                 else if currentDate >= deadline {
                     
+                    //Scrolls to the last row
                     collabNavigationView.collabTableView.scrollToRow(at: IndexPath(row: calendar.dateComponents([.day], from: startTime, to: deadline).day ?? 0, section: 0), at: .top, animated: false)
                 }
             }
         }
     }
+    
+    
+    //MARK: - Scroll to First Block
     
     func scrollToFirstBlock (indexPathToScrollTo: IndexPath? = nil, animate: Bool = true) {
         
@@ -208,7 +228,97 @@ extension CollabViewController {
             }
         }
     }
+    
+    
+    //MARK: - Remove Block Notifications
+    
+    private func removeDeletedBlockNotifications (_ collabID: String, _ blocks: [Block]?, completion: @escaping (() -> Void)) {
+        
+        notificationScheduler.getPendingNotifications { [weak self] (requests) in
+            
+            var remindersToDelete: [String] = []
+            
+            for request in requests {
+                
+                //If the identifier contains the collabID and contains the phrase "blockID" signifying that it's a notification for a block
+                if request.identifier.contains(collabID) && request.identifier.contains("blockID:") {
+                    
+                    //Tracks whether or not the reminder should be deleted
+                    var deleteReminder: Bool = true
+                    
+                    for block in blocks ?? [] {
+                        
+                        //If the requestID is for a block that still exists/has not been deleted
+                        if let blockID = block.blockID, request.identifier.contains(blockID) {
+                            
+                            deleteReminder = false
+                            break
+                        }
+                    }
+                    
+                    //If the requestID has a blockID that does not correspond with any block retrieved from Firebase -- likely because the block has been deleted by another user
+                    if deleteReminder {
+                        
+                        remindersToDelete.append(request.identifier)
+                    }
+                }
+            }
+            
+            self?.notificationScheduler.removeNotifications(identifers: remindersToDelete)
+            
+            completion()
+        }
+    }
+    
+    
+    //MARK: - Reschedule Block Notifications
+    
+    private func rescheduleBlockNotifications (_ retrievedBlocks: [Block]?) {
+        
+        var blocks: [Block] = []
+        retrievedBlocks?.forEach({ blocks.append($0) }) //Appending the retrieved blocks to the local block array of this func
+        
+        notificationScheduler.getPendingNotifications { [weak self] (requests) in
+            
+            var count = 0
+            
+            while count < blocks.count {
+                
+                if let blockID = blocks[count].blockID {
+                    
+                    for request in requests {
+                        
+                        //If a request identifier contains the blockID
+                        if request.identifier.contains(blockID) {
+                            
+                            let requestID = Array(request.identifier)
+                            
+                            //Get the last char in the identifier's string, which will be used to determine which reminder the user selected
+                            if let reminder = requestID.last, Int(String(reminder)) != nil {
+                                
+                                if blocks[count].reminders == nil {
+                                    
+                                    blocks[count].reminders = []
+                                }
+                                
+                                //Appending the selected reminder
+                                blocks[count].reminders?.append(Int(String(reminder))!)
+                            }
+                        }
+                    }
+                }
+                
+                //Rescheduling the block notifications -- will overwrite any pending notifications that have not been sent yet
+                self?.notificationScheduler.scheduleCollabBlockNotifications(collab: self?.collab, blocks[count])
+                
+                count += 1
+            }
+        }
+    }
 }
+
+
+//MARK: - Block Created Protocol
 
 extension CollabViewController: BlockCreatedProtocol {
     
@@ -236,6 +346,9 @@ extension CollabViewController: BlockCreatedProtocol {
         }
     }
 }
+
+
+//MARK: - Block Selected Protocol
 
 extension CollabViewController: BlockSelectedProtocol {
     

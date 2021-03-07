@@ -196,27 +196,48 @@ class MemberConfigurationCell: UITableViewCell {
     
     private func reconfigureCell() {
         
-        if editingCell {
+        if memberConfigurationDelegate as? ConfigureBlockViewController != nil {
             
-            if members?.count ?? 0 == collab?.members.count ?? 0 {
+            if editingCell {
                 
-                configureFullMembersCell()
-            }
-            
-            else if members?.count ?? 0 > 0 {
+                if members?.count ?? 0 == collab?.currentMembers.count ?? 0 {
+                    
+                    configureFullMembersCell()
+                }
                 
-                configurePartialMembersCell()
+                else if members?.count ?? 0 > 0 {
+                    
+                    configurePartialMembersCell()
+                }
+                
+                else {
+                    
+                    configureNoMembersCell()
+                }
             }
             
             else {
                 
-                configureNoMembersCell()
+                if (collab?.currentMembers.count ?? 0 > 1) && (members?.count ?? 0 == (collab?.currentMembers.count ?? 0) - 1) {
+                    
+                    configureFullMembersCell()
+                }
+                
+                else if members?.count ?? 0 > 0 {
+                    
+                    configurePartialMembersCell()
+                }
+                
+                else {
+                    
+                    configureNoMembersCell()
+                }
             }
         }
         
         else {
             
-            if members?.count ?? 0 == (collab?.members.count ?? 0) - 1 {
+            if members?.count ?? 0 == 5/*(editingCell ? 6 : 5)*/ {
                 
                 configureFullMembersCell()
             }
@@ -287,14 +308,22 @@ class MemberConfigurationCell: UITableViewCell {
     
     private func configurePartialMembersCell () {
         
-        if editingCell {
+        if memberConfigurationDelegate as? ConfigureBlockViewController != nil {
             
-            membersCountLabel.text = "\(members?.count ?? 0)/\(collab?.members.count ?? 0)"
+            if editingCell {
+                
+                membersCountLabel.text = "\(members?.count ?? 0)/\(collab?.currentMembers.count ?? 0)"
+            }
+            
+            else {
+                
+                membersCountLabel.text = "\(members?.count ?? 0)/\((collab?.currentMembers.count ?? 6) - 1)"
+            }
         }
         
         else {
             
-            membersCountLabel.text = "\(members?.count ?? 0)/\((collab?.members.count ?? 6) - 1)"
+            membersCountLabel.text = "\(members?.count ?? 0)/5"
         }
         
         //Resetting the constraints of the addMembersButton
@@ -360,14 +389,22 @@ class MemberConfigurationCell: UITableViewCell {
     
     private func configureFullMembersCell () {
         
-        if editingCell {
+        if memberConfigurationDelegate as? ConfigureBlockViewController != nil {
             
-            membersCountLabel.text = "\(members?.count ?? 0)/\(collab?.members.count ?? 0)"
+            if editingCell {
+                
+                membersCountLabel.text = "\(members?.count ?? 0)/\(collab?.currentMembers.count ?? 0)"
+            }
+            
+            else {
+                
+                membersCountLabel.text = "\(members?.count ?? 0)/\((collab?.currentMembers.count ?? 6) - 1)"
+            }
         }
         
         else {
             
-            membersCountLabel.text = "\(members?.count ?? 0)/\((collab?.members.count ?? 6) - 1)"
+            membersCountLabel.text = "5/5"
         }
         
         //Resetting the height of the membersCollectionView

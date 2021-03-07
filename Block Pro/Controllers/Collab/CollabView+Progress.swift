@@ -10,6 +10,8 @@ import Foundation
 
 extension CollabViewController: CollabProgressProtocol {
     
+    //MARK: - Filter Blocks
+    
     func filterBlocks (status: BlockStatus?) {
         
         //Stops any ongoing search
@@ -73,6 +75,9 @@ extension CollabViewController: CollabProgressProtocol {
         }
     }
     
+    
+    //MARK: - Search Began
+    
     func searchBegan() {
         
         //If all previous searches have been completed
@@ -116,6 +121,9 @@ extension CollabViewController: CollabProgressProtocol {
         
         expandView()
     }
+    
+    
+    //MARK: - Search Text Changed
     
     func searchTextChanged(searchText: String) {
         
@@ -188,6 +196,9 @@ extension CollabViewController: CollabProgressProtocol {
             self.collabNavigationView.collabTableView.reloadData()
         }
     }
+    
+    
+    //MARK: - Search Ended
     
     func searchEnded (searchText: String) {
         

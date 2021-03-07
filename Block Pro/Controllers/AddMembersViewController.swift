@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 protocol MembersAdded: AnyObject {
     
@@ -26,6 +27,7 @@ class AddMembersViewController: UIViewController, UITextFieldDelegate {
     
     let currentUser = CurrentUser.sharedInstance
     let firebaseCollab = FirebaseCollab.sharedInstance
+    let firebaseStorage = FirebaseStorage()
     
     var members: [Any]?
     var filteredMembers: [Any] = []
@@ -76,6 +78,12 @@ class AddMembersViewController: UIViewController, UITextFieldDelegate {
         super.viewDidAppear(animated)
         
         viewAppeared = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        SVProgressHUD.dismiss()
     }
     
     
@@ -342,7 +350,7 @@ class AddMembersViewController: UIViewController, UITextFieldDelegate {
         
         if addedMembers?.count ?? 0 == 0 {
             
-            ProgressHUD.showError("Please add at least 1 member")
+            SVProgressHUD.showError(withStatus: "Please add at least 1 member")
         }
         
         else {
@@ -402,14 +410,22 @@ extension AddMembersViewController: UITableViewDataSource, UITableViewDelegate {
                     
                     cell.memberUserID = member.userID
                     cell.nameLabel.text = member.firstName + " " + member.lastName
-                    cell.profilePicImageView.configureProfileImageView(profileImage: member.profilePictureImage)
+                    
+                    retrieveProfilePic(member: member.userID) { (profilePic) in
+                        
+                        cell.profilePicImageView.configureProfileImageView(profileImage: profilePic)
+                    }
                 }
                 
                 else if let member = members?[indexPath.row / 2] as? Friend {
                     
                     cell.memberUserID = member.userID
                     cell.nameLabel.text = member.firstName + " " + member.lastName
-                    cell.profilePicImageView.configureProfileImageView(profileImage: member.profilePictureImage)
+                    
+                    retrieveProfilePic(member: member.userID) { (profilePic) in
+                        
+                        cell.profilePicImageView.configureProfileImageView(profileImage: profilePic)
+                    }
                 }
                 
                 ////////////////////////////////////////////////////////////////////
@@ -575,7 +591,7 @@ extension AddMembersViewController: UITableViewDataSource, UITableViewDelegate {
             
             else {
                 
-                ProgressHUD.showError("Sorry, only 5 members can be added")
+                SVProgressHUD.showError(withStatus: "Sorry, only 5 members can be added")
             }
         }
     }
@@ -667,6 +683,31 @@ extension AddMembersViewController: UITableViewDataSource, UITableViewDelegate {
 
                     self.view.layoutIfNeeded()
                 }
+            }
+        }
+    }
+    
+    //MARK: - Retrieve Profile Pic
+    
+    private func retrieveProfilePic (member: String, completion: @escaping ((_ profilePic: UIImage?) -> Void)) {
+        
+        if let friendIndex = firebaseCollab.friends.firstIndex(where: { $0.userID == member }) {
+            
+            completion(firebaseCollab.friends[friendIndex].profilePictureImage)
+        }
+        
+        else if let memberProfilePic = firebaseCollab.membersProfilePics[member] {
+            
+            completion(memberProfilePic)
+        }
+        
+        else {
+            
+            firebaseStorage.retrieveUserProfilePicFromStorage(userID: member) { (profilePic, userID) in
+                
+                completion(profilePic)
+                
+                self.firebaseCollab.cacheMemberProfilePics(userID: member, profilePic: profilePic)
             }
         }
     }

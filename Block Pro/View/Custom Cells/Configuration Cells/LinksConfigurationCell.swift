@@ -400,7 +400,6 @@ class LinksConfigurationCell: UITableViewCell {
         }
         
         linkCollectionView.reloadData()
-        linkCollectionView.scrollToItem(at: IndexPath(item: linkCollectionView.numberOfItems(inSection: 0) - 1, section: 0), at: .centeredHorizontally, animated: false)
         
         UIView.transition(with: linksContainer, duration: 0.3, options: .transitionCrossDissolve) {
             
@@ -469,7 +468,7 @@ class LinksConfigurationCell: UITableViewCell {
         editLinkAlert.addAction(editLinkAction)
         editLinkAlert.addAction(cancelAction)
         
-        if let viewController = linksConfigurationDelegate as? CreateCollabViewController {
+        if let viewController = linksConfigurationDelegate as? ConfigureCollabViewController {
             
             viewController.present(editLinkAlert, animated: true) //Has to be presented by a viewController
         }
@@ -554,7 +553,9 @@ class LinksConfigurationCell: UITableViewCell {
                 
                 keyboardPresent = true
                 
-                if let viewController = linksConfigurationDelegate as? CreateCollabViewController, let tableView = viewController.details_attachmentsTableView {
+                if let viewController = linksConfigurationDelegate as? ConfigureCollabViewController {
+                    
+                    let tableView = viewController.configureCollabTableView
                     
                     let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue
                     let keyboardHeight = keyboardFrame.cgRectValue.height
@@ -622,7 +623,9 @@ class LinksConfigurationCell: UITableViewCell {
             
             keyboardPresent = false
             
-            if let viewController = linksConfigurationDelegate as? CreateCollabViewController, let tableView = viewController.details_attachmentsTableView {
+            if let viewController = linksConfigurationDelegate as? ConfigureCollabViewController {
+                
+                let tableView = viewController.configureCollabTableView
                 
                 UIView.animate(withDuration: 0.3) {
                     

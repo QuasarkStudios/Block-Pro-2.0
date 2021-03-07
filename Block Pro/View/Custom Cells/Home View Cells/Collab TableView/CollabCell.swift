@@ -165,7 +165,7 @@ class CollabCell: UICollectionViewCell, UITextFieldDelegate {
         
         var profilePics: [UIImage?] = []
         
-        if let collabMembers = collab?.members, collabMembers.count > 0 {
+        if let collabMembers = collab?.currentMembers, collabMembers.count > 0 {
             
             imageContainer1.alpha = 0
             imageContainer2.alpha = 0

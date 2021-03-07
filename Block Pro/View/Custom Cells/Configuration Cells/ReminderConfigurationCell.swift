@@ -181,12 +181,12 @@ class ReminderConfigurationCell: UITableViewCell {
         
         if selectedReminders.count == 0 {
             
-            attributedString.append(NSAttributedString(string: "Remind me:", attributes: semiBoldText))
+            attributedString.append(NSAttributedString(string: reminderConfigurationDelegate as? ConfigureCollabViewController != nil ? "Remind us:" : "Remind me:", attributes: semiBoldText))
         }
         
         else if selectedReminders.count == 1 {
             
-            attributedString.append(NSAttributedString(string: "Remind me at: ", attributes: semiBoldText))
+            attributedString.append(NSAttributedString(string: reminderConfigurationDelegate as? ConfigureCollabViewController != nil ? "Remind us at: " : "Remind me at: ", attributes: semiBoldText))
             
             if let time = startTime, let reminderTime = calendar.date(byAdding: .minute, value: minutesToSubtractBy[selectedReminders[0]], to: time) {
                 
@@ -196,7 +196,7 @@ class ReminderConfigurationCell: UITableViewCell {
         
         else if selectedReminders.count == 2 {
             
-            attributedString.append(NSAttributedString(string: "Remind me at: ", attributes: semiBoldText))
+            attributedString.append(NSAttributedString(string: reminderConfigurationDelegate as? ConfigureCollabViewController != nil ? "Remind us at: " : "Remind me at: ", attributes: semiBoldText))
             
             selectedReminders = selectedReminders.sorted() //Sorting the reminders
             

@@ -57,11 +57,11 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         guard let requests = collabRequests else { return }
-        
-        firebaseCollab.acceptCollabRequest(collab: requests[indexPath.row]) {
-            
-            print("success")
-        }
+//
+//        firebaseCollab.acceptCollabRequest(collab: requests[indexPath.row]) {
+//
+//            print("success")
+//        }
     }
     
     @IBAction func acceptButton(_ sender: Any) {

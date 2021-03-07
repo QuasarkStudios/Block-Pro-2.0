@@ -167,8 +167,22 @@ class MessageHomeCell: UITableViewCell {
         
         else if let conversation = collabConversation {
             
-            profilePic.removeFromSuperview()
-            doubleProfilePicContainer.removeFromSuperview()
+            if coverPic.superview != nil {
+                
+                retrieveConvoCoverPhoto(collabConversation: conversation)
+            }
+            
+            else {
+                
+                profilePic.removeFromSuperview()
+                doubleProfilePicContainer.removeFromSuperview()
+                
+                self.addSubview(coverPic)
+                
+                configureProfilePicContainerConstraints(coverPic)
+                
+                retrieveConvoCoverPhoto(collabConversation: conversation)
+            }
         }
     }
     
@@ -563,9 +577,7 @@ class MessageHomeCell: UITableViewCell {
                                 
                                 self.firebaseMessaging.personalConversations[conversationIndex].conversationCoverPhoto = cover
                             }
-
                         }
-                        
                     }
                 }
             }
@@ -573,6 +585,34 @@ class MessageHomeCell: UITableViewCell {
         
         else if let conversation = collabConversation {
             
+            if let cover = firebaseMessaging.collabConversations.first(where: { $0.conversationID == conversation.conversationID })?.conversationCoverPhoto {
+                
+                coverPic.profilePic = cover
+            }
+            
+            else {
+                
+                firebaseStorage.retrieveCollabCoverPhoto(collabID: conversation.conversationID) { (cover, error) in
+                    
+                    if error != nil {
+                        
+                        print(error?.localizedDescription as Any)
+                    }
+                    
+                    else {
+                        
+                        if self.collabConversation?.conversationID == collabConversation?.conversationID {
+                            
+                            self.coverPic.profilePic = cover
+                            
+                            if let conversationIndex = self.firebaseMessaging.collabConversations.firstIndex(where: { $0.conversationID == conversation.conversationID }) {
+                                
+                                self.firebaseMessaging.collabConversations[conversationIndex].conversationCoverPhoto = cover
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     

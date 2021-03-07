@@ -298,6 +298,11 @@
 		0DAFFE372537634A00C39B69 /* ProgressCircles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFFE362537634A00C39B69 /* ProgressCircles.swift */; };
 		0DAFFE402537744C00C39B69 /* CollabHomePhotosCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFFE3E2537744C00C39B69 /* CollabHomePhotosCell.swift */; };
 		0DAFFE412537744C00C39B69 /* CollabHomePhotosCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAFFE3F2537744C00C39B69 /* CollabHomePhotosCell.xib */; };
+		0DB0875925E7A9EE00FEE6FF /* CollabHomeEdit_LeaveCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0875825E7A9EE00FEE6FF /* CollabHomeEdit_LeaveCell.swift */; };
+		0DB0875D25E82A5100FEE6FF /* CollabView+TableViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0875C25E82A5100FEE6FF /* CollabView+TableViewExtension.swift */; };
+		0DB0876025E83D3000FEE6FF /* ConfigureCollabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0875F25E83D3000FEE6FF /* ConfigureCollabViewController.swift */; };
+		0DB0876325E83EC000FEE6FF /* CollabCreatedProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0876225E83EC000FEE6FF /* CollabCreatedProtocol.swift */; };
+		0DB0876625E8768B00FEE6FF /* ObjectiveConfigurationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0876525E8768A00FEE6FF /* ObjectiveConfigurationCell.swift */; };
 		0DB29FB42448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB29FB32448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift */; };
 		0DB3FEC2249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB3FEC0249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift */; };
 		0DB3FEC3249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DB3FEC1249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib */; };
@@ -308,7 +313,7 @@
 		0DB52AD325D79F3600645D27 /* CollabView+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52AD225D79F3600645D27 /* CollabView+Progress.swift */; };
 		0DB52AD625D7ABA100645D27 /* CollabCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52AD525D7ABA100645D27 /* CollabCalendarView.swift */; };
 		0DB52AD925DE4FC500645D27 /* CollabObjectiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52AD825DE4FC200645D27 /* CollabObjectiveViewController.swift */; };
-		0DB52ADC25E3739C00645D27 /* CollabHomeMemberCell2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52ADB25E3739C00645D27 /* CollabHomeMemberCell2.swift */; };
+		0DB52ADC25E3739C00645D27 /* CollabHomeMemberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52ADB25E3739C00645D27 /* CollabHomeMemberCell.swift */; };
 		0DB52ADF25E379C700645D27 /* CollabHomeMembersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52ADE25E379C700645D27 /* CollabHomeMembersCollectionViewCell.swift */; };
 		0DBAB33E242039CC0021FE35 /* CategoriesCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBAB33C242039CC0021FE35 /* CategoriesCell.swift */; };
 		0DBAB33F242039CC0021FE35 /* CategoriesCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DBAB33D242039CC0021FE35 /* CategoriesCell.xib */; };
@@ -669,6 +674,11 @@
 		0DAFFE362537634A00C39B69 /* ProgressCircles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCircles.swift; sourceTree = "<group>"; };
 		0DAFFE3E2537744C00C39B69 /* CollabHomePhotosCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomePhotosCell.swift; sourceTree = "<group>"; };
 		0DAFFE3F2537744C00C39B69 /* CollabHomePhotosCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollabHomePhotosCell.xib; sourceTree = "<group>"; };
+		0DB0875825E7A9EE00FEE6FF /* CollabHomeEdit_LeaveCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeEdit_LeaveCell.swift; sourceTree = "<group>"; };
+		0DB0875C25E82A5100FEE6FF /* CollabView+TableViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabView+TableViewExtension.swift"; sourceTree = "<group>"; };
+		0DB0875F25E83D3000FEE6FF /* ConfigureCollabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigureCollabViewController.swift; sourceTree = "<group>"; };
+		0DB0876225E83EC000FEE6FF /* CollabCreatedProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabCreatedProtocol.swift; sourceTree = "<group>"; };
+		0DB0876525E8768A00FEE6FF /* ObjectiveConfigurationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectiveConfigurationCell.swift; sourceTree = "<group>"; };
 		0DB29FB32448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSelectorCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		0DB3FEC0249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoMemberHeaderInfoCell.swift; sourceTree = "<group>"; };
 		0DB3FEC1249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoMemberHeaderInfoCell.xib; sourceTree = "<group>"; };
@@ -679,7 +689,7 @@
 		0DB52AD225D79F3600645D27 /* CollabView+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabView+Progress.swift"; sourceTree = "<group>"; };
 		0DB52AD525D7ABA100645D27 /* CollabCalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabCalendarView.swift; sourceTree = "<group>"; };
 		0DB52AD825DE4FC200645D27 /* CollabObjectiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabObjectiveViewController.swift; sourceTree = "<group>"; };
-		0DB52ADB25E3739C00645D27 /* CollabHomeMemberCell2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeMemberCell2.swift; sourceTree = "<group>"; };
+		0DB52ADB25E3739C00645D27 /* CollabHomeMemberCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeMemberCell.swift; sourceTree = "<group>"; };
 		0DB52ADE25E379C700645D27 /* CollabHomeMembersCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeMembersCollectionViewCell.swift; sourceTree = "<group>"; };
 		0DBAB33C242039CC0021FE35 /* CategoriesCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoriesCell.swift; sourceTree = "<group>"; };
 		0DBAB33D242039CC0021FE35 /* CategoriesCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CategoriesCell.xib; sourceTree = "<group>"; };
@@ -766,6 +776,7 @@
 			isa = PBXGroup;
 			children = (
 				0D72D24A2453FE7B00C11D5F /* CollabViewController.swift */,
+				0DB0875C25E82A5100FEE6FF /* CollabView+TableViewExtension.swift */,
 				0DB52AD225D79F3600645D27 /* CollabView+Progress.swift */,
 				0DF609F425B3F2E900B0BB63 /* CollabView+Blocks.swift */,
 				0DE728C2250881F800581048 /* CollabView+Messages.swift */,
@@ -792,6 +803,7 @@
 			isa = PBXGroup;
 			children = (
 				0D0C8D7C243FBBC500EB51F7 /* CreateCollabViewController.swift */,
+				0DB0875F25E83D3000FEE6FF /* ConfigureCollabViewController.swift */,
 				0D78684B2446844400A92DD1 /* MemberProfileViewControlller.swift */,
 				0D9C87FF244E1CDC00209609 /* CollabDatesViewController.swift */,
 				0DB29FB32448E7150008A41F /* TimeSelectorCollectionViewFlowLayout.swift */,
@@ -1179,6 +1191,7 @@
 			isa = PBXGroup;
 			children = (
 				0D480F17259BA13500E14D1E /* NameConfigurationCell.swift */,
+				0DB0876525E8768A00FEE6FF /* ObjectiveConfigurationCell.swift */,
 				0D480F44259BC59A00E14D1E /* TimeConfigurationCell.swift */,
 				0D480F4725A7A47C00E14D1E /* MemberConfigurationCell.swift */,
 				0D86386325AAAB69000DB1A3 /* ReminderConfigurationCell.swift */,
@@ -1207,8 +1220,8 @@
 		0D5FD0D525BD109D00E9BA2D /* Presentation Cells */ = {
 			isa = PBXGroup;
 			children = (
-				0D5FD0D625BD112800E9BA2D /* LocationsPresentationCell.swift */,
 				0D5FD0DA25BD246100E9BA2D /* PhotosPresentationCell.swift */,
+				0D5FD0D625BD112800E9BA2D /* LocationsPresentationCell.swift */,
 				0D5FD10825BF52B500E9BA2D /* VoiceMemosPresentationCell.swift */,
 				0D5FD10F25BF63F700E9BA2D /* LinksPresentationCell.swift */,
 				0D5FD0DD25BDF95600E9BA2D /* CollectionView Cells */,
@@ -1597,8 +1610,9 @@
 				0D2FDA1D25391054005DF638 /* LeaveCollabCell.swift */,
 				0D2FDA1E25391054005DF638 /* LeaveCollabCell.xib */,
 				0D47030E2578880000B6A8FA /* CollectionView Cells */,
-				0DB52ADB25E3739C00645D27 /* CollabHomeMemberCell2.swift */,
+				0DB52ADB25E3739C00645D27 /* CollabHomeMemberCell.swift */,
 				0DB52ADE25E379C700645D27 /* CollabHomeMembersCollectionViewCell.swift */,
+				0DB0875825E7A9EE00FEE6FF /* CollabHomeEdit_LeaveCell.swift */,
 			);
 			path = "CollabHome Cells";
 			sourceTree = "<group>";
@@ -1675,6 +1689,7 @@
 				0D80969F250AABBA00469934 /* PresentCopiedAnimationProtocol.swift */,
 				0D45DED225474259003E16E3 /* LocationProtocols.swift */,
 				0D480F3D259BB46400E14D1E /* ConfigurationProtocols.swift */,
+				0DB0876225E83EC000FEE6FF /* CollabCreatedProtocol.swift */,
 				0DB52ACF25D793CA00645D27 /* BlockCreatedProtocol.swift */,
 				0D5FD0C225BC027700E9BA2D /* BlockSelectedProtocols.swift */,
 				0D5FD12125C018D300E9BA2D /* BlockEdited_DeletedProtocol.swift */,
@@ -2102,6 +2117,7 @@
 				0D82282824DA259200D0BBA0 /* ConvoUpdatedMessageCell.swift in Sources */,
 				0D41F5BE2311E4F100B4B11E /* CollabTenMinCell.swift in Sources */,
 				0D92BBA82587137E00D9C561 /* CacheIconProtocol.swift in Sources */,
+				0DB0875925E7A9EE00FEE6FF /* CollabHomeEdit_LeaveCell.swift in Sources */,
 				0DBAB33E242039CC0021FE35 /* CategoriesCell.swift in Sources */,
 				0D5FD0C925BC0CE800E9BA2D /* SelectedBlockTimeCell.swift in Sources */,
 				0D7CD51D2433067A00BE1BE6 /* Firebase+Auth.swift in Sources */,
@@ -2123,6 +2139,7 @@
 				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
 				0D2707FC2326DF9000592EC8 /* PomodoroViewController.swift in Sources */,
 				0D86386725ACCC11000DB1A3 /* ReminderConfigurationCollectionViewCell.swift in Sources */,
+				0DB0876025E83D3000FEE6FF /* ConfigureCollabViewController.swift in Sources */,
 				0D0C8D922441A1FE00EB51F7 /* CollabRemindersCell.swift in Sources */,
 				0D8096A0250AABBA00469934 /* PresentCopiedAnimationProtocol.swift in Sources */,
 				0D480F0A2597C9BA00E14D1E /* ConfigureBlockViewController.swift in Sources */,
@@ -2137,6 +2154,7 @@
 				0D78658B23E6928000BD4C4D /* PersonalCell.swift in Sources */,
 				0D41738C242E8738006076A5 /* Swift+Gif.swift in Sources */,
 				0DA2A6FD248AC3250051ADAB /* PhotoMessageWithCaptionCell.swift in Sources */,
+				0DB0876325E83EC000FEE6FF /* CollabCreatedProtocol.swift in Sources */,
 				0DEB9726241C480D004F7422 /* DetailsViewController.swift in Sources */,
 				0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */,
 				0D7655D42452909500707867 /* Member.swift in Sources */,
@@ -2170,6 +2188,7 @@
 				0D50A90224785C5700D71654 /* Notification+Extension.swift in Sources */,
 				0D891CC425B51B6000B04C2F /* BlockStatusEnum.swift in Sources */,
 				0D1B1DF72450FCF2008DA9B5 /* PhotoCell.swift in Sources */,
+				0DB0875D25E82A5100FEE6FF /* CollabView+TableViewExtension.swift in Sources */,
 				0D41F5C423124B3700B4B11E /* CollabTwentyFiveMinCell.swift in Sources */,
 				0DD636C224102A1F0026B623 /* BlockCategoryPickerCell.swift in Sources */,
 				0D92BB9C2583444100D9C561 /* CreateCollabLinkCollectionViewCell.swift in Sources */,
@@ -2183,7 +2202,7 @@
 				0D5FD0DF25BDF98100E9BA2D /* PhotosPresentationCollectionViewCell.swift in Sources */,
 				0DAD3B5E24A7C66F00607579 /* ConvoCoverInfoCell.swift in Sources */,
 				0DF609CC25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift in Sources */,
-				0DB52ADC25E3739C00645D27 /* CollabHomeMemberCell2.swift in Sources */,
+				0DB52ADC25E3739C00645D27 /* CollabHomeMemberCell.swift in Sources */,
 				0D5FD11025BF63F700E9BA2D /* LinksPresentationCell.swift in Sources */,
 				0DD636C6241174040026B623 /* BlockNotificationSettingCell.swift in Sources */,
 				0D92BBA22586ED7600D9C561 /* CollabHomeLinksCell.swift in Sources */,
@@ -2199,6 +2218,7 @@
 				0D86013E24993A860027F043 /* ConvoNameInfoCell.swift in Sources */,
 				0DFE5C1C231DF7C10025B4EB /* FriendCell.swift in Sources */,
 				0D480F45259BC59A00E14D1E /* TimeConfigurationCell.swift in Sources */,
+				0DB0876625E8768B00FEE6FF /* ObjectiveConfigurationCell.swift in Sources */,
 				0D77B70B23FB9EFD00AF60CC /* OneThirdBlock2.swift in Sources */,
 				0D41F5C2231203A200B4B11E /* CollabTwentyMinCell.swift in Sources */,
 				0D5FD0DB25BD246100E9BA2D /* PhotosPresentationCell.swift in Sources */,

@@ -712,7 +712,20 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @objc private func createCollab () {
         
-        performSegue(withIdentifier: "moveToCreateACollabView", sender: self)
+//        performSegue(withIdentifier: "moveToCreateACollabView", sender: self)
+        
+        let configureCollabVC = ConfigureCollabViewController()
+        configureCollabVC.title = "Create a Collab"
+        configureCollabVC.configurationView = true
+        
+        configureCollabVC.configureBarButtonItems()
+        
+        configureCollabVC.collabCreatedDelegate = self
+        
+        let configureCollabNavigationController = UINavigationController(rootViewController: configureCollabVC)
+        configureCollabNavigationController.navigationBar.prefersLargeTitles = true
+        
+        self.present(configureCollabNavigationController, animated: true, completion: nil)
     }
     
     @objc private func monthButtonPressed () {
@@ -805,6 +818,14 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
             let collabVC = segue.destination as! CollabViewController
             collabVC.collab = selectedCollab
         }
+    }
+}
+
+extension HomeViewController: CollabCreatedProtocol {
+    
+    func collabCreated (_ collab: Collab) {
+        
+        print("check")
     }
 }
 

@@ -45,6 +45,7 @@ class CollabMemberProfileViewController: UIViewController {
     var memberCellCheckBox: BEMCheckBox?
     var memberCellCheckBoxFrame: CGRect?
     
+    let currentUser = CurrentUser.sharedInstance
     let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseStorage = FirebaseStorage()
     
@@ -53,14 +54,23 @@ class CollabMemberProfileViewController: UIViewController {
             
             retrieveProfilePic(member: member!)
             
-            //Hides addFriendButton if this member is already friends with the currentUser
-            addFriendButton.isHidden = firebaseCollab.friends.contains(where: { $0.userID == member?.userID })
+            if member?.userID != currentUser.userID {
+                
+                //Hides addFriendButton if this member is already friends with the currentUser
+                addFriendButton.isHidden = firebaseCollab.friends.contains(where: { $0.userID == member?.userID })
+                
+                //Hides friendCheckBox if this member isn't already friends with the currentUser
+                friendCheckBox.isHidden = !firebaseCollab.friends.contains(where: { $0.userID == member?.userID })
+                
+                //Turn on the friendCheckBox if this member is already friends with the currentUser
+                friendCheckBox.on = firebaseCollab.friends.contains(where: { $0.userID == member?.userID })
+            }
             
-            //Hides friendCheckBox if this member isn't already friends with the currentUser
-            friendCheckBox.isHidden = !firebaseCollab.friends.contains(where: { $0.userID == member?.userID })
-            
-            //Turn on the friendCheckBox if this member is already friends with the currentUser
-            friendCheckBox.on = firebaseCollab.friends.contains(where: { $0.userID == member?.userID })
+            else {
+                
+                addFriendButton.isHidden = true
+                friendCheckBox.isHidden = true
+            }
         }
     }
     

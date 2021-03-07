@@ -116,6 +116,7 @@ class VoiceMemosPresentationCell: UITableViewCell {
         memoCollectionView.dataSource = self
         memoCollectionView.delegate = self
         
+        memoCollectionView.alpha = 1
         memoCollectionView.backgroundColor = .white
         memoCollectionView.isScrollEnabled = false
         memoCollectionView.delaysContentTouches = false
@@ -139,12 +140,18 @@ class VoiceMemosPresentationCell: UITableViewCell {
         
         if voiceMemos?.count ?? 0 == 0 {
             
+            memoCollectionView.alpha = 0
+            
             configureNoVoiceMemosCell()
         }
         
         else {
             
+            noVoiceMemosImageView.alpha = 0
+            noVoiceMemosLabel.alpha = 0
+            
             configureMemoCollectionView()
+            memoCollectionView.reloadData()
         }
     }
     
@@ -173,8 +180,10 @@ class VoiceMemosPresentationCell: UITableViewCell {
         
         ].forEach({ $0.isActive = true })
         
+        noVoiceMemosImageView.alpha = 1
         noVoiceMemosImageView.contentMode = .scaleAspectFit
         
+        noVoiceMemosLabel.alpha = 1
         noVoiceMemosLabel.text = "No Voice Memos Yet"
         noVoiceMemosLabel.textColor = UIColor(hexString: "222222")
         noVoiceMemosLabel.textAlignment = .center

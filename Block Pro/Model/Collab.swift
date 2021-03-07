@@ -11,19 +11,26 @@ import Foundation
 struct Collab {
     
     var collabID: String = ""
-    var name: String = ""
+    var creator: String?
     var dateCreated: Date?
+    
+    var name: String = ""
+    var objective: String?
     
     var coverPhotoID: String?
     var coverPhoto: UIImage?
     
-    var objective: String?
+    var dates: [String : Date] = [:]
     
-    var members: [Member] = []
+    var addedMembers: [Any] = []
+    
+    var currentMembersIDs: [String] = []
+    var currentMembers: [Member] = []
+    var historicMembers: [Member] = []
+    
     var memberActivity: [String : Any]?
     
-    var dates: [String : Date] = [:]
-    var reminders: [String : Date] = [:]
+    var reminders: [Int] = []
     
     var photoIDs: [String] = []
     var photos: [String : UIImage?] = [:]

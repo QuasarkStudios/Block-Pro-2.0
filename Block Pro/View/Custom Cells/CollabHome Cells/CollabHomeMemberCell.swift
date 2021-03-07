@@ -79,11 +79,12 @@ class CollabHomeMembersCell: UITableViewCell {
         
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: 100)
+        layout.sectionInset = UIEdgeInsets(top: -5, left: 0, bottom: 5, right: 0)
         layout.minimumInteritemSpacing = 0
         layout.minimumLineSpacing = 0
         layout.scrollDirection = .horizontal
         
-        collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .clear
         collectionView.collectionViewLayout = layout
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.isPagingEnabled = true
@@ -96,7 +97,7 @@ class CollabHomeMembersCell: UITableViewCell {
     
     private func configureMembersPageControl () {
         
-        if let members = collab?.members, members.count > 1 {
+        if let members = collab?.currentMembers, members.count > 1 {
             
             if membersPageControl.superview == nil {
                 
@@ -107,9 +108,9 @@ class CollabHomeMembersCell: UITableViewCell {
             
             [
             
-                membersPageControl.topAnchor.constraint(equalTo: membersCollectionView.bottomAnchor, constant: 0/*7.5*/),
+                membersPageControl.topAnchor.constraint(equalTo: membersCollectionView.bottomAnchor, constant: -5),
                 membersPageControl.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-                membersPageControl.widthAnchor.constraint(equalToConstant: 125),
+                membersPageControl.widthAnchor.constraint(equalToConstant: 400),
                 membersPageControl.heightAnchor.constraint(equalToConstant: 27.5)
             
             ].forEach({ $0.isActive = true })
@@ -143,7 +144,7 @@ extension CollabHomeMembersCell: UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if let members = collab?.members {
+        if let members = collab?.currentMembers {
             
             return members.count > 1 ? members.count - 1 : 1
         }
@@ -158,7 +159,7 @@ extension CollabHomeMembersCell: UICollectionViewDataSource, UICollectionViewDel
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "collabHomeMembersCollectionViewCell", for: indexPath) as! CollabHomeMembersCollectionViewCell
         
-        if let members = collab?.members {
+        if let members = collab?.currentMembers {
             
             if members.count > 1 {
                 
@@ -171,8 +172,8 @@ extension CollabHomeMembersCell: UICollectionViewDataSource, UICollectionViewDel
             
             else {
                 
-                cell.member = collab?.members[indexPath.row]
-                cell.memberActivity = collab?.memberActivity?[collab!.members[indexPath.row].userID]
+                cell.member = members[indexPath.row]
+                cell.memberActivity = collab?.memberActivity?[members[indexPath.row].userID]
             }
         }
         

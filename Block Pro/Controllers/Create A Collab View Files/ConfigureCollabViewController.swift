@@ -1,21 +1,21 @@
 //
-//  ConfigureBlockViewController.swift
+//  ConfigureCollabViewController.swift
 //  Block Pro
 //
-//  Created by Nimat Azeez on 12/26/20.
-//  Copyright © 2020 Nimat Azeez. All rights reserved.
+//  Created by Nimat Azeez on 2/25/21.
+//  Copyright © 2021 Nimat Azeez. All rights reserved.
 //
 
 import UIKit
 import MapKit
 import SVProgressHUD
 
-class ConfigureBlockViewController: UIViewController {
-    
+class ConfigureCollabViewController: UIViewController {
+
     let navBarExtensionView = UIView()
     lazy var segmentControl = CustomSegmentControl(parentViewController: self)
     
-    let configureBlockTableView = UITableView()
+    let configureCollabTableView = UITableView()
     
     lazy var editPhotoButton: UIButton = configureEditButton()
     lazy var deletePhotoButton: UIButton = configureDeleteButton()
@@ -25,12 +25,14 @@ class ConfigureBlockViewController: UIViewController {
     var navBarExtensionHeightAnchor: NSLayoutConstraint?
     var tableViewTopAnchor: NSLayoutConstraint?
     
-    let firebaseBlock = FirebaseBlock.sharedInstance
+    let firebaseCollab = FirebaseCollab.sharedInstance
     
     let currentUser = CurrentUser.sharedInstance
-    var collab: Collab?
-    var block = Block()
+    var collab = Collab()
     
+    let formatter = DateFormatter()
+    
+    var configurationView: Bool = true
     var selectedTableView = "details"
     
     var startsCalendarPresented: Bool = false
@@ -46,19 +48,23 @@ class ConfigureBlockViewController: UIViewController {
     
     var zoomingMethods: ZoomingImageViewMethods?
     
-    weak var blockCreatedDelegate: BlockCreatedProtocol?
+    weak var collabCreatedDelegate: CollabCreatedProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        configureBarButtonItems()
-        
+
         self.isModalInPresentation = true
         self.view.backgroundColor = .white
-
-        configureTableView(configureBlockTableView) //Call first to allow for the navigation bar to work properly
+        
+        configureTableView(configureCollabTableView) //Call first to allow for the navigation bar to work properly
         configureNavBarExtensionView()
         configureGestureRecognizors()
+        
+        //Removes the "Lead"/currentUser from the memebers array -- will be added back once the collab is edited
+        var filteredMembers = collab.currentMembers
+        filteredMembers.removeAll(where: { $0.userID == currentUser.userID })
+        
+        collab.addedMembers = filteredMembers
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -72,7 +78,7 @@ class ConfigureBlockViewController: UIViewController {
         //Initializing here allows the animationView to be removed and readded multiple times
         copiedAnimationView = CopiedAnimationView()
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
@@ -84,14 +90,14 @@ class ConfigureBlockViewController: UIViewController {
     
     //MARK: - Configure Bar Button Item
     
-    private func configureBarButtonItems () {
+    func configureBarButtonItems () {
         
-        if self.navigationController?.viewControllers.count == 1 {
-            
-            let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(cancelButtonPressed))
-            cancelBarButtonItem.style = .done
-            
-            self.navigationItem.leftBarButtonItem = cancelBarButtonItem
+        let cancelBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(cancelButtonPressed))
+        cancelBarButtonItem.style = .done
+        
+        self.navigationItem.leftBarButtonItem = cancelBarButtonItem
+        
+        if configurationView {
             
             let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonPressed))
             rightBarButtonItem.style = .done
@@ -134,6 +140,7 @@ class ConfigureBlockViewController: UIViewController {
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
         
         tableView.register(NameConfigurationCell.self, forCellReuseIdentifier: "nameConfigurationCell")
+        tableView.register(ObjectiveConfigurationCell.self, forCellReuseIdentifier: "objectiveConfigurationCell")
         tableView.register(TimeConfigurationCell.self, forCellReuseIdentifier: "timeConfigurationCell")
         tableView.register(MemberConfigurationCell.self, forCellReuseIdentifier: "memberConfigurationCell")
         tableView.register(ReminderConfigurationCell.self, forCellReuseIdentifier: "reminderConfigurationCell")
@@ -163,7 +170,7 @@ class ConfigureBlockViewController: UIViewController {
         navBarExtensionHeightAnchor = navBarExtensionView.heightAnchor.constraint(equalToConstant: 70)
         navBarExtensionHeightAnchor?.isActive = true
         
-        tableViewTopAnchor = configureBlockTableView.topAnchor.constraint(equalTo: navBarExtensionView.bottomAnchor, constant: 0)
+        tableViewTopAnchor = configureCollabTableView.topAnchor.constraint(equalTo: navBarExtensionView.bottomAnchor, constant: 0)
         tableViewTopAnchor?.isActive = true
         
         navBarExtensionView.addSubview(segmentControl)
@@ -218,7 +225,7 @@ class ConfigureBlockViewController: UIViewController {
         downSwipeGesture.delegate = self
         downSwipeGesture.addTarget(self, action: #selector(swipDownGesture))
         self.view.addGestureRecognizer(downSwipeGesture)
-        
+
         let dismissKeyboardTap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         dismissKeyboardTap.cancelsTouchesInView = false
         self.view.addGestureRecognizer(dismissKeyboardTap)
@@ -233,9 +240,9 @@ class ConfigureBlockViewController: UIViewController {
             
             selectedTableView = "details"
             
-            UIView.transition(with: configureBlockTableView, duration: 0.3, options: .transitionCrossDissolve) {
+            UIView.transition(with: configureCollabTableView, duration: 0.3, options: .transitionCrossDissolve) {
                 
-                self.configureBlockTableView.reloadData()
+                self.configureCollabTableView.reloadData()
             }
         }
         
@@ -243,9 +250,9 @@ class ConfigureBlockViewController: UIViewController {
             
             selectedTableView = "attachments"
             
-            UIView.transition(with: configureBlockTableView, duration: 0.3, options: .transitionCrossDissolve) {
+            UIView.transition(with: configureCollabTableView, duration: 0.3, options: .transitionCrossDissolve) {
                 
-                self.configureBlockTableView.reloadData()
+                self.configureCollabTableView.reloadData()
             }
         }
     }
@@ -255,13 +262,13 @@ class ConfigureBlockViewController: UIViewController {
     
     private func photoEdited (newImage: UIImage) {
         
-        for photo in block.photos ?? [:] {
-            
+        for photo in collab.photos {
+
             if photo.value == selectedPhoto {
-                
-                block.photos?[photo.key] = newImage
+
+                collab.photos[photo.key] = newImage
                 selectedPhoto = nil
-                
+
                 break
             }
         }
@@ -274,28 +281,28 @@ class ConfigureBlockViewController: UIViewController {
     
     private func photoDeleted () {
         
-        for photo in block.photos ?? [:] {
-            
+        for photo in collab.photos {
+
             if photo.value == selectedPhoto {
-                
-                block.photoIDs?.removeAll(where: { $0 == photo.key })
-                block.photos?.removeValue(forKey: photo.key)
+
+                collab.photoIDs.removeAll(where: { $0 == photo.key })
+                collab.photos.removeValue(forKey: photo.key)
                 selectedPhoto = nil
-                
+
                 break
             }
         }
-        
-        configureBlockTableView.reloadSections([0], with: .none)
-        
+
+        configureCollabTableView.reloadSections([0], with: .none)
+
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
-            
+
             self.zoomingMethods?.blackBackground?.backgroundColor = .clear
             self.zoomingMethods?.optionalButtons.forEach({ $0?.alpha = 0 })
             self.zoomingMethods?.zoomedInImageView?.alpha = 0
-            
+
         } completion: { (finished: Bool) in
-            
+
             self.zoomingMethods?.blackBackground?.removeFromSuperview()
             self.zoomingMethods?.optionalButtons.forEach({ $0?.removeFromSuperview() })
             self.zoomingMethods?.zoomedInImageView?.removeFromSuperview()
@@ -309,18 +316,21 @@ class ConfigureBlockViewController: UIViewController {
         
         let addMembersVC: AddMembersViewController = AddMembersViewController()
         addMembersVC.membersAddedDelegate = self
-        addMembersVC.headerLabelText = "Assign Members"
+        addMembersVC.headerLabelText = "Add Members"
         
-        var members = collab?.currentMembers
-        members?.removeAll(where: { $0.userID == currentUser.userID })
-        addMembersVC.members = members
+        addMembersVC.members = firebaseCollab.friends
         
         addMembersVC.addedMembers = [:]
         
         //Setting the added members for the AddMembersViewController
-        for member in block.members ?? [] {
+        for member in collab.addedMembers {
             
-            if member.userID != currentUser.userID {
+            if let friend = member as? Friend {
+                
+                addMembersVC.addedMembers?[friend.userID] = friend
+            }
+            
+            else if let member = member as? Member {
                 
                 addMembersVC.addedMembers?[member.userID] = member
             }
@@ -370,7 +380,7 @@ class ConfigureBlockViewController: UIViewController {
     
     @objc private func swipDownGesture () {
         
-        if configureBlockTableView.contentOffset.y <= 0 {
+        if configureCollabTableView.contentOffset.y <= 0 {
             
             //Expands the navBarExtensionView when the view is swipped down
             navBarExtensionHeightAnchor?.constant = 75
@@ -417,11 +427,11 @@ class ConfigureBlockViewController: UIViewController {
         
         SVProgressHUD.show()
         
-        block.blockID = UUID().uuidString
-        
-        if let name = block.name, name.leniantValidationOfTextEntered() {
-            
-            firebaseBlock.createCollabBlock(collabID: collab?.collabID ?? "", block: block) { [weak self] (error) in
+        collab.collabID = UUID().uuidString
+
+        if collab.name.leniantValidationOfTextEntered() {
+
+            firebaseCollab.createCollab(collab: collab) { [weak self] (error) in
                 
                 if error != nil {
                     
@@ -431,18 +441,18 @@ class ConfigureBlockViewController: UIViewController {
                 else {
                     
                     let notificationScheduler = NotificationScheduler()
-                    notificationScheduler.scheduleCollabBlockNotifications(collab: self!.collab, self!.block)
+                    notificationScheduler.scheduleCollabNotifications(collab: self!.collab)
                     
-                    self?.blockCreatedDelegate?.blockCreated(self!.block)
-                    
+                    self?.collabCreatedDelegate?.collabCreated(self!.collab)
+
                     self?.dismiss(animated: true, completion: nil)
                 }
             }
         }
-        
+
         else {
-            
-            SVProgressHUD.showError(withStatus: "Please enter a name for this Block")
+
+            SVProgressHUD.showError(withStatus: "Please enter a name for this Collab")
         }
     }
     
@@ -453,10 +463,10 @@ class ConfigureBlockViewController: UIViewController {
         
         SVProgressHUD.show()
         
-        if let name = block.name, name.leniantValidationOfTextEntered() {
-            
-            firebaseBlock.editCollabBlock(collabID: collab?.collabID ?? "", block: block) { [weak self] (error) in
-                
+        if collab.name.leniantValidationOfTextEntered() {
+
+            firebaseCollab.editCollab(collab: collab) { [weak self] (error) in
+
                 if error != nil {
                     
                     SVProgressHUD.showError(withStatus: error?.localizedDescription)
@@ -466,14 +476,19 @@ class ConfigureBlockViewController: UIViewController {
                     
                     let notificationScheduler = NotificationScheduler()
                     
-                    notificationScheduler.removePendingBlockNotifications(self!.block.blockID!) {
-                        
-                        notificationScheduler.scheduleCollabBlockNotifications(collab: self!.collab, self!.block)
+                    notificationScheduler.removePendingCollabNotifications(collabID: self!.collab.collabID) {
+
+                        notificationScheduler.scheduleCollabNotifications(collab: self!.collab)
                     }
-                    
-                    self?.navigationController?.popViewController(animated: true)
+
+                    self?.dismiss(animated: true, completion: nil)
                 }
             }
+        }
+        
+        else {
+            
+            SVProgressHUD.showError(withStatus: "Please enter a name for this Collab")
         }
     }
 }
@@ -481,13 +496,13 @@ class ConfigureBlockViewController: UIViewController {
 
 //MARK: - TableView Datasource and Delegate Extension
 
-extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelegate {
+extension ConfigureCollabViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if selectedTableView == "details" {
             
-            return 10
+            return 12
         }
         
         else {
@@ -505,7 +520,7 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 let cell = tableView.dequeueReusableCell(withIdentifier: "nameConfigurationCell", for: indexPath) as! NameConfigurationCell
                 cell.selectionStyle = .none
                 
-                cell.block = block
+                cell.collab = collab
                 cell.nameConfigurationDelegate = self
                 
                 return cell
@@ -513,40 +528,11 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
             
             else if indexPath.row == 3 {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "timeConfigurationCell", for: indexPath) as! TimeConfigurationCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "objectiveConfigurationCell", for: indexPath) as! ObjectiveConfigurationCell
                 cell.selectionStyle = .none
                 
-                cell.titleLabel.text = "Starts"
-                
                 cell.collab = collab
-                
-                //Signifying it hasn't been set yet
-                if block.starts == nil {
-                    
-                    if let deadline = collab?.dates["deadline"] {
-                        
-                        //If the current date is before the deadline of the collab
-                        if Date() < Calendar.current.date(byAdding: .minute, value: -5, to: deadline) ?? Date() {
-                            
-                            block.starts = Date().adjustTime(roundDown: true)
-                        }
-                        
-                        //If the current date is after the deadline of the collab
-                        else {
-                            
-                            block.starts = (Calendar.current.date(byAdding: .minute, value: -5, to: deadline) ?? Date()).adjustTime(roundDown: true)
-                        }
-                    }
-                    
-                    else {
-                        
-                        block.starts = Date().adjustTime(roundDown: true)
-                    }
-                }
-                
-                cell.starts = block.starts
-                
-                cell.timeConfigurationDelegate = self
+                cell.objectiveConfigurationDelegate = self
                 
                 return cell
             }
@@ -556,36 +542,20 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 let cell = tableView.dequeueReusableCell(withIdentifier: "timeConfigurationCell", for: indexPath) as! TimeConfigurationCell
                 cell.selectionStyle = .none
                 
-                cell.titleLabel.text = "Ends"
+                cell.titleLabel.text = "Starts"
                 
-                cell.collab = collab
-                
-                //Signifying it hasn't been set yet
-                if block.ends == nil {
+                //If the collab has already had a startTime set
+                if let startTime = collab.dates["startTime"]  {
                     
-                    if let deadline = collab?.dates["deadline"] {
-                        
-                        //If the current date is before the deadline of the collab
-                        if Date() < Calendar.current.date(byAdding: .minute, value: -5, to: deadline) ?? Date() {
-                            
-                            block.ends = Date().adjustTime(roundDown: false)
-                        }
-                        
-                        //If the current date is after the deadline of the collab
-                        else {
-                            
-                            block.ends = (Calendar.current.date(byAdding: .minute, value: -5, to: deadline) ?? Date()).adjustTime(roundDown: false)
-                        }
-                    }
-                    
-                    else {
-                        
-                        block.ends = Date().adjustTime(roundDown: false)
-                    }
+                    cell.starts = startTime
                 }
                 
-                cell.ends = block.ends
-                
+                else {
+                    
+                    collab.dates["startTime"] = Date().adjustTime(roundDown: true)
+                    cell.starts = collab.dates["startTime"]
+                }
+
                 cell.timeConfigurationDelegate = self
                 
                 return cell
@@ -593,32 +563,55 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
             
             else if indexPath.row == 7 {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "memberConfigurationCell", for: indexPath) as! MemberConfigurationCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "timeConfigurationCell", for: indexPath) as! TimeConfigurationCell
                 cell.selectionStyle = .none
                 
-                cell.memberConfigurationDelegate = self
+                cell.titleLabel.text = "Deadline"
                 
-                cell.addMembersLabel.text = "Assign Members"
+                //If the collab has already had a deadline set
+                if let deadline = collab.dates["deadline"] {
+                    
+                    cell.ends = deadline
+                }
                 
-                cell.editingCell = !(self.navigationController?.viewControllers.count == 1)
+                else {
+                    
+                    collab.dates["deadline"] = Date().addingTimeInterval(86700).adjustTime(roundDown: true)
+                    cell.ends = collab.dates["deadline"]
+                }
                 
-                cell.collab = collab
-                cell.members = block.members
+                cell.timeConfigurationDelegate = self
+                
                 
                 return cell
             }
             
             else if indexPath.row == 9 {
                 
+                let cell = tableView.dequeueReusableCell(withIdentifier: "memberConfigurationCell", for: indexPath) as! MemberConfigurationCell
+                cell.selectionStyle = .none
+                
+                cell.addMembersLabel.text = "Add Members"
+                
+                cell.collab = collab
+                cell.members = collab.addedMembers
+                
+                cell.memberConfigurationDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 11 {
+                
                 let cell = tableView.dequeueReusableCell(withIdentifier: "reminderConfigurationCell", for: indexPath) as! ReminderConfigurationCell
                 cell.selectionStyle = .none
                 
-                cell.startTime = block.starts
+                cell.startTime = collab.dates["startTime"] ?? Date().adjustTime(roundDown: true)
                 
-                cell.selectedReminders = block.reminders ?? []
-                
-                cell.remindersCountLabel.alpha = block.reminders?.count ?? 0 > 0 ? 1 : 0
-                cell.remindersCountLabel.text = "\(block.reminders?.count ?? 0)/2"
+                cell.selectedReminders = collab.reminders
+
+                cell.remindersCountLabel.alpha = collab.reminders.count > 0 ? 1 : 0
+                cell.remindersCountLabel.text = "\(collab.reminders.count)/2"
                 
                 cell.reminderConfigurationDelegate = self
                 
@@ -633,8 +626,8 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 let cell = tableView.dequeueReusableCell(withIdentifier: "photosConfigurationCell", for: indexPath) as! PhotosConfigurationCell
                 cell.selectionStyle = .none
                 
-                cell.selectedPhotoIDs = block.photoIDs
-                cell.selectedPhotos = block.photos
+                cell.selectedPhotoIDs = collab.photoIDs
+                cell.selectedPhotos = collab.photos
                 
                 cell.photosConfigurationDelegate = self
                 cell.zoomInDelegate = self
@@ -648,7 +641,7 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 let cell = tableView.dequeueReusableCell(withIdentifier: "locationsConfigurationCell", for: indexPath) as! LocationsConfigurationCell
                 cell.selectionStyle = .none
                 
-                cell.selectedLocations = block.locations
+                cell.selectedLocations = collab.locations
                 
                 cell.locationsConfigurationDelegate = self
                 cell.locationSelectedDelegate = self
@@ -662,7 +655,7 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 let cell = tableView.dequeueReusableCell(withIdentifier: "voiceMemosConfigurationCell", for: indexPath) as! VoiceMemosConfigurationCell
                 cell.selectionStyle = .none
                 
-                cell.voiceMemos = block.voiceMemos
+                cell.voiceMemos = collab.voiceMemos
                 
                 cell.voiceMemosConfigurationDelegate = self
                 
@@ -674,14 +667,14 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 let cell = tableView.dequeueReusableCell(withIdentifier: "linksConfigurationCell", for: indexPath) as! LinksConfigurationCell
                 cell.selectionStyle = .none
                 
-                cell.links = block.links
+                cell.links = collab.links
                 
                 cell.linksConfigurationDelegate = self
                 
                 return cell
             }
         }
-            
+        
         let cell = UITableViewCell()
         cell.selectionStyle = .none
         return cell
@@ -702,9 +695,14 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 case 1:
                     
                     return 80
+                   
+                //Objective Configuration Cell
+                case 3:
+                
+                    return 120
                     
                 //StartTime Configuration Cell
-                case 3:
+                case 5:
                     
                     if startsCalendarPresented {
                         
@@ -726,7 +724,7 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                     }
                 
                 //EndTime Configuration Cell
-                case 5:
+                case 7:
                     
                     if endsCalendarPresented {
                         
@@ -748,46 +746,25 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                     }
                  
                 //Member Configuration Cell
-                case 7:
+                case 9:
                     
-                    if self.navigationController?.viewControllers.count == 1 {
+                    if collab.addedMembers.count == 0 {
                         
-                        if (collab?.currentMembers.count ?? 0 > 1) && (block.members?.count ?? 0 == (collab?.currentMembers.count ?? 0) - 1) {
-                            
-                            return 160
-                        }
+                        return 85
+                    }
+                    
+                    else if collab.addedMembers.count == 5 {
                         
-                        else if block.members?.count ?? 0 > 0 {
-                            
-                            return 225
-                        }
-                        
-                        else {
-                            
-                            return 85
-                        }
+                        return 165
                     }
                     
                     else {
                         
-                        if block.members?.count ?? 0 == collab?.currentMembers.count ?? 0 {
-                            
-                            return 160
-                        }
-                        
-                        else if block.members?.count ?? 0 > 0 {
-                            
-                            return 225
-                        }
-                        
-                        else {
-                            
-                            return 85
-                        }
+                        return 225
                     }
                 
                 //Reminder Configuration Cell
-                case 9:
+                case 11:
                     
                     return 130
                  
@@ -811,11 +788,11 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 //Photos Configuration Cell
                 case 1:
                     
-                    if block.photos?.count ?? 0 > 0 {
+                    if collab.photos.count > 0 {
                         
                         let heightOfPhotosLabelAndBottomAnchor: CGFloat = 25
                         
-                        if block.photos?.count ?? 0 <= 3 {
+                        if collab.photos.count <= 3 {
                             
                             //The item size plus the top and bottom edge insets, i.e. 20
                             let heightOfCollectionView: CGFloat = itemSize + 20
@@ -827,7 +804,7 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                             
                         }
                         
-                        else if block.photos?.count ?? 0 < 6 {
+                        else if collab.photos.count < 6 {
                             
                             //The height of the two rows of items that'll be displayed, the edge insets, i.e. 20, and the line spacing i.e. 5
                             let heightOfCollectionView: CGFloat = (itemSize * 2) + 20 + 5
@@ -855,17 +832,17 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 //Locations Configuration Cell
                 case 3:
                     
-                    if block.locations?.count ?? 0 == 0 {
+                    if collab.locations?.count ?? 0 == 0 {
                         
                         return 85
                     }
                     
-                    else if block.locations?.count ?? 0 == 1 {
+                    else if collab.locations?.count ?? 0 == 1 {
                         
                         return 285
                     }
                     
-                    else if block.locations?.count ?? 0 == 2 {
+                    else if collab.locations?.count ?? 0 == 2 {
                        
                         return 315
                     }
@@ -878,12 +855,12 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 //Voice Memos Configuration Cell
                 case 5:
                     
-                    if block.voiceMemos?.count ?? 0 == 0 {
+                    if collab.voiceMemos?.count ?? 0 == 0 {
                         
                         return audioVisualizerPresent ? 200 : 85
                     }
                     
-                    else if block.voiceMemos?.count ?? 0 < 3 {
+                    else if collab.voiceMemos?.count ?? 0 < 3 {
                     
                         return audioVisualizerPresent ? floor(itemSize) + 194 : floor(itemSize) + 105
                     }
@@ -896,17 +873,17 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                 //Links Configuration Cell
                 case 7:
                     
-                    if block.links?.count ?? 0 == 0 {
+                    if collab.links?.count ?? 0 == 0 {
                         
                         return 85
                     }
                     
-                    else if block.links?.count ?? 0 < 3 {
+                    else if collab.links?.count ?? 0 < 3 {
                         
                         return 185
                     }
                     
-                    else if block.links?.count ?? 0 < 6 {
+                    else if collab.links?.count ?? 0 < 6 {
                         
                         return 212.5
                     }
@@ -926,11 +903,12 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
-        if let reminderCell = cell as? ReminderConfigurationCell, var blockReminders = block.reminders {
+        if let reminderCell = cell as? ReminderConfigurationCell {
             
-            blockReminders.sort()
+            var collabReminders = collab.reminders
+            collabReminders.sort()
             
-            if let firstReminder = blockReminders.first {
+            if let firstReminder = collabReminders.first {
                 
                 reminderCell.remindersCollectionView.scrollToItem(at: IndexPath(item: firstReminder, section: 0), at: .centeredHorizontally, animated: false)
             }
@@ -976,7 +954,7 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
 
 //MARK: - UIGesture Recognizor Delegate
 
-extension ConfigureBlockViewController: UIGestureRecognizerDelegate {
+extension ConfigureCollabViewController: UIGestureRecognizerDelegate {
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
@@ -986,20 +964,31 @@ extension ConfigureBlockViewController: UIGestureRecognizerDelegate {
 
 //MARK: - Name Configuration Protocol Extension
 
-extension ConfigureBlockViewController: NameConfigurationProtocol {
+extension ConfigureCollabViewController: NameConfigurationProtocol {
     
     func nameEntered (_ text: String) {
         
-        block.name = text
+        collab.name = text
+    }
+}
+
+
+//MARK: - Objective Configuration Protocol Extension
+
+extension ConfigureCollabViewController: ObjectiveConfigurationProtocol {
+    
+    func objectiveEntered(_ text: String) {
+        
+        collab.objective = text
     }
 }
 
 
 //MARK: - Time Configuration Protocol Extension
 
-extension ConfigureBlockViewController: TimeConfigurationProtocol {
+extension ConfigureCollabViewController: TimeConfigurationProtocol {
     
-    func presentCalendar (startsCalendar: Bool) {
+    func presentCalendar(startsCalendar: Bool) {
         
         //If the starts calendar should be presented
         if startsCalendar {
@@ -1008,7 +997,7 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
             if endsCalendarPresented {
                 
                 //Removing the calendar from ends cell
-                if let cell = self.configureBlockTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? TimeConfigurationCell {
+                if let cell = self.configureCollabTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? TimeConfigurationCell {
                     
                     cell.reconfigureCellWithoutCalendar()
                 }
@@ -1018,14 +1007,14 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
                     
                     self.endsCalendarPresented = false
                     
-                    self.configureBlockTableView.beginUpdates()
-                    self.configureBlockTableView.endUpdates()
+                    self.configureCollabTableView.beginUpdates()
+                    self.configureCollabTableView.endUpdates()
                 }
                 
                 //Configuring the calendar in the starts cell after the ends calendar has been removed
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
                     
-                    if let cell = self.configureBlockTableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? TimeConfigurationCell {
+                    if let cell = self.configureCollabTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? TimeConfigurationCell {
                         
                         cell.reconfigureCellWithCalendar()
                     }
@@ -1036,10 +1025,10 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
                     
                     self.startsCalendarPresented = true
                     
-                    self.configureBlockTableView.beginUpdates()
-                    self.configureBlockTableView.endUpdates()
+                    self.configureCollabTableView.beginUpdates()
+                    self.configureCollabTableView.endUpdates()
                     
-                    self.configureBlockTableView.scrollToRow(at: IndexPath(row: 3, section: 0), at: .top, animated: true)
+                    self.configureCollabTableView.scrollToRow(at: IndexPath(row: 5, section: 0), at: .top, animated: true)
                 }
             }
             
@@ -1047,7 +1036,7 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
             else {
                 
                 //Configuring the starts calendar in the starts cell
-                if let cell = self.configureBlockTableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? TimeConfigurationCell {
+                if let cell = self.configureCollabTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? TimeConfigurationCell {
                     
                     cell.reconfigureCellWithCalendar()
                 }
@@ -1057,10 +1046,10 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
                     
                     self.startsCalendarPresented = true
                     
-                    self.configureBlockTableView.beginUpdates()
-                    self.configureBlockTableView.endUpdates()
+                    self.configureCollabTableView.beginUpdates()
+                    self.configureCollabTableView.endUpdates()
                     
-                    self.configureBlockTableView.scrollToRow(at: IndexPath(row: 3, section: 0), at: .top, animated: true)
+                    self.configureCollabTableView.scrollToRow(at: IndexPath(row: 5, section: 0), at: .top, animated: true)
                 }
             }
         }
@@ -1070,7 +1059,7 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
             
             if startsCalendarPresented {
                 
-                if let cell = self.configureBlockTableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? TimeConfigurationCell {
+                if let cell = self.configureCollabTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? TimeConfigurationCell {
                     
                     cell.reconfigureCellWithoutCalendar()
                 }
@@ -1079,13 +1068,13 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
                     
                     self.startsCalendarPresented = false
                     
-                    self.configureBlockTableView.beginUpdates()
-                    self.configureBlockTableView.endUpdates()
+                    self.configureCollabTableView.beginUpdates()
+                    self.configureCollabTableView.endUpdates()
                 }
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.55) {
                     
-                    if let cell = self.configureBlockTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? TimeConfigurationCell {
+                    if let cell = self.configureCollabTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? TimeConfigurationCell {
                         
                         cell.reconfigureCellWithCalendar()
                     }
@@ -1095,16 +1084,16 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
                     
                     self.endsCalendarPresented = true
                     
-                    self.configureBlockTableView.beginUpdates()
-                    self.configureBlockTableView.endUpdates()
+                    self.configureCollabTableView.beginUpdates()
+                    self.configureCollabTableView.endUpdates()
                     
-                    self.configureBlockTableView.scrollToRow(at: IndexPath(row: 5, section: 0), at: .top, animated: true)
+                    self.configureCollabTableView.scrollToRow(at: IndexPath(row: 7, section: 0), at: .top, animated: true)
                 }
             }
             
             else {
                 
-                if let cell = self.configureBlockTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? TimeConfigurationCell {
+                if let cell = self.configureCollabTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? TimeConfigurationCell {
                     
                     cell.reconfigureCellWithCalendar()
                 }
@@ -1113,16 +1102,16 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
                     
                     self.endsCalendarPresented = true
                     
-                    self.configureBlockTableView.beginUpdates()
-                    self.configureBlockTableView.endUpdates()
+                    self.configureCollabTableView.beginUpdates()
+                    self.configureCollabTableView.endUpdates()
                     
-                    self.configureBlockTableView.scrollToRow(at: IndexPath(row: 5, section: 0), at: .top, animated: true)
+                    self.configureCollabTableView.scrollToRow(at: IndexPath(row: 7, section: 0), at: .top, animated: true)
                 }
             }
         }
     }
     
-    func dismissCalendar (startsCalendar: Bool) {
+    func dismissCalendar(startsCalendar: Bool) {
         
         if startsCalendar {
             
@@ -1134,8 +1123,8 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
             endsCalendarPresented = false
         }
         
-        configureBlockTableView.beginUpdates()
-        configureBlockTableView.endUpdates()
+        configureCollabTableView.beginUpdates()
+        configureCollabTableView.endUpdates()
         
         //Expands the navBarExtensionView when the view is swipped down
         navBarExtensionHeightAnchor?.constant = 75
@@ -1146,89 +1135,52 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
         }
     }
     
-    func expandCalendarCellHeight (expand: Bool) {
+    func expandCalendarCellHeight(expand: Bool) {
         
         calendarExpanded = expand
         
-        configureBlockTableView.beginUpdates()
-        configureBlockTableView.endUpdates()
+        configureCollabTableView.beginUpdates()
+        configureCollabTableView.endUpdates()
     }
     
-    func timeEntered (startTime: Date?, endTime: Date?) {
+    func timeEntered(startTime: Date?, endTime: Date?) {
         
-        let formatter = DateFormatter()
+        if let time = startTime, let deadline = collab.dates["deadline"] {
         
-        if let time = startTime {
+            collab.dates["startTime"] = time
             
-            block.starts = time //Setting the selected start time
-            
-            //Ensures that the blocks dates match and that the start time is before the end time
-            formatter.dateFormat = "yyyy MM dd "
-            let newDate = formatter.string(from: time)
-            
-            formatter.dateFormat = "h:mm a"
-            let endTime = formatter.string(from: block.ends ?? Date())
-
-            formatter.dateFormat = "yyyy MM dd h:mm a"
-            
-            //If the end time is before the start time, likely because of the time and not the date
-            if let adjustedEndTime = formatter.date(from: newDate + endTime), adjustedEndTime <= time {
+            if time >= deadline {
                 
-                //Incrementing the end time by 5 minutes
-                block.ends = Calendar.current.date(byAdding: .minute, value: 5, to: time)
-            }
-            
-            else {
+                collab.dates["deadline"] = Calendar.current.date(byAdding: .day, value: 1, to: time)
                 
-                block.ends = formatter.date(from: newDate + endTime)
-            }
-            
-            //Setting the end time of the endTime configuration cell
-            if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? TimeConfigurationCell {
-                
-                cell.ends = block.ends
+                if let cell = configureCollabTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? TimeConfigurationCell {
+                    
+                    cell.ends = collab.dates["deadline"]
+                }
             }
         }
         
-        else if let time = endTime {
+        else if let time = endTime, let startTime = collab.dates["startTime"] {
             
-            block.ends = time //Setting the selected end time
+            collab.dates["deadline"] = time
             
-            //Ensures that the blocks dates match and that the start time is before the end time
-            formatter.dateFormat = "yyyy MM dd "
-            let newDate = formatter.string(from: time)
-            
-            formatter.dateFormat = "h:mm a"
-            let startTime = formatter.string(from: block.starts ?? Date())
-
-            formatter.dateFormat = "yyyy MM dd h:mm a"
-            
-            //If the end time is before the start time, likely because of the time and not the date
-            if let adjustedStartTime = formatter.date(from: newDate + startTime), adjustedStartTime >= time {
+            if time <= startTime {
                 
-                //Decrementing the start time by 5 minutes
-                block.starts = Calendar.current.date(byAdding: .minute, value: -5, to: time)
-            }
-            
-            else {
+                collab.dates["startTime"] = Calendar.current.date(byAdding: .day, value: -1, to: time)
                 
-                block.starts = formatter.date(from: newDate + startTime)
-            }
-            
-            //Setting the start time of the startTime configuration cell
-            if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 3, section: 0)) as? TimeConfigurationCell {
-                
-                cell.starts = block.starts
+                if let cell = configureCollabTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? TimeConfigurationCell {
+                    
+                    cell.starts = collab.dates["startTime"]
+                }
             }
         }
         
-        //Setting the start time for the reminder configuration cell
-        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 9, section: 0)) as? ReminderConfigurationCell {
+        if let cell = configureCollabTableView.cellForRow(at: IndexPath(row: 11, section: 0)) as? ReminderConfigurationCell {
             
-            cell.startTime = block.starts
+            cell.startTime = collab.dates["startTime"]
             
-            configureBlockTableView.beginUpdates()
-            configureBlockTableView.endUpdates()
+            configureCollabTableView.beginUpdates()
+            configureCollabTableView.endUpdates()
         }
     }
 }
@@ -1236,7 +1188,7 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
 
 //MARK: - Member Configuration Protocol Extension
 
-extension ConfigureBlockViewController: MemberConfigurationProtocol, MembersAdded {
+extension ConfigureCollabViewController: MemberConfigurationProtocol, MembersAdded {
     
     func moveToAddMemberView () {
         
@@ -1245,71 +1197,89 @@ extension ConfigureBlockViewController: MemberConfigurationProtocol, MembersAdde
     
     func membersAdded(_ addedMembers: [Any]) {
         
-        if block.members == nil {
-            
-            block.members = []
-        }
-        
-        else {
-            
-            block.members?.removeAll(where: { $0.userID != currentUser.userID })
-        }
+        collab.addedMembers = []
         
         for addedMember in addedMembers {
+
+            if let friend = addedMember as? Friend {
+
+                collab.addedMembers.append(friend)
+            }
             
-            if let member = addedMember as? Member {
+            else if let member = addedMember as? Member {
                 
-                block.members?.append(member)
+                collab.addedMembers.append(member)
             }
         }
-        
+
         self.navigationController?.popViewController(animated: true)
-        
-        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? MemberConfigurationCell {
-            
-            cell.members = block.members
+
+        if let cell = configureCollabTableView.cellForRow(at: IndexPath(row: 9, section: 0)) as? MemberConfigurationCell {
+
+            cell.members = collab.addedMembers
         }
-        
-        configureBlockTableView.beginUpdates()
-        configureBlockTableView.endUpdates()
-        
-        configureBlockTableView.scrollToRow(at: IndexPath(row: 7, section: 0), at: .top, animated: true)
+
+        configureCollabTableView.beginUpdates()
+        configureCollabTableView.endUpdates()
+
+        configureCollabTableView.scrollToRow(at: IndexPath(row: 9, section: 0), at: .top, animated: true)
     }
     
     func memberDeleted (_ userID: String) {
         
-        block.members?.removeAll(where: { $0.userID == userID })
+        var filteredMembers: [Any] = []
         
-        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? MemberConfigurationCell {
+        for addedMember in collab.addedMembers {
             
-            cell.members = block.members
+            if let friend = addedMember as? Friend {
+                
+                if friend.userID != userID {
+                    
+                    filteredMembers.append(friend)
+                }
+            }
+            
+            else if let member = addedMember as? Member {
+                
+                if member.userID != userID {
+                    
+                    filteredMembers.append(member)
+                }
+            }
         }
         
-        configureBlockTableView.beginUpdates()
-        configureBlockTableView.endUpdates()
+        collab.addedMembers = filteredMembers
+
+        if let cell = configureCollabTableView.cellForRow(at: IndexPath(row: 9, section: 0)) as? MemberConfigurationCell {
+            
+            cell.members = collab.addedMembers
+        }
+
+        configureCollabTableView.beginUpdates()
+        configureCollabTableView.endUpdates()
     }
 }
 
 
 //MARK: - Reminder Configuration Protocol Extension
 
-extension ConfigureBlockViewController: ReminderConfigurationProtocol {
+extension ConfigureCollabViewController: ReminderConfigurationProtocol {
     
     func reminderSelected (_ selectedReminders: [Int]) {
         
-        block.reminders = selectedReminders
+        collab.reminders = selectedReminders
     }
     
     func reminderDeleted (_ deletedReminder: Int) {
         
-        block.reminders?.removeAll(where: { $0 == deletedReminder })
+        collab.reminders.removeAll(where: { $0 == deletedReminder })
     }
 }
 
 
 //MARK: - Photos Configuration Protocol Extension
 
-extension ConfigureBlockViewController: PhotosConfigurationProtocol, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+extension ConfigureCollabViewController: PhotosConfigurationProtocol, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     func presentAddPhotoAlert() {
         
@@ -1375,22 +1345,9 @@ extension ConfigureBlockViewController: PhotosConfigurationProtocol, UIImagePick
             
             if !photoEditing {
                 
-                if block.photos == nil {
-                    
-                    block.photoIDs = []
-                    block.photos = [:]
-                    
-                    let photoID = UUID().uuidString
-                    block.photoIDs?.append(photoID)
-                    block.photos?[photoID] = selectedImage
-                }
-                
-                else {
-                    
-                    let photoID = UUID().uuidString
-                    block.photoIDs?.append(photoID)
-                    block.photos?[photoID] = selectedImage
-                }
+                let photoID = UUID().uuidString
+                collab.photoIDs.append(photoID)
+                collab.photos[photoID] = selectedImage
             }
             
             else {
@@ -1398,7 +1355,7 @@ extension ConfigureBlockViewController: PhotosConfigurationProtocol, UIImagePick
                 photoEdited(newImage: selectedImage)
             }
             
-            configureBlockTableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
+            configureCollabTableView.reloadRows(at: [IndexPath(row: 1, section: 0)], with: .none)
         }
         
         else {
@@ -1420,7 +1377,7 @@ extension ConfigureBlockViewController: PhotosConfigurationProtocol, UIImagePick
 
 //MARK: - Locations Configuration Protocol Extension
 
-extension ConfigureBlockViewController: LocationsConfigurationProtocol {
+extension ConfigureCollabViewController: LocationsConfigurationProtocol {
     
     func attachLocationSelected() {
         
@@ -1431,41 +1388,41 @@ extension ConfigureBlockViewController: LocationsConfigurationProtocol {
 
 //MARK: - Location Saved Protocol Extension
 
-extension ConfigureBlockViewController: LocationSavedProtocol {
+extension ConfigureCollabViewController: LocationSavedProtocol {
     
     func locationSaved(_ location: Location?) {
         
         //If the location hasn't been added yet
-        if block.locations?.first(where: { $0.locationID == location?.locationID}) == nil {
+        if collab.locations?.first(where: { $0.locationID == location?.locationID}) == nil {
             
-            if location != nil && block.locations == nil {
+            if location != nil && collab.locations == nil {
                 
-                block.locations = []
-                block.locations?.append(location!)
+                collab.locations = []
+                collab.locations?.append(location!)
             }
             
             else if location != nil {
                 
-                block.locations?.append(location!)
+                collab.locations?.append(location!)
             }
         }
         
         //If the location has been added
         else {
             
-            block.locations?.removeAll(where: { $0.locationID == location?.locationID })
+            collab.locations?.removeAll(where: { $0.locationID == location?.locationID })
             
             if location != nil {
                 
-                block.locations?.append(location!)
+                collab.locations?.append(location!)
             }
         }
         
-        configureBlockTableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: .none)
+        configureCollabTableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: .none)
     }
 }
 
-extension ConfigureBlockViewController: LocationSelectedProtocol {
+extension ConfigureCollabViewController: LocationSelectedProtocol {
     
     func locationSelected (_ location: Location?) {
         
@@ -1475,16 +1432,16 @@ extension ConfigureBlockViewController: LocationSelectedProtocol {
     }
 }
 
-extension ConfigureBlockViewController: CancelLocationSelectionProtocol {
+extension ConfigureCollabViewController: CancelLocationSelectionProtocol {
     
     func selectionCancelled(_ locationID: String?) {
         
         if locationID != nil {
             
-            block.locations?.removeAll(where: { $0.locationID == locationID! })
+            collab.locations?.removeAll(where: { $0.locationID == locationID! })
             selectedLocation = nil
             
-            configureBlockTableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: .fade)
+            configureCollabTableView.reloadRows(at: [IndexPath(row: 3, section: 0)], with: .fade)
         }
     }
 }
@@ -1492,140 +1449,139 @@ extension ConfigureBlockViewController: CancelLocationSelectionProtocol {
 
 //MARK: - Voice Memos Configuration Protocol Extension
 
-extension ConfigureBlockViewController: VoiceMemosConfigurationProtocol {
+extension ConfigureCollabViewController: VoiceMemosConfigurationProtocol {
     
     func attachMemoSelected () {
         
         audioVisualizerPresent = true
         
-        configureBlockTableView.beginUpdates()
-        configureBlockTableView.endUpdates()
+        configureCollabTableView.beginUpdates()
+        configureCollabTableView.endUpdates()
     }
     
     func recordingCancelled () {
         
         audioVisualizerPresent = false
         
-        configureBlockTableView.beginUpdates()
-        configureBlockTableView.endUpdates()
+        configureCollabTableView.beginUpdates()
+        configureCollabTableView.endUpdates()
     }
     
     func voiceMemoSaved(_ voiceMemo: VoiceMemo) {
         
         audioVisualizerPresent = false
         
-        if block.voiceMemos == nil {
+        if collab.voiceMemos == nil {
             
-            block.voiceMemos = []
+            collab.voiceMemos = []
         }
         
-        block.voiceMemos?.append(voiceMemo)
+        collab.voiceMemos?.append(voiceMemo)
         
-        configureBlockTableView.beginUpdates()
-        configureBlockTableView.endUpdates()
+        configureCollabTableView.beginUpdates()
+        configureCollabTableView.endUpdates()
     }
     
     func voiceMemoNameChanged (_ voiceMemoID: String, _ name: String?){
         
-        if let index = block.voiceMemos?.firstIndex(where: { $0.voiceMemoID == voiceMemoID }) {
+        if let index = collab.voiceMemos?.firstIndex(where: { $0.voiceMemoID == voiceMemoID }) {
             
             if name != nil, name!.leniantValidationOfTextEntered() {
                 
-                block.voiceMemos?[index].name = name
+                collab.voiceMemos?[index].name = name
             }
             
             else {
                 
-                block.voiceMemos?[index].name = nil
+                collab.voiceMemos?[index].name = nil
             }
         }
     }
     
     func voiceMemoDeleted (_ voiceMemo: VoiceMemo) {
         
-        block.voiceMemos?.removeAll(where: { $0.voiceMemoID == voiceMemo.voiceMemoID })
+        collab.voiceMemos?.removeAll(where: { $0.voiceMemoID == voiceMemo.voiceMemoID })
             
-        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? VoiceMemosConfigurationCell {
+        if let cell = configureCollabTableView.cellForRow(at: IndexPath(row: 5, section: 0)) as? VoiceMemosConfigurationCell {
             
-            cell.voiceMemos = block.voiceMemos
+            cell.voiceMemos = collab.voiceMemos
         }
 
-        configureBlockTableView.beginUpdates()
-        configureBlockTableView.endUpdates()
+        configureCollabTableView.beginUpdates()
+        configureCollabTableView.endUpdates()
     }
 }
 
 
 //MARK: - Links Configuration Protocol Extension
 
-extension ConfigureBlockViewController: LinksConfigurationProtocol {
+extension ConfigureCollabViewController: LinksConfigurationProtocol {
     
     func attachLinkSelected() {
         
         var link = Link()
         link.linkID = UUID().uuidString
         
-        if block.links == nil {
+        if collab.links == nil {
             
-            block.links = [link]
+            collab.links = [link]
         }
         
         else {
             
-            block.links?.append(link)
+            collab.links?.append(link)
         }
         
-        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? LinksConfigurationCell {
+        if let cell = configureCollabTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? LinksConfigurationCell {
 
-            cell.links = block.links
+            cell.links = collab.links
         }
         
-        configureBlockTableView.beginUpdates()
-        configureBlockTableView.endUpdates()
+        configureCollabTableView.beginUpdates()
+        configureCollabTableView.endUpdates()
     }
     
     func linkEntered (_ linkID: String, _ url: String) {
         
-        if let linkIndex = block.links?.firstIndex(where: { $0.linkID == linkID }) {
+        if let linkIndex = collab.links?.firstIndex(where: { $0.linkID == linkID }) {
             
-            block.links?[linkIndex].url = url
+            collab.links?[linkIndex].url = url
         }
     }
     
     func linkIconSaved (_ linkID: String, _ icon: UIImage?) {
         
-        if let linkIndex = block.links?.firstIndex(where: { $0.linkID == linkID }) {
+        if let linkIndex = collab.links?.firstIndex(where: { $0.linkID == linkID }) {
             
-            block.links?[linkIndex].icon = icon
+            collab.links?[linkIndex].icon = icon
         }
     }
     
     func linkRenamed (_ linkID: String, _ name: String) {
         
-        if let linkIndex = block.links?.firstIndex(where: { $0.linkID == linkID }) {
+        if let linkIndex = collab.links?.firstIndex(where: { $0.linkID == linkID }) {
             
-            block.links?[linkIndex].name = name
+            collab.links?[linkIndex].name = name
         }
     }
     
     func linkDeleted (_ linkID: String) {
         
-        block.links?.removeAll(where: { $0.linkID == linkID })
+        collab.links?.removeAll(where: { $0.linkID == linkID })
         
-        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? LinksConfigurationCell {
+        if let cell = configureCollabTableView.cellForRow(at: IndexPath(row: 7, section: 0)) as? LinksConfigurationCell {
 
-            cell.links = block.links
+            cell.links = collab.links
         }
         
-        configureBlockTableView.beginUpdates()
-        configureBlockTableView.endUpdates()
+        configureCollabTableView.beginUpdates()
+        configureCollabTableView.endUpdates()
     }
 }
 
-
 //MARK: - Zoom In Protocol Extension
 
-extension ConfigureBlockViewController: ZoomInProtocol {
+extension ConfigureCollabViewController: ZoomInProtocol {
     
     func zoomInOnPhotoImageView(photoImageView: UIImageView) {
         
@@ -1636,10 +1592,9 @@ extension ConfigureBlockViewController: ZoomInProtocol {
     }
 }
 
-
 //MARK: - Present Copied Animation Protocol Extension
 
-extension ConfigureBlockViewController: PresentCopiedAnimationProtocol {
+extension ConfigureCollabViewController: PresentCopiedAnimationProtocol {
     
     func presentCopiedAnimation() {
         

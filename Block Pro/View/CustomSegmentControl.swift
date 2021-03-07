@@ -159,6 +159,11 @@ class CustomSegmentControl: UIView {
             
             viewController.changeSelectedTableView(detailsTableView: true)
         }
+        
+        else if let viewController = parentViewController as? ConfigureCollabViewController {
+            
+            viewController.changeSelectedTableView(detailsTableView: true)
+        }
     }
     
     @objc private func attachmentsButtonPressed () {
@@ -185,6 +190,11 @@ class CustomSegmentControl: UIView {
         }
         
         if let viewController = parentViewController as? ConfigureBlockViewController {
+            
+            viewController.changeSelectedTableView(detailsTableView: false)
+        }
+        
+        else if let viewController = parentViewController as? ConfigureCollabViewController {
             
             viewController.changeSelectedTableView(detailsTableView: false)
         }

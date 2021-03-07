@@ -552,14 +552,14 @@ class CreateCollabViewController: UIViewController, UITableViewDataSource, UITab
         
         SVProgressHUD.show()
         
-        firebaseCollab.createCollab(collab: newCollab) { [weak self] in
-            
-            self?.collabCreatedDelegate?.reloadData()
-            
-            SVProgressHUD.dismiss()
-            
-            self?.dismiss(animated: true, completion: nil)
-        }
+//        firebaseCollab.createCollab(collab: newCollab) { [weak self] in
+//
+//            self?.collabCreatedDelegate?.reloadData()
+//
+//            SVProgressHUD.dismiss()
+//
+//            self?.dismiss(animated: true, completion: nil)
+//        }
     }
     
     @objc private func editPhotoButtonPressed () {

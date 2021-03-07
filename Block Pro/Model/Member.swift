@@ -16,5 +16,8 @@ struct Member {
     var username: String = ""
     var role: String = ""
     
+    var accepted: Bool?
+    var dateJoined: Date?
+    
     var profilePictureImage: UIImage?
 }

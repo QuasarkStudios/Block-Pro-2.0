@@ -492,6 +492,7 @@ class FirebaseMessaging {
         
         conversation.conversationID = document.data()?["collabID"] as? String ?? ""
         conversation.conversationName = document.data()?["collabName"] as? String
+        conversation.coverPhotoID = document.data()?["coverPhotoID"] as? String
         conversation.currentMembersIDs = document.data()?["Members"] as? [String] ?? []
         
         let dateCreatedTimestamp: Timestamp = document.data()?["dateCreated"] as! Timestamp

@@ -14,6 +14,13 @@ class NameConfigurationCell: UITableViewCell {
     let textFieldContainer = UIView()
     let nameTextField = UITextField()
     
+    var collab: Collab? {
+        didSet {
+            
+            nameTextField.text = collab?.name
+        }
+    }
+    
     var block: Block? {
         didSet {
             
@@ -88,7 +95,7 @@ class NameConfigurationCell: UITableViewCell {
         
         nameTextField.borderStyle = .none
         nameTextField.font = UIFont(name: "Poppins-SemiBold", size: 15)
-        nameTextField.placeholder = "Enter here"
+        nameTextField.placeholder = "Enter Here"
         nameTextField.returnKeyType = .done
         
         nameTextField.addTarget(self, action: #selector(textChanged), for: .editingChanged)

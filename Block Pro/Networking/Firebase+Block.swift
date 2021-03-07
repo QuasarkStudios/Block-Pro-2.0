@@ -234,7 +234,7 @@ class FirebaseBlock {
                     
                     for retrievedMember in document.data()["members"] as? [String] ?? [] {
                         
-                        if let member = collab.members.first(where: { $0.userID == retrievedMember }) {
+                        if let member = collab.currentMembers.first(where: { $0.userID == retrievedMember }) {
                             
                             block.members?.append(member)
                         }
@@ -398,8 +398,8 @@ class FirebaseBlock {
 
                     for retrievedMember in snapshotData["members"] as? [String] ?? [] {
 
-                        if let member = collab.members.first(where: { $0.userID == retrievedMember }) {
-
+                        if let member = collab.currentMembers.first(where: { $0.userID == retrievedMember }) {
+                            
                             block.members?.append(member)
                         }
                     }
@@ -470,5 +470,38 @@ class FirebaseBlock {
                 print(error?.localizedDescription as Any)
             }
         }
+    }
+    
+    func removeInactiveCollabBlockMembers (collabID: String, currentCollabMembers: [String]) {
+        
+        let batch = db.batch()
+        
+        for block in cachedBlocks {
+            
+            var membersRemoved: Bool = false
+            var members: [String] = []
+            block.members?.forEach({ members.append($0.userID) })
+            
+            members.removeAll(where: { (member) -> Bool in
+                
+                if currentCollabMembers.contains(where: { $0 == member }) == false {
+                    
+                    membersRemoved = true
+                    return true
+                }
+                
+                else {
+                    
+                    return false
+                }
+            })
+            
+            if membersRemoved {
+                
+                batch.updateData(["members" : members], forDocument: db.collection("Collaborations").document(collabID).collection("Blocks").document(block.blockID ?? ""))
+            }
+        }
+        
+        batch.commit()
     }
 }

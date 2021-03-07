@@ -43,20 +43,6 @@ extension UIView {
         }
     }
     
-    func configureTitleLabelConstraints () {
-        
-        self.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            self.leadingAnchor.constraint(equalTo: self.superview!.leadingAnchor, constant: 30),
-            self.topAnchor.constraint(equalTo: self.superview!.topAnchor, constant: 0),
-            self.widthAnchor.constraint(equalToConstant: 125),
-            self.heightAnchor.constraint(equalToConstant: 20)
-        
-        ].forEach({ $0.isActive = true })
-    }
-    
     func setCollabBlockColor (_ block: Block?) {
         
         if let status = block?.status {
