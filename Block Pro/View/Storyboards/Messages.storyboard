@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UjF-Qj-xnX">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UjF-Qj-xnX">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="collection view cell content view" minToolsVersion="11.0"/>
@@ -110,7 +110,6 @@
                         <outlet property="backgroundView" destination="meo-Me-EoQ" id="w0l-XE-MjC"/>
                         <outlet property="backgroundViewHeightConstraint" destination="7gf-OC-bc4" id="5IQ-0M-Mh7"/>
                         <outlet property="messagingInfoTableView" destination="7Et-Xh-rJD" id="Wtj-Ma-ynE"/>
-                        <segue destination="fGj-Gb-LZJ" kind="presentation" identifier="moveToFriendProfileView" id="S3o-JF-z2M"/>
                         <segue destination="3re-Lx-1xx" kind="presentation" identifier="moveToConvoPhotoView" id="Ttw-se-Aq5"/>
                     </connections>
                 </viewController>
@@ -182,14 +181,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Epj-Ca-6pL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2886.9565217391305" y="847.76785714285711"/>
-        </scene>
-        <!--FriendProfile-->
-        <scene sceneID="c3y-ol-luH">
-            <objects>
-                <viewControllerPlaceholder storyboardName="FriendProfile" id="fGj-Gb-LZJ" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="yMj-5r-zvI" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1988" y="1254"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zvU-6B-9Gc">

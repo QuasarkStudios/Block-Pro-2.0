@@ -29,12 +29,6 @@ class VoiceMemoRecorder {
                 //Updates the audioVisualizer of the parentCell with the soundSamples configured in this class
                 cell.updateAudioVisualizer(samples)
             }
-            
-            else if let cell = parentCell as? CreateCollabVoiceMemoCell, let samples = soundSamples {
-                
-                //Updates the audioVisualizer of the parentCell with the soundSamples configured in this class
-                cell.updateAudioVisualizer(samples)
-            }
         }
     }
     
@@ -76,14 +70,9 @@ class VoiceMemoRecorder {
                 configureTemporaryAudioRecorder()
             }
             
-            if let cell = parentCell as? CreateCollabVoiceMemoCell {
+            if let cell = parentCell as? VoiceMemosConfigurationCell {
                 
                 //Adds the notification that will be fired when the audio is interrupted, and attaches the "handleAudioInterruption" method from the "parentCell" to it
-                NotificationCenter.default.addObserver(cell, selector: #selector(cell.handleAudioInterruption), name: AVAudioSession.interruptionNotification, object: nil)
-            }
-            
-            else if let cell = parentCell as? VoiceMemosConfigurationCell {
-                
                 NotificationCenter.default.addObserver(cell, selector: #selector(cell.handleAudioInterruption), name: AVAudioSession.interruptionNotification, object: nil)
             }
         }
@@ -103,19 +92,7 @@ class VoiceMemoRecorder {
                         self.configureTemporaryAudioRecorder()
                     }
                     
-                    if let cell = self.parentCell as? CreateCollabVoiceMemoCell {
-                        
-                        //Adds the notification that will be fired when the audio is interrupted, and attaches the "handleAudioInterruption" method from the "parentCell" to it
-                        NotificationCenter.default.addObserver(cell, selector: #selector(cell.handleAudioInterruption), name: AVAudioSession.interruptionNotification, object: nil)
-                        
-                        //Performs all the layout modifications on the main thread
-                        DispatchQueue.main.async {
-                            
-                            cell.attachButtonPressed()
-                        }
-                    }
-                    
-                    else if let cell = self.parentCell as? VoiceMemosConfigurationCell {
+                    if let cell = self.parentCell as? VoiceMemosConfigurationCell {
                         
                         //Adds the notification that will be fired when the audio is interrupted, and attaches the "handleAudioInterruption" method from the "parentCell" to it
                         NotificationCenter.default.addObserver(cell, selector: #selector(cell.handleAudioInterruption), name: AVAudioSession.interruptionNotification, object: nil)
@@ -131,15 +108,7 @@ class VoiceMemoRecorder {
                 //If permission is denied
                 else {
                     
-                    if let cell = self.parentCell as? CreateCollabVoiceMemoCell {
-                        
-                        DispatchQueue.main.async {
-                            
-                            cell.presentDeniedAlert()
-                        }
-                    }
-                    
-                    else if let cell = self.parentCell as? VoiceMemosConfigurationCell {
+                    if let cell = self.parentCell as? VoiceMemosConfigurationCell {
                         
                         DispatchQueue.main.async {
                             

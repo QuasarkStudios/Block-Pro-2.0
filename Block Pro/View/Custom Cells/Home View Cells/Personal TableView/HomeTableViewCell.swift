@@ -21,7 +21,7 @@ class HomeTableViewCell: UITableViewCell, UICollectionViewDelegate, UICollection
     
     @IBOutlet weak var pageControl: UIPageControl!
     
-    var homeViewController: HomeViewController?; #warning("change to a protocol lol")
+    var homeViewController: HomeViewController2?; #warning("change to a protocol lol")
     
     let formatter = DateFormatter()
     
