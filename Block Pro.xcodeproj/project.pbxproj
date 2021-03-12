@@ -250,6 +250,10 @@
 		0DE728C82509BB7400581048 /* SendPhoto.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DE728C72509BB7400581048 /* SendPhoto.storyboard */; };
 		0DE8953225F4BA1E00E0D643 /* DeleteConfigurationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8953125F4BA1E00E0D643 /* DeleteConfigurationCell.swift */; };
 		0DE8957125F6A7D000E0D643 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957025F6A7D000E0D643 /* HomeViewController.swift */; };
+		0DE8957825F6CC8800E0D643 /* HomeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957725F6CC8700E0D643 /* HomeHeaderView.swift */; };
+		0DE8957C25F6F39000E0D643 /* ScheduleCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957B25F6F39000E0D643 /* ScheduleCollectionViewCell.swift */; };
+		0DE8957F25F867BF00E0D643 /* HomeCollabCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957E25F867BF00E0D643 /* HomeCollabCell.swift */; };
+		0DE895A825FB0A3A00E0D643 /* HomeViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE895A725FB0A3A00E0D643 /* HomeViewProtocol.swift */; };
 		0DEDCCBC2487848900E0AEFD /* AddPhotoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEDCCBB2487848900E0AEFD /* AddPhotoButton.swift */; };
 		0DF609C325AF76AF00B0BB63 /* VoiceMemosConfigurationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609C225AF76AF00B0BB63 /* VoiceMemosConfigurationCell.swift */; };
 		0DF609C625AF7A8200B0BB63 /* VoiceMemoConfigurationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609C525AF7A8200B0BB63 /* VoiceMemoConfigurationCollectionViewCell.swift */; };
@@ -510,6 +514,10 @@
 		0DE728C72509BB7400581048 /* SendPhoto.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SendPhoto.storyboard; sourceTree = "<group>"; };
 		0DE8953125F4BA1E00E0D643 /* DeleteConfigurationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteConfigurationCell.swift; sourceTree = "<group>"; };
 		0DE8957025F6A7D000E0D643 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		0DE8957725F6CC8700E0D643 /* HomeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeaderView.swift; sourceTree = "<group>"; };
+		0DE8957B25F6F39000E0D643 /* ScheduleCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCollectionViewCell.swift; sourceTree = "<group>"; };
+		0DE8957E25F867BF00E0D643 /* HomeCollabCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollabCell.swift; sourceTree = "<group>"; };
+		0DE895A725FB0A3A00E0D643 /* HomeViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewProtocol.swift; sourceTree = "<group>"; };
 		0DEDCCBB2487848900E0AEFD /* AddPhotoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoButton.swift; sourceTree = "<group>"; };
 		0DF609C225AF76AF00B0BB63 /* VoiceMemosConfigurationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceMemosConfigurationCell.swift; sourceTree = "<group>"; };
 		0DF609C525AF7A8200B0BB63 /* VoiceMemoConfigurationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemoConfigurationCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -697,6 +705,7 @@
 				0D49B37B25CCD54B007C666A /* CollabProgressView.swift */,
 				0D6848BD25D1F8700014ECBB /* ProgressAnimationView.swift */,
 				0DB52ACC25D66DF000645D27 /* MessagesAnimationView.swift */,
+				0DE8957625F6CC5B00E0D643 /* Home View Files */,
 				0D1ABA7D2537B0F400878DDF /* Collab View Files */,
 				0D3F29352486025000C7763F /* Input Accesory View */,
 				0DA9F83322A84788008BECAE /* Storyboards */,
@@ -713,6 +722,7 @@
 				0D891CC625B5547A00B04C2F /* HalfBlock.swift */,
 				0D891CC925B5721700B04C2F /* OneThirdBlock.swift */,
 				0D2576F225C53127008C2711 /* BlockCell.swift */,
+				0DE8958125F867C600E0D643 /* Home Cells */,
 				0D5FD0C725BC0CB800E9BA2D /* SelectedBlock Cells */,
 				0D480F16259BA0F000E14D1E /* Configuration Cells */,
 				0D5FD0D525BD109D00E9BA2D /* Presentation Cells */,
@@ -930,10 +940,8 @@
 		0D7868522446ABC900A92DD1 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				0D5BEFE623E286DA00B5DCE5 /* HomeViewController2.swift */,
 				0DE8957025F6A7D000E0D643 /* HomeViewController.swift */,
-				0D70F91A2428730F00407E4A /* ProfileSidebarViewController.swift */,
-				0D153CE92435B85B00741B67 /* ProfileViewController.swift */,
+				0DE8957325F6B03200E0D643 /* Old Home Views */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -1136,6 +1144,7 @@
 		0DE728C62509752E00581048 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				0DE895A725FB0A3A00E0D643 /* HomeViewProtocol.swift */,
 				0DE728C42509751B00581048 /* CachePhotoProtocol.swift */,
 				0D92BBA72587137E00D9C561 /* CacheIconProtocol.swift */,
 				0D80969F250AABBA00469934 /* PresentCopiedAnimationProtocol.swift */,
@@ -1149,6 +1158,33 @@
 				0DC2FADD25E4956600EF22DA /* CollabMemberProtocol.swift */,
 			);
 			path = Protocols;
+			sourceTree = "<group>";
+		};
+		0DE8957325F6B03200E0D643 /* Old Home Views */ = {
+			isa = PBXGroup;
+			children = (
+				0D5BEFE623E286DA00B5DCE5 /* HomeViewController2.swift */,
+				0D70F91A2428730F00407E4A /* ProfileSidebarViewController.swift */,
+				0D153CE92435B85B00741B67 /* ProfileViewController.swift */,
+			);
+			path = "Old Home Views";
+			sourceTree = "<group>";
+		};
+		0DE8957625F6CC5B00E0D643 /* Home View Files */ = {
+			isa = PBXGroup;
+			children = (
+				0DE8957725F6CC8700E0D643 /* HomeHeaderView.swift */,
+			);
+			path = "Home View Files";
+			sourceTree = "<group>";
+		};
+		0DE8958125F867C600E0D643 /* Home Cells */ = {
+			isa = PBXGroup;
+			children = (
+				0DE8957B25F6F39000E0D643 /* ScheduleCollectionViewCell.swift */,
+				0DE8957E25F867BF00E0D643 /* HomeCollabCell.swift */,
+			);
+			path = "Home Cells";
 			sourceTree = "<group>";
 		};
 		17AB833BF888E8CFD139A727 /* Frameworks */ = {
@@ -1388,6 +1424,7 @@
 				0D82281224D3B8CF00D0BBA0 /* LeaveConvoCell.swift in Sources */,
 				0D78659923F5BBCE00BD4C4D /* PersonalRealmDatabase.swift in Sources */,
 				0D3F29392486094B00C7763F /* MessageTextView.swift in Sources */,
+				0DE8957F25F867BF00E0D643 /* HomeCollabCell.swift in Sources */,
 				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
 				0D0ECF43243E6E9300D947F4 /* CollabCell.swift in Sources */,
 				0D86386425AAAB69000DB1A3 /* ReminderConfigurationCell.swift in Sources */,
@@ -1450,6 +1487,7 @@
 				0DE8957125F6A7D000E0D643 /* HomeViewController.swift in Sources */,
 				0D71E0162503624600CF517A /* SortingConversationsEnum.swift in Sources */,
 				0D3F29372486027300C7763F /* SendButton.swift in Sources */,
+				0DE8957C25F6F39000E0D643 /* ScheduleCollectionViewCell.swift in Sources */,
 				0D5FD10C25BF575100E9BA2D /* VoiceMemosPresentationCollectionViewCell.swift in Sources */,
 				0DF609C325AF76AF00B0BB63 /* VoiceMemosConfigurationCell.swift in Sources */,
 				0DB52AD625D7ABA100645D27 /* CollabCalendarView.swift in Sources */,
@@ -1461,6 +1499,7 @@
 				0D52A5B224B969680039F893 /* ConversationPhotosViewController.swift in Sources */,
 				0D5FD0C325BC027700E9BA2D /* BlockSelectedProtocols.swift in Sources */,
 				0D891CCD25B7646600B04C2F /* BlockPositionEnum.swift in Sources */,
+				0DE895A825FB0A3A00E0D643 /* HomeViewProtocol.swift in Sources */,
 				0D39A67C25AEE63600D9840B /* LocationsConfigurationCell.swift in Sources */,
 				0D70F91F2429BF0800407E4A /* LogInViewController.swift in Sources */,
 				0D44BA862476EF8D00647E06 /* Firebase+Messaging.swift in Sources */,
@@ -1509,6 +1548,7 @@
 				0DDE6FDF253BE4AB00A9DF71 /* AddLocationViewController.swift in Sources */,
 				0D86013E24993A860027F043 /* ConvoNameInfoCell.swift in Sources */,
 				0D480F45259BC59A00E14D1E /* TimeConfigurationCell.swift in Sources */,
+				0DE8957825F6CC8800E0D643 /* HomeHeaderView.swift in Sources */,
 				0DB0876625E8768B00FEE6FF /* ObjectiveConfigurationCell.swift in Sources */,
 				0D5FD0DB25BD246100E9BA2D /* PhotosPresentationCell.swift in Sources */,
 				0D589DEE24593D4A005AC7BC /* Message.swift in Sources */,

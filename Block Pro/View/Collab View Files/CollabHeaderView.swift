@@ -17,9 +17,6 @@ class CollabHeaderView: UIView {
     lazy var addCoverButton = UIButton(type: .system)
     var coverPhoto: ProfilePicture?
     
-    let coverPhotoContainer = UIView()
-    let coverPhotoImageView = UIImageView()
-    
     let nameLabel = UILabel()
     
     let objectiveHeaderLabel = UILabel()

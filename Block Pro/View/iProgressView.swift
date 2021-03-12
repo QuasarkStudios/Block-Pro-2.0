@@ -55,5 +55,10 @@ class iProgressView: UIView {
             
             self.showProgress()
         }
+        
+        else if let view = parentView as? HomeHeaderView, view.showProfilePictureLoadingProgress {
+            
+            self.showProgress()
+        }
     }
 }

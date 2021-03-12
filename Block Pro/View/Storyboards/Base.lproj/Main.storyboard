@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="LMb-cK-n6k">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="LMb-cK-n6k">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--FreeTime-->
-        <scene sceneID="YKd-bf-ZgE">
-            <objects>
-                <viewControllerPlaceholder storyboardName="FreeTime" id="1Jv-8b-iHa" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="UbP-nA-TBU"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="ZMn-ib-ulm" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-760" y="683"/>
-        </scene>
         <!--Pomodoro-->
         <scene sceneID="ux5-Yo-53U">
             <objects>
@@ -36,26 +26,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tw3-eG-hvN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="395" y="516"/>
-        </scene>
-        <!--UserSettings-->
-        <scene sceneID="gTS-6A-1hE">
-            <objects>
-                <viewControllerPlaceholder storyboardName="UserSettings" id="pSx-qN-t5V" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="Wfq-BD-9qe"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="d4l-1J-sJd" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-779" y="610"/>
-        </scene>
-        <!--Collab-->
-        <scene sceneID="5os-da-paW">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Collab" id="tYw-GR-m7I" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="fw4-Yr-sC8"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="UVN-Pd-Zgx" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-759" y="642"/>
         </scene>
         <!--Messages-->
         <scene sceneID="mSD-zi-9uH">

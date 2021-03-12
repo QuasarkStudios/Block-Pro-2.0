@@ -75,6 +75,24 @@ extension Date {
         return weekCount
     }
     
+    func determineNumberOfDays () -> Int {
+        
+        let calendar = Calendar.current
+
+        let range = calendar.range(of: .day, in: .month, for: self)
+        let numberOfDays = range?.count
+        
+        return numberOfDays ?? 0
+    }
+    
+    var startOfMonth: Date {
+        
+        let calendar = Calendar(identifier: .gregorian)
+        let components = calendar.dateComponents([.year, .month], from: self)
+
+        return calendar.date(from: components)!
+    }
+    
     //Func used to to ensure that time in the TimeConfigurationCells goes by 5 minute increments
     func adjustTime (roundDown: Bool) -> Date {
         

@@ -91,6 +91,8 @@ class CollabViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.view.backgroundColor = .white
+        
         configureGestureRecognizers()
         
         configureHeaderView()
@@ -908,7 +910,15 @@ class CollabViewController: UIViewController {
                             }
                         }
                         
-                        self?.navigationController?.popToRootViewController(animated: true)
+//                        self?.navigationController?.popToRootViewController(animated: true)
+                        
+                        self?.navigationController?.viewControllers.forEach({ (viewController) in
+                            
+                            if viewController as? HomeViewController != nil {
+                                
+                                self?.navigationController?.popToViewController(viewController, animated: true)
+                            }
+                        })
                     }
                     
                     //The members have simply been updated

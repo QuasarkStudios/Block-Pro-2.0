@@ -1661,8 +1661,6 @@ extension TimeConfigurationCell: UITextFieldDelegate {
                 
                 blockMinuteInputVerication(textField)
             }
-            
-//            minuteInputVerification(minuteTextField)
         }
         
         //Setting the time in the parentViewController

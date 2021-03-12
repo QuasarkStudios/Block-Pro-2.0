@@ -373,7 +373,125 @@ class FirebaseCollab {
         }
     }
     
-    func retrieveCollabs () {
+    func retrieveCollabs (completion: @escaping ((_ collabs: [Collab]?, _ members: [String : [Member]]?, _ error: Error?) -> Void)) {
+        
+        allCollabsListener = db.collection("Collaborations").whereField("Members", arrayContains: currentUser.userID).addSnapshotListener({ (snapshot, error) in
+            
+            if error != nil {
+                
+                completion(nil, nil, error)
+            }
+            
+            else {
+                
+                self.removeCollabsWhereUserInactive(snapshot: snapshot)
+                
+                if snapshot?.isEmpty != true {
+                    
+                    for document in snapshot?.documents ?? [] {
+                        
+                        let collab = self.configureCollab(document)
+                        
+                        if self.collabs.first(where: { $0.collabID == collab.collabID }) == nil {
+                            
+                            self.collabs.append(collab)
+                        }
+                        
+                        else {
+                            
+                            //handle update here
+                        }
+                        
+                        if let existingCollab = self.collabs.first(where: { $0.collabID == collab.collabID }) {
+                            
+                            self.retrieveCollabMembers(existingCollab) { (historicMembers, currentMembers, error) in
+                                
+                                self.handleCollabMembersRetrievalCompletion(collab.collabID, historicMembers, currentMembers, error) { (collabMembers) in
+                                    
+                                    completion(nil, collabMembers, nil)
+                                }
+                            }
+                        }
+                    }
+                    
+                    completion(self.collabs, nil, nil)
+                }
+                
+                else {
+                    
+                    self.collabs.removeAll()
+                    
+                    completion([], nil, nil)
+                }
+            }
+        })
+    }
+    
+    private func removeCollabsWhereUserInactive (snapshot: QuerySnapshot?) {
+        
+        if snapshot?.documents.count != collabs.count {
+            
+            collabs.forEach { (collab) in
+                
+                var currentUserInCollab: Bool = false
+                
+                for document in snapshot?.documents ?? [] {
+                    
+                    if document.data()["collabID"] as? String == collab.collabID {
+                        
+                        currentUserInCollab = true
+                        break
+                    }
+                }
+                
+                if !currentUserInCollab {
+                    
+                    collabs.removeAll(where: { $0.collabID == collab.collabID })
+                }
+            }
+        }
+    }
+    
+    private func configureCollab (_ document: DocumentSnapshot) -> Collab {
+        
+        var collab = Collab()
+        
+        collab.collabID = document.data()?["collabID"] as! String
+        collab.name = document.data()?["collabName"] as! String
+        collab.objective = document.data()?["collabObjective"] as? String
+        
+        let dateCreated = document.data()?["dateCreated"] as! Timestamp
+        collab.dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreated.seconds))
+        
+        collab.coverPhotoID = document.data()?["coverPhotoID"] as? String
+        
+        collab.photoIDs = document.data()?["photos"] as? [String] ?? []
+        
+        let startTime = document.data()?["startTime"] as! Timestamp
+        collab.dates["startTime"] = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))
+        
+        if let deadline = document.data()?["deadline"] as? Timestamp {
+            
+            collab.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
+        }
+        
+        collab.currentMembersIDs = document.data()?["Members"] as? [String] ?? []
+        
+        let memberActivity: [String : Any]? = document.data()?["memberActivity"] as? [String : Any]
+        collab.memberActivity = self.parseCollabActivity(memberActivity: memberActivity)
+        
+        collab.reminders = document.data()?["reminders"] as? [Int] ?? []
+        
+        collab.locations = self.retrieveCollabLocations(document.data()?["locations"] as? [String : Any])
+        
+        collab.voiceMemos = self.retrieveCollabVoiceMemos(document.data()?["voiceMemos"] as? [String : Any])
+        
+        collab.links = self.retrieveCollabLinks(document.data()?["links"] as? [String : Any])
+        
+        return collab
+    }
+    
+    func retrieveCollabs2 () {
         
         //userRef.collection("Collabs").addSnapshotListener { (snapshot, error) in
         allCollabsListener = db.collection("Collaborations").whereField("Members", arrayContains: currentUser.userID).addSnapshotListener { (snapshot, error) in
@@ -583,6 +701,28 @@ class FirebaseCollab {
                         completion([], [], nil)
                     }
                 }
+            }
+        }
+    }
+    
+    private func handleCollabMembersRetrievalCompletion (_ collabID: String, _ historicMembers: [Member], _ currentMembers: [Member], _ error: Error?, _ completion: (([String : [Member]]) -> Void)) {
+        
+        if error != nil {
+            
+            print(error as Any)
+        }
+        
+        else {
+            
+            if let collabIndex = self.collabs.firstIndex(where: { $0.collabID == collabID }) {
+                
+                self.collabs[collabIndex].historicMembers = historicMembers
+                self.collabs[collabIndex].currentMembers = currentMembers
+//                self.collabs[collabIndex]
+                
+                let collabMembers = ["historicMembers" : historicMembers, "currentMembers" : currentMembers]
+                
+                completion(collabMembers)
             }
         }
     }

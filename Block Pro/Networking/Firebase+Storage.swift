@@ -106,12 +106,12 @@ class FirebaseStorage {
                 
                 if userID == self.currentUser.userID {
                     
-                    self.currentUser.profilePictureImage = UIImage(named: "DefaultProfilePic")!
+                    self.currentUser.profilePictureImage = nil//UIImage(named: "DefaultProfilePic")!
                     
                     NotificationCenter.default.post(name: .didDownloadProfilePic, object: nil)
                 }
                 
-                completion(UIImage(named: "DefaultProfilePic"), userID)
+                completion(nil/*UIImage(named: "DefaultProfilePic")*/, userID)
             }
             
             else {
@@ -120,7 +120,7 @@ class FirebaseStorage {
                     
                     if userID == self.currentUser.userID {
                         
-                        self.currentUser.profilePictureImage = UIImage(data: data!)
+                        self.currentUser.profilePictureImage = UIImage(data: imageData)
                         
                         NotificationCenter.default.post(name: .didDownloadProfilePic, object: nil)
                     }

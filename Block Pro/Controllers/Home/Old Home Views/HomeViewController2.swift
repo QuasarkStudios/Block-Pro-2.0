@@ -662,7 +662,7 @@ class HomeViewController2: UIViewController, UITableViewDelegate, UITableViewDat
     
     private func retrieveCollabs () {
         
-        firebaseCollab.retrieveCollabs()
+//        firebaseCollab.retrieveCollabs()
     }
     
     func moveToTimeBlockView (selectedDate: Date) {
