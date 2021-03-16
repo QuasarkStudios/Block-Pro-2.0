@@ -20,6 +20,11 @@ class HomeHeaderView: UIView {
     
     let scheduleCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
+    let collabContainer = UIView()
+    
+    let collabsLabel = UILabel()
+    let addCollabButton = UIButton(type: .system)
+    
     let currentUser = CurrentUser.sharedInstance
     
     let firebaseStorage = FirebaseStorage()
@@ -31,7 +36,7 @@ class HomeHeaderView: UIView {
     
     var showProfilePictureLoadingProgress: Bool = false
     
-//    var previousContentOffsetXCoord: CGFloat = 0
+    weak var homeViewController: AnyObject?
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -46,8 +51,10 @@ class HomeHeaderView: UIView {
         configureCalendarView()
         
         configureCollectionView(scheduleCollectionView)
-//
-//        self.backgroundColor = UIColor.blue.withAlphaComponent(0.25)
+
+        configureCollabContainer()
+        configureCollabsLabel()
+        configureAddCollabButton()
     }
 
     required init?(coder: NSCoder) {
@@ -109,7 +116,6 @@ class HomeHeaderView: UIView {
         welcomeLabel.textColor = .black
         welcomeLabel.textAlignment = .left
         welcomeLabel.numberOfLines = 2
-//        welcomeLabel.adjustsFontSizeToFitWidth = true
         
         setWelcomeLabelText()
     }
@@ -188,7 +194,7 @@ class HomeHeaderView: UIView {
             scheduleCollectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
             scheduleCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
             scheduleCollectionView.topAnchor.constraint(equalTo: calendarView.bottomAnchor, constant: 20),
-            scheduleCollectionView.heightAnchor.constraint(equalToConstant: 120)
+            scheduleCollectionView.heightAnchor.constraint(equalToConstant: 130)
         
         ].forEach({ $0.isActive = true })
         
@@ -202,7 +208,7 @@ class HomeHeaderView: UIView {
         scheduleCollectionView.delaysContentTouches = false
         
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: 120)
+        layout.itemSize = CGSize(width: UIScreen.main.bounds.width, height: 130)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         layout.scrollDirection = .horizontal
@@ -219,6 +225,68 @@ class HomeHeaderView: UIView {
 
             self.scheduleCollectionView.scrollToItem(at: IndexPath(item: differenceInDates ?? 0, section: 0), at: .centeredHorizontally, animated: false)
         }
+    }
+    
+    private func configureCollabContainer () {
+        
+        self.addSubview(collabContainer)
+        collabContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            collabContainer.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
+            collabContainer.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
+            collabContainer.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0/*-12.5*/),
+            collabContainer.heightAnchor.constraint(equalToConstant: 55)
+        
+        ].forEach({ $0.isActive = true })
+        
+        collabContainer.backgroundColor = .white
+    }
+    
+    private func configureCollabsLabel () {
+        
+        collabContainer.addSubview(collabsLabel)
+        collabsLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            collabsLabel.leadingAnchor.constraint(equalTo: collabContainer.leadingAnchor, constant: 30),
+            collabsLabel.centerYAnchor.constraint(equalTo: collabContainer.centerYAnchor, constant: -12.5),
+            collabsLabel.widthAnchor.constraint(equalToConstant: 125),
+            collabsLabel.heightAnchor.constraint(equalToConstant: 35)
+        
+        ].forEach({ $0.isActive = true })
+        
+        collabsLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
+        collabsLabel.textColor = .black
+        collabsLabel.textAlignment = .left
+        collabsLabel.text = "Collabs"
+    }
+    
+    private func configureAddCollabButton () {
+        
+        collabContainer.addSubview(addCollabButton)
+        addCollabButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            addCollabButton.trailingAnchor.constraint(equalTo: collabContainer.trailingAnchor, constant: -30),
+            addCollabButton.centerYAnchor.constraint(equalTo: collabsLabel.centerYAnchor),
+            addCollabButton.widthAnchor.constraint(equalToConstant: 31),
+            addCollabButton.heightAnchor.constraint(equalToConstant: 31)
+        
+        ].forEach({ $0.isActive = true })
+        
+        addCollabButton.backgroundColor = UIColor(hexString: "222222")
+        addCollabButton.setImage(UIImage(named: "plus 2"), for: .normal)
+        addCollabButton.tintColor = .white
+        
+        addCollabButton.layer.cornerRadius = 15.5
+        
+        addCollabButton.imageEdgeInsets = UIEdgeInsets(top: 8.25, left: 8.25, bottom: 8.25, right: 8.25)
+
+        addCollabButton.addTarget(self, action: #selector(addCollabButtonPressed), for: .touchUpInside)
     }
     
     private func retrieveProfilePicture (animate: Bool = true) {
@@ -275,6 +343,14 @@ class HomeHeaderView: UIView {
         else {
     
             welcomeLabel.text = "Welcome \(currentUser.firstName)"
+        }
+    }
+    
+    @objc private func addCollabButtonPressed () {
+        
+        if let viewController = homeViewController as? HomeViewController {
+            
+            viewController.moveToAddCollabView()
         }
     }
 }
@@ -374,7 +450,7 @@ extension HomeHeaderView: UICollectionViewDataSource, UICollectionViewDelegate {
         formatter.dateFormat = "yyyy MM dd"
         
         return calendar.dateComponents([.day], from: formatter.date(from: "2010 01 01") ?? Date(), to: formatter.date(from: "2050 01 01") ?? Date()).day ??
-            0//selectedDate.determineNumberOfDays()
+            0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -421,19 +497,4 @@ extension HomeHeaderView: UICollectionViewDataSource, UICollectionViewDelegate {
             }
         }
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-//
-//        formatter.dateFormat = "yyyy MM dd"
-//
-////        print(collectionView.isDragging)
-//
-//        if let firstVisibleRow = scheduleCollectionView.indexPathsForVisibleItems.first?.row, let adjustedDate = calendar.date(byAdding: .day, value: firstVisibleRow, to: formatter.date(from: "2010 01 01") ?? Date()), !calendar.isDate(adjustedDate, inSameDayAs: selectedDate), collectionView.isDragging {
-//
-//            selectedDate = adjustedDate
-//
-//            calendarView.selectDates([adjustedDate])
-//            calendarView.scrollToDate(adjustedDate)
-//        }
-//    }
 }

@@ -252,8 +252,9 @@
 		0DE8957125F6A7D000E0D643 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957025F6A7D000E0D643 /* HomeViewController.swift */; };
 		0DE8957825F6CC8800E0D643 /* HomeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957725F6CC8700E0D643 /* HomeHeaderView.swift */; };
 		0DE8957C25F6F39000E0D643 /* ScheduleCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957B25F6F39000E0D643 /* ScheduleCollectionViewCell.swift */; };
-		0DE8957F25F867BF00E0D643 /* HomeCollabCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957E25F867BF00E0D643 /* HomeCollabCell.swift */; };
 		0DE895A825FB0A3A00E0D643 /* HomeViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE895A725FB0A3A00E0D643 /* HomeViewProtocol.swift */; };
+		0DE895AC25FC029C00E0D643 /* CollabCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE895AB25FC029C00E0D643 /* CollabCollectionViewFlowLayout.swift */; };
+		0DE895B225FC523000E0D643 /* HomeCollabCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE895B125FC523000E0D643 /* HomeCollabCollectionViewCell.swift */; };
 		0DEDCCBC2487848900E0AEFD /* AddPhotoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DEDCCBB2487848900E0AEFD /* AddPhotoButton.swift */; };
 		0DF609C325AF76AF00B0BB63 /* VoiceMemosConfigurationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609C225AF76AF00B0BB63 /* VoiceMemosConfigurationCell.swift */; };
 		0DF609C625AF7A8200B0BB63 /* VoiceMemoConfigurationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609C525AF7A8200B0BB63 /* VoiceMemoConfigurationCollectionViewCell.swift */; };
@@ -516,8 +517,9 @@
 		0DE8957025F6A7D000E0D643 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		0DE8957725F6CC8700E0D643 /* HomeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeaderView.swift; sourceTree = "<group>"; };
 		0DE8957B25F6F39000E0D643 /* ScheduleCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCollectionViewCell.swift; sourceTree = "<group>"; };
-		0DE8957E25F867BF00E0D643 /* HomeCollabCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollabCell.swift; sourceTree = "<group>"; };
 		0DE895A725FB0A3A00E0D643 /* HomeViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewProtocol.swift; sourceTree = "<group>"; };
+		0DE895AB25FC029C00E0D643 /* CollabCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
+		0DE895B125FC523000E0D643 /* HomeCollabCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollabCollectionViewCell.swift; sourceTree = "<group>"; };
 		0DEDCCBB2487848900E0AEFD /* AddPhotoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPhotoButton.swift; sourceTree = "<group>"; };
 		0DF609C225AF76AF00B0BB63 /* VoiceMemosConfigurationCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoiceMemosConfigurationCell.swift; sourceTree = "<group>"; };
 		0DF609C525AF7A8200B0BB63 /* VoiceMemoConfigurationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemoConfigurationCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -941,6 +943,7 @@
 			isa = PBXGroup;
 			children = (
 				0DE8957025F6A7D000E0D643 /* HomeViewController.swift */,
+				0DE895AB25FC029C00E0D643 /* CollabCollectionViewFlowLayout.swift */,
 				0DE8957325F6B03200E0D643 /* Old Home Views */,
 			);
 			path = Home;
@@ -1182,7 +1185,7 @@
 			isa = PBXGroup;
 			children = (
 				0DE8957B25F6F39000E0D643 /* ScheduleCollectionViewCell.swift */,
-				0DE8957E25F867BF00E0D643 /* HomeCollabCell.swift */,
+				0DE895B125FC523000E0D643 /* HomeCollabCollectionViewCell.swift */,
 			);
 			path = "Home Cells";
 			sourceTree = "<group>";
@@ -1424,7 +1427,6 @@
 				0D82281224D3B8CF00D0BBA0 /* LeaveConvoCell.swift in Sources */,
 				0D78659923F5BBCE00BD4C4D /* PersonalRealmDatabase.swift in Sources */,
 				0D3F29392486094B00C7763F /* MessageTextView.swift in Sources */,
-				0DE8957F25F867BF00E0D643 /* HomeCollabCell.swift in Sources */,
 				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
 				0D0ECF43243E6E9300D947F4 /* CollabCell.swift in Sources */,
 				0D86386425AAAB69000DB1A3 /* ReminderConfigurationCell.swift in Sources */,
@@ -1503,6 +1505,7 @@
 				0D39A67C25AEE63600D9840B /* LocationsConfigurationCell.swift in Sources */,
 				0D70F91F2429BF0800407E4A /* LogInViewController.swift in Sources */,
 				0D44BA862476EF8D00647E06 /* Firebase+Messaging.swift in Sources */,
+				0DE895B225FC523000E0D643 /* HomeCollabCollectionViewCell.swift in Sources */,
 				0DB3FEC6249A9A6D00A14FF9 /* ConvoMemberInfoCell.swift in Sources */,
 				0DF609F525B3F2E900B0BB63 /* CollabView+Blocks.swift in Sources */,
 				0D78658B23E6928000BD4C4D /* PersonalCell.swift in Sources */,
@@ -1534,6 +1537,7 @@
 				0D480F112598284900E14D1E /* CustomSegmentControl.swift in Sources */,
 				0D5BEFE723E286DA00B5DCE5 /* HomeViewController2.swift in Sources */,
 				0D7CABEF252CF2640045006C /* ZoomingImageViewMethods.swift in Sources */,
+				0DE895AC25FC029C00E0D643 /* CollabCollectionViewFlowLayout.swift in Sources */,
 				0D62771425AA1EEE00B2B2C0 /* MemberConfigurationCollectionViewCell.swift in Sources */,
 				0DD9D89024437DC2006AA8AB /* View+Extension.swift in Sources */,
 				0DD9D8952443812A006AA8AB /* Firebase+Collab.swift in Sources */,

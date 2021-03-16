@@ -15,7 +15,7 @@ class HomeViewController: UIViewController {
     lazy var progressView = iProgressView(self, 100, .circleStrokeSpin)
     let welcomeLabel = UILabel()
     
-    let collabTableView = UITableView()
+    lazy var collabCollectionView = UICollectionView(frame: .zero, collectionViewLayout: CollabCollectionViewFlowLayout(self))
     
     lazy var tabBar = CustomTabBar.sharedInstance
     
@@ -29,6 +29,11 @@ class HomeViewController: UIViewController {
     
     let formatter = DateFormatter()
     
+    let minimumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 135//80
+    let maximumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 402.5//392.5
+    
+    var expandedIndexPath: IndexPath?
+    
     var headerViewHeightConstraint: NSLayoutConstraint?
     
     override func viewDidLoad() {
@@ -36,33 +41,37 @@ class HomeViewController: UIViewController {
         
         self.navigationController?.navigationBar.isHidden = false
         self.navigationItem.hidesBackButton = true
-        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear)
         
         configureHomeHeaderView()
-
-        configureTableView(collabTableView)
+        
+        configureCollectionView(collabCollectionView)
         
         configureTabBar()
         configureCalendarButton()
+        
+        configureGestureRecognizors()
         
         firebaseCollab.retrieveCollabs { [weak self] (collabs, members, error) in
             
             if collabs != nil {
                 
-                self?.collabs = collabs
+                if self?.collabs == nil {
+                    
+                    self?.collabs = collabs?.sorted(by: { $0.dates["deadline"]! > $1.dates["deadline"]! })
+                    
+                    self?.collabCollectionView.reloadData()
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        
+                        self?.expandCollabCell()
+                    }
+                }
                 
-                self?.collabTableView.reloadData()
+                else {
+                    
+                    
+                }
             }
-            
-//            if collabs != nil {
-//
-//                print("collab", collabs)
-//            }
-//
-//            if members != nil {
-//
-//                print("members", members)
-//            }
         }
         
         if currentUser.userSignedIn {
@@ -73,6 +82,8 @@ class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barStyleColor: .default)
         
         tabBar.shouldHide = false
     }
@@ -87,90 +98,37 @@ class HomeViewController: UIViewController {
             headerView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
             headerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
             headerView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0),
-//            headerView.heightAnchor.constraint(equalToConstant: 370)
         
         ].forEach({ $0.isActive = true })
         
-        let headerViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 337.5//60 + 25 + 30 + 5 + 55 + 20 + 120 + 20
-        
-        headerViewHeightConstraint = headerView.heightAnchor.constraint(equalToConstant: headerViewHeight)
+        headerViewHeightConstraint = headerView.heightAnchor.constraint(equalToConstant: maximumHeaderViewHeight)
         headerViewHeightConstraint?.isActive = true
         
-//        headerView.backgroundColor = UIColor.blue.withAlphaComponent(0.25)
+        headerView.homeViewController = self
     }
     
-    private func configureTableView (_ tableView: UITableView) {
+    private func configureCollectionView (_ collectionView: UICollectionView) {
         
-        self.view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
-            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
-            tableView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 0),
-            tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
-        
-        ].forEach({ $0.isActive = true })
-        
-        tableView.dataSource = self
-        tableView.delegate = self
-        
-        tableView.delaysContentTouches = false
-        tableView.separatorStyle = .none
-        
-        tableView.register(HomeCollabCell.self, forCellReuseIdentifier: "homeCollabCell")
-    }
-    
-    private func configureTableViewSectionHeaderView () -> UIView {
-        
-        let sectionHeaderView = UIView()
-        let collabsLabel = UILabel()
-        let addCollabButton = UIButton(type: .system)
-        
-        sectionHeaderView.addSubview(collabsLabel)
-        sectionHeaderView.addSubview(addCollabButton)
-        
-        collabsLabel.translatesAutoresizingMaskIntoConstraints = false
-        addCollabButton.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(collectionView)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         [
         
-            collabsLabel.topAnchor.constraint(equalTo: sectionHeaderView.topAnchor),
-            collabsLabel.bottomAnchor.constraint(equalTo: sectionHeaderView.bottomAnchor),
-            collabsLabel.leadingAnchor.constraint(equalTo: sectionHeaderView.leadingAnchor, constant: 30),
-            collabsLabel.widthAnchor.constraint(equalToConstant: 125)
+            collectionView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
+            collectionView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
+            collectionView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 0),
+            collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
         
         ].forEach({ $0.isActive = true })
         
-        [
+        collectionView.backgroundColor = .white
         
-            addCollabButton.trailingAnchor.constraint(equalTo: sectionHeaderView.trailingAnchor, constant: -30),
-            addCollabButton.centerYAnchor.constraint(equalTo: sectionHeaderView.centerYAnchor),
-            addCollabButton.widthAnchor.constraint(equalToConstant: 31),
-            addCollabButton.heightAnchor.constraint(equalToConstant: 31)
+        collectionView.dataSource = self
+        collectionView.delegate = self
         
-        ].forEach({ $0.isActive = true })
+        collectionView.delaysContentTouches = false
         
-        
-        sectionHeaderView.backgroundColor = .white
-        
-        collabsLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
-        collabsLabel.textColor = .black
-        collabsLabel.textAlignment = .left
-        collabsLabel.text = "Collabs"
-        
-        addCollabButton.backgroundColor = UIColor(hexString: "222222")
-        addCollabButton.setImage(UIImage(named: "plus 2"), for: .normal)
-        addCollabButton.tintColor = .white
-        
-        addCollabButton.layer.cornerRadius = 15.5
-        
-        addCollabButton.imageEdgeInsets = UIEdgeInsets(top: 8.25, left: 8.25, bottom: 8.25, right: 8.25)
-
-        addCollabButton.addTarget(self, action: #selector(addCollabButtonPressed), for: .touchUpInside)
-        
-        return sectionHeaderView
+        collectionView.register(HomeCollabCollectionViewCell.self, forCellWithReuseIdentifier: "homeCollabCollectionViewCell")
     }
     
     private func configureTabBar () {
@@ -212,7 +170,122 @@ class HomeViewController: UIViewController {
 //        addBlockButton.addTarget(self, action: #selector(addBlockButtonPressed), for: .touchUpInside)
     }
     
-    @objc private func addCollabButtonPressed () {
+    private func configureGestureRecognizors () {
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
+//        panGesture.cancelsTouchesInView = false
+        headerView.addGestureRecognizer(panGesture)
+    }
+    
+    @objc private func handlePan (sender: UIPanGestureRecognizer) {
+        
+        switch sender.state {
+        
+        case .began, .changed:
+            
+            if collabCollectionView.indexPathsForVisibleItems.contains(where: { $0.row == 0 }) {
+                
+                moveWithPan(sender)
+            }
+
+        case .ended:
+            
+            if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight * 0.8 {
+                
+                shrinkHeaderView()
+            }
+            
+            else {
+                
+                expandHeaderView()
+            }
+            
+        default:
+            
+            break
+        }
+    }
+    
+    private func moveWithPan (_ sender: UIPanGestureRecognizer) {
+        
+        let translation = sender.translation(in: self.view)
+        
+        if translation.y > 0 {
+            
+            if (headerViewHeightConstraint?.constant ?? 0) + translation.y < maximumHeaderViewHeight {
+                
+                headerViewHeightConstraint?.constant += translation.y
+                
+                animateHeaderViewAlpha()
+            }
+            
+            else {
+                
+                headerViewHeightConstraint?.constant = maximumHeaderViewHeight
+                
+            }
+        }
+        
+        else {
+            
+            if (headerViewHeightConstraint?.constant ?? 0) + translation.y > minimumHeaderViewHeight {
+                
+                headerViewHeightConstraint?.constant += translation.y
+                
+                animateHeaderViewAlpha()
+            }
+            
+            else {
+                
+                headerViewHeightConstraint?.constant = minimumHeaderViewHeight
+                
+                headerView.calendarHeaderLabel.alpha = 0
+                headerView.calendarView.alpha = 0
+                headerView.scheduleCollectionView.alpha = 0
+            }
+        }
+        
+        sender.setTranslation(.zero, in: self.view)
+    }
+    
+    private func animateHeaderViewAlpha () {
+        
+        let alphaPart = 1 / (maximumHeaderViewHeight - minimumHeaderViewHeight)
+
+        headerView.calendarHeaderLabel.alpha = alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight)
+        headerView.calendarView.alpha = alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight)
+        headerView.scheduleCollectionView.alpha = alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight)
+    }
+    
+    private func expandHeaderView () {
+        
+        headerViewHeightConstraint?.constant = maximumHeaderViewHeight
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            
+            self.view.layoutIfNeeded()
+            
+            self.headerView.calendarHeaderLabel.alpha = 1
+            self.headerView.calendarView.alpha = 1
+            self.headerView.scheduleCollectionView.alpha = 1
+        }
+    }
+    
+    private func shrinkHeaderView () {
+        
+        headerViewHeightConstraint?.constant = minimumHeaderViewHeight
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            
+            self.view.layoutIfNeeded()
+            
+            self.headerView.calendarHeaderLabel.alpha = 0
+            self.headerView.calendarView.alpha = 0
+            self.headerView.scheduleCollectionView.alpha = 0
+        }
+    }
+    
+    func moveToAddCollabView () {
         
         let configureCollabVC = ConfigureCollabViewController()
         configureCollabVC.title = "Create a Collab"
@@ -228,18 +301,6 @@ class HomeViewController: UIViewController {
         self.present(configureCollabNavigationController, animated: true, completion: nil)
     }
     
-//    private func moveToCollabView (_ selectedCollab: Collab) {
-//
-//        let collabVC = CollabViewController()
-//        collabVC.collab = selectedCollab
-//
-//        let backButtonItem = UIBarButtonItem()
-//        backButtonItem.title = ""
-//        self.navigationItem.backBarButtonItem = backButtonItem
-//
-//        self.navigationController?.pushViewController(collabVC, animated: true)
-//    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "moveToCollabView" {
@@ -254,75 +315,38 @@ class HomeViewController: UIViewController {
     }
 }
 
-extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
+extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return (collabs?.count ?? 0) * 2//20
+        return collabs?.count ?? 0
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        if indexPath.row == 0 || indexPath.row % 2 == 0 {
-            
-            let cell = UITableViewCell()
-            cell.selectionStyle = .none
-            
-            return cell
-        }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "homeCollabCollectionViewCell", for: indexPath) as! HomeCollabCollectionViewCell
+
+        cell.formatter = formatter
+
+        cell.collab = collabs?[indexPath.row]
         
-        else {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "homeCollabCell", for: indexPath) as! HomeCollabCell
-            cell.selectionStyle = .none
-            
-            cell.formatter = formatter
-            
-            cell.collab = collabs?[indexPath.row / 2]
-            
-            return cell
-        }
+        return cell
     }
     
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        return configureTableViewSectionHeaderView()
+        return expandedIndexPath == indexPath ? CGSize(width: UIScreen.main.bounds.width, height: 190) : CGSize(width: UIScreen.main.bounds.width, height: 100)
     }
     
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        return 35
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        if indexPath.row == 0 {
-            
-            return 20
-        }
-        
-        else if indexPath.row % 2 == 0 {
-            
-            return 20
-        }
-        
-        else {
-            
-            return 165
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        if let cell = tableView.cellForRow(at: indexPath) as? HomeCollabCell {
+        if let cell = collectionView.cellForItem(at: indexPath) as? HomeCollabCollectionViewCell {
             
             if let selectedCollab = firebaseCollab.collabs.first(where: { $0.collabID == cell.collab?.collabID }) {
                 
                 self.selectedCollab = selectedCollab
-                
+
                 performSegue(withIdentifier: "moveToCollabView", sender: self)
-                
-//                moveToCollabView(selectedCollab)
             }
         }
     }
@@ -330,36 +354,144 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         if scrollView.contentOffset.y >= 0 {
-            
-            let minimumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 80
-            
+
             //If the homeHeaderView is larger than minimum allowable height, process to decrementing its height
             if (headerViewHeightConstraint?.constant ?? 140) - scrollView.contentOffset.y > minimumHeaderViewHeight {
-                
+
                 headerViewHeightConstraint?.constant -= scrollView.contentOffset.y
-                
                 scrollView.contentOffset.y = 0
+
+                animateHeaderViewAlpha()
             }
-            
+
             else {
-                
-                headerViewHeightConstraint?.constant = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 80
+
+                if headerViewHeightConstraint?.constant != minimumHeaderViewHeight {
+
+                    headerViewHeightConstraint?.constant = minimumHeaderViewHeight
+
+                    headerView.calendarHeaderLabel.alpha = 0
+                    headerView.calendarView.alpha = 0
+                    headerView.scheduleCollectionView.alpha = 0
+
+                    shrinkCollabCell()
+                }
             }
+        }
+
+        else {
+
+            //Checking if tracking because this was causing the header view to expand again when the user was attempting to scroll up
+            //enabling the flicking then going to recheck if this is neccasary
+            if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight/*, !scrollView.isTracking*/ {
+
+                if headerViewHeightConstraint?.constant != maximumHeaderViewHeight {
+
+                    headerViewHeightConstraint?.constant = maximumHeaderViewHeight
+
+                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+
+                        self.view.layoutIfNeeded()
+                    }
+                }
+            }
+        }
+    }
+    
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        
+        if headerViewHeightConstraint?.constant == minimumHeaderViewHeight {
+            
+            shrinkCollabCell()
+        }
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        if !decelerate {
+            
+            expandCollabCell()
+        }
+        
+        if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight * 0.8 {
+            
+            shrinkHeaderView()
         }
         
         else {
             
-            let maximumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 337.5
+            expandHeaderView()
+        }
+    }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        
+        expandCollabCell()
+    }
+    
+    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+        
+        for visibleCell in collabCollectionView.visibleCells {
             
-            if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight {
+            if let cell = visibleCell as?HomeCollabCollectionViewCell {
                 
-                headerViewHeightConstraint?.constant = maximumHeaderViewHeight
-                
-                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                    
-                    self.view.layoutIfNeeded()
-                }
+                cell.shrinkCell()
             }
+        }
+        
+        return true
+    }
+    
+    func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+        
+        expandedIndexPath = nil
+        
+        expandCollabCell()
+    }
+    
+    private func expandCollabCell () {
+        
+        let visibleIndexPaths = collabCollectionView.indexPathsForVisibleItems.sorted(by: { $0.row < $1.row })
+        
+//        print(visibleIndexPaths.first?.row)
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+//
+//            print(self.collabCollectionView.indexPathsForVisibleItems.sorted(by: { $0.row < $1.row }).first?.row, "\n")
+//        }
+        
+        //Ensures that the cell to be expanded hasn't already been expanded by the CollectionViewFlowLayout class
+        if let firstIndexPath = visibleIndexPaths.first, expandedIndexPath == nil {
+            
+            if let cell = collabCollectionView.cellForItem(at: firstIndexPath) as? HomeCollabCollectionViewCell {
+                
+                cell.expandCell()
+            }
+            
+            expandedIndexPath = firstIndexPath
+            
+            collabCollectionView.performBatchUpdates {
+                
+                self.collabCollectionView.reloadData()
+            }
+        }
+    }
+    
+    private func shrinkCollabCell () {
+        
+        collabCollectionView.visibleCells.forEach { (collabCell) in
+
+            if let cell = collabCell as? HomeCollabCollectionViewCell {
+
+                cell.shrinkCell()
+            }
+        }
+
+        expandedIndexPath = nil
+
+        collabCollectionView.performBatchUpdates {
+
+            self.collabCollectionView.reloadData()
         }
     }
 }

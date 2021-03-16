@@ -186,8 +186,6 @@ class CollabViewController: UIViewController {
     
     deinit {
         
-        print("deinit")
-        
         firebaseCollab.singularCollabListener?.remove()
         
         firebaseBlock.collabBlocksListener?.remove()

@@ -15,7 +15,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
     
     let shareButton = UIButton(type: .system)
     
-    let progressCircle = ProgressCircles(radius: 20, lineWidth: 6, strokeColor: UIColor(hexString: "5065A0", withAlpha: 0.75)!.cgColor, strokeEnd: 0.37)
+    let progressCircle = ProgressCircles(radius: 22.5, lineWidth: 6, strokeColor: UIColor(hexString: "5065A0", withAlpha: 0.75)!.cgColor, strokeEnd: 0.37)
     let progressLabel = UILabel()
     
     let scheduleStatusLabel = UILabel()
@@ -71,23 +71,6 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         scheduleContainer.clipsToBounds = true
     }
     
-//    private func configureDateLabel () {
-//
-//        scheduleContainer.addSubview(dateLabel)
-//        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-//
-//        [
-//
-//            dateLabel.topAnchor.constraint(equalTo: scheduleContainer.topAnchor, constant: 12.5),
-//            dateLabel.bottomAnchor.constraint(equalTo: scheduleContainer.bottomAnchor, constant: -8.5),
-//            dateLabel.leadingAnchor.constraint(equalTo: scheduleContainer.leadingAnchor, constant: 12.5),
-//            dateLabel.widthAnchor.constraint(equalToConstant: 52.5)
-//
-//        ].forEach({ $0.isActive = true })
-//
-//        dateLabel.numberOfLines = 3
-//    }
-    
     private func configureDateLabel () {
         
         scheduleContainer.addSubview(dateLabel)
@@ -95,20 +78,17 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
 
         [
 
+            dateLabel.leadingAnchor.constraint(equalTo: scheduleContainer.leadingAnchor, constant: 20),
+            dateLabel.trailingAnchor.constraint(equalTo: scheduleContainer.trailingAnchor, constant: -60),
             dateLabel.topAnchor.constraint(equalTo: scheduleContainer.topAnchor, constant: 12.5),
-            dateLabel.leadingAnchor.constraint(equalTo: scheduleContainer.leadingAnchor, constant: 12.5),
-            dateLabel.widthAnchor.constraint(equalToConstant: 38),
-            dateLabel.heightAnchor.constraint(equalToConstant: 38)
+            dateLabel.heightAnchor.constraint(equalToConstant: 30)
             
         ].forEach({ $0.isActive = true })
         
-        dateLabel.backgroundColor = UIColor(hexString: "222222")
-        dateLabel.layer.cornerRadius = 19
-        dateLabel.clipsToBounds = true
-        
-        dateLabel.font = UIFont(name: "Poppins-Medium", size: 18)
-        dateLabel.textColor = .white
-        dateLabel.textAlignment = .center
+        dateLabel.font = UIFont(name: "Poppins-SemiBold", size: 21)
+        dateLabel.adjustsFontSizeToFitWidth = true
+        dateLabel.textColor = .black
+        dateLabel.textAlignment = .left
     }
     
     private func configureShareButton () {
@@ -118,16 +98,42 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         
         [
         
-            shareButton.topAnchor.constraint(equalTo: scheduleContainer.topAnchor, constant: 11),
-            shareButton.trailingAnchor.constraint(equalTo: scheduleContainer.trailingAnchor, constant: -10),
-//            shareButton.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor, constant: -4),
-            shareButton.widthAnchor.constraint(equalToConstant: 32),
-            shareButton.heightAnchor.constraint(equalToConstant: 32)
+            shareButton.trailingAnchor.constraint(equalTo: scheduleContainer.trailingAnchor, constant: -12.5),
+            shareButton.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor, constant: 0),
+            shareButton.widthAnchor.constraint(equalToConstant: 35),
+            shareButton.heightAnchor.constraint(equalToConstant: 35)
         
         ].forEach({ $0.isActive = true })
         
-        shareButton.tintColor = .black
+        shareButton.backgroundColor = UIColor(hexString: "222222")
+        
+        shareButton.layer.cornerRadius = 17.5
+        shareButton.layer.cornerCurve = .continuous
+        
+        shareButton.tintColor = .white
         shareButton.setImage(UIImage(named: "share"), for: .normal)
+        
+//        shareButton.imageEdgeInsets = UIEdgeInsets(top: 6, left: 6.5, bottom: 7, right: 6.5)
+        shareButton.imageEdgeInsets = UIEdgeInsets(top: 6.25, left: 6.75, bottom: 7.5, right: 6.75)
+    }
+    
+    private func configureScheduleStatusLabel () {
+        
+        scheduleContainer.addSubview(scheduleStatusLabel)
+        scheduleStatusLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            scheduleStatusLabel.leadingAnchor.constraint(equalTo: scheduleContainer.leadingAnchor, constant: 20),
+            scheduleStatusLabel.trailingAnchor.constraint(equalTo: scheduleContainer.trailingAnchor, constant: -65),
+            scheduleStatusLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 2.5),
+            scheduleStatusLabel.bottomAnchor.constraint(equalTo: scheduleContainer.bottomAnchor, constant: -7.5),
+        
+        ].forEach({ $0.isActive = true })
+        
+        scheduleStatusLabel.numberOfLines = 0
+        
+        setScheduleStatusLabel()
     }
     
     private func configureProgressCircle () {
@@ -139,8 +145,8 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         
             progressCircle.trailingAnchor.constraint(equalTo: scheduleContainer.trailingAnchor, constant: -12.5),
             progressCircle.bottomAnchor.constraint(equalTo: scheduleContainer.bottomAnchor, constant: -12.5),
-            progressCircle.widthAnchor.constraint(equalToConstant: 40),
-            progressCircle.heightAnchor.constraint(equalToConstant: 40)
+            progressCircle.widthAnchor.constraint(equalToConstant: 45),
+            progressCircle.heightAnchor.constraint(equalToConstant: 45)
         
         ].forEach({ $0?.isActive = true })
     }
@@ -159,13 +165,13 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         
             progressLabel.centerXAnchor.constraint(equalTo: progressCircle.centerXAnchor, constant: 0),
             progressLabel.centerYAnchor.constraint(equalTo: progressCircle.centerYAnchor, constant: 0),
-            progressLabel.widthAnchor.constraint(equalToConstant: 25),
-            progressLabel.heightAnchor.constraint(equalToConstant: 25)
+            progressLabel.widthAnchor.constraint(equalToConstant: 27.5),
+            progressLabel.heightAnchor.constraint(equalToConstant: 27.5)
         
         ].forEach({ $0.isActive = true })
         
         progressLabel.tag = 1
-        progressLabel.font = UIFont(name: "Poppins-Italic", size: 13.5)
+        progressLabel.font = UIFont(name: "Poppins-SemiBoldItalic", size: 15)
         progressLabel.textColor = .black
         progressLabel.textAlignment = .center
         
@@ -194,86 +200,19 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
 //        }
     }
     
-    private func configureScheduleStatusLabel () {
-        
-        scheduleContainer.addSubview(scheduleStatusLabel)
-        scheduleStatusLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            scheduleStatusLabel.leadingAnchor.constraint(equalTo: dateLabel.trailingAnchor, constant: 10),
-            scheduleStatusLabel.trailingAnchor.constraint(equalTo: progressCircle.leadingAnchor, constant: -10),
-            scheduleStatusLabel.topAnchor.constraint(equalTo: scheduleContainer.topAnchor, constant: 10),
-            scheduleStatusLabel.bottomAnchor.constraint(equalTo: scheduleContainer.bottomAnchor, constant: -10),
-//            scheduleStatusLabel.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 40 - 12.5 - 52.5 - 10 - 10 - 40 - 12.5),
-//            scheduleStatusLabel.centerXAnchor.constraint(equalTo: scheduleContainer.centerXAnchor, constant: 0)
-        
-        ].forEach({ $0.isActive = true })
-        
-        scheduleStatusLabel.numberOfLines = 0
-        
-        setScheduleStatusLabel()
-    }
-    
     private func setDateLabelText () {
         
         if let date = dateForCell, let formatter = formatter {
             
             formatter.dateFormat = "EEEE"
-            
-            if formatter.string(from: date) == "Tuesday" {
-                
-                dateLabel.text = "Tu"
-            }
-            
-            else if formatter.string(from: date) == "Thursday" {
-                
-                dateLabel.text = "Th"
-            }
-            
-            else {
-                
-                formatter.dateFormat = "EEEEE"
-                dateLabel.text = formatter.string(from: date)
-            }
-            
-//            let largerText: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font : UIFont(name: "Poppins-Medium", size: 18) as Any, NSAttributedString.Key.foregroundColor : UIColor.black]
-//            let regularText: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font : UIFont(name: "Poppins-Medium", size: 16) as Any, NSAttributedString.Key.foregroundColor : UIColor.lightGray]
-//            let attributedString = NSMutableAttributedString(string: "")
-//
-//            formatter.dateFormat = "E"
-//            attributedString.append(NSAttributedString(string: formatter.string(from: date) + "\n", attributes: largerText))
-//
-//            formatter.dateFormat = "d"
-//            attributedString.append(NSAttributedString(string: formatter.string(from: date) + "\n", attributes: largerText))
-//
-//            formatter.dateFormat = "MMMM"
-//            let monthText = Array(formatter.string(from: date))
-//
-//            if monthText.count > 5 {
-//
-//                formatter.dateFormat = "MMM"
-//                attributedString.append(NSAttributedString(string: formatter.string(from: date), attributes: regularText))
-//            }
-//
-//            else {
-//
-//                attributedString.append(NSAttributedString(string: formatter.string(from: date), attributes: regularText))
-//            }
-//
-//            let paragraphStyle = NSMutableParagraphStyle()
-//            paragraphStyle.alignment = .center
-//            paragraphStyle.lineHeightMultiple = 0.85
-//            attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedString.length))
-//
-//            dateLabel.attributedText = attributedString
+            dateLabel.text = formatter.string(from: date)
         }
     }
     
     private func setScheduleStatusLabel () {
         
         let semiBoldText: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font : UIFont(name: "Poppins-SemiBold", size: 17) as Any, NSAttributedString.Key.foregroundColor : UIColor.black]
-        let mediumText: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font : UIFont(name: "Poppins-Medium", size: 15) as Any, NSAttributedString.Key.foregroundColor : UIColor.black]
+        let mediumText: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font : UIFont(name: "Poppins-Medium", size: 15) as Any, NSAttributedString.Key.foregroundColor : UIColor.lightGray]
         let attributedString = NSMutableAttributedString(string: "")
         
         attributedString.append(NSAttributedString(string: "Up Next: \n", attributes: semiBoldText))
@@ -283,7 +222,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         attributedString.append(NSAttributedString(string: "7:00 PM", attributes: mediumText))
         
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .center
+        paragraphStyle.alignment = .left
         
         attributedString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedString.length))
         
