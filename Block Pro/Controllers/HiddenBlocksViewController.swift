@@ -36,8 +36,6 @@ class HiddenBlocksViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.title = "Blocks"
         
         configureTableView(hiddenBlocksTableView)
     }
@@ -95,6 +93,11 @@ extension HiddenBlocksViewController: UITableViewDataSource, UITableViewDelegate
         
         cell.formatter = formatter
         cell.block = hiddenBlocks?[indexPath.row]
+        
+        if blockSelectedDelegate as? CollabViewController == nil {
+            
+            cell.noMembersLabel.isHidden = true
+        }
         
         return cell
     }

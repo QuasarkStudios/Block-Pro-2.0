@@ -48,7 +48,7 @@ class NotificationScheduler {
         }
     }
     
-    func scheduleCollabBlockNotifications (collab: Collab? = nil, _ block: Block) {
+    func scheduleBlockNotifications (collab: Collab? = nil, _ block: Block) {
         
         for reminder in block.reminders ?? [] {
             
@@ -75,53 +75,19 @@ class NotificationScheduler {
                 
                 trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         
-                request = UNNotificationRequest(identifier: "collabID: \(collab?.collabID ?? "")" + " - " + "blockID: \(block.blockID!)" + "-\(reminder)", content: content, trigger: trigger)
+                if collab != nil {
+                    
+                    request = UNNotificationRequest(identifier: "collabID: \(collab!.collabID)" + " - " + "blockID: \(block.blockID!)" + "-\(reminder)", content: content, trigger: trigger)
+                }
+                
+                else {
+                    
+                    request = UNNotificationRequest(identifier: "blockID: \(block.blockID!)" + "-\(reminder)", content: content, trigger: trigger)
+                }
         
                 UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
             }
         }
-    }
-    
-    func scheduleBlockNotificiation2 (_ blockDict: [String : Any]) {
-
-        var dateComponents = DateComponents()
-        dateComponents.calendar = Calendar.current
-
-        let content = UNMutableNotificationContent()
-        let trigger: UNCalendarNotificationTrigger
-        let request: UNNotificationRequest
-
-        let notificationDate: Date = blockDict["begins"] as! Date
-
-        formatter.dateFormat = "yyyy"
-        dateComponents.year = Int(formatter.string(from: notificationDate))!
-
-        formatter.dateFormat = "MM"
-        dateComponents.month = Int(formatter.string(from: notificationDate))
-
-        formatter.dateFormat = "d"
-        dateComponents.day = Int(formatter.string(from: notificationDate))!
-
-        var notificationTime : Date = blockDict["begins"] as! Date
-        notificationTime = notificationTime.addingTimeInterval(blockDict["minsBefore"] as! Double)
-
-        formatter.dateFormat = "HH"
-        dateComponents.hour = Int(formatter.string(from: notificationTime))!
-
-        formatter.dateFormat = "mm"
-        dateComponents.minute = Int(formatter.string(from: notificationTime))!
-
-        formatter.dateFormat = "h:mm a"
-
-        content.title = "Heads Up!!"
-        content.body = "\(blockDict["name"] ?? "Block") at \(formatter.string(from: notificationDate))"
-        content.sound = UNNotificationSound.default
-
-        trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
-
-        request = UNNotificationRequest(identifier: blockDict["notificationID"] as! String, content: content, trigger: trigger)
-
-        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
     }
     
     func getPendingNotifications (completion: @escaping ((_ requests: [UNNotificationRequest]) -> Void)) {

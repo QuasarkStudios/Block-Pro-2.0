@@ -36,7 +36,7 @@ class OneThirdBlock: UIView {
 
     private func configureBlock () {
         
-        self.setCollabBlockColor(block)
+        self.setBlockColor(block)
         
         nameLabel.text = block?.name
         nameLabel.textColor = .white

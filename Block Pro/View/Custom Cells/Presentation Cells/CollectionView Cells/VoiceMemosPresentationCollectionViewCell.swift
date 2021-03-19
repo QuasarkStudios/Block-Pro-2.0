@@ -151,6 +151,7 @@ class VoiceMemosPresentationCollectionViewCell: UICollectionViewCell {
         //Delays the next retrieval attempt of the voiceMemo
         DispatchQueue.main.asyncAfter(deadline: .now() + Double(3 * failureCount)) {
             
+            //Collab Block
             if let collabID = collab?.collabID, let blockID = block?.blockID, let voiceMemoID = voiceMemo?.voiceMemoID {
                 
                 self.firebaseStorage.retrieveCollabBlockVoiceMemosFromStorage(collabID, blockID, voiceMemoID) { [weak self] (progress, error) in
@@ -208,6 +209,7 @@ class VoiceMemosPresentationCollectionViewCell: UICollectionViewCell {
                 }
             }
             
+            //Collab
             else if let collabID = collab?.collabID, let voiceMemoID = voiceMemo?.voiceMemoID {
                 
                 self.firebaseStorage.retrieveCollabVoiceMemoFromStorage(collabID, voiceMemoID) { [weak self] (progress, error) in
@@ -218,6 +220,64 @@ class VoiceMemosPresentationCollectionViewCell: UICollectionViewCell {
                         if error!.retryStorageRetrieval(), failureCount < 3 {
                             
                             self?.retrieveVoiceMemo(collab, block, voiceMemo, failureCount + 1, completion)
+                        }
+                        
+                        else {
+                            
+                            SVProgressHUD.showError(withStatus: "Sorry, an error occurred while loading this Voice Memo")
+                            
+                            completion(error)
+                        }
+                    }
+
+                    else if progress != nil {
+                        
+                        self?.nameLabel.text = "Loading..."
+                        
+                        //If the voiceMemo hasn't finished being loaded yet
+                        if progress! < 1 {
+
+                            self?.progressCircles?.shapeLayer.strokeEnd = CGFloat(progress!) //Implicitly animates it to it's correct position
+                        }
+
+                        //If the voiceMemo has finished being loaded
+                        else {
+
+                            self?.progressCircles?.shapeLayer.strokeEnd = CGFloat(progress!) //Implicitly animates it to it's correct position
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+
+                                //Implicitly animates it to 0 after a 0.3 sec delay to give to animation to 1 time to complete
+                                self?.progressCircles?.shapeLayer.strokeEnd = 0
+                            }
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+
+                                //Ensures the voiceMemo has been loaded; if the voiceMemo has not finished being saved and therefore it's object wasn't
+                                //found, it's download progress status is still sent back. This will prevent the next animations with the playing
+                                //of the voiceMemo from occuring
+                                if FileManager.default.fileExists(atPath: documentsDirectory.path + "/VoiceMemos" + "/\(voiceMemo?.voiceMemoID ?? "").m4a") {
+                                    
+                                    //Calls the completion after a 0.6 sec delay to give the previous animations time to complete
+                                    completion(nil)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            //Personal Block
+            else if let blockID = block?.blockID, let voiceMemoID = voiceMemo?.voiceMemoID {
+                
+                self.firebaseStorage.retrievePersonalBlockVoiceMemosFromStorage(blockID, voiceMemoID) { [weak self] (progress, error) in
+                    
+                    if error != nil {
+
+                        //If the failure was caused by the object not being found and retrieval hasn't been tried 3 times yet
+                        if error!.retryStorageRetrieval(), failureCount < 3 {
+                            
+                            self?.retrieveVoiceMemo(nil, block, voiceMemo, failureCount + 1, completion)
                         }
                         
                         else {

@@ -11,6 +11,4 @@ import Foundation
 protocol HomeViewProtocol: AnyObject {
     
     func collabCreated (_ collabID: String)
-    
-    func moveToPersonalScheduleView ()
 }

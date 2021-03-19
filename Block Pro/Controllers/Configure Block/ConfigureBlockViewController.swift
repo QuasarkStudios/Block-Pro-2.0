@@ -421,21 +421,47 @@ class ConfigureBlockViewController: UIViewController {
         
         if let name = block.name, name.leniantValidationOfTextEntered() {
             
-            firebaseBlock.createCollabBlock(collabID: collab?.collabID ?? "", block: block) { [weak self] (error) in
+            //Collab Block
+            if collab != nil {
                 
-                if error != nil {
+                firebaseBlock.createCollabBlock(collabID: collab?.collabID ?? "", block: block) { [weak self] (error) in
                     
-                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                    if error != nil {
+                        
+                        SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                    }
+                    
+                    else {
+                        
+                        let notificationScheduler = NotificationScheduler()
+                        notificationScheduler.scheduleBlockNotifications(collab: self!.collab, self!.block)
+                        
+                        self?.blockCreatedDelegate?.blockCreated(self!.block)
+                        
+                        self?.dismiss(animated: true, completion: nil)
+                    }
                 }
+            }
+            
+            //Personal Block
+            else {
                 
-                else {
+                firebaseBlock.createPersonalBlock(block: block) { [weak self] (error) in
                     
-                    let notificationScheduler = NotificationScheduler()
-                    notificationScheduler.scheduleCollabBlockNotifications(collab: self!.collab, self!.block)
+                    if error != nil {
+                        
+                        SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                    }
                     
-                    self?.blockCreatedDelegate?.blockCreated(self!.block)
-                    
-                    self?.dismiss(animated: true, completion: nil)
+                    else {
+                        
+                        let notificationScheduler = NotificationScheduler()
+                        notificationScheduler.scheduleBlockNotifications(self!.block)
+                        
+                        self?.blockCreatedDelegate?.blockCreated(self!.block)
+                        
+                        self?.dismiss(animated: true, completion: nil)
+                    }
                 }
             }
         }
@@ -455,23 +481,53 @@ class ConfigureBlockViewController: UIViewController {
         
         if let name = block.name, name.leniantValidationOfTextEntered() {
             
-            firebaseBlock.editCollabBlock(collabID: collab?.collabID ?? "", block: block) { [weak self] (error) in
+            //Collab Block
+            if collab != nil {
                 
-                if error != nil {
+                firebaseBlock.editCollabBlock(collabID: collab?.collabID ?? "", block: block) { [weak self] (error) in
                     
-                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
-                }
-                
-                else {
-                    
-                    let notificationScheduler = NotificationScheduler()
-                    
-                    notificationScheduler.removePendingBlockNotifications(self!.block.blockID!) {
+                    if error != nil {
                         
-                        notificationScheduler.scheduleCollabBlockNotifications(collab: self!.collab, self!.block)
+                        SVProgressHUD.showError(withStatus: error?.localizedDescription)
                     }
                     
-                    self?.navigationController?.popViewController(animated: true)
+                    else {
+                        
+                        let notificationScheduler = NotificationScheduler()
+                        
+                        notificationScheduler.removePendingBlockNotifications(self!.block.blockID!) {
+                            
+                            notificationScheduler.scheduleBlockNotifications(collab: self!.collab, self!.block)
+                        }
+                        
+                        self?.navigationController?.popViewController(animated: true)
+                    }
+                }
+            }
+            
+            //Personal Block
+            else {
+                
+                firebaseBlock.editPersonalBlock(block: block) { [weak self] (error) in
+                    
+                    if error != nil {
+                        
+                        SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                    }
+                    
+                    else {
+                        
+                        let notificationScheduler = NotificationScheduler()
+
+                        notificationScheduler.removePendingBlockNotifications(self!.block.blockID!) {
+
+                            notificationScheduler.scheduleBlockNotifications(self!.block)
+                        }
+                        
+//                        self?.blockCreatedDelegate?.blockCreated(self!.block)
+                        
+                        self?.navigationController?.popViewController(animated: true)
+                    }
                 }
             }
         }
@@ -487,7 +543,7 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
         
         if selectedTableView == "details" {
             
-            return 10
+            return collab != nil ? 10 : 8
         }
         
         else {
@@ -593,19 +649,41 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
             
             else if indexPath.row == 7 {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "memberConfigurationCell", for: indexPath) as! MemberConfigurationCell
-                cell.selectionStyle = .none
+                //Collab Block
+                if collab != nil {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "memberConfigurationCell", for: indexPath) as! MemberConfigurationCell
+                    cell.selectionStyle = .none
+                    
+                    cell.memberConfigurationDelegate = self
+                    
+                    cell.addMembersLabel.text = "Assign Members"
+                    
+                    cell.editingCell = !(self.navigationController?.viewControllers.count == 1)
+                    
+                    cell.collab = collab
+                    cell.members = block.members
+                    
+                    return cell
+                }
                 
-                cell.memberConfigurationDelegate = self
-                
-                cell.addMembersLabel.text = "Assign Members"
-                
-                cell.editingCell = !(self.navigationController?.viewControllers.count == 1)
-                
-                cell.collab = collab
-                cell.members = block.members
-                
-                return cell
+                //Personal Block
+                else {
+                    
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "reminderConfigurationCell", for: indexPath) as! ReminderConfigurationCell
+                    cell.selectionStyle = .none
+                    
+                    cell.startTime = block.starts
+                    
+                    cell.selectedReminders = block.reminders ?? []
+                    
+                    cell.remindersCountLabel.alpha = block.reminders?.count ?? 0 > 0 ? 1 : 0
+                    cell.remindersCountLabel.text = "\(block.reminders?.count ?? 0)/2"
+                    
+                    cell.reminderConfigurationDelegate = self
+                    
+                    return cell
+                }
             }
             
             else if indexPath.row == 9 {
@@ -747,43 +825,53 @@ extension ConfigureBlockViewController: UITableViewDataSource, UITableViewDelega
                         return 135
                     }
                  
-                //Member Configuration Cell
+                //Member or Reminder Configuration Cell
                 case 7:
                     
-                    if self.navigationController?.viewControllers.count == 1 {
+                    //Collab Block
+                    if collab != nil {
                         
-                        if (collab?.currentMembers.count ?? 0 > 1) && (block.members?.count ?? 0 == (collab?.currentMembers.count ?? 0) - 1) {
+                        if self.navigationController?.viewControllers.count == 1 {
                             
-                            return 160
-                        }
-                        
-                        else if block.members?.count ?? 0 > 0 {
+                            if (collab?.currentMembers.count ?? 0 > 1) && (block.members?.count ?? 0 == (collab?.currentMembers.count ?? 0) - 1) {
+                                
+                                return 160
+                            }
                             
-                            return 225
+                            else if block.members?.count ?? 0 > 0 {
+                                
+                                return 225
+                            }
+                            
+                            else {
+                                
+                                return 85
+                            }
                         }
                         
                         else {
                             
-                            return 85
+                            if block.members?.count ?? 0 == collab?.currentMembers.count ?? 0 {
+                                
+                                return 160
+                            }
+                            
+                            else if block.members?.count ?? 0 > 0 {
+                                
+                                return 225
+                            }
+                            
+                            else {
+                                
+                                return 85
+                            }
                         }
                     }
                     
+                    //Personal Block
                     else {
                         
-                        if block.members?.count ?? 0 == collab?.currentMembers.count ?? 0 {
-                            
-                            return 160
-                        }
-                        
-                        else if block.members?.count ?? 0 > 0 {
-                            
-                            return 225
-                        }
-                        
-                        else {
-                            
-                            return 85
-                        }
+                        return 130
                     }
                 
                 //Reminder Configuration Cell
@@ -1223,7 +1311,7 @@ extension ConfigureBlockViewController: TimeConfigurationProtocol {
         }
         
         //Setting the start time for the reminder configuration cell
-        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: 9, section: 0)) as? ReminderConfigurationCell {
+        if let cell = configureBlockTableView.cellForRow(at: IndexPath(row: collab != nil ? 9 : 7, section: 0)) as? ReminderConfigurationCell {
             
             cell.startTime = block.starts
             

@@ -117,6 +117,7 @@ class PhotosPresentationCollectionViewCell: UICollectionViewCell {
                 self.progressView.dismissProgress()
             }
             
+            //Collab Block
             else if let collabID = self.collabID, let blockID = self.blockID, let photoID = self.photoID {
                 
                 self.firebaseStorage.retrieveCollabBlockPhotoFromStorage(collabID, blockID, photoID) { (error, photo) in
@@ -147,6 +148,7 @@ class PhotosPresentationCollectionViewCell: UICollectionViewCell {
                 }
             }
             
+            //Collab
             else if let collabID = self.collabID, let photoID = self.photoID {
                 
                 self.firebaseStorage.retrieveCollabPhotosFromStorage(collabID: collabID, photoID: photoID) { (photo, error) in
@@ -173,6 +175,37 @@ class PhotosPresentationCollectionViewCell: UICollectionViewCell {
                         self.progressView.dismissProgress()
                         
                         self.cachePhotoDelegate?.cacheCollabPhoto(photoID: photoID, photo: photo)
+                    }
+                }
+            }
+            
+            //Personal Block
+            else if let blockID = self.blockID, let photoID = self.photoID {
+                
+                self.firebaseStorage.retrievePersonalBlockPhotoFromStorage(blockID, photoID) { (error, photo) in
+                    
+                    if error != nil {
+                        
+                        //If the failure was caused by the object not being found and retrieval hasn't been tried 3 times yet
+                        if error!.retryStorageRetrieval(), failureCount < 3 {
+                            
+                            self.setPhoto(nil, failureCount + 1)
+                        }
+                        
+                        else {
+                            
+                            SVProgressHUD.showError(withStatus: "Sorry, an error occurred while loading this photo")
+                        }
+                    }
+                    
+                    else {
+                        
+                        self.photoImageView.image = photo
+                        
+                        self.showProgress = false
+                        self.progressView.dismissProgress()
+                        
+                        self.cachePhotoDelegate?.cacheBlockPhoto(photoID: photoID, photo: photo)
                     }
                 }
             }

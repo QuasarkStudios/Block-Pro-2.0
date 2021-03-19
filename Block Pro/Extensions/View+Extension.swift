@@ -43,7 +43,7 @@ extension UIView {
         }
     }
     
-    func setCollabBlockColor (_ block: Block?) {
+    func setBlockColor (_ block: Block?) {
         
         if let status = block?.status {
             

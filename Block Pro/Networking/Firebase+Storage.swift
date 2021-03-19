@@ -17,6 +17,7 @@ class FirebaseStorage {
     let currentUser = CurrentUser.sharedInstance
     
     let profilePicturesRef = Storage.storage().reference().child("profilePictures")
+    let usersStorageRef = Storage.storage().reference().child("Users")
     let collabStorageRef = Storage.storage().reference().child("Collabs")
     let conversationStorageRef = Storage.storage().reference().child("Conversations")
     
@@ -298,6 +299,20 @@ class FirebaseStorage {
         }
     }
     
+    func savePersonalBlockPhotosToStorage (_ blockID: String, _ photoID: String, _ photo: UIImage?) {
+        
+        if let data = photo?.jpegData(compressionQuality: 0.2) {
+            
+            usersStorageRef.child(currentUser.userID).child("blocks").child(blockID).child("photos").child("\(photoID).jpeg").putData(data, metadata: nil) { (metatdata, error) in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription as Any)
+                }
+            }
+        }
+    }
+    
     func saveCollabBlockPhotosToStorage (_ collabID: String, _ blockID: String, _ photoID: String, _ photo: UIImage?) {
         
         let photoData = photo?.jpegData(compressionQuality: 0.2)
@@ -309,6 +324,25 @@ class FirebaseStorage {
                 if error != nil {
                     
                     print(error?.localizedDescription as Any)
+                }
+            }
+        }
+    }
+    
+    func retrievePersonalBlockPhotoFromStorage (_ blockID: String, _ photoID: String, completion: @escaping ((_ error: Error?, _ photo: UIImage?) -> Void)) {
+        
+        usersStorageRef.child(currentUser.userID).child("blocks").child(blockID).child("photos").child("\(photoID).jpeg").getData(maxSize: 1048576) { (data, error) in
+            
+            if error != nil {
+                
+                completion(error, nil)
+            }
+            
+            else {
+                
+                if let photoData = data {
+                    
+                    completion(nil, UIImage(data: photoData))
                 }
             }
         }
@@ -333,6 +367,19 @@ class FirebaseStorage {
         }
     }
     
+    func savePersonalBlockVoiceMemosToStorage (_ blockID: String, _ voiceMemoID: String) {
+        
+        let voiceMemoURL = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
+        
+        usersStorageRef.child(currentUser.userID).child("blocks").child(blockID).child("voiceMemos").child("\(voiceMemoID).m4a").putFile(from: voiceMemoURL, metadata: nil) { (metadata, error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+        }
+    }
+    
     func saveCollabBlockVoiceMemosToStorage (_ collabID: String, _ blockID: String, _ voiceMemoID: String) {
         
         let voiceMemoURL = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
@@ -342,6 +389,31 @@ class FirebaseStorage {
             if error != nil {
                 
                 print(error?.localizedDescription as Any)
+            }
+        }
+    }
+    
+    func retrievePersonalBlockVoiceMemosFromStorage (_ blockID: String, _ voiceMemoID: String, completion: @escaping ((_ progress: Double?, _ error: Error?) -> Void)) {
+        
+        let voiceMemoURL = documentsDirectory.appendingPathComponent("VoiceMemos", isDirectory: true).appendingPathComponent(voiceMemoID + ".m4a")
+        
+        let downloadTask = usersStorageRef.child(currentUser.userID).child("blocks").child(blockID).child("voiceMemos").child(voiceMemoID + ".m4a").write(toFile: voiceMemoURL)
+        
+        downloadTask.observe(.progress) { (snapshot) in
+            
+            completion(snapshot.progress?.fractionCompleted, nil)
+        }
+        
+        downloadTask.observe(.success) { (snapshot) in
+            
+            completion(nil, nil)
+        }
+        
+        downloadTask.observe(.failure) { (snapshot) in
+            
+            if let error = snapshot.error {
+                
+                completion(nil, error)
             }
         }
     }
@@ -371,9 +443,25 @@ class FirebaseStorage {
         }
     }
     
+    func deletePersonalBlockPhoto (_ blockID: String, _ photoID: String, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        usersStorageRef.child(currentUser.userID).child("blocks").child(blockID).child("photos").child(photoID + ".jpeg").delete { (error) in
+            
+            completion(error)
+        }
+    }
+    
     func deleteCollabBlockPhoto (_ collabID: String, _ blockID: String, _ photoID: String, completion: @escaping ((_ error: Error?) -> Void)) {
         
         collabStorageRef.child(collabID).child("blocks").child(blockID).child("photos").child(photoID + ".jpeg").delete { (error) in
+            
+            completion(error)
+        }
+    }
+    
+    func deletePersonalBlockVoiceMemo (_ blockID: String, voiceMemoID: String, completion: @escaping ((_ error: Error?) -> Void)) {
+        
+        usersStorageRef.child(currentUser.userID).child("blocks").child(blockID).child("voiceMemos").child(voiceMemoID + ".m4a").delete { (error) in
             
             completion(error)
         }

@@ -164,7 +164,22 @@ extension SelectedBlockStatusCell: UICollectionViewDataSource, UICollectionViewD
                     //Setting the block status
                     firebaseBlock.setCollabBlockStatus(collabID, blockID: blockID, status: status) { (error) in
                         
-                        print(error?.localizedDescription as Any)
+                        if error != nil {
+                            
+                            print(error?.localizedDescription as Any)
+                        }
+                    }
+                }
+                
+                else if let blockID = block?.blockID, let status = block?.status {
+                    
+                    //Setting the block status
+                    firebaseBlock.setPersonalBlockStatus(blockID, status) { (error) in
+                        
+                        if error != nil {
+                            
+                            print(error?.localizedDescription as Any)
+                        }
                     }
                 }
             }

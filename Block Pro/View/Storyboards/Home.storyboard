@@ -257,6 +257,7 @@
                     <navigationItem key="navigationItem" id="rFh-Li-dFv"/>
                     <connections>
                         <segue destination="1bj-4J-3aW" kind="show" identifier="moveToCollabView" id="GuD-yX-dBy"/>
+                        <segue destination="9gZ-dh-aRy" kind="show" identifier="moveToPersonalBlocksView" id="BON-5i-EaP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oCW-u7-OKv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -428,7 +429,17 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CE3-vR-P9G" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1020" y="-490"/>
+            <point key="canvasLocation" x="1226" y="-539"/>
+        </scene>
+        <!--PersonalBlocks-->
+        <scene sceneID="1kN-Cp-5DU">
+            <objects>
+                <viewControllerPlaceholder storyboardName="PersonalBlocks" id="9gZ-dh-aRy" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="fnc-Rl-ZqR"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HGo-pw-0a9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="827" y="-539"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="2uB-wX-0i1">

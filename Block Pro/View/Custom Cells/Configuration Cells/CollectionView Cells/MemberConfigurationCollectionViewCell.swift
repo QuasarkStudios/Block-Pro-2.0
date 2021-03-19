@@ -131,7 +131,12 @@ class MemberConfigurationCollectionViewCell: UICollectionViewCell {
         
         if let member = member as? Member {
             
-            if let profilePicture = member.profilePictureImage {
+            if member.userID == currentUser.userID {
+                
+                profilePicImageView?.profilePic = currentUser.profilePictureImage
+            }
+            
+            else if let profilePicture = member.profilePictureImage {
                 
                 profilePicImageView?.profilePic = profilePicture
             }

@@ -34,7 +34,10 @@ class SelectedBlockViewController: UIViewController {
         
         configureTableView(selectedBlockTableView)
         
-        monitorBlock()
+        if collab != nil {
+            
+            monitorBlock()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -130,250 +133,8 @@ class SelectedBlockViewController: UIViewController {
             //Ensures the block hasn't been deleted
             else if block != nil {
                 
-                var indexPathsToReload: [IndexPath] = []
-                
-                //Block Name////////////////////////////////////////////////////////////
-                if let blockName = block?.name, blockName != self?.block?.name {
-                    
-                    self?.title = blockName
-                    
-                    self?.block?.name = block?.name
-                }
-                ////////////////////////////////////////////////////////////////////////
-                
-                
-                //Block Time////////////////////////////////////////////////////////////
-                if let starts = block?.starts, let ends = block?.ends {
-                    
-                    if starts != self?.block?.starts || ends != self?.block?.ends {
-                        
-                        indexPathsToReload.append(IndexPath(row: 0, section: 0))
-                        
-                        self?.block?.starts = block?.starts
-                        self?.block?.ends = block?.ends
-                    }
-                }
-                ////////////////////////////////////////////////////////////////////////
-                
-                
-                //Block Members////////////////////////////////////////////////////////////
-                if let members = block?.members {
-                    
-                    if members.count != self?.block?.members?.count ?? 0 {
-                        
-                        indexPathsToReload.append(IndexPath(row: 4, section: 0))
-                    }
-                    
-                    else {
-                        
-                        for member in members {
-                            
-                            //If there is a member that isn't currently in the cachedBlock member array
-                            if !(self?.block?.members?.contains(where: { $0.userID == member.userID }) ?? false) {
-                                
-                                indexPathsToReload.append(IndexPath(row: 4, section: 0))
-                                break
-                            }
-                        }
-                    }
-                    
-                    self?.block?.members = block?.members
-                }
-                ////////////////////////////////////////////////////////////////////////////
-                
-                
-                //Block Locations////////////////////////////////////////////////////////////
-                if let locations = block?.locations {
-                    
-                    if locations.count != self?.block?.locations?.count ?? 0 {
-                        
-                        indexPathsToReload.append(IndexPath(row: 6, section: 0))
-                    }
-                    
-                    else {
-                        
-                        for location in locations {
-                            
-                            //If there is a location that isn't currently in the cachedBlock location array
-                            if !(self?.block?.locations?.contains(where: { $0.locationID == location.locationID }) ?? false) {
-                                
-                                indexPathsToReload.append(IndexPath(row: 6, section: 0))
-                                break
-                            }
-                            
-                            //If a location has had it's name changed
-                            else if let cachedLocation = self?.block?.locations?.first(where: { $0.locationID == location.locationID }), cachedLocation.name != location.name {
-                                
-                                indexPathsToReload.append(IndexPath(row: 6, section: 0))
-                                break
-                            }
-                        }
-                    }
-                    
-                    self?.block?.locations = block?.locations
-                }
-                /////////////////////////////////////////////////////////////////////////////
-                
-                
-                //Block Photos////////////////////////////////////////////////////////////
-                if let photoIDs = block?.photoIDs {
-                    
-                    if photoIDs.count != self?.block?.photoIDs?.count ?? 0 {
-                        
-                        indexPathsToReload.append(IndexPath(row: 8, section: 0))
-                    }
-                    
-                    else {
-                        
-                        for photoID in photoIDs {
-                            
-                            //If there is a photoID that isn't currently in the cachedBlock photoID array
-                            if !(self?.block?.photoIDs?.contains(where: { $0 == photoID }) ?? false) {
-                                
-                                indexPathsToReload.append(IndexPath(row: 8, section: 0))
-                                break
-                            }
-                        }
-                    }
-                    
-                    self?.block?.photoIDs = block?.photoIDs
-                    
-                    //Important
-                    for photo in self?.block?.photos ?? [:] {
-                        
-                        if block?.photoIDs?.contains(where: { $0 == photo.key }) == false {
-                            
-                            self?.block?.photos?.removeValue(forKey: photo.key)
-                        }
-                    }
-                }
-                //////////////////////////////////////////////////////////////////////////
-                
-                
-                //Block Voice Memos////////////////////////////////////////////////////////////
-                if let voiceMemos = block?.voiceMemos {
-                    
-                    if voiceMemos.count != self?.block?.voiceMemos?.count ?? 0 {
-                        
-                        indexPathsToReload.append(IndexPath(row: 10, section: 0))
-                    }
-                    
-                    else {
-                        
-                        for voiceMemo in voiceMemos {
-                            
-                            //If there is a voiceMemo that isn't currently in the cachedBlock voiceMemo array
-                            if !(self?.block?.voiceMemos?.contains(where: { $0.voiceMemoID == voiceMemo.voiceMemoID }) ?? false) {
-                                
-                                indexPathsToReload.append(IndexPath(row: 10, section: 0))
-                                break
-                            }
-                            
-                            //If a voice memo has had it's name changed
-                            else if let cachedVoiceMemo = self?.block?.voiceMemos?.first(where: { $0.voiceMemoID == voiceMemo.voiceMemoID }), cachedVoiceMemo.name != voiceMemo.name {
-                                
-                                indexPathsToReload.append(IndexPath(row: 10, section: 0))
-                                break
-                            }
-                        }
-                    }
-                    
-                    self?.block?.voiceMemos = block?.voiceMemos
-                }
-                ///////////////////////////////////////////////////////////////////////////////
-                
-                
-                //Block Links////////////////////////////////////////////////////////////
-                if let links = block?.links {
-                    
-                    if links.count != self?.block?.links?.count ?? 0 {
-                        
-                        indexPathsToReload.append(IndexPath(row: 12, section: 0))
-                    }
-                    
-                    else {
-                        
-                        for link in links {
-                            
-                            //If there is a link that isn't currently in the cachedBlock link array
-                            if !(self?.block?.links?.contains(where: { $0.linkID == link.linkID }) ?? false) {
-                                
-                                indexPathsToReload.append(IndexPath(row: 12, section: 0))
-                                break
-                            }
-                            
-                            //If a link has had its name or url changed
-                            else if let cachedLink = self?.block?.links?.first(where: { $0.linkID == link.linkID }), cachedLink.name != link.name || cachedLink.url != link.url {
-                                
-                                indexPathsToReload.append(IndexPath(row: 12, section: 0))
-                                break
-                            }
-                        }
-                    }
-                    
-                    self?.block?.links = block?.links
-                }
-                //////////////////////////////////////////////////////////////////////////
-                
-                
-                //Block Status////////////////////////////////////////////////////////////
-                if let status = block?.status {
-                    
-                    self?.block?.status = status
-                }
-                
-                //Attempts to auto configure the block status
-                else if let starts = block?.starts, let ends = block?.ends {
-                    
-                    if Date().isBetween(startDate: starts, endDate: ends) {
-                        
-                        self?.block?.status = .inProgress
-                    }
-                    
-                    else if Date() < starts {
-                        
-                        self?.block?.status = .notStarted
-                    }
-                    
-                    else if Date() > ends {
-                        
-                        self?.block?.status = .late
-                    }
-                }
-                
-                //If the BlockStatusCell is visible
-                if self?.selectedBlockTableView.indexPathsForVisibleRows?.contains(where: { $0.row == 14 }) ?? false {
-                    
-                    if let statusCell = self?.selectedBlockTableView.cellForRow(at: IndexPath(row: 14, section: 0)) as? SelectedBlockStatusCell, let status = self?.block?.status, statusCell.block?.status != status {
-                        
-                        statusCell.block = block
-                        
-                        let statusArray: [BlockStatus : Int] = [.notStarted : 0, .inProgress : 1, .completed : 2, .needsHelp : 3, .late : 4]
-                        
-                        if statusArray[status] != nil {
-                            
-                            statusCell.statusCollectionView.scrollToItem(at: IndexPath(item: statusArray[status]!, section: 0), at: .centeredHorizontally, animated: true)
-                        }
-                    }
-                }
-                //////////////////////////////////////////////////////////////////////////
-                
-                //Block Reminders////////////////////////////////////////////////////////////
-                self?.determineBlockReminders(block?.blockID) { [weak self] (reminders) in
-                    
-                    self?.block?.reminders = reminders
-                    
-                    DispatchQueue.main.async {
-                        
-                        self?.selectedBlockTableView.reloadRows(at: [IndexPath(row: 2, section: 0)], with: .none)
-                    }
-                }
-                
-                //Reloading the cells that need updating
-                self?.selectedBlockTableView.reloadRows(at: indexPathsToReload, with: .none)
+                self?.confirmBlockChanges(block)
             }
-            /////////////////////////////////////////////////////////////////////////////////
-            
             
             //Block has been deleted
             else {
@@ -387,6 +148,254 @@ class SelectedBlockViewController: UIViewController {
                 })
             }
         }
+    }
+    
+    
+    //MARK: - Confirm Block Changes
+    
+    func confirmBlockChanges (_ updatedBlock: Block?) {
+        
+        var indexPathsToReload: [IndexPath] = []
+        
+        //Block Name////////////////////////////////////////////////////////////
+        if let blockName = updatedBlock?.name, blockName != block?.name {
+            
+            self.title = blockName
+            
+            block?.name = updatedBlock?.name
+        }
+        ////////////////////////////////////////////////////////////////////////
+        
+        
+        //Block Time////////////////////////////////////////////////////////////
+        if let starts = updatedBlock?.starts, let ends = updatedBlock?.ends {
+            
+            if starts != block?.starts || ends != block?.ends {
+                
+                indexPathsToReload.append(IndexPath(row: 0, section: 0))
+                
+                block?.starts = updatedBlock?.starts
+                block?.ends = updatedBlock?.ends
+            }
+        }
+        ////////////////////////////////////////////////////////////////////////
+        
+        
+        //Block Members////////////////////////////////////////////////////////////
+        if let members = updatedBlock?.members {
+            
+            if members.count != block?.members?.count ?? 0 {
+                
+                indexPathsToReload.append(IndexPath(row: 4, section: 0))
+            }
+            
+            else {
+                
+                for member in members {
+                    
+                    //If there is a member that isn't currently in the cachedBlock member array
+                    if !(block?.members?.contains(where: { $0.userID == member.userID }) ?? false) {
+                        
+                        indexPathsToReload.append(IndexPath(row: 4, section: 0))
+                        break
+                    }
+                }
+            }
+            
+            block?.members = updatedBlock?.members
+        }
+        ////////////////////////////////////////////////////////////////////////////
+        
+        
+        //Block Locations////////////////////////////////////////////////////////////
+        if let locations = updatedBlock?.locations {
+            
+            if locations.count != block?.locations?.count ?? 0 {
+                
+                indexPathsToReload.append(IndexPath(row: collab != nil ? 6 : 4, section: 0))
+            }
+            
+            else {
+                
+                for location in locations {
+                    
+                    //If there is a location that isn't currently in the cachedBlock location array
+                    if !(block?.locations?.contains(where: { $0.locationID == location.locationID }) ?? false) {
+                        
+                        indexPathsToReload.append(IndexPath(row: collab != nil ? 6 : 4, section: 0))
+                        break
+                    }
+                    
+                    //If a location has had it's name changed
+                    else if let cachedLocation = block?.locations?.first(where: { $0.locationID == location.locationID }), cachedLocation.name != location.name {
+                        
+                        indexPathsToReload.append(IndexPath(row: collab != nil ? 6 : 4, section: 0))
+                        break
+                    }
+                }
+            }
+            
+            block?.locations = updatedBlock?.locations
+        }
+        /////////////////////////////////////////////////////////////////////////////
+        
+        
+        //Block Photos////////////////////////////////////////////////////////////
+        if let photoIDs = updatedBlock?.photoIDs {
+            
+            if photoIDs.count != block?.photoIDs?.count ?? 0 {
+                
+                indexPathsToReload.append(IndexPath(row: collab != nil ? 8 : 6, section: 0))
+            }
+            
+            else {
+                
+                for photoID in photoIDs {
+                    
+                    //If there is a photoID that isn't currently in the cachedBlock photoID array
+                    if !(block?.photoIDs?.contains(where: { $0 == photoID }) ?? false) {
+                        
+                        indexPathsToReload.append(IndexPath(row: collab != nil ? 8 : 6, section: 0))
+                        break
+                    }
+                }
+            }
+            
+            block?.photoIDs = updatedBlock?.photoIDs
+            
+            //Important
+            for photo in block?.photos ?? [:] {
+                
+                if block?.photoIDs?.contains(where: { $0 == photo.key }) == false {
+                    
+                    block?.photos?.removeValue(forKey: photo.key)
+                }
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        
+        
+        //Block Voice Memos////////////////////////////////////////////////////////////
+        if let voiceMemos = updatedBlock?.voiceMemos {
+            
+            if voiceMemos.count != block?.voiceMemos?.count ?? 0 {
+                
+                indexPathsToReload.append(IndexPath(row: collab != nil ? 10 : 8, section: 0))
+            }
+            
+            else {
+                
+                for voiceMemo in voiceMemos {
+                    
+                    //If there is a voiceMemo that isn't currently in the cachedBlock voiceMemo array
+                    if !(block?.voiceMemos?.contains(where: { $0.voiceMemoID == voiceMemo.voiceMemoID }) ?? false) {
+                        
+                        indexPathsToReload.append(IndexPath(row: collab != nil ? 10 : 8, section: 0))
+                        break
+                    }
+                    
+                    //If a voice memo has had it's name changed
+                    else if let cachedVoiceMemo = block?.voiceMemos?.first(where: { $0.voiceMemoID == voiceMemo.voiceMemoID }), cachedVoiceMemo.name != voiceMemo.name {
+                        
+                        indexPathsToReload.append(IndexPath(row: collab != nil ? 10 : 8, section: 0))
+                        break
+                    }
+                }
+            }
+            
+            block?.voiceMemos = updatedBlock?.voiceMemos
+        }
+        ///////////////////////////////////////////////////////////////////////////////
+        
+        
+        //Block Links////////////////////////////////////////////////////////////
+        if let links = updatedBlock?.links {
+            
+            if links.count != block?.links?.count ?? 0 {
+                
+                indexPathsToReload.append(IndexPath(row: collab != nil ? 12 : 10, section: 0))
+            }
+            
+            else {
+                
+                for link in links {
+                    
+                    //If there is a link that isn't currently in the cachedBlock link array
+                    if !(block?.links?.contains(where: { $0.linkID == link.linkID }) ?? false) {
+                        
+                        indexPathsToReload.append(IndexPath(row: collab != nil ? 12 : 10, section: 0))
+                        break
+                    }
+                    
+                    //If a link has had its name or url changed
+                    else if let cachedLink = block?.links?.first(where: { $0.linkID == link.linkID }), cachedLink.name != link.name || cachedLink.url != link.url {
+                        
+                        indexPathsToReload.append(IndexPath(row: collab != nil ? 12 : 10, section: 0))
+                        break
+                    }
+                }
+            }
+            
+            block?.links = updatedBlock?.links
+        }
+        //////////////////////////////////////////////////////////////////////////
+        
+        
+        //Block Status////////////////////////////////////////////////////////////
+        if let status = updatedBlock?.status {
+            
+            block?.status = status
+        }
+        
+        //Attempts to auto configure the block status
+        else if let starts = updatedBlock?.starts, let ends = updatedBlock?.ends {
+            
+            if Date().isBetween(startDate: starts, endDate: ends) {
+                
+                block?.status = .inProgress
+            }
+            
+            else if Date() < starts {
+                
+                block?.status = .notStarted
+            }
+            
+            else if Date() > ends {
+                
+                block?.status = .late
+            }
+        }
+        
+        //If the BlockStatusCell is visible
+        if selectedBlockTableView.indexPathsForVisibleRows?.contains(where: { $0.row == (collab != nil ? 14 : 12) }) ?? false {
+            
+            if let statusCell = selectedBlockTableView.cellForRow(at: IndexPath(row: collab != nil ? 14 : 12, section: 0)) as? SelectedBlockStatusCell, let status = block?.status, statusCell.block?.status != status {
+                
+                statusCell.block = block
+                
+                let statusArray: [BlockStatus : Int] = [.notStarted : 0, .inProgress : 1, .completed : 2, .needsHelp : 3, .late : 4]
+                
+                if statusArray[status] != nil {
+                    
+                    statusCell.statusCollectionView.scrollToItem(at: IndexPath(item: statusArray[status]!, section: 0), at: .centeredHorizontally, animated: true)
+                }
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        
+        //Block Reminders////////////////////////////////////////////////////////////
+        determineBlockReminders(block?.blockID) { [weak self] (reminders) in
+            
+            self?.block?.reminders = reminders
+            
+            DispatchQueue.main.async {
+                
+                self?.selectedBlockTableView.reloadRows(at: [IndexPath(row: 2, section: 0)], with: .none)
+            }
+        }
+        
+        //Reloading the cells that need updating
+        selectedBlockTableView.reloadRows(at: indexPathsToReload, with: .none)
     }
     
     
@@ -435,9 +444,22 @@ class SelectedBlockViewController: UIViewController {
                 
                 let firebaseStorage = FirebaseStorage()
                 
+                //Collab Block
                 if let collabID = collab?.collabID, let blockID = block?.blockID, let voiceMemoID = voiceMemo.voiceMemoID {
                     
                     firebaseStorage.retrieveCollabBlockVoiceMemosFromStorage(collabID, blockID, voiceMemoID) { (progress, error) in
+                        
+                        if error != nil {
+                            
+                            print(error?.localizedDescription as Any)
+                        }
+                    }
+                }
+                
+                //Personal Block
+                else if let blockID = block?.blockID, let voiceMemoID = voiceMemo.voiceMemoID {
+                    
+                    firebaseStorage.retrievePersonalBlockVoiceMemosFromStorage(blockID, voiceMemoID) { (progress, error) in
                         
                         if error != nil {
                             
@@ -476,6 +498,7 @@ class SelectedBlockViewController: UIViewController {
         
         firebaseBlock.blockListener?.remove()
 
+        //Collab Block
         if let collabID = collab?.collabID, let block = block {
 
             firebaseBlock.deleteCollabBlock(collabID, block) { [weak self] (error) in
@@ -490,6 +513,28 @@ class SelectedBlockViewController: UIViewController {
                 else {
 
                     self?.dismiss(animated: true, completion: nil)
+                }
+            }
+        }
+        
+        //Personal Block
+        else if let block = block {
+            
+            firebaseBlock.deletePersonalBlock(block) { (error) in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription as Any)
+                    
+                    SVProgressHUD.showError(withStatus: "Sorry, something went wrong while deleting this block")
+                }
+                
+                else {
+                    
+                    let notificationScheduler = NotificationScheduler()
+                    notificationScheduler.removePendingBlockNotifications(block.blockID!, completion: {})
+                    
+                    self.dismiss(animated: true, completion: nil)
                 }
             }
         }
@@ -546,7 +591,7 @@ extension SelectedBlockViewController: UITableViewDataSource, UITableViewDelegat
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return 18
+        return collab != nil ? 18 : 16
     }
     
     
@@ -578,97 +623,183 @@ extension SelectedBlockViewController: UITableViewDataSource, UITableViewDelegat
             return cell
         }
         
-        else if indexPath.row == 4 {
+        //Collab Block
+        if collab != nil {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "selectedBlockMembersCell", for: indexPath) as! SelectedBlockMembersCell
-            cell.selectionStyle = .none
+            if indexPath.row == 4 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "selectedBlockMembersCell", for: indexPath) as! SelectedBlockMembersCell
+                cell.selectionStyle = .none
+                
+                cell.block = block
+                
+                return cell
+            }
             
-            cell.block = block
+            else if indexPath.row == 6 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "locationsPresentationCell", for: indexPath) as! LocationsPresentationCell
+                cell.selectionStyle = .none
+                
+                cell.locations = block?.locations
+                
+                cell.locationSelectedDelegate = self
+                
+                return cell
+            }
             
-            return cell
+            else if indexPath.row == 8 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "photosPresentationCell", for: indexPath) as! PhotosPresentationCell
+                cell.selectionStyle = .none
+                
+                cell.collab = collab
+                cell.block = block
+                cell.photoIDs = block?.photoIDs
+                
+                cell.cachePhotoDelegate = self
+                cell.zoomInDelegate = self
+                cell.presentCopiedAnimationDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 10 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "voiceMemosPresentationCell", for: indexPath) as! VoiceMemosPresentationCell
+                cell.selectionStyle = .none
+                
+                cell.collab = collab
+                cell.block = block
+                
+                cell.voiceMemos = block?.voiceMemos
+                
+                return cell
+            }
+            
+            else if indexPath.row == 12 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "linksPresentationCell", for: indexPath) as! LinksPresentationCell
+                cell.selectionStyle = .none
+                
+                cell.links = block?.links
+                
+                cell.cacheIconDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 14 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "selectedBlockStatusCell", for: indexPath) as! SelectedBlockStatusCell
+                cell.selectionStyle = .none
+                
+                cell.collab = collab
+                cell.block = block
+                
+                return cell
+            }
+            
+            else if indexPath.row == 16 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "selectedBlockEdit_DeleteCell", for: indexPath) as! SelectedBlockEdit_DeleteCell
+                cell.selectionStyle = .none
+                
+                cell.blockEdited_DeletedDelegate = self
+                
+                return cell
+            }
+            
+            else {
+                
+                let cell = UITableViewCell()
+                cell.selectionStyle = .none
+                
+                return cell
+            }
         }
         
-        else if indexPath.row == 6 {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "locationsPresentationCell", for: indexPath) as! LocationsPresentationCell
-            cell.selectionStyle = .none
-            
-            cell.locations = block?.locations
-            
-            cell.locationSelectedDelegate = self
-            
-            return cell
-        }
-        
-        else if indexPath.row == 8 {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "photosPresentationCell", for: indexPath) as! PhotosPresentationCell
-            cell.selectionStyle = .none
-            
-            cell.collab = collab
-            cell.block = block
-            cell.photoIDs = block?.photoIDs
-            
-            cell.cachePhotoDelegate = self
-            cell.zoomInDelegate = self
-            cell.presentCopiedAnimationDelegate = self
-            
-            return cell
-        }
-        
-        else if indexPath.row == 10 {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "voiceMemosPresentationCell", for: indexPath) as! VoiceMemosPresentationCell
-            cell.selectionStyle = .none
-            
-            cell.collab = collab
-            cell.block = block
-            
-            cell.voiceMemos = block?.voiceMemos
-            
-            return cell
-        }
-        
-        else if indexPath.row == 12 {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "linksPresentationCell", for: indexPath) as! LinksPresentationCell
-            cell.selectionStyle = .none
-            
-            cell.links = block?.links
-            
-            cell.cacheIconDelegate = self
-            
-            return cell
-        }
-        
-        else if indexPath.row == 14 {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "selectedBlockStatusCell", for: indexPath) as! SelectedBlockStatusCell
-            cell.selectionStyle = .none
-            
-            cell.collab = collab
-            cell.block = block
-            
-            return cell
-        }
-        
-        else if indexPath.row == 16 {
-            
-            let cell = tableView.dequeueReusableCell(withIdentifier: "selectedBlockEdit_DeleteCell", for: indexPath) as! SelectedBlockEdit_DeleteCell
-            cell.selectionStyle = .none
-            
-            cell.blockEdited_DeletedDelegate = self
-            
-            return cell
-        }
-        
+        //Personal Block
         else {
             
-            let cell = UITableViewCell()
-            cell.selectionStyle = .none
+            if indexPath.row == 4 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "locationsPresentationCell", for: indexPath) as! LocationsPresentationCell
+                cell.selectionStyle = .none
+                
+                cell.locations = block?.locations
+                
+                cell.locationSelectedDelegate = self
+                
+                return cell
+            }
             
-            return cell
+            else if indexPath.row == 6 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "photosPresentationCell", for: indexPath) as! PhotosPresentationCell
+                cell.selectionStyle = .none
+                
+                cell.block = block
+                cell.photoIDs = block?.photoIDs
+                
+                cell.cachePhotoDelegate = self
+                cell.zoomInDelegate = self
+                cell.presentCopiedAnimationDelegate = self
+                
+                return cell
+            }
             
+            else if indexPath.row == 8 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "voiceMemosPresentationCell", for: indexPath) as! VoiceMemosPresentationCell
+                cell.selectionStyle = .none
+                
+                cell.block = block
+                
+                cell.voiceMemos = block?.voiceMemos
+                
+                return cell
+            }
+            
+            else if indexPath.row == 10 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "linksPresentationCell", for: indexPath) as! LinksPresentationCell
+                cell.selectionStyle = .none
+                
+                cell.links = block?.links
+                
+                cell.cacheIconDelegate = self
+                
+                return cell
+            }
+            
+            else if indexPath.row == 12 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "selectedBlockStatusCell", for: indexPath) as! SelectedBlockStatusCell
+                cell.selectionStyle = .none
+                
+                cell.block = block
+                
+                return cell
+            }
+            
+            else if indexPath.row == 14 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "selectedBlockEdit_DeleteCell", for: indexPath) as! SelectedBlockEdit_DeleteCell
+                cell.selectionStyle = .none
+                
+                cell.blockEdited_DeletedDelegate = self
+                
+                return cell
+            }
+            
+            else {
+                
+                let cell = UITableViewCell()
+                cell.selectionStyle = .none
+                
+                return cell
+            }
         }
     }
     
@@ -677,126 +808,244 @@ extension SelectedBlockViewController: UITableViewDataSource, UITableViewDelegat
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        switch indexPath.row {
-        
-            //Name Cell
-            case 0:
-                
-                return 80
-               
-            //Seperator Cell
-            case 1:
-                
-                return 0
-                
-            //Reminders Cell
-            case 2:
-                
-                return 35
-                
-            case 3:
-                
-                return 20
-             
-            //Members Cell
-            case 4:
-                
-                if block?.members?.count ?? 0 > 0 {
+        //Collab Block
+        if collab != nil {
+            
+            switch indexPath.row {
+            
+                //Name Cell
+                case 0:
                     
-                    return 145
-                }
-                
-                else {
-                    
-                    return 35
-                }
-               
-            //Locations Cell
-            case 6:
-                
-                if block?.locations?.count ?? 0 == 0 {
-                    
-                    return itemSize + 30 + 20
-                }
-                
-                else if block?.locations?.count == 1 {
-                    
-                    return 210
-                }
-                
-                else {
-                    
-                    return 252.5
-                }
-               
-            //Seperator Cell
-            case 7:
-                
-                if block?.locations?.count ?? 0 > 1 {
+                    return 80
+                   
+                //Seperator Cell
+                case 1:
                     
                     return 0
-                }
-                
-                else {
+                    
+                //Reminders Cell
+                case 2:
+                    
+                    return 35
+                    
+                case 3:
+                    
+                    return 20
+                 
+                //Members Cell
+                case 4:
+                    
+                    if block?.members?.count ?? 0 > 0 {
+                        
+                        return 145
+                    }
+                    
+                    else {
+                        
+                        return 35
+                    }
+                   
+                //Locations Cell
+                case 6:
+                    
+                    if block?.locations?.count ?? 0 == 0 {
+                        
+                        return itemSize + 30 + 20
+                    }
+                    
+                    else if block?.locations?.count == 1 {
+                        
+                        return 210
+                    }
+                    
+                    else {
+                        
+                        return 252.5
+                    }
+                   
+                //Seperator Cell
+                case 7:
+                    
+                    if block?.locations?.count ?? 0 > 1 {
+                        
+                        return 0
+                    }
+                    
+                    else {
+                        
+                        return 25
+                    }
+                   
+                //Photo Cell
+                case 8:
+                    
+                    if block?.photoIDs?.count ?? 0 <= 3 {
+                        
+                        return itemSize + 30 + 20
+                    }
+                    
+                    else {
+                        
+                        return (itemSize * 2) + 30 + 20 + 5
+                    }
+                 
+                //Voice Memos Cell
+                case 10:
+                    
+                    return itemSize + 30 + 20
+                    
+                //Links Cell
+                case 12:
+                    
+                    if block?.links?.count ?? 0 == 0 {
+                        
+                        return itemSize + 30 + 20
+                    }
+                    
+                    else if block?.links?.count ?? 0 < 3 {
+                        
+                        return 130
+                    }
+                    
+                    else {
+                        
+                        return 157.5
+                    }
+                  
+                //Status Cell
+                case 14:
+                    
+                    return 100
+                    
+                //Seperator Cell
+                case 15:
+                    
+                    return 30
+                   
+                //Edit-Delete Cell
+                case 16:
+                    
+                    return 50
+                  
+                //Seperator Cell
+                default:
                     
                     return 25
-                }
-               
-            //Photo Cell
-            case 8:
-                
-                if block?.photoIDs?.count ?? 0 <= 3 {
+            }
+        }
+        
+        //Personal Block
+        else {
+            
+            switch indexPath.row {
+            
+                //Name Cell
+                case 0:
+                    
+                    return 80
+                   
+                //Seperator Cell
+                case 1:
+                    
+                    return 0
+                    
+                //Reminders Cell
+                case 2:
+                    
+                    return 35
+                    
+                case 3:
+                    
+                    return 20
+                 
+                   
+                //Locations Cell
+                case 4:
+                    
+                    if block?.locations?.count ?? 0 == 0 {
+                        
+                        return itemSize + 30 + 20
+                    }
+                    
+                    else if block?.locations?.count == 1 {
+                        
+                        return 210
+                    }
+                    
+                    else {
+                        
+                        return 252.5
+                    }
+                   
+                //Seperator Cell
+                case 5:
+                    
+                    if block?.locations?.count ?? 0 > 1 {
+                        
+                        return 0
+                    }
+                    
+                    else {
+                        
+                        return 25
+                    }
+                   
+                //Photo Cell
+                case 6:
+                    
+                    if block?.photoIDs?.count ?? 0 <= 3 {
+                        
+                        return itemSize + 30 + 20
+                    }
+                    
+                    else {
+                        
+                        return (itemSize * 2) + 30 + 20 + 5
+                    }
+                 
+                //Voice Memos Cell
+                case 8:
                     
                     return itemSize + 30 + 20
-                }
-                
-                else {
                     
-                    return (itemSize * 2) + 30 + 20 + 5
-                }
-             
-            //Voice Memos Cell
-            case 10:
-                
-                return itemSize + 30 + 20
-                
-            //Links Cell
-            case 12:
-                
-                if block?.links?.count ?? 0 == 0 {
+                //Links Cell
+                case 10:
                     
-                    return itemSize + 30 + 20
-                }
-                
-                else if block?.links?.count ?? 0 < 3 {
+                    if block?.links?.count ?? 0 == 0 {
+                        
+                        return itemSize + 30 + 20
+                    }
                     
-                    return 130
-                }
-                
-                else {
+                    else if block?.links?.count ?? 0 < 3 {
+                        
+                        return 130
+                    }
                     
-                    return 157.5
-                }
-              
-            //Status Cell
-            case 14:
-                
-                return 100
-                
-            //Seperator Cell
-            case 15:
-                
-                return 30
-               
-            //Edit-Delete Cell
-            case 16:
-                
-                return 50
-              
-            //Seperator Cell
-            default:
-                
-                return 25
+                    else {
+                        
+                        return 157.5
+                    }
+                  
+                //Status Cell
+                case 12:
+                    
+                    return 100
+                    
+                //Seperator Cell
+                case 13:
+                    
+                    return 30
+                   
+                //Edit-Delete Cell
+                case 14:
+                    
+                    return 50
+                  
+                //Seperator Cell
+                default:
+                    
+                    return 25
+            }
         }
     }
     

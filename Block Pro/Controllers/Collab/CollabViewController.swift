@@ -1413,60 +1413,6 @@ class CollabViewController: UIViewController {
     }
     
     
-    //MARK: - Determine Hidden Blocks
-    
-    internal func determineHiddenBlocks (_ scrollView: UIScrollView) {
-        
-        //Ensures that the view is expanded
-        if let indexPath = collabNavigationView.collabTableView.indexPathsForVisibleRows?.first, navigationItem.hidesBackButton, collabNavigationViewTopAnchor?.constant ?? 0 == 0 {
-            
-            //The range of y-Coords that is used to determine which hidden blocks can be presented
-            let range = scrollView.contentOffset.y - CGFloat(2210 * indexPath.row) ... scrollView.contentOffset.y - CGFloat(2210 * indexPath.row) + scrollView.frame.height
-            
-            if let cell = collabNavigationView.collabTableView.cellForRow(at: indexPath) as? BlocksTableViewCell {
-                
-                hiddenBlocks = []
-                
-                for hiddenBlock in cell.hiddenBlocks {
-                    
-                    let blockStartHour = calendar.dateComponents([.hour], from: hiddenBlock.starts!).hour!
-                    let blockStartMinute = calendar.dateComponents([.minute], from: hiddenBlock.starts!).minute!
-                    let yCoord = CGFloat((Double(blockStartHour) * 90) + (Double(blockStartMinute) * 1.5)) + 50
-                    
-                    //If the hidden block's y-Coord is within the range meaning that it would be visible to the user if it wasn't hidden
-                    if range.contains(yCoord) {
-                        
-                        hiddenBlocks.append(hiddenBlock)
-                    }
-                }
-                
-                //If the hiddenBlocksVC is currently in the navigation stack/presented to the user, this will update the hiddenBlocks in that view
-                if let viewController = hiddenBlockVC {
-                    
-                    viewController.hiddenBlocks = hiddenBlocks
-                }
-                
-                //Animating the hiddenBlocksButton based on the number of hiddenBlocks available
-                if hiddenBlocks.count > 0 {
-                    
-                    UIView.animate(withDuration: 0.3) {
-                        
-                        self.seeHiddenBlocksButton.alpha = 1
-                    }
-                }
-                
-                else {
-                    
-                    UIView.animate(withDuration: 0.3) {
-                        
-                        self.seeHiddenBlocksButton.alpha = 0
-                    }
-                }
-            }
-        }
-    }
-    
-    
     //MARK: - Add Cover Photo Alert
     
     func presentAddPhotoAlert (tracker: String, shrinkView: Bool) {
@@ -2001,6 +1947,7 @@ class CollabViewController: UIViewController {
     @objc private func seeHiddenBlocksButtonPressed () {
         
         hiddenBlockVC = HiddenBlocksViewController()
+        hiddenBlockVC?.title = "Blocks"
         hiddenBlockVC?.hiddenBlocks = hiddenBlocks
         hiddenBlockVC?.blockSelectedDelegate = self
         

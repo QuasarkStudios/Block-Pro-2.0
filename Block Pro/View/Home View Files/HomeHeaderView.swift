@@ -388,7 +388,6 @@ extension HomeHeaderView: JTAppleCalendarViewDataSource, JTAppleCalendarViewDele
             formatter.dateFormat = "yyyy MM dd"
             
             let differenceInDates = self.calendar.dateComponents([.day], from: formatter.date(from: "2010 01 01") ?? Date(), to: selectedDate).day
-            
             scheduleCollectionView.scrollToItem(at: IndexPath(item: differenceInDates ?? 0, section: 0), at: .centeredHorizontally, animated: true)
         }
         
@@ -479,6 +478,14 @@ extension HomeHeaderView: UICollectionViewDataSource, UICollectionViewDelegate {
 
             calendarView.selectDates([adjustedDate])
             calendarView.scrollToDate(adjustedDate)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        if let cell = collectionView.cellForItem(at: indexPath) as? ScheduleCollectionViewCell, let viewController = homeViewController as? HomeViewController, let date = cell.dateForCell {
+            
+            viewController.moveToBlocksView(date)
         }
     }
     

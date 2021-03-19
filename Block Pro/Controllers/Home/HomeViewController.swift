@@ -10,6 +10,8 @@ import UIKit
 
 class HomeViewController: UIViewController {
 
+//    var blockVC: BlockViewController?
+    
     let headerView = HomeHeaderView()
     let profilePicture = ProfilePicture()
     lazy var progressView = iProgressView(self, 100, .circleStrokeSpin)
@@ -23,16 +25,22 @@ class HomeViewController: UIViewController {
     
     let currentUser = CurrentUser.sharedInstance
     let firebaseCollab = FirebaseCollab.sharedInstance
+    let firebaseBlock = FirebaseBlock.sharedInstance
     
     var collabs: [Collab]?
     var selectedCollab: Collab?
     
+    var blocks: [Block]?
+    
+    let calendar = Calendar.current
     let formatter = DateFormatter()
     
     let minimumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 135//80
     let maximumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 402.5//392.5
     
     var expandedIndexPath: IndexPath?
+    
+    var selectedDate: Date?
     
     var headerViewHeightConstraint: NSLayoutConstraint?
     
@@ -74,6 +82,29 @@ class HomeViewController: UIViewController {
             }
         }
         
+        firebaseBlock.retrievePersonalBlocks { [weak self] (error, blocks) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+            
+            else {
+                
+                self?.blocks = blocks
+                
+                self?.navigationController?.viewControllers.forEach({ (viewController) in
+                    
+                    if let blockVC = viewController as? BlockViewController {
+                        
+                        blockVC.blocks = blocks
+                    }
+                })
+                
+//                self?.blockVC?.blocks = blocks
+            }
+        }
+        
         if currentUser.userSignedIn {
             
             firebaseCollab.retrieveUsersFriends()
@@ -86,6 +117,12 @@ class HomeViewController: UIViewController {
         self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barStyleColor: .default)
         
         tabBar.shouldHide = false
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+//        blockVC = nil
     }
     
     private func configureHomeHeaderView () {
@@ -285,6 +322,41 @@ class HomeViewController: UIViewController {
         }
     }
     
+    func updateSelectedDate (date: Date) {
+        
+        let updatedDateComponents = calendar.dateComponents([.year, .month, .day], from: date)
+        selectedDate = calendar.date(from: updatedDateComponents)
+        
+        if let date = selectedDate {
+            
+            headerView.calendarView.scrollToDate(date)
+            headerView.calendarView.selectDates([date])
+            
+            formatter.dateFormat = "yyyy MM dd"
+            
+            let differenceInDates = calendar.dateComponents([.day], from: formatter.date(from: "2010 01 01") ?? Date(), to: date).day
+            headerView.scheduleCollectionView.scrollToItem(at: IndexPath(item: differenceInDates ?? 0, section: 0), at: .centeredHorizontally, animated: true)
+        }
+    }
+    
+    func moveToBlocksView (_ selectedDate: Date) {
+        
+        self.selectedDate = selectedDate
+        
+        performSegue(withIdentifier: "moveToPersonalBlocksView", sender: self)
+        
+//        blockVC = BlockViewController()
+//        blockVC?.formatter = formatter
+//        blockVC?.selectedDate = selectedDate
+//        blockVC?.blocks = blocks
+//
+//        let backBarItem = UIBarButtonItem()
+//        backBarItem.title = ""
+//        self.navigationItem.backBarButtonItem = backBarItem
+//
+//        self.navigationController?.pushViewController(blockVC!, animated: true)
+    }
+    
     func moveToAddCollabView () {
         
         let configureCollabVC = ConfigureCollabViewController()
@@ -311,6 +383,18 @@ class HomeViewController: UIViewController {
             let backButtonItem = UIBarButtonItem()
             backButtonItem.title = ""
             self.navigationItem.backBarButtonItem = backButtonItem
+        }
+        
+        else if segue.identifier == "moveToPersonalBlocksView" {
+            
+            let blocksVC = segue.destination as! BlockViewController
+            blocksVC.formatter = formatter
+            blocksVC.selectedDate = selectedDate
+            blocksVC.blocks = blocks
+            
+            let backBarItem = UIBarButtonItem()
+            backBarItem.title = ""
+            self.navigationItem.backBarButtonItem = backBarItem
         }
     }
 }
@@ -499,10 +583,6 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 extension HomeViewController: HomeViewProtocol {
     
     func collabCreated (_ collabID: String) {
-        
-    }
-    
-    func moveToPersonalScheduleView () {
         
     }
 }
