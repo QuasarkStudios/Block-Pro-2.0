@@ -18,6 +18,8 @@ class HomeHeaderView: UIView {
     let calendarHeaderLabel = UILabel()
     let calendarView = JTAppleCalendarView()
     
+    let personalLabel = UILabel()
+    
     let scheduleCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
     let collabContainer = UIView()
@@ -31,6 +33,13 @@ class HomeHeaderView: UIView {
     
     let calendar = Calendar.current
     let formatter = DateFormatter()
+    
+    var blocks: [Block]? {
+        didSet {
+            
+            scheduleCollectionView.reloadData()
+        }
+    }
     
     lazy var selectedDate = calendar.date(from: calendar.dateComponents([.year, .month, .day], from: Date()))!
     
@@ -49,6 +58,8 @@ class HomeHeaderView: UIView {
         
         configureCalendarHeader()
         configureCalendarView()
+        
+        configurePersonalLabel()
         
         configureCollectionView(scheduleCollectionView)
 
@@ -108,11 +119,11 @@ class HomeHeaderView: UIView {
             welcomeLabel.leadingAnchor.constraint(equalTo: profilePicture.trailingAnchor, constant: 25),
             welcomeLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -25),
             welcomeLabel.centerYAnchor.constraint(equalTo: profilePicture.centerYAnchor),
-            welcomeLabel.heightAnchor.constraint(equalToConstant: 60/*35*/)
+            welcomeLabel.heightAnchor.constraint(equalToConstant: 60)
         
         ].forEach({ $0.isActive = true })
         
-        welcomeLabel.font = UIFont(name: "Poppins-SemiBold", size: 20)
+        welcomeLabel.font = UIFont(name: "Poppins-SemiBold", size: 21)
         welcomeLabel.textColor = .black
         welcomeLabel.textAlignment = .left
         welcomeLabel.numberOfLines = 2
@@ -134,7 +145,7 @@ class HomeHeaderView: UIView {
             
         ].forEach({ $0.isActive = true })
         
-        calendarHeaderLabel.font = UIFont(name: "Poppins-Medium", size: 20)
+        calendarHeaderLabel.font = UIFont(name: "Poppins-SemiBold", size: 20)
         calendarHeaderLabel.textColor = .black
         calendarHeaderLabel.textAlignment = .left
     }
@@ -148,7 +159,7 @@ class HomeHeaderView: UIView {
 
         [
 
-            calendarView.topAnchor.constraint(equalTo: calendarHeaderLabel.bottomAnchor, constant: 5),
+            calendarView.topAnchor.constraint(equalTo: calendarHeaderLabel.bottomAnchor, constant: 7.5),
             calendarView.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 0),
             calendarView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - UIScreen.main.bounds.width.truncatingRemainder(dividingBy: 7)),
             calendarView.heightAnchor.constraint(equalToConstant: 55)
@@ -184,6 +195,26 @@ class HomeHeaderView: UIView {
         calendarView.selectDates([selectedDate])
     }
     
+    private func configurePersonalLabel () {
+        
+        self.addSubview(personalLabel)
+        personalLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            personalLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 30),
+            personalLabel.topAnchor.constraint(equalTo: calendarView.bottomAnchor, constant: 11),
+            personalLabel.widthAnchor.constraint(equalToConstant: 125),
+            personalLabel.heightAnchor.constraint(equalToConstant: 25)
+        
+        ].forEach({ $0.isActive = true })
+        
+        personalLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
+        personalLabel.textColor = .black
+        personalLabel.textAlignment = .left
+        personalLabel.text = "Personal"
+    }
+    
     private func configureCollectionView (_ collectionView: UICollectionView) {
         
         self.addSubview(scheduleCollectionView)
@@ -193,7 +224,7 @@ class HomeHeaderView: UIView {
         
             scheduleCollectionView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
             scheduleCollectionView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
-            scheduleCollectionView.topAnchor.constraint(equalTo: calendarView.bottomAnchor, constant: 20),
+            scheduleCollectionView.topAnchor.constraint(equalTo: personalLabel.bottomAnchor, constant: 17.5),
             scheduleCollectionView.heightAnchor.constraint(equalToConstant: 130)
         
         ].forEach({ $0.isActive = true })
@@ -236,8 +267,8 @@ class HomeHeaderView: UIView {
         
             collabContainer.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 0),
             collabContainer.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: 0),
-            collabContainer.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0/*-12.5*/),
-            collabContainer.heightAnchor.constraint(equalToConstant: 55)
+            collabContainer.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 0),
+            collabContainer.heightAnchor.constraint(equalToConstant: 65)
         
         ].forEach({ $0.isActive = true })
         
@@ -252,9 +283,9 @@ class HomeHeaderView: UIView {
         [
         
             collabsLabel.leadingAnchor.constraint(equalTo: collabContainer.leadingAnchor, constant: 30),
-            collabsLabel.centerYAnchor.constraint(equalTo: collabContainer.centerYAnchor, constant: -12.5),
+            collabsLabel.topAnchor.constraint(equalTo: collabContainer.topAnchor, constant: 22.5),
             collabsLabel.widthAnchor.constraint(equalToConstant: 125),
-            collabsLabel.heightAnchor.constraint(equalToConstant: 35)
+            collabsLabel.heightAnchor.constraint(equalToConstant: 25)
         
         ].forEach({ $0.isActive = true })
         
@@ -462,6 +493,7 @@ extension HomeHeaderView: UICollectionViewDataSource, UICollectionViewDelegate {
             
             cell.formatter = formatter
             cell.dateForCell = dateForCell
+            cell.blocksForDate = blocks?.filter({ calendar.isDate($0.starts!, inSameDayAs: dateForCell) }).sorted(by: { $0.starts! < $1.starts! })
         }
         
         

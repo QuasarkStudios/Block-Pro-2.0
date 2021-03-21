@@ -15,8 +15,8 @@ class CustomTabBar: UIView {
     let homeTabContainer = UIView()
     let homeTabImageView = UIImageView(image: UIImage(named: "home")?.withRenderingMode(.alwaysTemplate))
     
-    let pomodoroTabContainer = UIView()
-    let pomodoroTabImageView = UIImageView(image: UIImage(named: "timer")?.withRenderingMode(.alwaysTemplate))
+    let searchTabContainer = UIView()
+    let searchTabImageView = UIImageView(image: UIImage(systemName: "magnifyingglass")?.withRenderingMode(.alwaysTemplate))
     
     let messagesTabContainer = UIView()
     let messagesTabImageView = UIImageView(image: UIImage(named: "chat")?.withRenderingMode(.alwaysTemplate))
@@ -119,8 +119,8 @@ class CustomTabBar: UIView {
         tabStackView.addArrangedSubview(homeTabContainer)
         homeTabContainer.addSubview(homeTabImageView)
         
-        tabStackView.addArrangedSubview(pomodoroTabContainer)
-        pomodoroTabContainer.addSubview(pomodoroTabImageView)
+        tabStackView.addArrangedSubview(searchTabContainer)
+        searchTabContainer.addSubview(searchTabImageView)
         
         tabStackView.addArrangedSubview(messagesTabContainer)
         messagesTabContainer.addSubview(messagesTabImageView)
@@ -131,7 +131,7 @@ class CustomTabBar: UIView {
         ///////////////////////////////////////////////////////////////////////
         
         setTabConstraints(tabContainer: homeTabContainer, tabImageView: homeTabImageView, constant: 31)
-        setTabConstraints(tabContainer: pomodoroTabContainer, tabImageView: pomodoroTabImageView, constant: 26)
+        setTabConstraints(tabContainer: searchTabContainer, tabImageView: searchTabImageView, constant: 30)
         setTabConstraints(tabContainer: messagesTabContainer, tabImageView: messagesTabImageView, constant: 28)
         setTabConstraints(tabContainer: notificationsTabContainer, tabImageView: notificationsTabImageView, constant: 27)
         
@@ -140,8 +140,8 @@ class CustomTabBar: UIView {
         homeTabContainer.isUserInteractionEnabled = true
         homeTabContainer.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(homeTabPressed)))
         
-        pomodoroTabContainer.isUserInteractionEnabled = true
-        pomodoroTabContainer.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(pomodoroTabPressed)))
+        searchTabContainer.isUserInteractionEnabled = true
+        searchTabContainer.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(searchTabPressed)))
         
         messagesTabContainer.isUserInteractionEnabled = true
         messagesTabContainer.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(messagesTabPressed)))
@@ -154,8 +154,8 @@ class CustomTabBar: UIView {
         homeTabImageView.tintColor = UIColor.systemRed.flatten().lighten(byPercentage: 0.1)
         homeTabImageView.contentMode = .scaleAspectFit
         
-        pomodoroTabImageView.tintColor = UIColor.white
-        pomodoroTabImageView.contentMode = .scaleAspectFit
+        searchTabImageView.tintColor = UIColor.white
+        searchTabImageView.contentMode = .scaleAspectFit
         
         messagesTabImageView.tintColor = UIColor.white
         messagesTabImageView.contentMode = .scaleAspectFit
@@ -242,13 +242,13 @@ class CustomTabBar: UIView {
         }
     }
     
-    @objc private func pomodoroTabPressed () {
+    @objc private func searchTabPressed () {
         
         if selectedIndex == 1 {
             
-            //will be used to pop back to home view once pomodoro tab is configured
+            //will be used to pop back to home view once search tab is configured
             
-            animateSelectedTabImageView(pomodoroTabImageView)
+            animateSelectedTabImageView(searchTabImageView)
         }
         
         else {
@@ -256,7 +256,7 @@ class CustomTabBar: UIView {
             selectedIndex = 1
             tabBarController?.selectedIndex = selectedIndex
             
-            animateSelectedTabImageView(pomodoroTabImageView)
+            animateSelectedTabImageView(searchTabImageView)
         }
     }
     

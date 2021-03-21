@@ -114,6 +114,7 @@
 		0D5FD12225C018D300E9BA2D /* BlockEdited_DeletedProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5FD12125C018D300E9BA2D /* BlockEdited_DeletedProtocol.swift */; };
 		0D5FD14825C2848200E9BA2D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D5FD14725C2848100E9BA2D /* MapKit.framework */; };
 		0D60EFFA26015DA200DF88DE /* PersonalBlocks.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D60EFF926015DA200DF88DE /* PersonalBlocks.storyboard */; };
+		0D60EFFF260536DC00DF88DE /* Search.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D60EFFE260536DC00DF88DE /* Search.storyboard */; };
 		0D62771425AA1EEE00B2B2C0 /* MemberConfigurationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D62771325AA1EEE00B2B2C0 /* MemberConfigurationCollectionViewCell.swift */; };
 		0D670D8825567316001D2634 /* Location.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D670D8725567316001D2634 /* Location.storyboard */; };
 		0D670D8B255674DD001D2634 /* LocationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D8A255674DD001D2634 /* LocationsViewController.swift */; };
@@ -205,7 +206,6 @@
 		0DA2A6FD248AC3250051ADAB /* PhotoMessageWithCaptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA2A6FB248AC3240051ADAB /* PhotoMessageWithCaptionCell.swift */; };
 		0DA2A6FE248AC3250051ADAB /* PhotoMessageWithCaptionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DA2A6FC248AC3250051ADAB /* PhotoMessageWithCaptionCell.xib */; };
 		0DA7FA6B2532CA56006B1825 /* BlocksTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA7FA692532CA55006B1825 /* BlocksTableViewCell.swift */; };
-		0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DA9F83622A84862008BECAE /* Pomodoro.storyboard */; };
 		0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */; };
 		0DAD3B5E24A7C66F00607579 /* ConvoCoverInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAD3B5C24A7C66F00607579 /* ConvoCoverInfoCell.swift */; };
 		0DAD3B5F24A7C66F00607579 /* ConvoCoverInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAD3B5D24A7C66F00607579 /* ConvoCoverInfoCell.xib */; };
@@ -378,6 +378,7 @@
 		0D5FD12125C018D300E9BA2D /* BlockEdited_DeletedProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockEdited_DeletedProtocol.swift; sourceTree = "<group>"; };
 		0D5FD14725C2848100E9BA2D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		0D60EFF926015DA200DF88DE /* PersonalBlocks.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PersonalBlocks.storyboard; sourceTree = "<group>"; };
+		0D60EFFE260536DC00DF88DE /* Search.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Search.storyboard; sourceTree = "<group>"; };
 		0D62771325AA1EEE00B2B2C0 /* MemberConfigurationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberConfigurationCollectionViewCell.swift; sourceTree = "<group>"; };
 		0D670D8725567316001D2634 /* Location.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Location.storyboard; sourceTree = "<group>"; };
 		0D670D8A255674DD001D2634 /* LocationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsViewController.swift; sourceTree = "<group>"; };
@@ -470,7 +471,6 @@
 		0DA2A6FB248AC3240051ADAB /* PhotoMessageWithCaptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMessageWithCaptionCell.swift; sourceTree = "<group>"; };
 		0DA2A6FC248AC3250051ADAB /* PhotoMessageWithCaptionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoMessageWithCaptionCell.xib; sourceTree = "<group>"; };
 		0DA7FA692532CA55006B1825 /* BlocksTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BlocksTableViewCell.swift; path = "Convo Info View Cells/BlocksTableViewCell.swift"; sourceTree = "<group>"; };
-		0DA9F83622A84862008BECAE /* Pomodoro.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Pomodoro.storyboard; sourceTree = "<group>"; };
 		0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlocksDate.swift; sourceTree = "<group>"; };
 		0DAD3B5C24A7C66F00607579 /* ConvoCoverInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoCoverInfoCell.swift; sourceTree = "<group>"; };
 		0DAD3B5D24A7C66F00607579 /* ConvoCoverInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoCoverInfoCell.xib; sourceTree = "<group>"; };
@@ -1066,17 +1066,17 @@
 				0D2CECF3228FB55600CC9180 /* Main.storyboard */,
 				0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */,
 				0D7865B423F7709500BD4C4D /* Home.storyboard */,
+				0D60EFFE260536DC00DF88DE /* Search.storyboard */,
+				0D0102A52468853600A5FF28 /* Messages.storyboard */,
+				0D589DE72458C3E5005AC7BC /* Notifications.storyboard */,
 				0D60EFF926015DA200DF88DE /* PersonalBlocks.storyboard */,
 				0D72D2482453FB6E00C11D5F /* Collab.storyboard */,
 				0D670D8725567316001D2634 /* Location.storyboard */,
 				0D39A67E25AEEAE900D9840B /* AddLocation.storyboard */,
 				0D480F062597C60500E14D1E /* ConfigureBlock.storyboard */,
 				0D5FD0BB25BC014D00E9BA2D /* SelectedBlock.storyboard */,
-				0D0102A52468853600A5FF28 /* Messages.storyboard */,
 				0DE728C72509BB7400581048 /* SendPhoto.storyboard */,
 				0D44BA892476F76300647E06 /* AddMembers.storyboard */,
-				0D589DE72458C3E5005AC7BC /* Notifications.storyboard */,
-				0DA9F83622A84862008BECAE /* Pomodoro.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -1280,7 +1280,6 @@
 				0D495225244F70A000AAD436 /* DateCell.xib in Resources */,
 				0D82281324D3B8CF00D0BBA0 /* LeaveConvoCell.xib in Resources */,
 				0D879ADD24B853F70037C880 /* ConvoPhotoCollectionViewCell.xib in Resources */,
-				0DA9F83722A84862008BECAE /* Pomodoro.storyboard in Resources */,
 				0D95C17C2328923000421BE0 /* Timer Running.wav in Resources */,
 				0DB3FEC3249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib in Resources */,
 				0D86013F24993A860027F043 /* ConvoNameInfoCell.xib in Resources */,
@@ -1314,6 +1313,7 @@
 				0D78657F23E4B56B00BD4C4D /* Poppins-ExtraBoldItalic.ttf in Resources */,
 				0D95C17A232886C400421BE0 /* Start Timer.wav in Resources */,
 				0D2CED0B2290829300CC9180 /* CustomTimeTableCell.xib in Resources */,
+				0D60EFFF260536DC00DF88DE /* Search.storyboard in Resources */,
 				0D44BA8A2476F76300647E06 /* AddMembers.storyboard in Resources */,
 				0D589DE82458C3E5005AC7BC /* Notifications.storyboard in Resources */,
 				0D72D2492453FB6E00C11D5F /* Collab.storyboard in Resources */,

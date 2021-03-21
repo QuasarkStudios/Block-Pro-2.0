@@ -607,7 +607,10 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         ].forEach( { $0.isActive = true } )
         
         newConversationButton.layer.cornerRadius = 30
-        newConversationButton.clipsToBounds = true
+        newConversationButton.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
+        newConversationButton.layer.shadowRadius = 2
+        newConversationButton.layer.shadowOffset = CGSize(width: 0, height: 1)
+        newConversationButton.layer.shadowOpacity = 0.65
     }
     
     

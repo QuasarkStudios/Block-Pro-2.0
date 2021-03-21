@@ -7,10 +7,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Pomodoro-->
+        <!--Search-->
         <scene sceneID="ux5-Yo-53U">
             <objects>
-                <viewControllerPlaceholder storyboardName="Pomodoro" id="Htu-5g-15e" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardName="Search" id="Htu-5g-15e" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Item" id="3kA-Ob-tBJ"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DaW-jr-18I" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -10,7 +10,7 @@ import UIKit
 
 class SearchBar: UIView {
 
-    let searchImage = UIImageView(image: UIImage(named: "search2"))
+    let searchImage = UIImageView(image: UIImage(named: "search"))
     let searchTextField = UITextField()
     
     weak var parentViewController: AnyObject?

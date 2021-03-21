@@ -123,6 +123,10 @@ class BlockViewController: UIViewController {
         addBlockButton.tintColor = .white
         
         addBlockButton.layer.cornerRadius = 30
+        addBlockButton.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
+        addBlockButton.layer.shadowRadius = 2
+        addBlockButton.layer.shadowOffset = CGSize(width: 0, height: 1)
+        addBlockButton.layer.shadowOpacity = 0.65
 
         addBlockButton.addTarget(self, action: #selector(addBlockButtonPressed), for: .touchUpInside)
     }
@@ -150,6 +154,11 @@ class BlockViewController: UIViewController {
         seeHiddenBlocksButton.setImage(UIImage(systemName: "chevron.right.circle.fill"), for: .normal)
         seeHiddenBlocksButton.contentVerticalAlignment = .fill
         seeHiddenBlocksButton.contentHorizontalAlignment = .fill
+        
+        seeHiddenBlocksButton.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
+        seeHiddenBlocksButton.layer.shadowRadius = 2
+        seeHiddenBlocksButton.layer.shadowOffset = CGSize(width: 0, height: 1)
+        seeHiddenBlocksButton.layer.shadowOpacity = 0.65
         
         seeHiddenBlocksButton.addTarget(self, action: #selector(seeHiddenBlocksButtonPressed), for: .touchUpInside)
         

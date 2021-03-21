@@ -408,7 +408,7 @@ class FirebaseBlock {
                 
                 for document in snapshot?.documents ?? [] {
         
-                    blocks.append(self.configureBlock(document))
+                    blocks.append(self.configureBlock(collab: collab, document))
                 }
                 
                 self.cachedCollabBlocks = blocks

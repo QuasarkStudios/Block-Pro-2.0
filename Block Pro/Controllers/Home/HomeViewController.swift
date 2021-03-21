@@ -36,7 +36,7 @@ class HomeViewController: UIViewController {
     let formatter = DateFormatter()
     
     let minimumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 135//80
-    let maximumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 402.5//392.5
+    let maximumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 428.5 //Extra 2.5 added to improve aesthetics
     
     var expandedIndexPath: IndexPath?
     
@@ -92,6 +92,8 @@ class HomeViewController: UIViewController {
             else {
                 
                 self?.blocks = blocks
+                
+                self?.headerView.blocks = blocks
                 
                 self?.navigationController?.viewControllers.forEach({ (viewController) in
                     
@@ -203,6 +205,11 @@ class HomeViewController: UIViewController {
         calendarButton.imageEdgeInsets = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
         
         calendarButton.layer.cornerRadius = 30
+        
+        calendarButton.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
+        calendarButton.layer.shadowRadius = 2
+        calendarButton.layer.shadowOffset = CGSize(width: 0, height: 1)
+        calendarButton.layer.shadowOpacity = 0.65
 
 //        addBlockButton.addTarget(self, action: #selector(addBlockButtonPressed), for: .touchUpInside)
     }
