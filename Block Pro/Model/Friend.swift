@@ -15,5 +15,9 @@ class Friend {
     var lastName: String = ""
     var username: String = ""
     
+    var accepted: Bool?
+    var requestSentBy: String = ""
+    var dateOfFriendship: Date?
+    
     var profilePictureImage: UIImage?
 }

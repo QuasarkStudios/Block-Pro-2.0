@@ -1027,6 +1027,70 @@ class FirebaseCollab {
 //        }
 //    }
     
+    func queryUsers (_ username: String, completion: @escaping ((_ results: [FriendSearchResult]?, _ error: Error?) -> Void)) {
+        
+        db.collection("Users").getDocuments { (snapshot, error) in
+            
+            if error != nil {
+                
+                completion(nil, error)
+            }
+            
+            else {
+                
+                var searchResults: [FriendSearchResult] = []
+                
+                for document in snapshot?.documents ?? [] {
+                    
+                    if (document.data()["username"] as? String)?.localizedCaseInsensitiveContains(username) ?? false {
+                        
+                        let searchResult = FriendSearchResult()
+                        searchResult.userID = document.data()["userID"] as? String ?? ""
+                        searchResult.firstName = document.data()["firstName"] as? String ?? ""
+                        searchResult.lastName = document.data()["lastName"] as? String ?? ""
+                        searchResult.username = document.data()["username"] as? String ?? ""
+                        
+                        if searchResult.userID == self.currentUser.userID {
+                            
+                            continue
+                        }
+                        
+                        else {
+                            
+//                            if self.friends.first(where: { $0.userID == searchResult.userID && $0.accepted == true }) == nil {
+//
+//                                if self.friends.contains(where: { $0.userID == searchResult.userID }) == nil {
+//
+//
+//                                }
+//
+//                                searchResults.append(searchResult)
+//
+//                            }
+                            
+                            if self.friends.contains(where: { $0.userID == searchResult.userID }) {
+                                
+                                searchResults.append(searchResult)
+                            }
+                            
+                            else {
+                                
+                                searchResults.insert(searchResult, at: 0)
+                            }
+                            
+                            if searchResults.count == 15 {
+                                
+                                break
+                            }
+                        }
+                    }
+                }
+                
+                completion(searchResults, nil)
+            }
+        }
+    }
+    
     func retrieveUsersFriends () {
         
         friendListener = db.collection("Users").document(currentUser.userID).collection("Friends").addSnapshotListener({ (snapshot, error) in
@@ -1051,7 +1115,16 @@ class FirebaseCollab {
                         
                         let friend = Friend()
                         
-                        friend.userID = document.data()["friendID"] as! String
+                        if let userID = document.data()["userID"] as? String {
+                            
+                            friend.userID = userID
+                        }
+                        
+                        else if let userID = document.data()["friendID"] as? String { #warning("Will be deleted once I move over to new database")
+                            
+                            friend.userID = userID
+                        }
+                        
                         friend.firstName = document.data()["firstName"] as! String
                         friend.lastName = document.data()["lastName"] as! String
                         friend.username = document.data()["username"] as! String
@@ -1066,6 +1139,39 @@ class FirebaseCollab {
                 }
             }
         })
+    }
+    
+    func sendFriendRequest (_ user: Any) {
+        
+        let currentUserData: [String : Any] = ["userID" : currentUser.userID, "firstName" : currentUser.firstName, "lastName" : currentUser.lastName, "username" : currentUser.username, "requestSentBy" : currentUser.userID]
+        
+        var friendData: [String : String] = [:]
+        
+        if let searchResult = user as? FriendSearchResult {
+            
+            friendData = ["userID" : searchResult.userID, "firstName" : searchResult.firstName, "lastName" : searchResult.lastName, "username" : searchResult.username, "requestSentBy" : currentUser.userID]
+        }
+        
+        else if let member = user as? Member {
+            
+            friendData = ["userID" : member.userID, "firstName" : member.firstName, "lastName" : member.lastName, "username" : member.username, "requestSentBy" : currentUser.userID]
+        }
+        
+        db.collection("Users").document(currentUser.userID).collection("Friends").document(friendData["userID"]!).setData(friendData) { (error) in
+            
+            if error != nil {
+                
+                print("error adding friend", error?.localizedDescription as Any)
+            }
+        }
+        
+        db.collection("Users").document(friendData["userID"]!).collection("Friends").document(currentUser.userID).setData(currentUserData) { (error) in
+            
+            if error != nil {
+                
+                print("error sending friend request", error?.localizedDescription as Any)
+            }
+        }
     }
     
     func cacheFriendProfileImages (friend: Friend) {

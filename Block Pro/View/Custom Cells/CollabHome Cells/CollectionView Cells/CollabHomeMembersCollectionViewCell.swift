@@ -231,6 +231,7 @@ class CollabHomeMembersCollectionViewCell: UICollectionViewCell {
             
             progressLabel.tag = 1
             progressLabel.font = UIFont(name: "Poppins-Italic", size: 13.5)
+            progressLabel.adjustsFontSizeToFitWidth = true
             progressLabel.textColor = .white
             progressLabel.textAlignment = .center
         }

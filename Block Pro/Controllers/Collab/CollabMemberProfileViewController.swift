@@ -487,6 +487,7 @@ class CollabMemberProfileViewController: UIViewController {
         progressLabel.frame = memberCellProgressLabelFrame ?? .zero
         
         progressLabel.font = UIFont(name: "Poppins-Italic", size: 13.5)
+        progressLabel.adjustsFontSizeToFitWidth = true
         progressLabel.textColor = .white
         progressLabel.textAlignment = .center
     }
@@ -607,6 +608,48 @@ class CollabMemberProfileViewController: UIViewController {
         profilePictureBorderAnimation.duration = 0.3
         profileViewProfilePicture.layer.add(profilePictureBorderAnimation, forKey: nil)
         profileViewProfilePicture.layer.borderColor = UIColor(hexString: "F4F4F4")?.withAlphaComponent(0.05).cgColor
+    }
+    
+    
+    //MARK: - Add Button Animation
+    
+    private func animateButtonSelection () {
+        
+        //Resetting the trailing constraint of the addFriend button
+        profileView.constraints.forEach { (constraint) in
+            
+            if constraint.firstItem as? UIButton != nil && constraint.firstAttribute == .trailing {
+                
+                constraint.constant = -31
+            }
+        }
+        
+        //Resetting the width and height of the addFriendButton
+        addFriendButton.constraints.forEach { (constraint) in
+            
+            if constraint.firstAttribute == .width || constraint.firstAttribute == .height {
+                
+                //2 points larger than the checkBox width and height to improve transition during animation
+                constraint.constant = 32
+            }
+        }
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .transitionCrossDissolve]) {
+            
+            self.view.layoutIfNeeded()
+            
+            self.addFriendButton.layer.cornerRadius = 16
+            self.addFriendButton.setTitle("", for: .normal)
+        }
+
+        //Delaying slightly improves animations
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            
+            UIView.transition(from: self.addFriendButton, to: self.friendCheckBox, duration: 0.3, options: [.transitionCrossDissolve, .showHideTransitionViews]) { (finished: Bool) in
+
+                self.friendCheckBox.setOn(true, animated: true)
+            }
+        }
     }
     
     
@@ -810,45 +853,13 @@ class CollabMemberProfileViewController: UIViewController {
     
     @objc private func addFriendPressed () {
         
-        //Resetting the trailing constraint of the addFriend button
-        profileView.constraints.forEach { (constraint) in
+        if let member = member {
             
-            if constraint.firstItem as? UIButton != nil && constraint.firstAttribute == .trailing {
+            animateButtonSelection()
+            
+            firebaseCollab.sendFriendRequest(member)
                 
-                constraint.constant = -31
-            }
-        }
-        
-        //Resetting the width and height of the addFriendButton
-        addFriendButton.constraints.forEach { (constraint) in
-            
-            if constraint.firstAttribute == .width || constraint.firstAttribute == .height {
-                
-                //2 points larger than the checkBox width and height to improve transition during animation
-                constraint.constant = 32
-            }
-        }
-        
-        UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseInOut, .transitionCrossDissolve]) {
-            
-            self.view.layoutIfNeeded()
-            
-            self.addFriendButton.layer.cornerRadius = 16
-            self.addFriendButton.setTitle("", for: .normal)
-        }
-
-        //Delaying slightly improves animations
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            
-            UIView.transition(from: self.addFriendButton, to: self.friendCheckBox, duration: 0.3, options: [.transitionCrossDissolve, .showHideTransitionViews]) { (finished: Bool) in
-
-                self.friendCheckBox.setOn(true, animated: true)
-                
-                if let name = self.member?.firstName {
-                    
-                    SVProgressHUD.showSuccess(withStatus: "You've sent a friend request to \(name)!")
-                }
-            }
+            SVProgressHUD.showSuccess(withStatus: "Friend request sent to \(member.firstName)!")
         }
     }
     

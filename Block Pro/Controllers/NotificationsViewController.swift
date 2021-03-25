@@ -7,11 +7,13 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class NotificationsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var notificationsTableView: UITableView!
     
+    let firebaseAuth = FirebaseAuthentication()
     lazy var firebaseCollab = FirebaseCollab()
     var collabRequests: [CollabRequest]?
     
@@ -70,4 +72,20 @@ class NotificationsViewController: UIViewController, UITableViewDataSource, UITa
     @IBAction func declineButton(_ sender: Any) {
     }
     
+    
+    @IBAction func signOutButton(_ sender: Any) {
+        
+        firebaseAuth.logOutUser { (error) in
+            
+            if error != nil {
+                
+                SVProgressHUD.showError(withStatus: error?.localizedDescription)
+            }
+            
+            else {
+                
+                SVProgressHUD.showSuccess(withStatus: "Signed Out")
+            }
+        }
+    }
 }

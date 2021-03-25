@@ -243,6 +243,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
             ].forEach({ $0.isActive = true })
 
             progressLabel.font = UIFont(name: "Poppins-SemiBoldItalic", size: 15)
+            progressLabel.adjustsFontSizeToFitWidth = true
             progressLabel.textColor = .black
             progressLabel.textAlignment = .center
         }
@@ -315,12 +316,12 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         //If there have been blocks set for this date
         if let blocks = blocksForDate, blocks.count > 0 {
             
-            //If there is a block that has yet to begun and has yet to be marked completed
+            //If there is a block that has yet to begin and has yet to be marked completed
             if let nextBlock = blocks.first(where: { $0.starts! > Date() && $0.status != .completed }), let name = nextBlock.name, let startTime = nextBlock.starts, let formatter = formatter {
                 
                 formatter.dateFormat = "h:mm a"
                 
-                attributedString.append(NSAttributedString(string: "Up Next: \n", attributes: semiBoldText))
+                attributedString.append(NSAttributedString(string: blocks.firstIndex(where: { $0.blockID == nextBlock.blockID }) == 0 ? "Get Started: \n" : "Up Next: \n", attributes: semiBoldText))
                 attributedString.append(NSAttributedString(string: "\(name) \n", attributes: mediumText))
                 attributedString.append(NSAttributedString(string: formatter.string(from: startTime), attributes: mediumText))
                 

@@ -454,6 +454,8 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             
             else {
                 
+                coverPhoto.profilePic = nil
+                
                 firebaseStorage.retrieveCollabCoverPhoto(collabID: collab.collabID) { [weak self] (cover, error) in
                     
                     if error != nil {

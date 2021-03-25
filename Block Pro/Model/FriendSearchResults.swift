@@ -1,5 +1,5 @@
 //
-//  NewFriendSearchResults.swift
+//  FriendSearchResult.swift
 //  Block Pro
 //
 //  Created by Nimat Azeez on 7/13/19.
@@ -8,10 +8,12 @@
 
 import Foundation
 
-class SearchResult {
+class FriendSearchResult {
     
     var userID: String = ""
     var firstName: String = ""
     var lastName: String = ""
     var username: String = ""
+    
+    var profilePicture: UIImage?
 }

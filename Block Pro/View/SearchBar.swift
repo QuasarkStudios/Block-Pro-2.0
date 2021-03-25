@@ -105,6 +105,11 @@ class SearchBar: UIView {
             
             collabVC.searchTextChanged(searchText: searchTextField.text ?? "")
         }
+        
+        else if let searchVC = parentViewController as? SearchViewController {
+            
+            searchVC.searchTextChanged(searchText: searchTextField.text ?? "")
+        }
     }
 }
 

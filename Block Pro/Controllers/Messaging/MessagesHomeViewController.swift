@@ -321,13 +321,16 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
                 
                 UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
                     
-                    self.messagingHomeTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
-                    self.messagingHomeTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset + 15, right: 0)
-                    
-                    self.newConversationButton.alpha = !self.viewEditing ? 1 : 0
-                    self.tabBar.alpha = !self.viewEditing ? 1 : 0
-                    
-                    self.deleteMessagesButton.alpha = self.viewEditing ? 1 : 0
+                    if self.navigationController?.visibleViewController == self {
+                        
+                        self.messagingHomeTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset, right: 0)
+                        self.messagingHomeTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: bottomInset + 15, right: 0)
+                        
+                        self.newConversationButton.alpha = !self.viewEditing ? 1 : 0
+                        self.tabBar.alpha = !self.viewEditing ? 1 : 0
+                        
+                        self.deleteMessagesButton.alpha = self.viewEditing ? 1 : 0
+                    }
                 })
             }
         }
@@ -340,13 +343,16 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
                 
-                self.messagingHomeTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-                self.messagingHomeTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-                
-                self.newConversationButton.alpha = !self.viewEditing ? 1 : 0
-                self.tabBar.alpha = !self.viewEditing ? 1 : 0
-                
-                self.deleteMessagesButton.alpha = self.viewEditing ? 1 : 0
+                if self.navigationController?.visibleViewController == self {
+                    
+                    self.messagingHomeTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                    self.messagingHomeTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                    
+                    self.newConversationButton.alpha = !self.viewEditing ? 1 : 0
+                    self.tabBar.alpha = !self.viewEditing ? 1 : 0
+                    
+                    self.deleteMessagesButton.alpha = self.viewEditing ? 1 : 0
+                }
             })
         }
     }
@@ -1279,7 +1285,10 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             }
         }
         
-        messagingHomeTableView.reloadData()
+        UIView.transition(with: self.view, duration: 0.3, options: .transitionCrossDissolve) {
+            
+            self.messagingHomeTableView.reloadData()
+        }
     }
     
     

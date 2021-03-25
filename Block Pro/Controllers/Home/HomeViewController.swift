@@ -13,9 +13,11 @@ class HomeViewController: UIViewController {
 //    var blockVC: BlockViewController?
     
     let headerView = HomeHeaderView()
-    let profilePicture = ProfilePicture()
+//    let profilePicture = ProfilePicture()
+    let profilePictureButton = UIButton()
+    
     lazy var progressView = iProgressView(self, 100, .circleStrokeSpin)
-    let welcomeLabel = UILabel()
+//    let welcomeLabel = UILabel()
     
     lazy var collabCollectionView = UICollectionView(frame: .zero, collectionViewLayout: CollabCollectionViewFlowLayout(self))
     
@@ -51,6 +53,7 @@ class HomeViewController: UIViewController {
         self.navigationItem.hidesBackButton = true
         
         configureHomeHeaderView()
+//        configureProfilePictureButton()
         
         configureCollectionView(collabCollectionView)
         
@@ -111,6 +114,8 @@ class HomeViewController: UIViewController {
             
             firebaseCollab.retrieveUsersFriends()
         }
+        
+//        print(currentUser.userID)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -146,6 +151,26 @@ class HomeViewController: UIViewController {
         headerView.homeViewController = self
     }
     
+    private func configureProfilePictureButton () {
+        
+        if keyWindow != nil {
+            
+            keyWindow?.addSubview(profilePictureButton)
+            profilePictureButton.translatesAutoresizingMaskIntoConstraints = false
+            
+            [
+            
+                profilePictureButton.topAnchor.constraint(equalTo: keyWindow!.topAnchor, constant: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40),
+                profilePictureButton.leadingAnchor.constraint(equalTo: keyWindow!.leadingAnchor, constant: 25),
+                profilePictureButton.widthAnchor.constraint(equalToConstant: 60),
+                profilePictureButton.heightAnchor.constraint(equalToConstant: 60)
+                
+            ].forEach({ $0.isActive = true })
+            
+            profilePictureButton.addTarget(self, action: #selector(profilePictureButtonPressed), for: .touchUpInside)
+        }
+    }
+    
     private func configureCollectionView (_ collectionView: UICollectionView) {
         
         self.view.addSubview(collectionView)
@@ -166,6 +191,10 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
         
         collectionView.delaysContentTouches = false
+        
+        //content inset also important because if there are not enough cells to fill the collection view, the header will not be able to be expanded again upon
+        //collection view drag... just a quick note
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 300, right: 0)
         
         collectionView.register(HomeCollabCollectionViewCell.self, forCellWithReuseIdentifier: "homeCollabCollectionViewCell")
     }
@@ -380,6 +409,11 @@ class HomeViewController: UIViewController {
         self.present(configureCollabNavigationController, animated: true, completion: nil)
     }
     
+    @objc private func profilePictureButtonPressed () {
+        
+        performSegue(withIdentifier: "moveToProfileView", sender: self)
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "moveToCollabView" {
@@ -443,6 +477,8 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+//        print(scrollView.contentOffset)
         
         if scrollView.contentOffset.y >= 0 {
 
