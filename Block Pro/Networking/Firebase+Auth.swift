@@ -82,7 +82,12 @@ class FirebaseAuthentication {
                         currentUser.firstName = snapshot?["firstName"] as! String
                         currentUser.lastName = snapshot?["lastName"] as! String
                         currentUser.username = snapshot?["username"] as! String
-                        currentUser.accountCreated = snapshot?["accountCreated"] as! String
+                        
+                        if let timestamp = snapshot?["accountCreated"] as? Timestamp {
+                            
+                            let accountCreated = Date(timeIntervalSince1970: TimeInterval(timestamp.seconds))
+                            currentUser.accountCreated = accountCreated
+                        }
                         
                         InstanceID.instanceID().instanceID(handler: { (result, error) in
 
@@ -190,7 +195,7 @@ class FirebaseAuthentication {
 //        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : formatter.string(from: Date())])
         
         #warning("not tested yet, it honestly looks like this whole function needs more testing.... where is the currentUser singleton set")
-        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : formatter.string(from: Date())]) { (error) in
+        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : Date()]) { (error) in
             
             if error == nil {
                 

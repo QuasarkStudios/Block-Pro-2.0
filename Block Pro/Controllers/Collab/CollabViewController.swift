@@ -117,8 +117,6 @@ class CollabViewController: UIViewController {
         retrieveBlocks()
         retrieveMessages()
         
-        setUserActiveStatus()
-        
 //        print(collab?.collabID)
     }
     
@@ -128,6 +126,8 @@ class CollabViewController: UIViewController {
         configureNavBar()
         
         retrieveMessageDraft()
+        
+        setUserActiveStatus()
         
         tabBar.shouldHide = tabBarWasHidden
         
@@ -156,7 +156,11 @@ class CollabViewController: UIViewController {
         
         removeObservors()
         
-        setUserInactiveStatus()
+        //Ensures that the user isn't simply going to the hiddenBlocksVC
+        if hiddenBlockVC == nil {
+            
+            setUserInactiveStatus()
+        }
         
         saveMessageDraft()
         
@@ -192,6 +196,12 @@ class CollabViewController: UIViewController {
         firebaseMessaging.messageListener?.remove()
         
         firebaseBlock.cachedCollabBlocks = []
+        
+        //Should only be called if the home tab was pressed in the hiddenBlocksVC
+        if hiddenBlockVC != nil {
+            
+            setUserInactiveStatus()
+        }
     }
     
     

@@ -16,76 +16,10 @@
                     <view key="view" contentMode="scaleToFill" id="wkN-XY-rDc">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ef8-Wf-03h">
-                                <rect key="frame" x="0.0" y="88" width="375" height="250"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="250" id="eQZ-oU-onu"/>
-                                </constraints>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="collabRequestCell" id="9eH-8v-pwi">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="43.666667938232422"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="9eH-8v-pwi" id="cW2-sq-Bue">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.666667938232422"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
-                            </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mv9-X8-kDF">
-                                <rect key="frame" x="100" y="358" width="75" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="hRU-5t-HxH"/>
-                                    <constraint firstAttribute="width" constant="75" id="yas-mA-fZq"/>
-                                </constraints>
-                                <state key="normal" title="Accept"/>
-                                <connections>
-                                    <action selector="acceptButton:" destination="40w-6h-o9b" eventType="touchUpInside" id="ANF-Ah-jdC"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0UH-s5-FNn">
-                                <rect key="frame" x="200" y="358" width="75" height="50"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="ZLq-Dj-FdN"/>
-                                    <constraint firstAttribute="width" constant="75" id="ZbF-oK-8m2"/>
-                                </constraints>
-                                <state key="normal" title="Decline"/>
-                                <connections>
-                                    <action selector="declineButton:" destination="40w-6h-o9b" eventType="touchUpInside" id="PGX-SB-nwE"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ILW-nu-qiv">
-                                <rect key="frame" x="157.66666666666666" y="559" width="60" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="60" id="8OC-d1-4Rb"/>
-                                    <constraint firstAttribute="height" constant="30" id="ofl-Sl-BEx"/>
-                                </constraints>
-                                <state key="normal" title="Sign Out"/>
-                                <connections>
-                                    <action selector="signOutButton:" destination="40w-6h-o9b" eventType="touchUpInside" id="k0X-AR-Tn1"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="waq-wq-6eI"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="waq-wq-6eI" firstAttribute="trailing" secondItem="ef8-Wf-03h" secondAttribute="trailing" id="2cf-Q7-r5j"/>
-                            <constraint firstItem="waq-wq-6eI" firstAttribute="bottom" secondItem="ILW-nu-qiv" secondAttribute="bottom" constant="140" id="5TW-u6-Lsh"/>
-                            <constraint firstItem="Mv9-X8-kDF" firstAttribute="top" secondItem="ef8-Wf-03h" secondAttribute="bottom" constant="20" id="DAz-js-MSU"/>
-                            <constraint firstItem="ef8-Wf-03h" firstAttribute="leading" secondItem="waq-wq-6eI" secondAttribute="leading" id="Qms-r6-weL"/>
-                            <constraint firstItem="ef8-Wf-03h" firstAttribute="top" secondItem="waq-wq-6eI" secondAttribute="top" id="Tmk-hD-QGq"/>
-                            <constraint firstItem="waq-wq-6eI" firstAttribute="trailing" secondItem="0UH-s5-FNn" secondAttribute="trailing" constant="100" id="Vs5-7A-knV"/>
-                            <constraint firstItem="Mv9-X8-kDF" firstAttribute="leading" secondItem="waq-wq-6eI" secondAttribute="leading" constant="100" id="d4B-9r-5Rg"/>
-                            <constraint firstItem="ILW-nu-qiv" firstAttribute="centerX" secondItem="wkN-XY-rDc" secondAttribute="centerX" id="diI-Sd-kUC"/>
-                            <constraint firstItem="0UH-s5-FNn" firstAttribute="top" secondItem="ef8-Wf-03h" secondAttribute="bottom" constant="20" id="lWJ-lA-B4W"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="qfb-LC-cTq"/>
-                    <connections>
-                        <outlet property="notificationsTableView" destination="ef8-Wf-03h" id="XHd-xc-qYi"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Xi-fA-g9m" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

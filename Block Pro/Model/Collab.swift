@@ -40,4 +40,8 @@ struct Collab {
     var voiceMemos: [VoiceMemo]?
     
     var links: [Link]?
+    
+    var accepted: Bool?
+    var requestSentBy: String = ""
+    var requestSentOn: Date?
 }

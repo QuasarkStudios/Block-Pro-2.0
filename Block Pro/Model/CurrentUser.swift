@@ -16,7 +16,7 @@ class CurrentUser {
     var firstName: String = ""
     var lastName: String = ""
     var username: String = ""
-    var accountCreated: String = "" #warning("change to a date")
+    var accountCreated: Date?
     
     var profilePictureURL: String?
     var profilePictureImage: UIImage?

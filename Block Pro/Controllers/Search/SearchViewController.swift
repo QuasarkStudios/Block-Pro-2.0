@@ -39,7 +39,7 @@ class SearchViewController: UIViewController {
         self.navigationController?.navigationBar.prefersLargeTitles = true
         self.navigationItem.largeTitleDisplayMode = .always
         
-        configureSearchResultsTableView(searchResultsTableView) //Call first to allow the link between navBar and tableView to be established correctly
+        configureTableView(searchResultsTableView) //Call first to allow the link between navBar and tableView to be established correctly
         configureNavBarExtensionView()
         configureSearchBar()
 
@@ -64,7 +64,7 @@ class SearchViewController: UIViewController {
     
     //MARK: - Configure Table View
     
-    private func configureSearchResultsTableView (_ tableView: UITableView) {
+    private func configureTableView (_ tableView: UITableView) {
         
         self.view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -349,20 +349,20 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
         }
     }
     
-    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        
-        //If the last cell is about to be dismissed
-        if indexPath.row + 1 == tableView.numberOfRows(inSection: 0) {
-            
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
-                
-                self.searchResultsTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-                self.searchResultsTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-                
-                self.tabBar.alpha = 1
-            })
-        }
-    }
+//    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//
+//        //If the last cell is about to be dismissed
+//        if indexPath.row + 1 == tableView.numberOfRows(inSection: 0), !tableView.isDragging {
+//
+//            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+//
+//                self.searchResultsTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//                self.searchResultsTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//
+//                self.tabBar.alpha = 1
+//            })
+//        }
+//    }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
             

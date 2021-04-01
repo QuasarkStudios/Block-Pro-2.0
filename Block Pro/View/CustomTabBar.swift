@@ -24,10 +24,15 @@ class CustomTabBar: UIView {
     let notificationsTabContainer = UIView()
     let notificationsTabImageView = UIImageView(image: UIImage(named: "bell")?.withRenderingMode(.alwaysTemplate))
     
+    let notificationIndicator = UILabel()
+    
     var homeTabNavigationController: UINavigationController?
     var tabBarController: UITabBarController?
     
     var selectedIndex: Int = 0
+    
+    var indicatorWidthConstraint: NSLayoutConstraint?
+    var indicatorHeightConstraint: NSLayoutConstraint?
     
     var distanceFromBottom: CGFloat {
         
@@ -63,6 +68,7 @@ class CustomTabBar: UIView {
         
         configureTabBar()
         configureTabs()
+        configureNotificationIndicator()
     }
 
     required init?(coder: NSCoder) {
@@ -165,6 +171,40 @@ class CustomTabBar: UIView {
     }
     
     
+    //MARK: - Configure Notification Indicator
+    
+    private func configureNotificationIndicator () {
+        
+        self.addSubview(notificationIndicator)
+        notificationIndicator.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+            
+            notificationIndicator.topAnchor.constraint(equalTo: self.tabStackView.topAnchor, constant: 5),
+            notificationIndicator.trailingAnchor.constraint(equalTo: self.tabStackView.trailingAnchor, constant: -5.5),
+//            notificationIndicator.widthAnchor.constraint(equalToConstant: 23),
+//            notificationIndicator.heightAnchor.constraint(equalToConstant: 23)
+
+        ].forEach({ $0.isActive = true })
+        
+        indicatorWidthConstraint = notificationIndicator.widthAnchor.constraint(equalToConstant: 23)
+        indicatorWidthConstraint?.isActive = true
+        
+        indicatorHeightConstraint = notificationIndicator.heightAnchor.constraint(equalToConstant: 23)
+        indicatorHeightConstraint?.isActive = true
+        
+        notificationIndicator.alpha = 0
+        notificationIndicator.backgroundColor = UIColor.systemRed.flatten().lighten(byPercentage: 0.1)
+        
+        notificationIndicator.layer.cornerRadius = 11.5 //12.5 when two or more digits, 11.5 when smaller
+        notificationIndicator.layer.cornerCurve = .continuous
+        notificationIndicator.clipsToBounds = true
+        
+        notificationIndicator.font = UIFont(name: "Poppins-Medium", size: 15.5) //15.5 when just one digit, 13.5 when two digits, 11 when too many notifs
+        notificationIndicator.textAlignment = .center
+        notificationIndicator.textColor = .white
+    }
+    
     //MARK: - Set Tab Constraints
     
     private func setTabConstraints (tabContainer: UIView, tabImageView: UIImageView, constant: CGFloat) {
@@ -216,6 +256,58 @@ class CustomTabBar: UIView {
 
             selectedTabImageView.transform = CGAffineTransform(scaleX: 1, y: 1)
         })
+    }
+    
+    
+    //MARK: - Set Notification Indicator
+    
+    func setNotificationIndicator (notificationCount: Int = 0) {
+        
+        //If there are no notifications or the notifications tab is currently selected
+        if notificationCount == 0 || selectedIndex == 3 {
+            
+            UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseInOut) {
+                
+                self.notificationIndicator.alpha = 0
+            }
+        }
+        
+        else {
+            
+            //Setting the notification indicator text
+            notificationIndicator.text = notificationCount < 100 ? "\(notificationCount)" : "99+"
+            
+            if notificationIndicator.alpha != 1 {
+                
+                UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut) {
+                    
+                    self.notificationIndicator.alpha = 1
+                }
+            }
+            
+            //Changing the size of the notficationIndicator based on the amount of notifications
+            indicatorWidthConstraint?.constant = notificationCount < 10 ? 23 : 25
+            indicatorHeightConstraint?.constant = notificationCount < 10 ? 23 : 25
+            
+            //Changing the corner radius of the notficationIndicator based on the amount of notifications
+            notificationIndicator.layer.cornerRadius = notificationCount < 10 ? 11.5 : 12.5
+            
+            //Changing the font size of the notficationIndicator based on the amount of notifications
+            if notificationCount < 10 {
+                
+                notificationIndicator.font = UIFont(name: "Poppins-Medium", size: 15.5)
+            }
+            
+            else if notificationCount < 100 {
+                
+                notificationIndicator.font = UIFont(name: "Poppins-Medium", size: 14)
+            }
+            
+            else {
+                
+                notificationIndicator.font = UIFont(name: "Poppins-Medium", size: 11)
+            }
+        }
     }
     
     
@@ -281,6 +373,8 @@ class CustomTabBar: UIView {
             
             selectedIndex = 3
             tabBarController?.selectedIndex = selectedIndex
+            
+            setNotificationIndicator()
             
             animateSelectedTabImageView(notificationsTabImageView)
         }

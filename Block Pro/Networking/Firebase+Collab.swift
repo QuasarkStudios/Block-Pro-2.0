@@ -1102,62 +1102,68 @@ class FirebaseCollab {
             
             else {
                 
-                if snapshot?.isEmpty == true {
-                    
-                    print("you have no friends")
-                }
+                var retrievedFriends: [Friend] = []
                 
-                else {
+                for document in snapshot?.documents ?? [] {
                     
-                    self.friends.removeAll()
+                    let friend = Friend()
                     
-                    for document in snapshot!.documents {
+                    if let userID = document.data()["userID"] as? String {
                         
-                        let friend = Friend()
-                        
-                        if let userID = document.data()["userID"] as? String {
-                            
-                            friend.userID = userID
-                        }
-                        
-                        else if let userID = document.data()["friendID"] as? String { #warning("Will be deleted once I move over to new database")
-                            
-                            friend.userID = userID
-                        }
-                        
-                        friend.firstName = document.data()["firstName"] as! String
-                        friend.lastName = document.data()["lastName"] as! String
-                        friend.username = document.data()["username"] as! String
-                        
-                        self.friends.append(friend)
-                        
-                        self.cacheFriendProfileImages(friend: friend)
+                        friend.userID = userID
                     }
                     
+                    friend.firstName = document.data()["firstName"] as! String
+                    friend.lastName = document.data()["lastName"] as! String
+                    friend.username = document.data()["username"] as! String
                     
-                    self.friends = self.friends.sorted(by: {$0.lastName.lowercased() < $1.lastName.lowercased()})
+                    friend.accepted = document.data()["accepted"] as? Bool
+                    friend.requestSentBy = document.data()["requestSentBy"] as! String
+                    
+                    if let requestSentOn = document.data()["requestSentOn"] as? Timestamp {
+                        
+                        friend.requestSentOn = Date(timeIntervalSince1970: TimeInterval(requestSentOn.seconds))
+                    }
+                    
+                    if let dateOfFriendship = document.data()["dateOfFriendship"] as? Timestamp {
+                        
+                        friend.dateOfFriendship = Date(timeIntervalSince1970: TimeInterval(dateOfFriendship.seconds))
+                    }
+                    
+                    if let profilePicture = self.friends.first(where: { $0.userID == friend.userID })?.profilePictureImage {
+                        
+                        friend.profilePictureImage = profilePicture
+                    }
+                    
+                    retrievedFriends.append(friend)
+                    
+                    self.cacheFriendsProfilePicture(friend)
                 }
+                
+                self.friends = retrievedFriends.sorted(by: { $0.lastName.lowercased() < $1.lastName.lowercased() })
+                
+                NotificationCenter.default.post(name: .didUpdateFriends, object: nil)
             }
         })
     }
     
     func sendFriendRequest (_ user: Any) {
         
-        let currentUserData: [String : Any] = ["userID" : currentUser.userID, "firstName" : currentUser.firstName, "lastName" : currentUser.lastName, "username" : currentUser.username, "requestSentBy" : currentUser.userID]
+        let currentUserData: [String : Any] = ["userID" : currentUser.userID, "firstName" : currentUser.firstName, "lastName" : currentUser.lastName, "username" : currentUser.username, "requestSentBy" : currentUser.userID, "requestSentOn" : Date()]
         
-        var friendData: [String : String] = [:]
+        var friendData: [String : Any] = [:]
         
         if let searchResult = user as? FriendSearchResult {
             
-            friendData = ["userID" : searchResult.userID, "firstName" : searchResult.firstName, "lastName" : searchResult.lastName, "username" : searchResult.username, "requestSentBy" : currentUser.userID]
+            friendData = ["userID" : searchResult.userID, "firstName" : searchResult.firstName, "lastName" : searchResult.lastName, "username" : searchResult.username, "requestSentBy" : currentUser.userID, "requestSentOn" : Date()]
         }
         
         else if let member = user as? Member {
             
-            friendData = ["userID" : member.userID, "firstName" : member.firstName, "lastName" : member.lastName, "username" : member.username, "requestSentBy" : currentUser.userID]
+            friendData = ["userID" : member.userID, "firstName" : member.firstName, "lastName" : member.lastName, "username" : member.username, "requestSentBy" : currentUser.userID, "requestSentOn" : Date()]
         }
         
-        db.collection("Users").document(currentUser.userID).collection("Friends").document(friendData["userID"]!).setData(friendData) { (error) in
+        db.collection("Users").document(currentUser.userID).collection("Friends").document(friendData["userID"] as! String).setData(friendData) { (error) in
             
             if error != nil {
                 
@@ -1165,7 +1171,7 @@ class FirebaseCollab {
             }
         }
         
-        db.collection("Users").document(friendData["userID"]!).collection("Friends").document(currentUser.userID).setData(currentUserData) { (error) in
+        db.collection("Users").document(friendData["userID"] as! String).collection("Friends").document(currentUser.userID).setData(currentUserData) { (error) in
             
             if error != nil {
                 
@@ -1174,16 +1180,89 @@ class FirebaseCollab {
         }
     }
     
-    func cacheFriendProfileImages (friend: Friend) {
+    func markFriendRequestNotifications (_ friendRequests: [Friend]?) {
+        
+        let batch = db.batch()
+        
+        if let requests = friendRequests {
             
-        firebaseStorage.retrieveUserProfilePicFromStorage(userID: friend.userID) { (profilePic, userID) in
-            
-            if let profilePic = profilePic {
+            for request in requests {
                 
-                friend.profilePictureImage = profilePic
+                if request.accepted == nil {
+                    
+                    batch.updateData(["accepted" : false], forDocument: db.collection("Users").document(currentUser.userID).collection("Friends").document(request.userID))
+                }
+            }
+            
+            batch.commit { (error) in
+    
+                if error != nil {
+    
+                    print(error?.localizedDescription as Any)
+                }
             }
         }
     }
+    
+    func acceptFriendRequest (_ friendRequest: Friend) {
+        
+        db.collection("Users").document(currentUser.userID).collection("Friends").document(friendRequest.userID).updateData(["accepted" : true, "dateOfFriendship" : Date()]) { (error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+        }
+        
+        db.collection("Users").document(friendRequest.userID).collection("Friends").document(currentUser.userID).updateData(["accepted" : true, "dateOfFriendship" : Date()]) { (error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+        }
+    }
+    
+    func declineFriendRequest (_ friendRequest: Friend) {
+        
+        db.collection("Users").document(currentUser.userID).collection("Friends").document(friendRequest.userID).delete { (error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+        }
+        
+        db.collection("Users").document(friendRequest.userID).collection("Friends").document(currentUser.userID).delete { (error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+        }
+    }
+    
+    func cacheFriendsProfilePicture (_ friend: Friend) {
+        
+        firebaseStorage.retrieveUserProfilePicFromStorage(userID: friend.userID) { (profilePicture, userID) in
+            
+            if let profilePic = profilePicture, let friendIndex = self.friends.firstIndex(where: { $0.userID == friend.userID }) {
+                
+                self.friends[friendIndex].profilePictureImage = profilePic
+            }
+        }
+    }
+    
+//    func cacheFriendProfileImages (friend: Friend) {
+//
+//        firebaseStorage.retrieveUserProfilePicFromStorage(userID: friend.userID) { (profilePic, userID) in
+//
+//            if let profilePic = profilePic {
+//
+//                friend.profilePictureImage = profilePic
+//            }
+//        }
+//    }
     
     //MARK: - Filter Current Members Function
     

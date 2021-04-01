@@ -345,8 +345,8 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
                 
                 if self.navigationController?.visibleViewController == self {
                     
-                    self.messagingHomeTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-                    self.messagingHomeTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//                    self.messagingHomeTableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//                    self.messagingHomeTableView.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
                     
                     self.newConversationButton.alpha = !self.viewEditing ? 1 : 0
                     self.tabBar.alpha = !self.viewEditing ? 1 : 0
@@ -1972,7 +1972,8 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         addMembersVC.headerLabelText = "Conversate With"
         
         let firebaseCollab = FirebaseCollab.sharedInstance
-        addMembersVC.members = firebaseCollab.friends
+        addMembersVC.members = []
+        firebaseCollab.friends.forEach({ if $0.accepted == true { addMembersVC.members?.append($0) } })
         
         addMembersVC.addedMembers = [:]
         

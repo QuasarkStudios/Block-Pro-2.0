@@ -129,6 +129,7 @@ class ConfigureBlockViewController: UIViewController {
         
         tableView.delaysContentTouches = false
         tableView.separatorStyle = .none
+        tableView.keyboardDismissMode = .onDrag
         tableView.showsVerticalScrollIndicator = false
         
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)

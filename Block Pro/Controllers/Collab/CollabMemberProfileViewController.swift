@@ -54,23 +54,7 @@ class CollabMemberProfileViewController: UIViewController {
             
             retrieveProfilePic(member: member!)
             
-            if member?.userID != currentUser.userID {
-                
-                //Hides addFriendButton if this member is already friends with the currentUser
-                addFriendButton.isHidden = firebaseCollab.friends.contains(where: { $0.userID == member?.userID })
-                
-                //Hides friendCheckBox if this member isn't already friends with the currentUser
-                friendCheckBox.isHidden = !firebaseCollab.friends.contains(where: { $0.userID == member?.userID })
-                
-                //Turn on the friendCheckBox if this member is already friends with the currentUser
-                friendCheckBox.on = firebaseCollab.friends.contains(where: { $0.userID == member?.userID })
-            }
-            
-            else {
-                
-                addFriendButton.isHidden = true
-                friendCheckBox.isHidden = true
-            }
+            determineVisibilityOfAddButtonAndCheckBox()
         }
     }
     
@@ -679,6 +663,49 @@ class CollabMemberProfileViewController: UIViewController {
     }
     
     
+    //MARK: - Determine Visibility of Add Button and Check Box
+    
+    private func determineVisibilityOfAddButtonAndCheckBox () {
+        
+        if member?.userID != currentUser.userID {
+            
+            //If the user is currently friends with the member, regardless of whether or not they have accepted each others friend request
+            if let friend = firebaseCollab.friends.first(where: { $0.userID == member?.userID }) {
+                
+                //If the current user sent the friend request of the friend request has been accepted
+                if friend.requestSentBy == currentUser.userID || friend.accepted == true {
+                    
+                    addFriendButton.isHidden = true
+                    friendCheckBox.isHidden = false
+                    friendCheckBox.on = true
+                }
+                
+                else {
+                    
+                    addFriendButton.isHidden = false
+                    friendCheckBox.isHidden = true
+                    friendCheckBox.on = false
+                }
+            }
+            
+            //If the user isn't currently friend with the member
+            else {
+                
+                addFriendButton.isHidden = false
+                friendCheckBox.isHidden = true
+                friendCheckBox.on = false
+            }
+        }
+        
+        //If the member is the current user
+        else {
+            
+            addFriendButton.isHidden = true
+            friendCheckBox.isHidden = true
+        }
+    }
+    
+    
     //MARK: - Calculate Progress
     
     private func calculateProgress () {
@@ -855,11 +882,24 @@ class CollabMemberProfileViewController: UIViewController {
         
         if let member = member {
             
-            animateButtonSelection()
-            
-            firebaseCollab.sendFriendRequest(member)
+            //If the user is already friends with the member, signifying that the
+            //current user hasn't accepted a friend request that has been sent to them by the member
+            if let friend = firebaseCollab.friends.first(where: { $0.userID == member.userID }) {
                 
-            SVProgressHUD.showSuccess(withStatus: "Friend request sent to \(member.firstName)!")
+                firebaseCollab.acceptFriendRequest(friend)
+                    
+                SVProgressHUD.showSuccess(withStatus: "You've accepted \(member.firstName)'s friend request!")
+            }
+            
+            //If the user isn't already friends with the member
+            else {
+                
+                firebaseCollab.sendFriendRequest(member)
+                    
+                SVProgressHUD.showSuccess(withStatus: "Friend request sent to \(member.firstName)!")
+            }
+            
+            animateButtonSelection()
         }
     }
     

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0D0102A62468853600A5FF28 /* Messages.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D0102A52468853600A5FF28 /* Messages.storyboard */; };
 		0D0102A92468F49D00A5FF28 /* MessagesHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0102A82468F49D00A5FF28 /* MessagesHomeViewController.swift */; };
+		0D019B1B260D2AFF00CDC7D4 /* FriendRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D019B1A260D2AFF00CDC7D4 /* FriendRequestCell.swift */; };
 		0D02C2412443744600D255D7 /* AddMembersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D02C2402443744600D255D7 /* AddMembersViewController.swift */; };
 		0D0C8D9A2442488300EB51F7 /* Collab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0C8D992442488300EB51F7 /* Collab.swift */; };
 		0D0D0B4E25D1FDD400DE6FAD /* progress-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D0B4D25D1FDD400DE6FAD /* progress-animation.json */; };
@@ -121,6 +122,8 @@
 		0D670D902558778F001D2634 /* Location+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D8F2558778F001D2634 /* Location+Extension.swift */; };
 		0D670D96255DDC0F001D2634 /* VoiceMemoRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D670D95255DDC0E001D2634 /* VoiceMemoRecorder.swift */; };
 		0D6848BE25D1F8700014ECBB /* ProgressAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6848BD25D1F8700014ECBB /* ProgressAnimationView.swift */; };
+		0D687D8626155BCB00A9BB7D /* FriendRequestProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D687D8526155BCB00A9BB7D /* FriendRequestProtocol.swift */; };
+		0D687DB026159F6300A9BB7D /* notifications-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D687DAF26159F6300A9BB7D /* notifications-animation.json */; };
 		0D70F91B2428730F00407E4A /* ProfileSidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D70F91A2428730F00407E4A /* ProfileSidebarViewController.swift */; };
 		0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */; };
 		0D70F91F2429BF0800407E4A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D70F91E2429BF0800407E4A /* LogInViewController.swift */; };
@@ -269,6 +272,7 @@
 /* Begin PBXFileReference section */
 		0D0102A52468853600A5FF28 /* Messages.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Messages.storyboard; sourceTree = "<group>"; };
 		0D0102A82468F49D00A5FF28 /* MessagesHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesHomeViewController.swift; sourceTree = "<group>"; };
+		0D019B1A260D2AFF00CDC7D4 /* FriendRequestCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestCell.swift; sourceTree = "<group>"; };
 		0D02C2402443744600D255D7 /* AddMembersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMembersViewController.swift; sourceTree = "<group>"; };
 		0D0C8D992442488300EB51F7 /* Collab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collab.swift; sourceTree = "<group>"; };
 		0D0D0B4D25D1FDD400DE6FAD /* progress-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "progress-animation.json"; sourceTree = "<group>"; };
@@ -383,6 +387,8 @@
 		0D670D8F2558778F001D2634 /* Location+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Location+Extension.swift"; sourceTree = "<group>"; };
 		0D670D95255DDC0E001D2634 /* VoiceMemoRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemoRecorder.swift; sourceTree = "<group>"; };
 		0D6848BD25D1F8700014ECBB /* ProgressAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressAnimationView.swift; sourceTree = "<group>"; };
+		0D687D8526155BCB00A9BB7D /* FriendRequestProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequestProtocol.swift; sourceTree = "<group>"; };
+		0D687DAF26159F6300A9BB7D /* notifications-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "notifications-animation.json"; sourceTree = "<group>"; };
 		0D70F91A2428730F00407E4A /* ProfileSidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSidebarViewController.swift; sourceTree = "<group>"; };
 		0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LogInRegister.storyboard; sourceTree = "<group>"; };
 		0D70F91E2429BF0800407E4A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
@@ -561,6 +567,14 @@
 			path = Collab;
 			sourceTree = "<group>";
 		};
+		0D019B19260D2AB100CDC7D4 /* Notification Cells */ = {
+			isa = PBXGroup;
+			children = (
+				0D019B1A260D2AFF00CDC7D4 /* FriendRequestCell.swift */,
+			);
+			path = "Notification Cells";
+			sourceTree = "<group>";
+		};
 		0D02C2422443744C00D255D7 /* Configure Collab */ = {
 			isa = PBXGroup;
 			children = (
@@ -602,12 +616,12 @@
 			path = "Collab View Files";
 			sourceTree = "<group>";
 		};
-		0D1F1E0E2608452C009EA8C5 /* Search */ = {
+		0D1F1E0E2608452C009EA8C5 /* Search Cells */ = {
 			isa = PBXGroup;
 			children = (
 				0D1F1E0F26084559009EA8C5 /* SearchFriendResultCell.swift */,
 			);
-			path = Search;
+			path = "Search Cells";
 			sourceTree = "<group>";
 		};
 		0D23076022D284F500A12393 /* JTAppleCalendar Files */ = {
@@ -658,6 +672,7 @@
 				0DF9C74624FD6B25000F689F /* conversation-animation.json */,
 				0D0D0B4D25D1FDD400DE6FAD /* progress-animation.json */,
 				0D1F1E13260873DD009EA8C5 /* search-animation.json */,
+				0D687DAF26159F6300A9BB7D /* notifications-animation.json */,
 				0D2CECFB228FB55800CC9180 /* Info.plist */,
 				0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */,
 			);
@@ -670,14 +685,14 @@
 				0D7868532446ABD400A92DD1 /* LogIn_Registration */,
 				0D7868522446ABC900A92DD1 /* Home */,
 				0D60F00426080A0C00DF88DE /* Search */,
+				0D0102A72468F47D00A5FF28 /* Collab */,
+				0DE728C1250872A200581048 /* Messaging */,
+				0D9262A3260C535300109454 /* Notifications */,
 				0D7868542446ABF700A92DD1 /* TimeBlock */,
 				0D480F0D2597C9D200E14D1E /* Configure Block */,
-				0D0102A72468F47D00A5FF28 /* Collab */,
 				0D02C2422443744C00D255D7 /* Configure Collab */,
-				0DE728C1250872A200581048 /* Messaging */,
 				0D5FD0BE25BC01C100E9BA2D /* SelectedBlockViewController.swift */,
 				0D2576EE25C52E33008C2711 /* HiddenBlocksViewController.swift */,
-				0D589DE92458C519005AC7BC /* NotificationsViewController.swift */,
 				0D879ACA24B828140037C880 /* FriendProfileViewController.swift */,
 				0D02C2402443744600D255D7 /* AddMembersViewController.swift */,
 				0DDE6FDE253BE4AB00A9DF71 /* AddLocationViewController.swift */,
@@ -722,7 +737,8 @@
 				0D891CC925B5721700B04C2F /* OneThirdBlock.swift */,
 				0D2576F225C53127008C2711 /* BlockCell.swift */,
 				0DE8958125F867C600E0D643 /* Home Cells */,
-				0D1F1E0E2608452C009EA8C5 /* Search */,
+				0D1F1E0E2608452C009EA8C5 /* Search Cells */,
+				0D019B19260D2AB100CDC7D4 /* Notification Cells */,
 				0D5FD0C725BC0CB800E9BA2D /* SelectedBlock Cells */,
 				0D480F16259BA0F000E14D1E /* Configuration Cells */,
 				0D5FD0D525BD109D00E9BA2D /* Presentation Cells */,
@@ -1027,6 +1043,14 @@
 			path = "Collab Model Files";
 			sourceTree = "<group>";
 		};
+		0D9262A3260C535300109454 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				0D589DE92458C519005AC7BC /* NotificationsViewController.swift */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
 		0D93300B22927C9100B6191D /* Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -1156,6 +1180,7 @@
 			isa = PBXGroup;
 			children = (
 				0DE895A725FB0A3A00E0D643 /* HomeViewProtocol.swift */,
+				0D687D8526155BCB00A9BB7D /* FriendRequestProtocol.swift */,
 				0DE728C42509751B00581048 /* CachePhotoProtocol.swift */,
 				0D92BBA72587137E00D9C561 /* CacheIconProtocol.swift */,
 				0D80969F250AABBA00469934 /* PresentCopiedAnimationProtocol.swift */,
@@ -1300,6 +1325,7 @@
 				0D78657E23E4B56B00BD4C4D /* Poppins-SemiBoldItalic.ttf in Resources */,
 				0D879AD524B834DE0037C880 /* ConvoPhotoInfoCell.xib in Resources */,
 				0D670D8825567316001D2634 /* Location.storyboard in Resources */,
+				0D687DB026159F6300A9BB7D /* notifications-animation.json in Resources */,
 				0D480F072597C60500E14D1E /* ConfigureBlock.storyboard in Resources */,
 				0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */,
 				0D78658823E51C7D00BD4C4D /* HomeTableViewCell.xib in Resources */,
@@ -1441,6 +1467,7 @@
 				0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */,
 				0D2576F325C53127008C2711 /* BlockCell.swift in Sources */,
 				0DB52AD025D793CA00645D27 /* BlockCreatedProtocol.swift in Sources */,
+				0D687D8626155BCB00A9BB7D /* FriendRequestProtocol.swift in Sources */,
 				0D7CABE9252A69590045006C /* Public Variables.swift in Sources */,
 				0D670D8B255674DD001D2634 /* LocationsViewController.swift in Sources */,
 				0D0102A92468F49D00A5FF28 /* MessagesHomeViewController.swift in Sources */,
@@ -1481,6 +1508,7 @@
 				0D5FD0BF25BC01C100E9BA2D /* SelectedBlockViewController.swift in Sources */,
 				0D7CD51B2432FCBE00BE1BE6 /* NewUser.swift in Sources */,
 				0D879AD424B834DE0037C880 /* ConvoPhotoInfoCell.swift in Sources */,
+				0D019B1B260D2AFF00CDC7D4 /* FriendRequestCell.swift in Sources */,
 				0D82282824DA259200D0BBA0 /* ConvoUpdatedMessageCell.swift in Sources */,
 				0D92BBA82587137E00D9C561 /* CacheIconProtocol.swift in Sources */,
 				0DB0875925E7A9EE00FEE6FF /* CollabHomeEdit_LeaveCell.swift in Sources */,

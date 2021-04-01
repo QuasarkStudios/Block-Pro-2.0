@@ -135,6 +135,7 @@ class ConfigureCollabViewController: UIViewController {
         
         tableView.delaysContentTouches = false
         tableView.separatorStyle = .none
+        tableView.keyboardDismissMode = .onDrag
         tableView.showsVerticalScrollIndicator = false
         
         tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 30, right: 0)
@@ -359,7 +360,8 @@ class ConfigureCollabViewController: UIViewController {
         addMembersVC.membersAddedDelegate = self
         addMembersVC.headerLabelText = "Add Members"
         
-        addMembersVC.members = firebaseCollab.friends
+        addMembersVC.members = []
+        firebaseCollab.friends.forEach({ if $0.accepted == true { addMembersVC.members?.append($0) } })
         
         addMembersVC.addedMembers = [:]
         

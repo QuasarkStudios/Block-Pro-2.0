@@ -17,6 +17,7 @@ class Friend {
     
     var accepted: Bool?
     var requestSentBy: String = ""
+    var requestSentOn: Date?
     var dateOfFriendship: Date?
     
     var profilePictureImage: UIImage?

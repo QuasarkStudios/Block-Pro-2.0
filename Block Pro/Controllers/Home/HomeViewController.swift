@@ -53,7 +53,7 @@ class HomeViewController: UIViewController {
         self.navigationItem.hidesBackButton = true
         
         configureHomeHeaderView()
-//        configureProfilePictureButton()
+        configureProfilePictureButton()
         
         configureCollectionView(collabCollectionView)
         
@@ -82,6 +82,8 @@ class HomeViewController: UIViewController {
                     
                     
                 }
+                
+                self?.determineNotifications()
             }
         }
         
@@ -115,6 +117,8 @@ class HomeViewController: UIViewController {
             firebaseCollab.retrieveUsersFriends()
         }
         
+        NotificationCenter.default.addObserver(self, selector: #selector(determineNotifications), name: .didUpdateFriends, object: nil)
+        
 //        print(currentUser.userID)
     }
     
@@ -123,6 +127,8 @@ class HomeViewController: UIViewController {
         
         self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barStyleColor: .default)
         
+        profilePictureButton.isUserInteractionEnabled = true
+        
         tabBar.shouldHide = false
     }
     
@@ -130,6 +136,12 @@ class HomeViewController: UIViewController {
         super.viewDidAppear(animated)
         
 //        blockVC = nil
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        profilePictureButton.isUserInteractionEnabled = false
     }
     
     private func configureHomeHeaderView () {
@@ -375,6 +387,32 @@ class HomeViewController: UIViewController {
         }
     }
     
+    @objc private func determineNotifications () {
+        
+        var newFriendRequestsCount: Int = 0
+        var newCollabRequestsCount: Int = 0
+        
+        for friend in firebaseCollab.friends {
+            
+            if friend.accepted == nil, friend.requestSentBy != currentUser.userID {
+                
+                newFriendRequestsCount += 1
+            }
+        }
+        
+        for collab in collabs ?? [] {
+            
+            if collab.accepted == nil {
+                
+                newCollabRequestsCount += 1
+            }
+        }
+        
+        tabBar.setNotificationIndicator(notificationCount: newFriendRequestsCount)
+        
+//        tabBar.setNotificationIndicator(newFriendRequestsCount)
+    }
+    
     func moveToBlocksView (_ selectedDate: Date) {
         
         self.selectedDate = selectedDate
@@ -411,7 +449,11 @@ class HomeViewController: UIViewController {
     
     @objc private func profilePictureButtonPressed () {
         
-        performSegue(withIdentifier: "moveToProfileView", sender: self)
+        //Double check to ensure the HomeViewController is present
+        if self.navigationController?.visibleViewController == self {
+            
+            performSegue(withIdentifier: "moveToProfileSideview", sender: self)
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
