@@ -18,7 +18,7 @@ class NotificationsViewController: UIViewController {
     let collabRequestsHeader = UIView()
     
     let showAllFriendRequestsButton = UIButton(type: .system)
-    let showAllCollabsButton = UIButton(type: .system)
+    let showAllCollabRequestsButton = UIButton(type: .system)
     
     let animationView = AnimationView(name: "notifications-animation")
     let animationTitleLabel = UILabel()
@@ -34,31 +34,43 @@ class NotificationsViewController: UIViewController {
     var friendRequests: [Friend]? {
         didSet {
             
-            notificationsTableView.reloadSections([0], with: .fade)
+            UIView.transition(with: notificationsTableView, duration: 0.3, options: .transitionCrossDissolve) {
+                
+                self.notificationsTableView.reloadData()
+            }
             
+            //Will only mark the friend requests if the user is on the "Notifications" tab
             if tabBar.selectedIndex == 3 {
                 
                 firebaseCollab.markFriendRequestNotifications(friendRequests)
             }
             
-            if collabRequests != nil {
-                
-                presentAnimationView()
-            }
+            presentAnimationView()
             
             showAllFriendRequestsButton.alpha = (friendRequests?.count ?? 0) > 5 ? 1 : 0
-            
         }
     }
     
     var collabRequests: [Collab]? {
         didSet {
             
+            //Will only mark the collab requests if the user is on the "Notifications" tab
+            if tabBar.selectedIndex == 3 {
+                
+                firebaseCollab.markCollabRequestNotifications(collabRequests)
+            }
+            
+            presentAnimationView()
+            
+            showAllCollabRequestsButton.alpha = (collabRequests?.count ?? 0) > 5 ? 1 : 0
         }
     }
     
     var showAllFriendRequests: Bool = false
+    var showAllCollabRequests: Bool = false
+    
     var selectedFriendRequest: IndexPath?
+    var selectedCollabRequest: IndexPath?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,20 +89,21 @@ class NotificationsViewController: UIViewController {
         configureAnimationTitleLabel()
         
         retrieveFriendRequests()
-        
-        collabRequests = []
-        
-        if friendRequests?.count ?? 0 == 0 && collabRequests?.count ?? 0 == 0 {
-            
-            friendRequestsHeader.alpha = 0
-            collabRequestsHeader.alpha = 0
-            
-            animationView.alpha = 1
-            animationTitleLabel.alpha = 1
-        }
+        retrieveCollabRequests()
         
         NotificationCenter.default.addObserver(self, selector: #selector(retrieveFriendRequests), name: .didUpdateFriends, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(retrieveCollabRequests), name: .didUpdateCollabs, object: nil)
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        firebaseCollab.markFriendRequestNotifications(friendRequests)
+        firebaseCollab.markCollabRequestNotifications(collabRequests)
+    }
+    
+    
+    //MARK: - Configure Table View
     
     private func configureTableView (_ tableView: UITableView) {
         
@@ -112,16 +125,20 @@ class NotificationsViewController: UIViewController {
         tableView.delaysContentTouches = false
         tableView.separatorStyle = .none
         
-//        tableView.contentInset = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
+        tableView.estimatedRowHeight = 0 //Important to be able to retrieve correct contentSize
         
         tableView.register(FriendRequestCell.self, forCellReuseIdentifier: "friendRequestCell")
+        tableView.register(CollabRequestCell.self, forCellReuseIdentifier: "collabRequestCell")
     }
+    
+    
+    //MARK: - Configure Table View Section Header
     
     private func configureTableViewSectionHeaderView (_ section: Int) {
         
         let sectionHeaderView = section == 0 ? friendRequestsHeader : collabRequestsHeader
         let sectionLabel = UILabel()
-        let showAllButton = section == 0 ? showAllFriendRequestsButton : showAllCollabsButton
+        let showAllButton = section == 0 ? showAllFriendRequestsButton : showAllCollabRequestsButton
         
         sectionHeaderView.addSubview(sectionLabel)
         sectionHeaderView.addSubview(showAllButton)
@@ -146,7 +163,7 @@ class NotificationsViewController: UIViewController {
         sectionHeaderView.backgroundColor = .white
         
         sectionLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
-        sectionLabel.textColor = .lightGray//.black
+        sectionLabel.textColor = .lightGray
         sectionLabel.textAlignment = .left
         sectionLabel.text = (section == 0 ? "Friend" : "Collab") + " Requests"
         
@@ -157,14 +174,27 @@ class NotificationsViewController: UIViewController {
         
         if section == 0 {
             
-            showAllButton.addTarget(self, action: #selector(showAllFriendRequestsButtonPressed), for: .touchUpInside)
-            
             if friendRequests?.count ?? 0 > 5 {
                 
                 showAllButton.alpha = 1
             }
+            
+            showAllButton.addTarget(self, action: #selector(showAllFriendRequestsButtonPressed), for: .touchUpInside)
+        }
+        
+        else {
+            
+            if collabRequests?.count ?? 0 > 5 {
+                
+                showAllButton.alpha = 1
+            }
+            
+            showAllButton.addTarget(self, action: #selector(showAllCollabRequestsButtonPressed), for: .touchUpInside)
         }
     }
+    
+    
+    //MARK: - Configure Animation View
     
     private func configureAnimationView () {
         
@@ -179,7 +209,7 @@ class NotificationsViewController: UIViewController {
             animationView.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: 0),
             animationView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
             animationView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
-            animationView.heightAnchor.constraint(equalToConstant: (tabBar.frame.minY - topBarHeight) * 0.75) //80% of the distance between the bottom of
+            animationView.heightAnchor.constraint(equalToConstant: (tabBar.frame.minY - topBarHeight) * 0.75) //75% of the distance between the bottom of
                                                                                                                     //navBar and top of the tabBar
         
         ].forEach({ $0.isActive = true })
@@ -189,8 +219,6 @@ class NotificationsViewController: UIViewController {
         animationView.contentMode = .scaleAspectFill
         animationView.loopMode = .loop
         animationView.backgroundBehavior = .pauseAndRestore
-        
-        animationView.play()
     }
     
     
@@ -220,6 +248,9 @@ class NotificationsViewController: UIViewController {
         animationTitleLabel.text = "No Notifications\nYet"
     }
     
+    
+    //MARK: - Retrieve Friend Requests
+    
     @objc private func retrieveFriendRequests () {
         
         var requests: [Friend] = []
@@ -228,42 +259,176 @@ class NotificationsViewController: UIViewController {
         friendRequests = requests.sorted(by: { $0.requestSentOn ?? Date() > $1.requestSentOn ?? Date() })
     }
     
-    private func presentAnimationView () {
+    
+    //MARK: - Retrieve Collab Requests
+    
+    @objc private func retrieveCollabRequests () {
         
-        if friendRequests?.count ?? 0 == 0 {
+        var requests: [Collab] = []
+        firebaseCollab.collabs.forEach({ if $0.accepted?[currentUser.userID] != true { requests.append($0) } })
+        
+        //If the count of the collabRequests has changed
+        if requests.count != collabRequests?.count ?? 0 {
             
-            if animationView.alpha != 1 {
+            collabRequests = requests.sorted(by: { $0.requestSentOn?[currentUser.userID] ?? Date() > $1.requestSentOn?[currentUser.userID] ?? Date() })
+            
+            UIView.transition(with: notificationsTableView, duration: 0.3, options: .transitionCrossDissolve) {
                 
-                animationView.play()
-                
-                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                    
-                    self.friendRequestsHeader.alpha = 0
-                    
-                    self.animationView.alpha = 1
-                    self.animationTitleLabel.alpha = 1
-                }
+                self.notificationsTableView.reloadData()
             }
         }
         
         else {
             
-            if animationView.alpha != 0 {
+            var newCollabRequestFound: Bool = false
+            
+            var collabRequestIndexPaths: [IndexPath] = []
+            var indexPathsToReload: [IndexPath] = []
+            
+            //Appending all the indexPaths in section 1, i.e. all the collab requests
+            notificationsTableView.indexPathsForVisibleRows?.forEach({ if $0.section == 1 { collabRequestIndexPaths.append($0) } })
+            
+            for request in requests {
                 
-                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                //If this request has a matching cached collab request
+                if let cachedCollabRequest = collabRequests?.first(where: { $0.collabID == request.collabID }) {
                     
-                    self.friendRequestsHeader.alpha = 1
+                    var collabRequestIndexPath: IndexPath?
+                        
+                    for indexPath in collabRequestIndexPaths {
+                        
+                        //Finds the indexPath for this collab request
+                        if let cell = notificationsTableView.cellForRow(at: indexPath) as? CollabRequestCell, cell.collabRequest?.collabID == request.collabID {
+                            
+                            collabRequestIndexPath = indexPath
+                            break
+                        }
+                    }
                     
-                    self.animationView.alpha = 0
-                    self.animationTitleLabel.alpha = 0
+                    //If this request has a new cover photo
+                    if cachedCollabRequest.coverPhotoID != request.coverPhotoID {
+                        
+                        if collabRequestIndexPath != nil {
+                            
+                            indexPathsToReload.append(collabRequestIndexPath!)
+                        }
+                    }
                     
-                } completion: { (finished: Bool) in
+                    //If this request has a new name
+                    else if cachedCollabRequest.name != request.name {
+                        
+                        if collabRequestIndexPath != nil {
+                            
+                            indexPathsToReload.append(collabRequestIndexPath!)
+                        }
+                    }
                     
-                    self.animationView.stop()
+                    //If this request has a new deadline
+                    else if cachedCollabRequest.dates["deadline"] != request.dates["deadline"] {
+                        
+                        if collabRequestIndexPath != nil {
+                            
+                            indexPathsToReload.append(collabRequestIndexPath!)
+                        }
+                    }
+                    
+                    //If this request has added, removed, or swapped out members
+                    else if (cachedCollabRequest.currentMembers.count != request.currentMembers.count) || !(request.currentMembersIDs.allSatisfy({ cachedCollabRequest.currentMembersIDs.contains($0) })) {
+                        
+                        if collabRequestIndexPath != nil {
+                            
+                            indexPathsToReload.append(collabRequestIndexPath!)
+                        }
+                    }
+                }
+                
+                //If this is a new request
+                else {
+                    
+                    newCollabRequestFound = true
+                    break
+                }
+            }
+            
+            //Sorting the requests by the date they were sent
+            collabRequests = requests.sorted(by: { $0.requestSentOn?[currentUser.userID] ?? Date() > $1.requestSentOn?[currentUser.userID] ?? Date() })
+            
+            if !newCollabRequestFound {
+                
+                if indexPathsToReload.count == 1 {
+        
+                    notificationsTableView.reloadRows(at: indexPathsToReload, with: .none)
+                }
+        
+                else if indexPathsToReload.count > 1 {
+        
+                    notificationsTableView.reloadRows(at: indexPathsToReload, with: .fade)
+                }
+            }
+            
+            //Reloads the tableView if a new request was found
+            else {
+                
+                UIView.transition(with: notificationsTableView, duration: 0.3, options: .transitionCrossDissolve) {
+                    
+                    self.notificationsTableView.reloadData()
                 }
             }
         }
     }
+    
+    
+    //MARK: - Present Animation View
+    
+    private func presentAnimationView () {
+        
+        if let friendRequestsCount = friendRequests?.count, let collabRequestsCount = collabRequests?.count {
+            
+            //If there are no requests
+            if friendRequestsCount == 0 && collabRequestsCount == 0 {
+                
+                notificationsTableView.isUserInteractionEnabled = false
+                
+                if animationView.alpha != 1 {
+                    
+                    animationView.play()
+                    
+                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                        
+                        self.friendRequestsHeader.alpha = 0
+                        self.collabRequestsHeader.alpha = 0
+                        
+                        self.animationView.alpha = 1
+                        self.animationTitleLabel.alpha = 1
+                    }
+                }
+            }
+            
+            else {
+                
+                if animationView.alpha != 0 {
+                    
+                    notificationsTableView.isUserInteractionEnabled = true
+                    
+                    UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                        
+                        self.friendRequestsHeader.alpha = 1
+                        self.collabRequestsHeader.alpha = 1
+                        
+                        self.animationView.alpha = 0
+                        self.animationTitleLabel.alpha = 0
+                        
+                    } completion: { (finished: Bool) in
+                        
+                        self.animationView.stop()
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    //MARK: - Show All Requests Pressed
     
     @objc private func showAllFriendRequestsButtonPressed () {
         
@@ -273,21 +438,40 @@ class NotificationsViewController: UIViewController {
         
         notificationsTableView.beginUpdates()
         notificationsTableView.endUpdates()
+    }
+    
+    @objc private func showAllCollabRequestsButtonPressed () {
         
-//        notificationsTableView.reloadSections([0], with: .none)
+        showAllCollabRequests = !showAllCollabRequests
+        
+        showAllCollabRequestsButton.setImage(showAllCollabRequests ? UIImage(systemName: "chevron.up.circle.fill") : UIImage(systemName: "chevron.down.circle.fill"), for: .normal)
+        
+        notificationsTableView.beginUpdates()
+        notificationsTableView.endUpdates()
     }
 }
+
+
+//MARK: - UITableView DataSource and Delegate Extension
 
 extension NotificationsViewController: UITableViewDataSource, UITableViewDelegate {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         
-        return 1
+        return 2
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return (friendRequests?.count ?? 0) * 2
+        if section == 0 {
+            
+            return (friendRequests?.count ?? 0) * 2
+        }
+        
+        else {
+            
+            return (collabRequests?.count ?? 0) * 2
+        }
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -297,28 +481,58 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if indexPath.row % 2 == 0 {
+        if indexPath.section == 0 {
             
-            let cell = tableView.dequeueReusableCell(withIdentifier: "friendRequestCell", for: indexPath) as! FriendRequestCell
-            cell.selectionStyle = .none
+            if indexPath.row % 2 == 0 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "friendRequestCell", for: indexPath) as! FriendRequestCell
+                cell.selectionStyle = .none
+                
+                cell.formatter = formatter
+                
+                cell.friendRequest = friendRequests?[indexPath.row / 2]
+                
+                cell.friendRequestDelegate = self
+                
+                cell.animateButtons(animate: false, hide: !(indexPath == selectedFriendRequest))
+                
+                return cell
+            }
             
-            cell.formatter = formatter
-            
-            cell.friendRequest = friendRequests?[indexPath.row / 2]
-            
-            cell.friendRequestDelegate = self
-            
-            cell.animateButtons(animate: false, hide: !(indexPath == selectedFriendRequest))
-            
-            return cell
+            else {
+                
+                let cell = UITableViewCell()
+                cell.isUserInteractionEnabled = false
+                
+                return cell
+            }
         }
         
         else {
             
-            let cell = UITableViewCell()
-            cell.isUserInteractionEnabled = false
+            if indexPath.row % 2 == 0 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "collabRequestCell", for: indexPath) as! CollabRequestCell
+                cell.selectionStyle = .none
+                
+                cell.formatter = formatter
+
+                cell.collabRequest = collabRequests?[indexPath.row / 2]
+                
+                cell.collabRequestDelegate = self
+                
+                cell.animateHiddenViews(animate: false, hide: !(indexPath == selectedCollabRequest))
+                
+                return cell
+            }
             
-            return cell
+            else {
+                
+                let cell = UITableViewCell()
+                cell.isUserInteractionEnabled = false
+                
+                return cell
+            }
         }
     }
     
@@ -326,25 +540,54 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
         
         if indexPath.row % 2 == 0 {
             
-            if showAllFriendRequests {
+            if indexPath.section == 0 {
                 
-                return indexPath == selectedFriendRequest ? 125 : 80
-            }
-            
-            else {
-                
-                if indexPath.row <= 9 {
+                if showAllFriendRequests {
                     
                     return indexPath == selectedFriendRequest ? 125 : 80
                 }
                 
                 else {
                     
-                    return 0
+                    //The first 5 requests
+                    if indexPath.row <= 9 {
+                        
+                        return indexPath == selectedFriendRequest ? 125 : 80
+                    }
+                    
+                    else {
+                        
+                        //Hides every other request
+                        return 0
+                    }
+                }
+            }
+            
+            else {
+                
+                if showAllCollabRequests {
+                    
+                    return indexPath == selectedCollabRequest ? 218 : 80
+                }
+                
+                else {
+                    
+                    //The first 5 requests
+                    if indexPath.row <= 9 {
+                        
+                        return indexPath == selectedCollabRequest ? 218 : 80
+                    }
+                    
+                    else {
+                        
+                        //Hides every other request
+                        return 0
+                    }
                 }
             }
         }
         
+        //Buffer cell
         else {
             
             return 5
@@ -353,20 +596,98 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
     
-        return 45
+        if section == 0 {
+            
+            return friendRequests?.count ?? 0 > 0 ? 45 : 0
+        }
+        
+        else {
+            
+            return collabRequests?.count ?? 0 > 0 ? 45 : 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        let tableViewExpandedHeight = self.view.frame.height - topBarHeight
+        
+        if tableView.contentSize.height > tableViewExpandedHeight {
+            
+            //If the last cell is about to be presented
+            if indexPath.row + 1 == tableView.numberOfRows(inSection: (collabRequests?.count ?? 0) > 0 ? 1 : 0) {
+                
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+
+                    self.tabBar.alpha = 0
+                })
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+
+        //If the last cell is about to be dismissed
+        if indexPath.row + 1 == tableView.numberOfRows(inSection: (collabRequests?.count ?? 0) > 0 ? 1 : 0) {
+
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+
+                self.tabBar.alpha = 1
+            })
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let cell = tableView.cellForRow(at: indexPath) as! FriendRequestCell
-        cell.animateButtons (animate: true, hide: indexPath == selectedFriendRequest ? true : false)
+        if let cell = tableView.cellForRow(at: indexPath) as? FriendRequestCell {
+            
+            cell.animateButtons(animate: true, hide: indexPath == selectedFriendRequest)
+            
+            selectedFriendRequest = indexPath == selectedFriendRequest ? nil : indexPath
+            
+            notificationsTableView.beginUpdates()
+            notificationsTableView.endUpdates()
+        }
         
-        selectedFriendRequest = indexPath == selectedFriendRequest ? nil : indexPath
+        else if let cell = tableView.cellForRow(at: indexPath) as? CollabRequestCell {
+            
+            cell.animateHiddenViews(animate: true, hide: indexPath == selectedCollabRequest)
+            
+            selectedCollabRequest = indexPath == selectedCollabRequest ? nil : indexPath
+            
+            notificationsTableView.beginUpdates()
+            notificationsTableView.endUpdates()
+        }
+    }
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
-        notificationsTableView.beginUpdates()
-        notificationsTableView.endUpdates()
+        //Full height the tableView can be expanded to
+        let tableViewExpandedHeight = self.view.frame.height - topBarHeight
+        
+        //If all the cells won't fit into a fully expanded tableView
+        if notificationsTableView.contentSize.height > tableViewExpandedHeight {
+            
+            if velocity.y < 0 {
+                
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+
+                    self.tabBar.alpha = 1
+                })
+            }
+            
+            else if velocity.y > 0.5 {
+
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+
+                    self.tabBar.alpha = 0
+                })
+            }
+        }
     }
 }
+
+
+//MARK: - Friend Request Protocol
 
 extension NotificationsViewController: FriendRequestProtocol {
     
@@ -382,5 +703,25 @@ extension NotificationsViewController: FriendRequestProtocol {
         selectedFriendRequest = nil
         
         firebaseCollab.declineFriendRequest(friendRequest)
+    }
+}
+
+
+//MARK: - Collab Request Protocol
+
+extension NotificationsViewController: CollabRequestProtocol {
+    
+    func acceptCollabRequest(_ collabRequest: Collab) {
+        
+        selectedCollabRequest = nil
+        
+        firebaseCollab.acceptCollabRequest(collabRequest.collabID)
+    }
+    
+    func declineCollabRequest(_ collabRequest: Collab) {
+        
+        selectedCollabRequest = nil
+        
+        firebaseCollab.declineCollabRequest(collabRequest)
     }
 }

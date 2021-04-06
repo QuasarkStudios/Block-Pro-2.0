@@ -116,8 +116,6 @@ class FriendRequestCell: UITableViewCell {
         nameLabel.font = UIFont(name: "Poppins-SemiBold", size: 18)
         nameLabel.textAlignment = .left
         nameLabel.textColor = .black
-        
-        nameLabel.text = "Dude"
     }
     
     
@@ -137,7 +135,7 @@ class FriendRequestCell: UITableViewCell {
         
         ].forEach({ $0.isActive = true })
         
-        requestSentOnLabel.font = UIFont(name: "Poppins-SemiBold", size: 14)
+        requestSentOnLabel.font = UIFont(name: "Poppins-SemiBold", size: 13)
         requestSentOnLabel.textColor = .lightGray
         requestSentOnLabel.textAlignment = .right
     }

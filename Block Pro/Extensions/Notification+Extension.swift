@@ -18,4 +18,6 @@ extension Notification.Name {
     static let userDidAddMessageAttachment = Notification.Name("userDidAddMessageAttachment")
     
     static let didUpdateFriends = Notification.Name("didUpdateFriends")
+    
+    static let didUpdateCollabs = Notification.Name("didUpdateCollabs")
 }

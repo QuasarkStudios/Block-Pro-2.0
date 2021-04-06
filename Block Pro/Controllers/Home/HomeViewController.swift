@@ -29,7 +29,8 @@ class HomeViewController: UIViewController {
     let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseBlock = FirebaseBlock.sharedInstance
     
-    var collabs: [Collab]?
+    var allCollabs: [Collab]?
+    var acceptedCollabs: [Collab]?
     var selectedCollab: Collab?
     
     var blocks: [Block]?
@@ -66,9 +67,10 @@ class HomeViewController: UIViewController {
             
             if collabs != nil {
                 
-                if self?.collabs == nil {
+                if self?.allCollabs == nil {
                     
-                    self?.collabs = collabs?.sorted(by: { $0.dates["deadline"]! > $1.dates["deadline"]! })
+                    self?.allCollabs = collabs
+                    self?.acceptedCollabs = collabs?.filter({ $0.accepted?[self?.currentUser.userID ?? ""] == true }).sorted(by: { $0.dates["deadline"]! > $1.dates["deadline"]! })
                     
                     self?.collabCollectionView.reloadData()
                     
@@ -80,7 +82,11 @@ class HomeViewController: UIViewController {
                 
                 else {
                     
+                    //temp
+                    self?.allCollabs = collabs
+                    self?.acceptedCollabs = collabs?.filter({ $0.accepted?[self?.currentUser.userID ?? ""] == true }).sorted(by: { $0.dates["deadline"]! > $1.dates["deadline"]! })
                     
+                    self?.collabCollectionView.reloadData()
                 }
                 
                 self?.determineNotifications()
@@ -400,17 +406,15 @@ class HomeViewController: UIViewController {
             }
         }
         
-        for collab in collabs ?? [] {
+        for collab in allCollabs ?? [] {
             
-            if collab.accepted == nil {
-                
+            if collab.accepted?[currentUser.userID] as? Bool == nil {
+
                 newCollabRequestsCount += 1
             }
         }
         
-        tabBar.setNotificationIndicator(notificationCount: newFriendRequestsCount)
-        
-//        tabBar.setNotificationIndicator(newFriendRequestsCount)
+        tabBar.setNotificationIndicator(notificationCount: newFriendRequestsCount + newCollabRequestsCount)
     }
     
     func moveToBlocksView (_ selectedDate: Date) {
@@ -486,7 +490,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return collabs?.count ?? 0
+        return acceptedCollabs?.count ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -495,7 +499,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 
         cell.formatter = formatter
 
-        cell.collab = collabs?[indexPath.row]
+        cell.collab = acceptedCollabs?[indexPath.row]
         
         return cell
     }

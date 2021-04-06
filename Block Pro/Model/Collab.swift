@@ -14,6 +14,9 @@ struct Collab {
     var creator: String?
     var dateCreated: Date?
     
+    var requestSentOn: [String : Date]?
+    var accepted: [String : Bool?]?
+    
     var name: String = ""
     var objective: String?
     
@@ -40,8 +43,4 @@ struct Collab {
     var voiceMemos: [VoiceMemo]?
     
     var links: [Link]?
-    
-    var accepted: Bool?
-    var requestSentBy: String = ""
-    var requestSentOn: Date?
 }

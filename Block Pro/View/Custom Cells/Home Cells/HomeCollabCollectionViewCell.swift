@@ -391,7 +391,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         progressLabel.textColor = .black
         progressLabel.textAlignment = .center
 
-        progressLabel.text = "62%"
+        progressLabel.adjustsFontSizeToFitWidth = true
+        
+//        progressLabel.text = "62%"
         
 //        if let circle = progressCircle, progressLabel.superview == nil {
 //
@@ -454,7 +456,7 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             
             else {
                 
-                coverPhoto.profilePic = nil
+                coverPhoto.profilePic = UIImage(named: "Mountains")
                 
                 firebaseStorage.retrieveCollabCoverPhoto(collabID: collab.collabID) { [weak self] (cover, error) in
                     
