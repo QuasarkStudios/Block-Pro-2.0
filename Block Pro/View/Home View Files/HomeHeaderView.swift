@@ -98,8 +98,8 @@ class HomeHeaderView: UIView {
             
             profilePictureProgressView.topAnchor.constraint(equalTo: self.topAnchor, constant: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40),
             profilePictureProgressView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 25),
-            profilePictureProgressView.widthAnchor.constraint(equalToConstant: 62.5),
-            profilePictureProgressView.heightAnchor.constraint(equalToConstant: 62.5)
+            profilePictureProgressView.widthAnchor.constraint(equalToConstant: 60),
+            profilePictureProgressView.heightAnchor.constraint(equalToConstant: 60)
             
         ].forEach({ $0.isActive = true })
         
@@ -283,7 +283,8 @@ class HomeHeaderView: UIView {
         [
         
             collabsLabel.leadingAnchor.constraint(equalTo: collabContainer.leadingAnchor, constant: 30),
-            collabsLabel.topAnchor.constraint(equalTo: collabContainer.topAnchor, constant: 22.5),
+//            collabsLabel.topAnchor.constraint(equalTo: collabContainer.topAnchor, constant: 22.5),
+            collabsLabel.centerYAnchor.constraint(equalTo: collabContainer.centerYAnchor, constant: 0),
             collabsLabel.widthAnchor.constraint(equalToConstant: 125),
             collabsLabel.heightAnchor.constraint(equalToConstant: 25)
         

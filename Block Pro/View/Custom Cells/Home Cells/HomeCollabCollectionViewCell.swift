@@ -467,11 +467,24 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
                     
                     else {
                         
-                        self?.coverPhoto.profilePic = cover
-                        self?.coverPhoto.layer.shadowColor = UIColor(hexString: "39434A")!.cgColor
-                        self?.coverPhoto.layer.borderWidth = 1
+                        //If false, this cell was likely reused for another collab before the cover picture was finished being retrieved for it's previous collab
+                        if collab.collabID == self?.collab?.collabID {
+                            
+                            self?.coverPhoto.profilePic = cover
+                            self?.coverPhoto.layer.shadowColor = UIColor(hexString: "39434A")!.cgColor
+                            self?.coverPhoto.layer.borderWidth = 1
+                            
+                            self?.firebaseCollab.collabs[collabIndex].coverPhoto = cover
+                        }
                         
-                        self?.firebaseCollab.collabs[collabIndex].coverPhoto = cover
+                        else {
+                            
+                            //Caching the cover photo for the previous collab
+                            if let previousCollabIndex = self?.firebaseCollab.collabs.firstIndex(where: { $0.collabID == collab.collabID }) {
+                                
+                                self?.firebaseCollab.collabs[previousCollabIndex].coverPhoto = cover
+                            }
+                        }
                     }
                 }
             }

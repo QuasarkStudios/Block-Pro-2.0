@@ -461,6 +461,7 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
         return 2
     }
     
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         if section == 0 {
@@ -474,10 +475,12 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
         }
     }
     
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         return section == 0 ? friendRequestsHeader : collabRequestsHeader
     }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -535,6 +538,7 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
             }
         }
     }
+    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
@@ -594,6 +598,7 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
         }
     }
     
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
     
         if section == 0 {
@@ -607,10 +612,12 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
         }
     }
     
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
         let tableViewExpandedHeight = self.view.frame.height - topBarHeight
         
+        //If all the cells won't fit into a fully expanded tableView
         if tableView.contentSize.height > tableViewExpandedHeight {
             
             //If the last cell is about to be presented
@@ -624,6 +631,7 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
         }
     }
     
+    
     func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 
         //If the last cell is about to be dismissed
@@ -635,6 +643,7 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
             })
         }
     }
+    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
@@ -658,6 +667,7 @@ extension NotificationsViewController: UITableViewDataSource, UITableViewDelegat
             notificationsTableView.endUpdates()
         }
     }
+    
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         

@@ -78,6 +78,7 @@ class CollabRequestCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
     //Handles the cell backgroundColor animation when the cell is tapped
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)

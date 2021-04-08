@@ -59,34 +59,11 @@ class CollabCollectionViewFlowLayout: UICollectionViewFlowLayout {
             contentOffset.y = round(rawPageValue) * pageHeight
         }
         
-        expandCell(contentOffset)
+        if let viewController = homeViewController as? HomeViewController {
+            
+            viewController.yCoordForExpandedCell = contentOffset.y >= 0 ? contentOffset.y : 0
+        }
         
         return contentOffset
-    }
-    
-    private func expandCell (_ contentOffset: CGPoint) {
-        
-        self.collectionView?.indexPathsForVisibleItems.forEach({ (visibleIndexPath) in
-            
-            if let cell = collectionView?.cellForItem(at: visibleIndexPath) as? HomeCollabCollectionViewCell {
-                
-                //If the cells y-coord matches the y-coord of the proposed content offset
-                if cell.frame.minY == contentOffset.y {
-                    
-                    cell.expandCell()
-                    
-                    if let viewController = homeViewController as? HomeViewController {
-                        
-                        viewController.expandedIndexPath = visibleIndexPath
-                        
-                        self.collectionView?.performBatchUpdates({
-
-                            self.collectionView?.reloadData()
-
-                        }, completion: nil)
-                    }
-                }
-            }
-        })
     }
 }
