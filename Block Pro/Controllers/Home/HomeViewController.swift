@@ -44,8 +44,6 @@ class HomeViewController: UIViewController {
         }
     }
     
-//    var canExpandHeaderView: Bool = true
-    
     var selectedDate: Date?
     
     var headerViewHeightConstraint: NSLayoutConstraint?
@@ -66,14 +64,15 @@ class HomeViewController: UIViewController {
         
         configureGestureRecognizors()
         
-        firebaseCollab.retrieveCollabs { [weak self] (collabs, members, error) in
+        firebaseCollab.retrieveCollabs { [weak self] (retrivedCollabs, error) in
             
-            if collabs != nil {
+            if let collabs = retrivedCollabs {
                 
+                //Signifying the collabCollectionView was unpopulated before this
                 if self?.allCollabs == nil {
                     
                     self?.allCollabs = collabs
-                    self?.acceptedCollabs = collabs?.filter({ $0.accepted?[self?.currentUser.userID ?? ""] == true }).sorted(by: { $0.dates["deadline"]! > $1.dates["deadline"]! })
+                    self?.acceptedCollabs = collabs.filter({ $0.accepted?[self?.currentUser.userID ?? ""] == true }).sorted(by: { $0.dates["deadline"]! > $1.dates["deadline"]! })
                     
                     self?.collabCollectionView.reloadData()
                     
@@ -86,11 +85,7 @@ class HomeViewController: UIViewController {
                 
                 else {
                     
-                    //temp
-                    self?.allCollabs = collabs
-                    self?.acceptedCollabs = collabs?.filter({ $0.accepted?[self?.currentUser.userID ?? ""] == true }).sorted(by: { $0.dates["deadline"]! > $1.dates["deadline"]! })
-                    
-                    self?.collabCollectionView.reloadData()
+                    self?.collabsUpdated(collabs)
                 }
                 
                 self?.determineNotifications()
@@ -117,8 +112,6 @@ class HomeViewController: UIViewController {
                         blockVC.blocks = blocks
                     }
                 })
-                
-//                self?.blockVC?.blocks = blocks
             }
         }
         
@@ -140,12 +133,6 @@ class HomeViewController: UIViewController {
         profilePictureButton.isUserInteractionEnabled = true
         
         tabBar.shouldHide = false
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-//        blockVC = nil
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -213,12 +200,11 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
         
         collectionView.delaysContentTouches = false
-        
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.bounces = false
         
-        //content inset also important because if there are not enough cells to fill the collection view, the header will not be able to be expanded again upon
-        //collection view drag... just a quick note
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 300, right: 0)
+        //This bottom inset seems to work for all screens
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.view.frame.height - minimumHeaderViewHeight, right: 0)
         
         collectionView.register(HomeCollabCollectionViewCell.self, forCellWithReuseIdentifier: "homeCollabCollectionViewCell")
     }
@@ -270,7 +256,6 @@ class HomeViewController: UIViewController {
     private func configureGestureRecognizors () {
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
-//        panGesture.cancelsTouchesInView = false
         headerView.addGestureRecognizer(panGesture)
         
         let downSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(collectionViewSwipedDown))
@@ -285,7 +270,9 @@ class HomeViewController: UIViewController {
         
         case .began, .changed:
             
-            if collabCollectionView.indexPathsForVisibleItems.contains(where: { $0.row == 0 }) {
+            //Ensures that the first collabCell is visible before allowing the panGesture to work
+            //Only the case if the collectionView is populated with cells, otherwise always allow the panGesture to work
+            if collabCollectionView.indexPathsForVisibleItems.contains(where: { $0.row == 0 }) || collabCollectionView.numberOfItems(inSection: 0) == 0 {
                 
                 moveWithPan(sender)
             }
@@ -311,7 +298,7 @@ class HomeViewController: UIViewController {
     @objc private func collectionViewSwipedDown () {
         
         //Will expand the headerView when the collectionView is swiped down
-        //Required because bouncing has been disabled so scrollViewDidScroll won't get called when the user is attempting to scroll to a value less than 0
+        //Required because scrollViewDidEndDragging will only expand the headerView upon a drag down when there is more than one cell in the collectionView
         if collabCollectionView.contentOffset.y == 0 && headerViewHeightConstraint?.constant != maximumHeaderViewHeight {
             
             expandHeaderView()
@@ -380,6 +367,10 @@ class HomeViewController: UIViewController {
             self.headerView.calendarHeaderLabel.alpha = 1
             self.headerView.calendarView.alpha = 1
             self.headerView.scheduleCollectionView.alpha = 1
+            
+        } completion: { (finished: Bool) in
+            
+            self.collabCollectionView.showsVerticalScrollIndicator = false
         }
     }
     
@@ -394,6 +385,9 @@ class HomeViewController: UIViewController {
             self.headerView.calendarHeaderLabel.alpha = 0
             self.headerView.calendarView.alpha = 0
             self.headerView.scheduleCollectionView.alpha = 0
+        } completion: { (finished: Bool) in
+            
+            self.collabCollectionView.showsVerticalScrollIndicator = true
         }
     }
     
@@ -436,6 +430,130 @@ class HomeViewController: UIViewController {
         }
         
         tabBar.setNotificationIndicator(notificationCount: newFriendRequestsCount + newCollabRequestsCount)
+    }
+    
+    private func collabsUpdated (_ retrievedCollabs: [Collab]) {
+        
+        var retrievedAcceptedCollabIDs: [String] = []
+        retrievedCollabs.forEach({ if $0.accepted?[currentUser.userID] == true { retrievedAcceptedCollabIDs.append($0.collabID) } })
+        
+        var cachedAcceptedCollabIDs: [String] = []
+        allCollabs?.forEach({ if $0.accepted?[currentUser.userID] == true { cachedAcceptedCollabIDs.append($0.collabID) } })
+        
+        allCollabs = retrievedCollabs
+        acceptedCollabs = allCollabs?.filter({ $0.accepted?[currentUser.userID] == true }).sorted(by: { $0.dates["deadline"]! > $1.dates["deadline"]! })
+        
+        //Checks if the amount of accepted collabs have changed or if any accepted collabs have been swapped in/out
+        if retrievedAcceptedCollabIDs.count != cachedAcceptedCollabIDs.count || !(retrievedAcceptedCollabIDs.allSatisfy({ cachedAcceptedCollabIDs.contains($0) })) {
+            
+            UIView.transition(with: collabCollectionView, duration: 0.3, options: .transitionCrossDissolve) {
+                
+                self.collabCollectionView.reloadData()
+            }
+        }
+        
+        else {
+            
+            var indexPathsToReload: [IndexPath] = []
+            
+            for indexPath in collabCollectionView.indexPathsForVisibleItems {
+                
+                if let cell = collabCollectionView.cellForItem(at: indexPath) as? HomeCollabCollectionViewCell, let cachedCollab = cell.collab, let updatedCollab = allCollabs?.first(where: { $0.collabID == cachedCollab.collabID }) {
+                    
+                    //If the coverPhoto has been updated
+                    if cachedCollab.coverPhotoID != updatedCollab.coverPhotoID {
+                        
+                        indexPathsToReload.append(indexPath)
+                    }
+                    
+                    //If the name has been updated
+                    else if cachedCollab.name != updatedCollab.name {
+                        
+                        indexPathsToReload.append(indexPath)
+                    }
+                    
+                    //If either the startTime of the deadline has been updated
+                    else if cachedCollab.dates["startTime"] != updatedCollab.dates["startTime"] || cachedCollab.dates["deadline"] != updatedCollab.dates["deadline"] {
+                        
+                        indexPathsToReload.append(indexPath)
+                    }
+                    
+                    //If the members have been updated
+                    else if cachedCollab.currentMembersIDs.count != updatedCollab.currentMembersIDs.count || !(updatedCollab.currentMembersIDs.allSatisfy({ cachedCollab.currentMembersIDs.contains($0) })) {
+                        
+                        indexPathsToReload.append(indexPath)
+                    }
+                }
+            }
+            
+            if indexPathsToReload.count > 0 {
+                
+                //Stops the collectionView from animating the reloading of the items
+                UIView.performWithoutAnimation {
+                    
+                    self.collabCollectionView.reloadItems(at: indexPathsToReload)
+                }
+            }
+        }
+    }
+    
+    private func expandCollabCell (recursionCount: Int = 0) {
+        
+        var cellFound: Bool = false
+        
+        //Ensures that yCoord has been assigned and that not cell is currently expanded
+        if let yCoord = yCoordForExpandedCell, expandedIndexPath == nil {
+            
+            for indexPath in collabCollectionView.indexPathsForVisibleItems {
+                
+                if let cell = collabCollectionView.cellForItem(at: indexPath) as? HomeCollabCollectionViewCell {
+                    
+                    //Finds the cell with a minY that matches the assigned yCoord
+                    if cell.frame.minY == yCoord {
+                        
+                        cell.expandCell()
+                        
+                        expandedIndexPath = indexPath
+                        
+                        collabCollectionView.performBatchUpdates {
+                            
+                            self.collabCollectionView.reloadData()
+                        }
+                        
+                        cellFound = true
+                        break
+                    }
+                }
+            }
+            
+            //If a cell was not found, this function will will try again up to 2 more times
+            if !cellFound, recursionCount < 3 {
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+
+                    self.expandCollabCell(recursionCount: recursionCount + 1)
+                }
+            }
+        }
+    }
+    
+    private func shrinkCollabCell () {
+        
+        collabCollectionView.visibleCells.forEach { (collabCell) in
+
+            if let cell = collabCell as? HomeCollabCollectionViewCell {
+
+                cell.shrinkCell()
+            }
+        }
+
+        expandedIndexPath = nil
+        yCoordForExpandedCell = nil
+        
+        collabCollectionView.performBatchUpdates {
+
+            self.collabCollectionView.reloadData()
+        }
     }
     
     func moveToBlocksView (_ selectedDate: Date) {
@@ -518,6 +636,16 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 
         cell.collab = acceptedCollabs?[indexPath.row]
         
+        if expandedIndexPath == indexPath {
+
+            cell.expandCell(animate: false)
+        }
+
+        else {
+
+            cell.shrinkCell(animate: false)
+        }
+        
         return cell
     }
 
@@ -555,6 +683,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
 
             else {
 
+                //If the headerView has yet to be shrunken to its minimum allowable height
                 if headerViewHeightConstraint?.constant != minimumHeaderViewHeight {
 
                     headerViewHeightConstraint?.constant = minimumHeaderViewHeight
@@ -562,31 +691,43 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                     headerView.calendarHeaderLabel.alpha = 0
                     headerView.calendarView.alpha = 0
                     headerView.scheduleCollectionView.alpha = 0
-
+                    
                     shrinkCollabCell()
                 }
                 
-                else {
-
-                    //scrollViewWillBeginDragging doesn't have the ability to shrink the first cell, so it has to be done here
+                //Ensures the user is responsible for the scrollView scrolling
+                else if scrollView.isDragging {
+                    
                     if headerViewHeightConstraint?.constant == minimumHeaderViewHeight, scrollView.contentOffset.y > 0 {
                         
-                        //Only for the first cell
-                        if expandedIndexPath?.row == 0 {
+                        //Check to see if the last cell is visible
+                        if let lastIndexPath = collabCollectionView.indexPathsForVisibleItems.first(where: { $0.row == collabCollectionView.numberOfItems(inSection: 0) - 1}), let lastCollabCell = collabCollectionView.cellForItem(at: lastIndexPath) {
+                            
+                            //If the user is attempting to scroll past the last cell
+                            if scrollView.contentOffset.y > lastCollabCell.frame.minY {
+                                
+                                scrollView.contentOffset.y = collabCollectionView.visibleCells.last?.frame.minY ?? 0
+                            }
+                            
+                            //scrollViewWillBeginDragging doesn't have the ability to shrink the first cell, so it has to be done here
+                            else if expandedIndexPath?.row == 0 {
+                                
+                                shrinkCollabCell()
+                            }
+                        }
+                        
+                        //scrollViewWillBeginDragging doesn't have the ability to shrink the first cell, so it has to be done here
+                        else if expandedIndexPath?.row == 0 {
                             
                             shrinkCollabCell()
                         }
-                    }
-                    
-                    //If the scrollView contentOffset is equal to 0, expand the headerView
-                    else {
-                        
-                        expandHeaderView()
                     }
                 }
             }
         }
     }
+    
+
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         
@@ -597,16 +738,29 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
     }
     
-    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
-        if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight * 0.8 {
+        //If the user is scrolling up
+        if velocity.y > 0 {
             
-            shrinkHeaderView()
+            if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight * 0.8 {
+                
+                shrinkHeaderView()
+            }
+            
+            else {
+                
+                expandHeaderView()
+            }
         }
         
+        //If the user is scrolling down
         else {
             
-            expandHeaderView()
+            if scrollView.contentOffset.y == 0 && collabCollectionView.numberOfItems(inSection: 0) > 1 {
+                
+                expandHeaderView()
+            }
         }
     }
     
@@ -623,65 +777,6 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         expandedIndexPath = nil
         
         expandCollabCell()
-    }
-    
-    private func expandCollabCell (recursionCount: Int = 0) {
-        
-        var cellFound: Bool = false
-        
-        //Ensures that yCoord has been assigned and that not cell is currently expanded
-        if let yCoord = yCoordForExpandedCell, expandedIndexPath == nil {
-            
-            for indexPath in collabCollectionView.indexPathsForVisibleItems {
-                
-                if let cell = collabCollectionView.cellForItem(at: indexPath) as? HomeCollabCollectionViewCell {
-                    
-                    //Finds the cell with a minY that matches the assigned yCoord
-                    if cell.frame.minY == yCoord {
-                        
-                        cell.expandCell()
-                        
-                        expandedIndexPath = indexPath
-                        
-                        collabCollectionView.performBatchUpdates {
-                            
-                            self.collabCollectionView.reloadData()
-                        }
-                        
-                        cellFound = true
-                        break
-                    }
-                }
-            }
-            
-            //If a cell was not found, this function will will try again up to 2 more times
-            if !cellFound, recursionCount < 3 {
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-
-                    self.expandCollabCell(recursionCount: recursionCount + 1)
-                }
-            }
-        }
-    }
-    
-    private func shrinkCollabCell () {
-        
-        collabCollectionView.visibleCells.forEach { (collabCell) in
-
-            if let cell = collabCell as? HomeCollabCollectionViewCell {
-
-                cell.shrinkCell()
-            }
-        }
-
-        expandedIndexPath = nil
-        yCoordForExpandedCell = nil
-
-        collabCollectionView.performBatchUpdates {
-
-            self.collabCollectionView.reloadData()
-        }
     }
 }
 

@@ -21,7 +21,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
     let membersLabel = UILabel()
     var memberStackView = UIStackView()
     
-    lazy var progressCircle: ProgressCircles = ProgressCircles(radius: 38.5, lineWidth: 7, strokeColor: calcCollabProgress() != 1 ? UIColor(hexString: "222222")!.cgColor : UIColor(hexString: "2ECC70", withAlpha: 0.80)!.cgColor, strokeEnd: calcCollabProgress())
+//    lazy var progressCircle: ProgressCircles = ProgressCircles(radius: 38.5, lineWidth: 7, strokeColor: calcCollabProgress() != 1 ? UIColor(hexString: "222222")!.cgColor : UIColor(hexString: "2ECC70", withAlpha: 0.80)!.cgColor, strokeEnd: calcCollabProgress())
+    
+    var progressCircle: ProgressCircles?
     let progressLabel = UILabel()
     let checkBox = BEMCheckBox()
     
@@ -41,6 +43,10 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             
             configureMemberStackView()
             setMembersText()
+            
+            configureProgressCircle()
+            configureProgressLabel()
+            configureCheckBox()
         }
     }
     
@@ -61,9 +67,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         configureNameLabel()
         configureDeadlineLabel()
         
-        configureProgressCircle()
-        configureProgressLabel()
-        configureCheckBox()
+//        configureProgressCircle()
+//        configureProgressLabel()
+//        configureCheckBox()
         
         configureMembersLabel()
     }
@@ -328,19 +334,30 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
     
     private func configureProgressCircle () {
         
-        self.collabContainer.addSubview(progressCircle)
-        progressCircle.translatesAutoresizingMaskIntoConstraints = false
+        if progressCircle?.superview == nil {
+            
+            progressCircle = ProgressCircles(radius: 38.5, lineWidth: 7, strokeColor: calcCollabProgress() != 1 ? UIColor(hexString: "222222")!.cgColor : UIColor(hexString: "2ECC70", withAlpha: 0.80)!.cgColor, strokeEnd: calcCollabProgress())
+            
+            collabContainer.addSubview(progressCircle!)
+            progressCircle?.translatesAutoresizingMaskIntoConstraints = false
+            
+            [
+            
+                progressCircle?.trailingAnchor.constraint(equalTo: collabContainer.trailingAnchor, constant: -15),
+                progressCircle?.topAnchor.constraint(equalTo: coverPhoto.bottomAnchor, constant: 22.5),
+                progressCircle?.widthAnchor.constraint(equalToConstant: 77),
+                progressCircle?.heightAnchor.constraint(equalToConstant: 77)
+            
+            ].forEach({ $0?.isActive = true })
+        }
         
-        [
+        else {
+            
+            progressCircle?.shapeLayer.strokeColor = calcCollabProgress() != 1 ? UIColor(hexString: "222222")!.cgColor : UIColor(hexString: "2ECC70", withAlpha: 0.80)!.cgColor
+            progressCircle?.shapeLayer.strokeEnd = calcCollabProgress()
+        }
         
-            progressCircle.trailingAnchor.constraint(equalTo: collabContainer.trailingAnchor, constant: -15),
-            progressCircle.topAnchor.constraint(equalTo: coverPhoto.bottomAnchor, constant: 22.5),
-            progressCircle.widthAnchor.constraint(equalToConstant: 77),
-            progressCircle.heightAnchor.constraint(equalToConstant: 77)
-        
-        ].forEach({ $0.isActive = true })
-        
-        progressCircle.alpha = 0
+//        progressCircle.alpha = 0
         
 //        if progressCircle == nil {
 //
@@ -372,26 +389,29 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
     
     private func configureProgressLabel () {
         
-        collabContainer.addSubview(progressLabel)
-        progressLabel.translatesAutoresizingMaskIntoConstraints = false
+        if let circle = progressCircle, progressLabel.superview == nil {
+            
+            collabContainer.addSubview(progressLabel)
+            progressLabel.translatesAutoresizingMaskIntoConstraints = false
 
 
 
-        [
+            [
 
-            progressLabel.centerXAnchor.constraint(equalTo: progressCircle.centerXAnchor, constant: 0),
-            progressLabel.centerYAnchor.constraint(equalTo: progressCircle.centerYAnchor, constant: 0),
-            progressLabel.widthAnchor.constraint(equalToConstant: 40),
-            progressLabel.heightAnchor.constraint(equalToConstant: 40)
+                progressLabel.centerXAnchor.constraint(equalTo: circle.centerXAnchor, constant: 0),
+                progressLabel.centerYAnchor.constraint(equalTo: circle.centerYAnchor, constant: 0),
+                progressLabel.widthAnchor.constraint(equalToConstant: 40),
+                progressLabel.heightAnchor.constraint(equalToConstant: 40)
 
-        ].forEach({ $0.isActive = true })
-
-        progressLabel.alpha = 0
-        progressLabel.font = UIFont(name: "Poppins-SemiBoldItalic", size: 20)
-        progressLabel.textColor = .black
-        progressLabel.textAlignment = .center
-
-        progressLabel.adjustsFontSizeToFitWidth = true
+            ].forEach({ $0.isActive = true })
+            
+            progressLabel.font = UIFont(name: "Poppins-SemiBoldItalic", size: 20)
+            progressLabel.adjustsFontSizeToFitWidth = true
+            progressLabel.textColor = .black
+            progressLabel.textAlignment = .center
+        }
+        
+        setProgressLabelText()
         
 //        progressLabel.text = "62%"
         
@@ -420,27 +440,29 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
     
     private func configureCheckBox () {
             
-        collabContainer.addSubview(checkBox)
-        checkBox.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
+        if let circle = progressCircle, checkBox.superview == nil {
+            
+            collabContainer.addSubview(checkBox)
+            checkBox.translatesAutoresizingMaskIntoConstraints = false
+            
+            [
 
-            checkBox.centerXAnchor.constraint(equalTo: progressCircle.centerXAnchor, constant: 0),
-            checkBox.centerYAnchor.constraint(equalTo: progressCircle.centerYAnchor, constant: 0),
-            checkBox.widthAnchor.constraint(equalToConstant: 50),
-            checkBox.heightAnchor.constraint(equalToConstant: 50)
+                checkBox.centerXAnchor.constraint(equalTo: circle.centerXAnchor, constant: 0),
+                checkBox.centerYAnchor.constraint(equalTo: circle.centerYAnchor, constant: 0),
+                checkBox.widthAnchor.constraint(equalToConstant: 50),
+                checkBox.heightAnchor.constraint(equalToConstant: 50)
 
-        ].forEach({ $0.isActive = true })
-        
-        checkBox.alpha = 0
-        checkBox.hideBox = true
-        checkBox.on = true
-        
-        checkBox.lineWidth = 6
-        checkBox.tintColor = .clear
-        checkBox.onCheckColor = UIColor(hexString: "7BD293") ?? .green
-        
-        checkBox.isUserInteractionEnabled = false
+            ].forEach({ $0.isActive = true })
+            
+            checkBox.isUserInteractionEnabled = false
+            
+            checkBox.hideBox = true
+            checkBox.on = true
+            
+            checkBox.lineWidth = 6
+            checkBox.tintColor = .clear
+            checkBox.onCheckColor = UIColor(hexString: "7BD293") ?? .green
+        }
     }
     
     private func retrieveCoverPhoto (_ collab: Collab) {
@@ -552,7 +574,6 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             progressLabel.isHidden = false
             
             let completedPercentage = round(calcCollabProgress() * 100)
-            
             progressLabel.text = "\(Int(completedPercentage))%"
         }
     }
@@ -589,32 +610,32 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func expandCell () {
+    func expandCell (animate: Bool = true) {
     
-        progressCircle.shapeLayer.strokeColor = calcCollabProgress() != 1 ? UIColor(hexString: "222222")!.cgColor : UIColor(hexString: "2ECC70", withAlpha: 0.80)!.cgColor
-        progressCircle.shapeLayer.strokeEnd = calcCollabProgress()
+        progressCircle?.shapeLayer.strokeColor = calcCollabProgress() != 1 ? UIColor(hexString: "222222")!.cgColor : UIColor(hexString: "2ECC70", withAlpha: 0.80)!.cgColor
+        progressCircle?.shapeLayer.strokeEnd = calcCollabProgress()
         
         setProgressLabelText()
         
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+        UIView.animate(withDuration: animate ? 0.3 : 0, delay: 0, options: .curveEaseInOut) {
             
             self.membersLabel.alpha = 1
             self.memberStackView.alpha = 1
             
-            self.progressCircle.alpha = 1
+            self.progressCircle?.alpha = 1
             self.progressLabel.alpha = self.calcCollabProgress() == 1 ? 0 : 1
             self.checkBox.alpha = self.calcCollabProgress() == 1 ? 1 : 0
         }
     }
     
-    func shrinkCell () {
+    func shrinkCell (animate: Bool = true) {
         
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-
+        UIView.animate(withDuration: animate ? 0.3 : 0, delay: 0, options: .curveEaseInOut) {
+            
             self.membersLabel.alpha = 0
             self.memberStackView.alpha = 0
 
-            self.progressCircle.alpha = 0
+            self.progressCircle?.alpha = 0
             self.progressLabel.alpha = 0
             self.checkBox.alpha = 0
         }

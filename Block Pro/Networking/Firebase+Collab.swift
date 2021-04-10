@@ -388,13 +388,69 @@ class FirebaseCollab {
         }
     }
     
-    func retrieveCollabs (completion: @escaping ((_ collabs: [Collab]?, _ members: [String : [Member]]?, _ error: Error?) -> Void)) {
+//    func retrieveCollabs (completion: @escaping ((_ collabs: [Collab]?, _ members: [String : [Member]]?, _ error: Error?) -> Void)) {
+//
+//        allCollabsListener = db.collection("Collaborations").whereField("Members", arrayContains: currentUser.userID).addSnapshotListener({ (snapshot, error) in
+//
+//            if error != nil {
+//
+//                completion(nil, nil, error)
+//            }
+//
+//            else {
+//
+//                self.removeCollabsWhereUserInactive(snapshot: snapshot)
+//
+//                if snapshot?.isEmpty != true {
+//
+//                    for document in snapshot?.documents ?? [] {
+//
+//                        let collab = self.configureCollab(document.data())
+//
+//                        if self.collabs.first(where: { $0.collabID == collab.collabID }) == nil {
+//
+//                            self.collabs.append(collab)
+//                        }
+//
+//                        else {
+//
+//                            self.handleCollabUpdate(collab)
+//                        }
+//
+//                        if let existingCollab = self.collabs.first(where: { $0.collabID == collab.collabID }) {
+//
+//                            self.retrieveCollabMembers(existingCollab) { (historicMembers, currentMembers, error) in
+//
+//                                self.handleCollabMembersRetrievalCompletion(collab.collabID, historicMembers, currentMembers, error) { (collabMembers) in
+//
+//                                    completion(nil, collabMembers, nil)
+//                                }
+//                            }
+//                        }
+//                    }
+//
+//                    completion(self.collabs, nil, nil)
+//                }
+//
+//                else {
+//
+//                    self.collabs.removeAll()
+//
+//                    completion([], nil, nil)
+//                }
+//
+//                NotificationCenter.default.post(name: .didUpdateCollabs, object: nil)
+//            }
+//        })
+//    }
+    
+    func retrieveCollabs (completion: @escaping ((_ collabs: [Collab]?, _ error: Error?) -> Void)) {
         
         allCollabsListener = db.collection("Collaborations").whereField("Members", arrayContains: currentUser.userID).addSnapshotListener({ (snapshot, error) in
             
             if error != nil {
                 
-                completion(nil, nil, error)
+                completion(nil, error)
             }
             
             else {
@@ -420,23 +476,23 @@ class FirebaseCollab {
                         if let existingCollab = self.collabs.first(where: { $0.collabID == collab.collabID }) {
                             
                             self.retrieveCollabMembers(existingCollab) { (historicMembers, currentMembers, error) in
-                                
+
                                 self.handleCollabMembersRetrievalCompletion(collab.collabID, historicMembers, currentMembers, error) { (collabMembers) in
-                                    
-                                    completion(nil, collabMembers, nil)
+
+//                                    completion(nil, collabMembers, nil)
                                 }
                             }
                         }
                     }
                     
-                    completion(self.collabs, nil, nil)
+                    completion(self.collabs, nil)
                 }
                 
                 else {
                     
                     self.collabs.removeAll()
                     
-                    completion([], nil, nil)
+                    completion([], nil)
                 }
 
                 NotificationCenter.default.post(name: .didUpdateCollabs, object: nil)
@@ -643,7 +699,7 @@ class FirebaseCollab {
                             }
                         }
                         
-                        //Filters out members that are no longer active in the conversation
+                        //Filters out members that are no longer active in the collab
                         let currentMembers = self.filterCurrentMembers(currentMembers: collab.currentMembersIDs, historicMembers: historicMembers)
                         
                         completion(historicMembers, currentMembers, nil)
@@ -659,22 +715,21 @@ class FirebaseCollab {
     }
     
     private func handleCollabMembersRetrievalCompletion (_ collabID: String, _ historicMembers: [Member], _ currentMembers: [Member], _ error: Error?, _ completion: (([String : [Member]]) -> Void)) {
-        
+
         if error != nil {
-            
+
             print(error as Any)
         }
-        
+
         else {
-            
+
             if let collabIndex = self.collabs.firstIndex(where: { $0.collabID == collabID }) {
-                
+
                 self.collabs[collabIndex].historicMembers = historicMembers
                 self.collabs[collabIndex].currentMembers = currentMembers
-//                self.collabs[collabIndex]
-                
+
                 let collabMembers = ["historicMembers" : historicMembers, "currentMembers" : currentMembers]
-                
+
                 completion(collabMembers)
             }
         }
