@@ -478,7 +478,7 @@ class FirebaseCollab {
                             self.retrieveCollabMembers(existingCollab) { (historicMembers, currentMembers, error) in
 
                                 self.handleCollabMembersRetrievalCompletion(collab.collabID, historicMembers, currentMembers, error) { (collabMembers) in
-
+                                    
 //                                    completion(nil, collabMembers, nil)
                                 }
                             }
@@ -727,7 +727,7 @@ class FirebaseCollab {
 
                 self.collabs[collabIndex].historicMembers = historicMembers
                 self.collabs[collabIndex].currentMembers = currentMembers
-
+                
                 let collabMembers = ["historicMembers" : historicMembers, "currentMembers" : currentMembers]
 
                 completion(collabMembers)
@@ -914,18 +914,24 @@ class FirebaseCollab {
                     
                     let collab = self.configureCollab(snapshotData)
                     
+                    self.handleCollabUpdate(collab) //Important
+                    
                     completion(["collab" : collab])
                     
-                    self.retrieveCollabMembers(collab) { (historicMembers, currentMembers, membersError) in
+                    //Retrieves the cachedCollab because it has both the historic and currentMembers cached
+                    if let cachedCollab = self.collabs.first(where: { $0.collabID == collabID }) {
                         
-                        if error != nil {
+                        self.retrieveCollabMembers(cachedCollab) { (historicMembers, currentMembers, membersError) in
                             
-                            completion(["error" : membersError])
-                        }
-                        
-                        else {
+                            if error != nil {
+                                
+                                completion(["error" : membersError])
+                            }
                             
-                            completion(["historicMembers" : historicMembers, "currentMembers" : currentMembers])
+                            else {
+                                
+                                completion(["historicMembers" : historicMembers, "currentMembers" : currentMembers])
+                            }
                         }
                     }
                 }
@@ -1017,43 +1023,43 @@ class FirebaseCollab {
         }
     }
     
-    func retrieveCollabRequests (completion: @escaping ((_ requests: [CollabRequest]) -> Void)) {
-        
-        userRef.collection("CollabRequests").getDocuments { (snapshot, error) in
-            
-            if error != nil {
-                
-                print(error?.localizedDescription as Any)
-            }
-            
-            else {
-                
-                if snapshot?.isEmpty == false {
-                    
-                    var collabRequests: [CollabRequest] = []
-                    
-                    for document in snapshot!.documents {
-                        
-                        var collabRequest = CollabRequest()
-                        
-                        collabRequest.collabID = document.data()["collabID"] as! String
-                        collabRequest.name = document.data()["collabName"] as! String
-                        collabRequest.objective = document.data()["collabObjective"] as? String ?? ""
-                        
-                        let startTime = document.data()["startTime"] as! Timestamp
-                        collabRequest.dates["startTime"] = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))
-                        
-                        let deadline = document.data()["deadline"] as! Timestamp
-                        collabRequest.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
-                        
-                        collabRequests.append(collabRequest)
-                    }
-                    
-                    completion(collabRequests)
-                }
-            }
-        }
-    }
+//    func retrieveCollabRequests (completion: @escaping ((_ requests: [CollabRequest]) -> Void)) {
+//
+//        userRef.collection("CollabRequests").getDocuments { (snapshot, error) in
+//
+//            if error != nil {
+//
+//                print(error?.localizedDescription as Any)
+//            }
+//
+//            else {
+//
+//                if snapshot?.isEmpty == false {
+//
+//                    var collabRequests: [CollabRequest] = []
+//
+//                    for document in snapshot!.documents {
+//
+//                        var collabRequest = CollabRequest()
+//
+//                        collabRequest.collabID = document.data()["collabID"] as! String
+//                        collabRequest.name = document.data()["collabName"] as! String
+//                        collabRequest.objective = document.data()["collabObjective"] as? String ?? ""
+//
+//                        let startTime = document.data()["startTime"] as! Timestamp
+//                        collabRequest.dates["startTime"] = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))
+//
+//                        let deadline = document.data()["deadline"] as! Timestamp
+//                        collabRequest.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
+//
+//                        collabRequests.append(collabRequest)
+//                    }
+//
+//                    completion(collabRequests)
+//                }
+//            }
+//        }
+//    }
     
     func queryUsers (_ username: String, completion: @escaping ((_ results: [FriendSearchResult]?, _ error: Error?) -> Void)) {
         

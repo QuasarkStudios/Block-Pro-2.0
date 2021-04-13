@@ -101,7 +101,7 @@ class ConfigureBlockViewController: UIViewController {
         
         else {
             
-            let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editButtonPressed))
+            let rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(editButtonPressed))
             rightBarButtonItem.style = .done
             
             self.navigationItem.rightBarButtonItem = rightBarButtonItem

@@ -725,7 +725,7 @@ class HomeViewController2: UIViewController, UITableViewDelegate, UITableViewDat
         
         configureCollabVC.configureBarButtonItems()
         
-        configureCollabVC.collabCreatedDelegate = self
+//        configureCollabVC.collabCreatedDelegate = self
         
         let configureCollabNavigationController = UINavigationController(rootViewController: configureCollabVC)
         configureCollabNavigationController.navigationBar.prefersLargeTitles = true
@@ -826,13 +826,13 @@ class HomeViewController2: UIViewController, UITableViewDelegate, UITableViewDat
     }
 }
 
-extension HomeViewController2: CollabCreatedProtocol {
-    
-    func collabCreated (_ collab: Collab) {
-        
-        print("check")
-    }
-}
+//extension HomeViewController2: CollabCreatedProtocol {
+//
+//    func collabCreated (_ collab: Collab) {
+//
+//        print("check")
+//    }
+//}
 
 extension HomeViewController2: MoveToProfile {
     

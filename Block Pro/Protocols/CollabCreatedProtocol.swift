@@ -10,5 +10,5 @@ import Foundation
 
 protocol CollabCreatedProtocol: AnyObject {
         
-    func collabCreated (_ collab: Collab)
+    func collabCreated (_ collabID: String)
 }

@@ -80,7 +80,7 @@ class ProfileSidebarViewController: UIViewController {
     
     private func configureSideBar () {
         
-        profileSidebar.backgroundColor = UIColor(hexString: "262626", withAlpha: 0.99)
+        profileSidebar.backgroundColor = UIColor(hexString: "222222", withAlpha: 0.99)//UIColor(hexString: "262626", withAlpha: 0.99)
         
         sidebarLeadingAnchor.constant = -290
         

@@ -428,6 +428,11 @@ extension HomeHeaderView: JTAppleCalendarViewDataSource, JTAppleCalendarViewDele
             formatter.dateFormat = "MMMM yyyy"
             calendarHeaderLabel.text = formatter.string(from: date)
         }
+        
+        if let viewController = homeViewController as? HomeViewController {
+            
+            viewController.selectedDate = cellState.date
+        }
     }
     
     func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {

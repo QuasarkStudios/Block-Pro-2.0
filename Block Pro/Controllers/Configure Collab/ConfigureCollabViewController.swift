@@ -107,7 +107,7 @@ class ConfigureCollabViewController: UIViewController {
         
         else {
             
-            let rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editButtonPressed))
+            let rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: self, action: #selector(editButtonPressed))
             rightBarButtonItem.style = .done
             
             self.navigationItem.rightBarButtonItem = rightBarButtonItem
@@ -469,26 +469,32 @@ class ConfigureCollabViewController: UIViewController {
     @objc private func doneButtonPressed () {
         
         SVProgressHUD.show()
-        
+
         collab.collabID = UUID().uuidString
 
         if collab.name.leniantValidationOfTextEntered() {
 
             firebaseCollab.createCollab(collab: collab) { [weak self] (error) in
-                
+
                 if error != nil {
-                    
+
                     SVProgressHUD.showError(withStatus: error?.localizedDescription)
                 }
-                
+
                 else {
-                    
+
                     let notificationScheduler = NotificationScheduler()
                     notificationScheduler.scheduleCollabNotifications(collab: self!.collab)
-                    
-                    self?.collabCreatedDelegate?.collabCreated(self!.collab)
 
-                    self?.dismiss(animated: true, completion: nil)
+                    if let viewController = self?.collabCreatedDelegate as? HomeViewController, let startTime = self?.collab.dates["startTime"] {
+                        
+                        viewController.updateSelectedDate(date: startTime)
+                    }
+                    
+                    self?.dismiss(animated: true, completion: {
+
+                        self?.collabCreatedDelegate?.collabCreated(self!.collab.collabID)
+                    })
                 }
             }
         }
