@@ -231,6 +231,7 @@
 		0DB52AD925DE4FC500645D27 /* CollabObjectiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52AD825DE4FC200645D27 /* CollabObjectiveViewController.swift */; };
 		0DB52ADC25E3739C00645D27 /* CollabHomeMemberCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52ADB25E3739C00645D27 /* CollabHomeMemberCell.swift */; };
 		0DB52ADF25E379C700645D27 /* CollabHomeMembersCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB52ADE25E379C700645D27 /* CollabHomeMembersCollectionViewCell.swift */; };
+		0DBEA4CB26278E9A0074959E /* HomeCalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBEA4CA26278E9A0074959E /* HomeCalendarCell.swift */; };
 		0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */; };
 		0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */; };
 		0DBFED69247C52B900EDFEC3 /* MessagingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */; };
@@ -499,6 +500,7 @@
 		0DB52AD825DE4FC200645D27 /* CollabObjectiveViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabObjectiveViewController.swift; sourceTree = "<group>"; };
 		0DB52ADB25E3739C00645D27 /* CollabHomeMemberCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeMemberCell.swift; sourceTree = "<group>"; };
 		0DB52ADE25E379C700645D27 /* CollabHomeMembersCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeMembersCollectionViewCell.swift; sourceTree = "<group>"; };
+		0DBEA4CA26278E9A0074959E /* HomeCalendarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCalendarCell.swift; sourceTree = "<group>"; };
 		0DBF3E9322B03DC700E180D2 /* Block Pro-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Block Pro-Bridging-Header.h"; sourceTree = "<group>"; };
 		0DBF3E9422B03DC800E180D2 /* ProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
 		0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
@@ -1241,6 +1243,7 @@
 			children = (
 				0DE8957B25F6F39000E0D643 /* ScheduleCollectionViewCell.swift */,
 				0DE895B125FC523000E0D643 /* HomeCollabCollectionViewCell.swift */,
+				0DBEA4CA26278E9A0074959E /* HomeCalendarCell.swift */,
 			);
 			path = "Home Cells";
 			sourceTree = "<group>";
@@ -1513,6 +1516,7 @@
 				0D2576EF25C52E33008C2711 /* HiddenBlocksViewController.swift in Sources */,
 				0D4173A924304EF7006076A5 /* RegistrationProfilePicCell.swift in Sources */,
 				0DB52ACD25D66DF000645D27 /* MessagesAnimationView.swift in Sources */,
+				0DBEA4CB26278E9A0074959E /* HomeCalendarCell.swift in Sources */,
 				0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */,
 				0D3213D724CAB21200BC46F5 /* VibrateMethods.swift in Sources */,
 				0D470317257B283D00B6A8FA /* VoiceMemoPlayer.swift in Sources */,

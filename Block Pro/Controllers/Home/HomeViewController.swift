@@ -15,6 +15,7 @@ class HomeViewController: UIViewController {
     let profilePictureButton = UIButton()
     
     lazy var collabCollectionView = UICollectionView(frame: .zero, collectionViewLayout: CollabCollectionViewFlowLayout(self))
+    let calendarTableView = UITableView()
     
     let animationView = AnimationView(name: "home-animation")
     let animationTitleLabel = UILabel()
@@ -30,6 +31,7 @@ class HomeViewController: UIViewController {
     var allCollabs: [Collab]?
 //    var acceptedCollabs: [Collab]?
     var acceptedCollabsForSelectedDate: [Collab]?
+    var deadlinesForCollabs: [Date] = []
     
     var selectedCollab: Collab?
     
@@ -39,6 +41,7 @@ class HomeViewController: UIViewController {
     let formatter = DateFormatter()
     
     let minimumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 135//80
+    let minimumHeaderViewHeightWithCalendar: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 85
     let maximumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 428.5 //Extra 2.5 added to improve aesthetics
     
     var expandedIndexPath: IndexPath?
@@ -63,8 +66,14 @@ class HomeViewController: UIViewController {
                     self.collabCollectionView.reloadData()
                 }
             }
+            
+            //Updates the selectedDate for the calendar in the headerView and the calendars in the calendarTableView
+            updateCalendarsWithNewSelectedDate()
         }
     }
+    
+    var calendarPresent: Bool = false
+    var headerViewWasExpanded: Bool = false
     
     var headerViewHeightConstraint: NSLayoutConstraint?
     
@@ -78,6 +87,7 @@ class HomeViewController: UIViewController {
         configureProfilePictureButton()
         
         configureCollectionView(collabCollectionView)
+        configureTableView(calendarTableView)
         
         configureTabBar()
         configureCalendarButton()
@@ -114,6 +124,9 @@ class HomeViewController: UIViewController {
                     
                     self?.collabsUpdated(collabs)
                 }
+                
+                //Determines the deadlines for all accepted collabs and reloads the calendars with the new deadlines
+                self?.determineDeadlinesForCollabs(collabs)
                 
                 self?.determineNotifications()
             }
@@ -263,6 +276,9 @@ class HomeViewController: UIViewController {
         animationTitleLabel.text = "No Collabs\nYet"
     }
     
+    
+    //MARK: - Configure CollectionView
+    
     private func configureCollectionView (_ collectionView: UICollectionView) {
         
         self.view.addSubview(collectionView)
@@ -290,6 +306,36 @@ class HomeViewController: UIViewController {
         collectionView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: self.view.frame.height - minimumHeaderViewHeight, right: 0)
         
         collectionView.register(HomeCollabCollectionViewCell.self, forCellWithReuseIdentifier: "homeCollabCollectionViewCell")
+    }
+    
+    
+    //MARK: - Configure TableView
+    
+    private func configureTableView (_ tableView: UITableView) {
+        
+        self.view.addSubview(tableView)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
+            tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
+            tableView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 0),
+            tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
+        
+        ].forEach({ $0.isActive = true })
+        
+        tableView.isHidden = true
+        
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        tableView.estimatedRowHeight = 0
+        
+        tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
+        
+        tableView.register(HomeCalendarCell.self, forCellReuseIdentifier: "homeCalendarCell")
     }
     
     private func configureTabBar () {
@@ -322,7 +368,7 @@ class HomeViewController: UIViewController {
         
         calendarButton.contentHorizontalAlignment = .fill
         calendarButton.contentVerticalAlignment = .fill
-
+        
         calendarButton.imageView?.contentMode = .scaleAspectFit
         calendarButton.imageEdgeInsets = UIEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
         
@@ -333,7 +379,7 @@ class HomeViewController: UIViewController {
         calendarButton.layer.shadowOffset = CGSize(width: 0, height: 1)
         calendarButton.layer.shadowOpacity = 0.65
 
-//        addBlockButton.addTarget(self, action: #selector(addBlockButtonPressed), for: .touchUpInside)
+        calendarButton.addTarget(self, action: #selector(calendarButtonPressed), for: .touchUpInside)
     }
     
     private func configureGestureRecognizors () {
@@ -377,32 +423,35 @@ class HomeViewController: UIViewController {
     
     @objc private func handlePan (sender: UIPanGestureRecognizer) {
         
-        switch sender.state {
-        
-        case .began, .changed:
+        if !calendarPresent {
             
-            //Ensures that the first collabCell is visible before allowing the panGesture to work
-            //Only the case if the collectionView is populated with cells, otherwise always allow the panGesture to work
-            if collabCollectionView.indexPathsForVisibleItems.contains(where: { $0.row == 0 }) || collabCollectionView.numberOfItems(inSection: 0) == 0 {
+            switch sender.state {
+            
+            case .began, .changed:
                 
-                moveWithPan(sender)
-            }
+                //Ensures that the first collabCell is visible before allowing the panGesture to work
+                //Only the case if the collectionView is populated with cells, otherwise always allow the panGesture to work
+                if collabCollectionView.indexPathsForVisibleItems.contains(where: { $0.row == 0 }) || collabCollectionView.numberOfItems(inSection: 0) == 0 {
+                    
+                    moveWithPan(sender)
+                }
 
-        case .ended:
-            
-            if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight * 0.8 {
+            case .ended:
                 
-                shrinkHeaderView()
-            }
-            
-            else {
+                if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight * 0.8 {
+                    
+                    shrinkHeaderView()
+                }
                 
-                expandHeaderView()
+                else {
+                    
+                    expandHeaderView()
+                }
+                
+            default:
+                
+                break
             }
-            
-        default:
-            
-            break
         }
     }
     
@@ -483,18 +532,26 @@ class HomeViewController: UIViewController {
             self.headerView.calendarView.alpha = 1
             self.headerView.personalLabel.alpha = 1
             self.headerView.scheduleCollectionView.alpha = 1
+            self.headerView.collabContainer.alpha = 1
             
             self.animationTitleLabel.alpha = 0
             
         } completion: { (finished: Bool) in
             
             self.collabCollectionView.showsVerticalScrollIndicator = false
+            
+            self.headerView.collabContainer.backgroundColor = .white
         }
     }
     
     private func shrinkHeaderView () {
         
-        headerViewHeightConstraint?.constant = minimumHeaderViewHeight
+        headerViewHeightConstraint?.constant = !calendarPresent ? minimumHeaderViewHeight : minimumHeaderViewHeightWithCalendar
+        
+        if calendarPresent {
+            
+            headerView.collabContainer.backgroundColor = .clear
+        }
         
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
             
@@ -504,12 +561,15 @@ class HomeViewController: UIViewController {
             self.headerView.calendarView.alpha = 0
             self.headerView.personalLabel.alpha = 0
             self.headerView.scheduleCollectionView.alpha = 0
+            self.headerView.collabContainer.alpha = self.calendarPresent ? 0 : 1
             
             self.animationTitleLabel.alpha = self.acceptedCollabsForSelectedDate?.count ?? 0 == 0 ? 1 : 0
             
         } completion: { (finished: Bool) in
             
-            self.collabCollectionView.showsVerticalScrollIndicator = true
+            self.collabCollectionView.showsVerticalScrollIndicator = !self.calendarPresent
+            
+            self.headerView.collabContainer.backgroundColor = self.calendarPresent ? .clear : .white
         }
     }
     
@@ -530,7 +590,7 @@ class HomeViewController: UIViewController {
     
     private func presentAnimationView () {
         
-        if acceptedCollabsForSelectedDate?.count ?? 0 == 0 {
+        if acceptedCollabsForSelectedDate?.count ?? 0 == 0 && !calendarPresent {
             
             if animationView.alpha != 1 {
                 
@@ -566,16 +626,75 @@ class HomeViewController: UIViewController {
         let updatedDateComponents = calendar.dateComponents([.year, .month, .day], from: date)
         selectedDate = calendar.date(from: updatedDateComponents)
         
-        if let date = selectedDate {
+        updateCalendarsWithNewSelectedDate()
+        
+//        if let date = selectedDate {
+//
+//            headerView.calendarView.scrollToDate(date)
+//            headerView.calendarView.selectDates([date])
+//
+//            formatter.dateFormat = "yyyy MM dd"
+//
+//            let differenceInDates = calendar.dateComponents([.day], from: formatter.date(from: "2010 01 01") ?? Date(), to: date).day
+//            headerView.scheduleCollectionView.scrollToItem(at: IndexPath(item: differenceInDates ?? 0, section: 0), at: .centeredHorizontally, animated: true)
+//        }
+    }
+    
+    private func updateCalendarsWithNewSelectedDate () {
+        
+        //If the selectedDate in the headerView isn't equal to the new selectedDate
+        //Signifies that the new selectedDate was not selected in the calendar for the headerView
+        if let date = selectedDate, date != headerView.selectedDate {
             
-            headerView.calendarView.scrollToDate(date)
+            headerView.selectedDate = date
+            
             headerView.calendarView.selectDates([date])
+            headerView.calendarView.scrollToDate(date)
             
-            formatter.dateFormat = "yyyy MM dd"
-            
-            let differenceInDates = calendar.dateComponents([.day], from: formatter.date(from: "2010 01 01") ?? Date(), to: date).day
-            headerView.scheduleCollectionView.scrollToItem(at: IndexPath(item: differenceInDates ?? 0, section: 0), at: .centeredHorizontally, animated: true)
+            headerView.scrollToScheduleCellForDate()
         }
+        
+        //Each calendar cell in the calendarTableView
+        for visibleCell in calendarTableView.visibleCells {
+
+            if let cell = visibleCell as? HomeCalendarCell {
+
+                //If the selectedDate in the calendarCell is not equal to the new selectedDate
+                //Signifies that the new selectedDate was not selected in the calendar for this cell
+                if let date = selectedDate, date != cell.selectedDate {
+                    
+                    cell.selectedDate = date
+                    
+                    cell.calendarView.deselect(dates: cell.calendarView.selectedDates)
+                    
+                    cell.calendarView.selectDates([date])
+                }
+            }
+        }
+    }
+    
+    
+    //MARK: - Determine Deadlines for Collabs
+    
+    private func determineDeadlinesForCollabs (_ collabs: [Collab]) {
+        
+        var deadlines: [Date] = []
+        
+        collabs.forEach { (collab) in
+            
+            if collab.accepted?[currentUser.userID] == true, let deadline = collab.dates["deadline"] {
+                
+                deadlines.append(deadline)
+            }
+        }
+        
+        deadlinesForCollabs = deadlines
+        
+        //Will also reload the calendar in the headerView
+        headerView.deadlinesForCollabs = deadlines
+        
+        //Will also reload the calendar in each visibleCell
+        calendarTableView.visibleCells.forEach({ if let cell = $0 as? HomeCalendarCell { cell.deadlinesForCollabs = deadlines } })
     }
     
     @objc private func determineNotifications () {
@@ -717,7 +836,7 @@ class HomeViewController: UIViewController {
                 cell.shrinkCell()
             }
         }
-
+        
         expandedIndexPath = nil
         yCoordForExpandedCell = nil
         
@@ -759,6 +878,82 @@ class HomeViewController: UIViewController {
         }
     }
     
+    @objc func calendarButtonPressed () {
+        
+        calendarPresent = !calendarPresent
+        
+        //Handling the calendarButton animation
+        ///////////////////////////////////////////////////////////////////////
+        let inset: CGFloat = calendarPresent ? 17 : 14
+        
+        calendarButton.setImage(calendarPresent ? UIImage(named: "plus 2") : UIImage(systemName: "calendar"), for: .normal)
+        
+        UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseInOut) {
+            
+            self.calendarButton.imageEdgeInsets = UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
+            
+            self.calendarButton.transform = CGAffineTransform(rotationAngle: self.calendarPresent ? CGFloat.pi / 4 : 0)
+        }
+        ///////////////////////////////////////////////////////////////////////
+        
+        
+        //Scrolling to the cell that cooresponds to the month of the selectedDate
+        ///////////////////////////////////////////////////////////////////////
+        if calendarPresent {
+
+            formatter.dateFormat = "yyyy MM dd"
+
+            if let startDate = self.formatter.date(from: "2010 01 01"), let date = selectedDate {
+
+                //Returns the difference between the start of the calendars (1/1/10) and the selectedDate in months
+                if let row = calendar.dateComponents([.month], from: startDate, to: date).month {
+                    
+                    calendarTableView.scrollToRow(at: IndexPath(row: row * 2, section: 0), at: .top, animated: false)
+                }
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////
+        
+        
+        //Animating the change from the collabCollectionView to the calendarTableView
+        ///////////////////////////////////////////////////////////////////////
+        UIView.transition(from: calendarPresent ? collabCollectionView : calendarTableView, to: calendarPresent ? calendarTableView : collabCollectionView, duration: 0.3, options: [.transitionCrossDissolve, .showHideTransitionViews])
+        ///////////////////////////////////////////////////////////////////////
+        
+        
+        //Shrinking or expanding the headerView
+        ///////////////////////////////////////////////////////////////////////
+        if calendarPresent {
+            
+            //Tracks whether or not the headerView was expanded
+            headerViewWasExpanded = headerViewHeightConstraint?.constant == maximumHeaderViewHeight
+            
+            shrinkHeaderView()
+        }
+        
+        else {
+            
+            if headerViewWasExpanded {
+                
+                expandHeaderView()
+            }
+            
+            else {
+                
+                shrinkHeaderView()
+            }
+        }
+        ///////////////////////////////////////////////////////////////////////
+        
+        //Handling the visibility of the animationView
+        presentAnimationView()
+    }
+    
+//    func moveToProfileView () {
+//        
+//        performSegue(withIdentifier: "moveToProfileView", sender: self)
+//    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "moveToCollabView" {
@@ -782,6 +977,12 @@ class HomeViewController: UIViewController {
             backBarItem.title = ""
             self.navigationItem.backBarButtonItem = backBarItem
         }
+        
+//        else if segue.identifier == "moveToProfileView" {
+//            
+//            let profileVC = segue.destination as! ProfileViewController
+////            profileVC.profileViewDelegate = self
+//        }
     }
 }
 
@@ -800,11 +1001,11 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
+            
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "homeCollabCollectionViewCell", for: indexPath) as! HomeCollabCollectionViewCell
 
         cell.formatter = formatter
-
+    
         cell.collab = acceptedCollabsForSelectedDate?[indexPath.row]
         
         if expandedIndexPath == indexPath {
@@ -819,6 +1020,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         
         return cell
     }
+
 
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -841,7 +1043,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        if scrollView.contentOffset.y >= 0 {
+        if scrollView.contentOffset.y >= 0, scrollView == collabCollectionView {
             
             //If the homeHeaderView is larger than minimum allowable height, proceed to decrementing its height
             if (headerViewHeightConstraint?.constant ?? 140) - scrollView.contentOffset.y > minimumHeaderViewHeight {
@@ -902,12 +1104,10 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
     }
     
-
-    
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         
         //If the headerView is shrunken, and the first cell isn't the one currently expanded
-        if self.headerViewHeightConstraint?.constant == self.minimumHeaderViewHeight && expandedIndexPath?.row != 0 {
+        if self.headerViewHeightConstraint?.constant == self.minimumHeaderViewHeight && expandedIndexPath?.row != 0 && scrollView == collabCollectionView {
             
             self.shrinkCollabCell()
         }
@@ -915,43 +1115,159 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
-        //If the user is scrolling up
-        if velocity.y >= 0 {
+        if scrollView == collabCollectionView {
             
-            if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight * 0.8 {
+            //If the user is scrolling up
+            if velocity.y >= 0 {
                 
-                shrinkHeaderView()
+                if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight * 0.8 {
+                    
+                    shrinkHeaderView()
+                }
+                
+                else {
+                    
+                    expandHeaderView()
+                }
             }
             
+            //If the user is scrolling down
             else {
                 
-                expandHeaderView()
+                if scrollView.contentOffset.y == 0 && collabCollectionView.numberOfItems(inSection: 0) > 1 {
+                    
+                    expandHeaderView()
+                }
             }
         }
         
-        //If the user is scrolling down
-        else {
+        else if scrollView == calendarTableView {
             
-            if scrollView.contentOffset.y == 0 && collabCollectionView.numberOfItems(inSection: 0) > 1 {
-                
-                expandHeaderView()
+            //If the user is scrolling up
+            if velocity.y < 0 {
+
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+
+                    self.tabBar.alpha = 1
+                    self.calendarButton.alpha = 1
+                })
+            }
+
+            //If the user is scrolling down
+            else if velocity.y > 0.5 {
+
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut, animations: {
+
+                    self.tabBar.alpha = 0
+                    self.calendarButton.alpha = 0
+                })
             }
         }
     }
     
     func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
         
-        shrinkCollabCell()
+        if scrollView == collabCollectionView {
+            
+            shrinkCollabCell()
+        }
         
         return true
     }
     
     func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
         
-        yCoordForExpandedCell = 0
-        expandedIndexPath = nil
+        if scrollView == collabCollectionView {
+            
+            yCoordForExpandedCell = 0
+            expandedIndexPath = nil
+            
+            expandCollabCell()
+        }
+    }
+}
+
+
+//MARK: - TableView DataSource and Delegate Extension
+
+extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        expandCollabCell()
+        formatter.dateFormat = "yyyy MM dd"
+        
+        return ((calendar.dateComponents([.month], from: formatter.date(from: "2010 01 01") ?? Date(), to: formatter.date(from: "2050 02 01") ?? Date()).month ??
+            0) * 2)
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        if indexPath.row % 2 == 0 {
+            
+            let cell = tableView.dequeueReusableCell(withIdentifier: "homeCalendarCell", for: indexPath) as! HomeCalendarCell
+            cell.selectionStyle = .none
+            
+            formatter.dateFormat = "yyyy MM dd"
+            
+            if let dateForCell = calendar.date(byAdding: .month, value: indexPath.row / 2, to: formatter.date(from: "2010 01 01") ?? Date()) {
+                
+                cell.formatter = formatter
+                cell.dateForCell = dateForCell
+                cell.selectedDate = selectedDate ?? Date()
+                cell.deadlinesForCollabs = deadlinesForCollabs
+                
+                cell.homeViewController = self
+            }
+            
+            return cell
+        }
+        
+        else {
+            
+            let cell = UITableViewCell()
+            cell.isUserInteractionEnabled = false
+            return cell
+        }
+    }
+    
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        if indexPath.row % 2 == 0 {
+            
+            formatter.dateFormat = "yyyy MM dd"
+            
+            let dateForCell = calendar.date(byAdding: .month, value: indexPath.row / 2, to: formatter.date(from: "2010 01 01") ?? Date()) ?? Date()
+            let numberOfWeeks = dateForCell.determineNumberOfWeeks() + 1 //Adding 1 gives the true numberOfWeeks
+            
+            //81 is the height of the cell without factoring in the calendar
+            //47 is the height of each dateCell
+            return CGFloat(81 + (numberOfWeeks * 47))
+        }
+        
+        else {
+            
+            let dateForPreviousCalendarCell = calendar.date(byAdding: .month, value: ((indexPath.row - 1) / 2), to: formatter.date(from: "2010 01 01") ?? Date()) ?? Date()
+            
+            if let lastDayOfTheMonth = calendar.dateComponents([.weekday], from: dateForPreviousCalendarCell.endOfMonth).weekday {
+
+                //If the last day of the month is either Sunday or Monday
+                if lastDayOfTheMonth < 3 {
+                    
+                    return 32.5
+                }
+                
+                else {
+
+                    return 50
+                }
+            }
+
+            else {
+
+                return 50
+            }
+        }
     }
 }
 

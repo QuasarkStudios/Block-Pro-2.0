@@ -78,7 +78,7 @@ class CollabViewController: UIViewController {
     
     var calendarPresented: Bool = false
     
-    var enableTabBarVisibiltyHandeling: Bool = false
+    var enableTabBarVisibiltyHandling: Bool = false
     var tabBarWasHidden: Bool = false
     
     var searchBeingConducted: Bool = false
@@ -139,7 +139,7 @@ class CollabViewController: UIViewController {
         super.viewDidAppear(animated)
         
         //Prevents the tabBar from flashing when this view is being presented for the first time
-        enableTabBarVisibiltyHandeling = true
+        enableTabBarVisibiltyHandling = true
         
         hiddenBlockVC = nil
         

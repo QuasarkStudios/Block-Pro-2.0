@@ -182,8 +182,6 @@ class CustomTabBar: UIView {
             
             notificationIndicator.topAnchor.constraint(equalTo: self.tabStackView.topAnchor, constant: 5),
             notificationIndicator.trailingAnchor.constraint(equalTo: self.tabStackView.trailingAnchor, constant: -5.5),
-//            notificationIndicator.widthAnchor.constraint(equalToConstant: 23),
-//            notificationIndicator.heightAnchor.constraint(equalToConstant: 23)
 
         ].forEach({ $0.isActive = true })
         

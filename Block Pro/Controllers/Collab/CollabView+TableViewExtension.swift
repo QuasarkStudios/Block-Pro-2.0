@@ -363,9 +363,9 @@ extension CollabViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
-        //If it's the "collabHomeTableView", the Edit-Delete cell is being presented, and "enableTabBarVisibilityHandeling" is true
-        //"enableTabBarVisibilityHandeling" being true signifies that the view has appeared
-        if tableView == collabHomeTableView && indexPath.row == (tableView.numberOfRows(inSection: 0) - 1), enableTabBarVisibiltyHandeling {
+        //If it's the "collabHomeTableView", the Edit-Delete cell is being presented, and "enableTabBarVisibilityHandling" is true
+        //"enableTabBarVisibilityHandling" being true signifies that the view has appeared
+        if tableView == collabHomeTableView && indexPath.row == (tableView.numberOfRows(inSection: 0) - 1), enableTabBarVisibiltyHandling {
             
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
                 

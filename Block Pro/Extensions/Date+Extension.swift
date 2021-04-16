@@ -93,6 +93,17 @@ extension Date {
         return calendar.date(from: components)!
     }
     
+    var endOfMonth: Date {
+        
+        let calendar = Calendar.current
+        
+        var dateComponents = DateComponents()
+        dateComponents.month = 1
+        dateComponents.day = -1
+        
+        return calendar.date(byAdding: dateComponents, to: self)!
+    }
+    
     //Func used to to ensure that time in the TimeConfigurationCells goes by 5 minute increments
     func adjustTime (roundDown: Bool) -> Date {
         

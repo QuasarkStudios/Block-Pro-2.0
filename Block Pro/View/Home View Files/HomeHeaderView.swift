@@ -41,6 +41,18 @@ class HomeHeaderView: UIView {
         }
     }
     
+    var deadlinesForCollabs: [Date]? {
+        didSet {
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                
+                self.calendarView.reloadData()
+            }
+            
+//            calendarView.reloadData()
+        }
+    }
+    
     lazy var selectedDate = calendar.date(from: calendar.dateComponents([.year, .month, .day], from: Date()))!
     
     var showProfilePictureLoadingProgress: Bool = false
@@ -378,6 +390,14 @@ class HomeHeaderView: UIView {
         }
     }
     
+    func scrollToScheduleCellForDate () {
+        
+        formatter.dateFormat = "yyyy MM dd"
+        
+        let differenceInDates = self.calendar.dateComponents([.day], from: formatter.date(from: "2010 01 01") ?? Date(), to: selectedDate).day
+        scheduleCollectionView.scrollToItem(at: IndexPath(item: differenceInDates ?? 0, section: 0), at: .centeredHorizontally, animated: true)
+    }
+    
     @objc private func addCollabButtonPressed () {
         
         if let viewController = homeViewController as? HomeViewController {
@@ -393,7 +413,7 @@ extension HomeHeaderView: JTAppleCalendarViewDataSource, JTAppleCalendarViewDele
         
         formatter.dateFormat = "yyyy MM dd"
         
-        return ConfigurationParameters(startDate: formatter.date(from: "2010 01 01") ?? Date(), endDate: formatter.date(from: "2050 01 01") ?? Date() , numberOfRows: 1, calendar: Calendar(identifier: .gregorian), generateInDates: .forFirstMonthOnly, generateOutDates: .off, firstDayOfWeek: .sunday, hasStrictBoundaries: false)
+        return ConfigurationParameters(startDate: formatter.date(from: "2010 01 01") ?? Date(), endDate: formatter.date(from: "2050 01 31") ?? Date() , numberOfRows: 1, calendar: Calendar(identifier: .gregorian), generateInDates: .forFirstMonthOnly, generateOutDates: .off, firstDayOfWeek: .sunday, hasStrictBoundaries: false)
     }
     
     func calendar(_ calendar: JTAppleCalendarView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTAppleCell {
@@ -417,10 +437,7 @@ extension HomeHeaderView: JTAppleCalendarViewDataSource, JTAppleCalendarViewDele
             
             selectedDate = cellState.date
             
-            formatter.dateFormat = "yyyy MM dd"
-            
-            let differenceInDates = self.calendar.dateComponents([.day], from: formatter.date(from: "2010 01 01") ?? Date(), to: selectedDate).day
-            scheduleCollectionView.scrollToItem(at: IndexPath(item: differenceInDates ?? 0, section: 0), at: .centeredHorizontally, animated: true)
+            scrollToScheduleCellForDate()
         }
         
         else {
@@ -429,7 +446,7 @@ extension HomeHeaderView: JTAppleCalendarViewDataSource, JTAppleCalendarViewDele
             calendarHeaderLabel.text = formatter.string(from: date)
         }
         
-        if let viewController = homeViewController as? HomeViewController {
+        if let viewController = homeViewController as? HomeViewController, viewController.selectedDate != cellState.date {
             
             viewController.selectedDate = cellState.date
         }
@@ -462,8 +479,51 @@ extension HomeHeaderView: JTAppleCalendarViewDataSource, JTAppleCalendarViewDele
             cell.dateLabel.text = cellState.text
             cell.rangeSelectionView.isHidden = true
         
-//            handleCellDotView(cell: cell, cellState: cellState)
+            handleCellVisibilty(cell: cell, cellState: cellState)
+            handleCellDotView(cell: cell, cellState: cellState)
             handleCellSelection(cell: cell, cellState: cellState)
+            handleCellText(cell: cell, cellState: cellState)
+    }
+    
+    
+    //MARK: - Handle Cell Visibilty
+
+    private func handleCellVisibilty (cell: DateCell, cellState: CellState) {
+
+        formatter.dateFormat = "yyyy MM dd"
+
+        if cellState.date < formatter.date(from: "2010 01 01") ?? Date() {
+
+            cell.isHidden = true
+        }
+
+        else {
+
+            cell.isHidden = false
+        }
+    }
+    
+    
+    //MARK: - Handle Cell Dot View
+    
+    private func handleCellDotView (cell: DateCell, cellState: CellState) {
+        
+        if deadlinesForCollabs?.first(where: { calendar.isDate(cellState.date, inSameDayAs: $0) }) != nil {
+            
+            cell.dotView.isHidden = false
+
+            cell.dotView.backgroundColor = .black
+
+            cell.dotView.layer.cornerRadius = 2.5
+            cell.dotView.clipsToBounds = true
+
+            cell.dotViewBottomAnchor.constant = 2.5
+        }
+        
+        else {
+            
+            cell.dotView.isHidden = true
+        }
     }
     
     
@@ -473,9 +533,24 @@ extension HomeHeaderView: JTAppleCalendarViewDataSource, JTAppleCalendarViewDele
 
         cell.singleSelectionView.isHidden = cellState.isSelected ? false : true
         cell.singleSelectionView.layer.cornerRadius = 0.5 * cell.singleSelectionView.frame.width
+    }
+    
+    
+    //MARK: - Handle Cell Text
+    
+    private func handleCellText (cell: DateCell, cellState: CellState) {
         
-        cell.dateLabel.textColor = cellState.isSelected ? .white : UIColor(hexString: "222222")
         cell.dateLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
+        
+        if calendar.isDate(cellState.date, inSameDayAs: Date()) {
+            
+            cell.dateLabel.textColor = UIColor.systemRed.flatten().lighten(byPercentage: 0.1)
+        }
+        
+        else {
+            
+            cell.dateLabel.textColor = cellState.isSelected ? .white : UIColor(hexString: "222222")
+        }
     }
 }
 
@@ -485,7 +560,7 @@ extension HomeHeaderView: UICollectionViewDataSource, UICollectionViewDelegate {
         
         formatter.dateFormat = "yyyy MM dd"
         
-        return calendar.dateComponents([.day], from: formatter.date(from: "2010 01 01") ?? Date(), to: formatter.date(from: "2050 01 01") ?? Date()).day ??
+        return calendar.dateComponents([.day], from: formatter.date(from: "2010 01 01") ?? Date(), to: formatter.date(from: "2050 02 01") ?? Date()).day ??
             0
     }
     
