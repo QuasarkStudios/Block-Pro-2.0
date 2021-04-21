@@ -129,6 +129,9 @@
 		0D70F91B2428730F00407E4A /* ProfileSidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D70F91A2428730F00407E4A /* ProfileSidebarViewController.swift */; };
 		0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */; };
 		0D70F91F2429BF0800407E4A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D70F91E2429BF0800407E4A /* LogInViewController.swift */; };
+		0D716262262BA773006FC1AB /* conversation-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D716261262BA772006FC1AB /* conversation-animation.json */; };
+		0D716265262BBBDE006FC1AB /* HomeSidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D716264262BBBDE006FC1AB /* HomeSidebarViewController.swift */; };
+		0D716268262C1833006FC1AB /* SidebarProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D716267262C1833006FC1AB /* SidebarProtocol.swift */; };
 		0D71E0162503624600CF517A /* SortingConversationsEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D71E0152503624600CF517A /* SortingConversationsEnum.swift */; };
 		0D7271252460DE1B0033C196 /* MessageTextViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7271242460DE1B0033C196 /* MessageTextViewContainer.swift */; };
 		0D72D2492453FB6E00C11D5F /* Collab.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D72D2482453FB6E00C11D5F /* Collab.storyboard */; };
@@ -268,7 +271,6 @@
 		0DF609CC25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609CB25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift */; };
 		0DF609CF25B159E600B0BB63 /* Firebase+Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609CE25B159E600B0BB63 /* Firebase+Block.swift */; };
 		0DF609F525B3F2E900B0BB63 /* CollabView+Blocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609F425B3F2E900B0BB63 /* CollabView+Blocks.swift */; };
-		0DF9C74724FD6B26000F689F /* conversation-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0DF9C74624FD6B25000F689F /* conversation-animation.json */; };
 		BF3780A68B78275643E3A760 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D06DFBCF9AAEBEE0188F2376 /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
@@ -397,6 +399,9 @@
 		0D70F91A2428730F00407E4A /* ProfileSidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSidebarViewController.swift; sourceTree = "<group>"; };
 		0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LogInRegister.storyboard; sourceTree = "<group>"; };
 		0D70F91E2429BF0800407E4A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		0D716261262BA772006FC1AB /* conversation-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conversation-animation.json"; sourceTree = "<group>"; };
+		0D716264262BBBDE006FC1AB /* HomeSidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSidebarViewController.swift; sourceTree = "<group>"; };
+		0D716267262C1833006FC1AB /* SidebarProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarProtocol.swift; sourceTree = "<group>"; };
 		0D71E0152503624600CF517A /* SortingConversationsEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SortingConversationsEnum.swift; sourceTree = "<group>"; };
 		0D7271242460DE1B0033C196 /* MessageTextViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTextViewContainer.swift; sourceTree = "<group>"; };
 		0D72D2482453FB6E00C11D5F /* Collab.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Collab.storyboard; sourceTree = "<group>"; };
@@ -539,7 +544,6 @@
 		0DF609CB25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinksConfigurationCollectionViewCell.swift; sourceTree = "<group>"; };
 		0DF609CE25B159E600B0BB63 /* Firebase+Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Firebase+Block.swift"; sourceTree = "<group>"; };
 		0DF609F425B3F2E900B0BB63 /* CollabView+Blocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabView+Blocks.swift"; sourceTree = "<group>"; };
-		0DF9C74624FD6B25000F689F /* conversation-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conversation-animation.json"; sourceTree = "<group>"; };
 		358073C2323396BAC00C39E3 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
 		8A4E27B57687C9C7A80E53AB /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
 		D06DFBCF9AAEBEE0188F2376 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -678,8 +682,8 @@
 				0D3213D124C8F2F100BC46F5 /* scissor-cutting-animated.json */,
 				0D0D0B4D25D1FDD400DE6FAD /* progress-animation.json */,
 				0D85AB332624CA5000FF07E4 /* home-animation.json */,
+				0D716261262BA772006FC1AB /* conversation-animation.json */,
 				0D1F1E13260873DD009EA8C5 /* search-animation.json */,
-				0DF9C74624FD6B25000F689F /* conversation-animation.json */,
 				0D687DAF26159F6300A9BB7D /* notifications-animation.json */,
 				0D2CECFB228FB55800CC9180 /* Info.plist */,
 				0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */,
@@ -989,6 +993,7 @@
 			isa = PBXGroup;
 			children = (
 				0DE8957025F6A7D000E0D643 /* HomeViewController.swift */,
+				0D716264262BBBDE006FC1AB /* HomeSidebarViewController.swift */,
 				0DE895AB25FC029C00E0D643 /* CollabCollectionViewFlowLayout.swift */,
 				0DE8957325F6B03200E0D643 /* Old Home Views */,
 			);
@@ -1203,6 +1208,7 @@
 		0DE728C62509752E00581048 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				0D716267262C1833006FC1AB /* SidebarProtocol.swift */,
 				0D687D8526155BCB00A9BB7D /* FriendRequestProtocol.swift */,
 				0D687DBA261AD40400A9BB7D /* CollabRequestProtocol.swift */,
 				0DE728C42509751B00581048 /* CachePhotoProtocol.swift */,
@@ -1374,6 +1380,7 @@
 				0D4173A2242FDE38006076A5 /* RegistrationUsernameCell.xib in Resources */,
 				0D41739A242EC1FB006076A5 /* RegistrationNameCell.xib in Resources */,
 				0DB3FEC7249A9A6D00A14FF9 /* ConvoMemberInfoCell.xib in Resources */,
+				0D716262262BA773006FC1AB /* conversation-animation.json in Resources */,
 				0D78657723E4B56B00BD4C4D /* Poppins-BlackItalic.ttf in Resources */,
 				0DA2A6FE248AC3250051ADAB /* PhotoMessageWithCaptionCell.xib in Resources */,
 				0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */,
@@ -1393,7 +1400,6 @@
 				0D78657323E4B56B00BD4C4D /* Poppins-ExtraLight.ttf in Resources */,
 				0D13AC02232DDBD40025EDC3 /* Assets.xcassets in Resources */,
 				0D879AD924B8357E0037C880 /* ConvoPhotosHeaderInfoCell.xib in Resources */,
-				0DF9C74724FD6B26000F689F /* conversation-animation.json in Resources */,
 				0DADDAB823579D1500E79F89 /* GoogleService-Info.plist in Resources */,
 				0D4173AA24304EF7006076A5 /* RegistrationProfilePicCell.xib in Resources */,
 			);
@@ -1544,6 +1550,7 @@
 				0D7CD51D2433067A00BE1BE6 /* Firebase+Auth.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
 				0D78658723E51C7D00BD4C4D /* HomeTableViewCell.swift in Sources */,
+				0D716268262C1833006FC1AB /* SidebarProtocol.swift in Sources */,
 				0D49B37825CB4280007C666A /* CollabProgressProtocol.swift in Sources */,
 				0DEDCCBC2487848900E0AEFD /* AddPhotoButton.swift in Sources */,
 				0D417399242EC1FB006076A5 /* RegistrationNameCell.swift in Sources */,
@@ -1609,6 +1616,7 @@
 				0DF609CC25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift in Sources */,
 				0DB52ADC25E3739C00645D27 /* CollabHomeMemberCell.swift in Sources */,
 				0D5FD11025BF63F700E9BA2D /* LinksPresentationCell.swift in Sources */,
+				0D716265262BBBDE006FC1AB /* HomeSidebarViewController.swift in Sources */,
 				0D5FD11F25C00C1600E9BA2D /* SelectedBlockEdit_DeleteCell.swift in Sources */,
 				0D480F3E259BB46400E14D1E /* ConfigurationProtocols.swift in Sources */,
 				0D891CC125B51A3F00B04C2F /* FullBlock.swift in Sources */,

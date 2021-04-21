@@ -102,7 +102,7 @@ class HomeViewController2: UIViewController, UITableViewDelegate, UITableViewDat
             userNameLabel.adjustsFontSizeToFitWidth = true
         }
         
-        if currentUser.profilePictureURL != nil && currentUser.profilePictureImage == nil {
+        if /*currentUser.profilePictureURL != nil && */currentUser.profilePictureImage == nil {
             
             setProfilePicture()
             

@@ -28,8 +28,10 @@ class HomeViewController: UIViewController {
     let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseBlock = FirebaseBlock.sharedInstance
     
+    var loadingAnimationTimer: Timer?
+    var loadingCount: Int = 1
+    
     var allCollabs: [Collab]?
-//    var acceptedCollabs: [Collab]?
     var acceptedCollabsForSelectedDate: [Collab]?
     var deadlinesForCollabs: [Date] = []
     
@@ -40,7 +42,7 @@ class HomeViewController: UIViewController {
     let calendar = Calendar.current
     let formatter = DateFormatter()
     
-    let minimumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 135//80
+    let minimumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 135
     let minimumHeaderViewHeightWithCalendar: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 85
     let maximumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 428.5 //Extra 2.5 added to improve aesthetics
     
@@ -56,7 +58,7 @@ class HomeViewController: UIViewController {
     var selectedDate: Date? {
         didSet {
             
-            //The first retrieval of collabs hasn't been completed yet
+            //The first retrieval of the collabs has been completed
             if allCollabs != nil {
                 
                 filterAcceptedCollabsForSelectedDate()
@@ -94,71 +96,15 @@ class HomeViewController: UIViewController {
         
         configureAnimationView()
         configureAnimationTitleLabel()
+        configureAnimationTimer()
         
         configureGestureRecognizors()
         
-        firebaseCollab.retrieveCollabs { [weak self] (retrivedCollabs, error) in
-            
-            if let collabs = retrivedCollabs {
-                
-                //Signifying the collabCollectionView was unpopulated before this
-                if self?.allCollabs == nil {
-                    
-                    self?.allCollabs = collabs
-                    
-                    self?.filterAcceptedCollabsForSelectedDate()
-                    
-                    UIView.transition(with: self!.collabCollectionView, duration: 0.3, options: .transitionCrossDissolve) {
-                        
-                        self?.collabCollectionView.reloadData()
-                    }
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        
-                        self?.yCoordForExpandedCell = 0
-                        self?.expandCollabCell()
-                    }
-                }
-                
-                else {
-                    
-                    self?.collabsUpdated(collabs)
-                }
-                
-                //Determines the deadlines for all accepted collabs and reloads the calendars with the new deadlines
-                self?.determineDeadlinesForCollabs(collabs)
-                
-                self?.determineNotifications()
-            }
-        }
+        retrieveCollabs()
         
-        firebaseBlock.retrievePersonalBlocks { [weak self] (error, blocks) in
-            
-            if error != nil {
-                
-                print(error?.localizedDescription as Any)
-            }
-            
-            else {
-                
-                self?.blocks = blocks
-                
-                self?.headerView.blocks = blocks
-                
-                self?.navigationController?.viewControllers.forEach({ (viewController) in
-                    
-                    if let blockVC = viewController as? BlockViewController {
-                        
-                        blockVC.blocks = blocks
-                    }
-                })
-            }
-        }
+        retrieveBlocks()
         
-        if currentUser.userSignedIn {
-            
-            firebaseCollab.retrieveUsersFriends()
-        }
+        firebaseCollab.retrieveUsersFriends()
         
         NotificationCenter.default.addObserver(self, selector: #selector(determineNotifications), name: .didUpdateFriends, object: nil)
         
@@ -181,6 +127,9 @@ class HomeViewController: UIViewController {
         profilePictureButton.isUserInteractionEnabled = false
     }
     
+    
+    //MARK: - Configure Home Header View
+    
     private func configureHomeHeaderView () {
         
         self.view.addSubview(headerView)
@@ -200,10 +149,14 @@ class HomeViewController: UIViewController {
         headerView.homeViewController = self
     }
     
+    
+    //MARK: - Configure Profile Picture Button
+    
     private func configureProfilePictureButton () {
         
         if keyWindow != nil {
             
+            //Added to the keyWindow so it will be above the navigationBar
             keyWindow?.addSubview(profilePictureButton)
             profilePictureButton.translatesAutoresizingMaskIntoConstraints = false
             
@@ -218,62 +171,6 @@ class HomeViewController: UIViewController {
             
             profilePictureButton.addTarget(self, action: #selector(profilePictureButtonPressed), for: .touchUpInside)
         }
-    }
-    
-    //MARK: - Configure Animation View
-    
-    private func configureAnimationView () {
-        
-        self.view.insertSubview(animationView, belowSubview: collabCollectionView)
-        animationView.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            animationView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? -30 : -10),
-            animationView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
-            animationView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
-            animationView.heightAnchor.constraint(equalToConstant: ((tabBar.frame.minY - 85) - minimumHeaderViewHeight) * 0.8)
-            //Height is 80% of the distance between the bottom of
-            //headerView and top of the calendarButton without accounting
-            //for it being offset by either 10 or 30 points by the topAnchor
-        
-        ].forEach({ $0.isActive = true })
-        
-        animationView.isUserInteractionEnabled = false
-        
-        animationView.alpha = 0
-        animationView.contentMode = .scaleAspectFill
-        animationView.loopMode = .loop
-        animationView.backgroundBehavior = .pauseAndRestore
-    }
-    
-    //MARK: - Configure Animation Title
-    
-    private func configureAnimationTitleLabel () {
-        
-        //Distance between the bottom of the animationView and the top of the calendar button
-        //Adding either 10 or 30 accounts for the fact that the animationView is offset by either 10 or 30 points
-        let proposedHeightOfLabel = (((tabBar.frame.minY - 85) - minimumHeaderViewHeight) * 0.2) + (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 10)
-        
-        self.view.insertSubview(animationTitleLabel, belowSubview: collabCollectionView)
-        animationTitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            animationTitleLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
-            animationTitleLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
-            animationTitleLabel.topAnchor.constraint(equalTo: animationView.bottomAnchor, constant: 0),
-            animationTitleLabel.heightAnchor.constraint(equalToConstant: proposedHeightOfLabel > 70 ? proposedHeightOfLabel : 70)
-        
-        ].forEach({ $0.isActive = true })
-        
-        animationTitleLabel.isUserInteractionEnabled = false
-        
-        animationTitleLabel.alpha = 0
-        animationTitleLabel.font = UIFont(name: "Poppins-SemiBold", size: 25)
-        animationTitleLabel.numberOfLines = 0
-        animationTitleLabel.textAlignment = .center
-        animationTitleLabel.text = "No Collabs\nYet"
     }
     
     
@@ -338,6 +235,9 @@ class HomeViewController: UIViewController {
         tableView.register(HomeCalendarCell.self, forCellReuseIdentifier: "homeCalendarCell")
     }
     
+    
+    //MARK: - Configure Tab Bar
+    
     private func configureTabBar () {
         
         tabBarController?.tabBar.isHidden = true
@@ -347,6 +247,9 @@ class HomeViewController: UIViewController {
         
         keyWindow?.addSubview(tabBar)
     }
+    
+    
+    //MARK: - Configure Calendar Button
     
     private func configureCalendarButton () {
         
@@ -382,6 +285,79 @@ class HomeViewController: UIViewController {
         calendarButton.addTarget(self, action: #selector(calendarButtonPressed), for: .touchUpInside)
     }
     
+    
+    //MARK: - Configure Animation View
+    
+    private func configureAnimationView () {
+        
+        self.view.insertSubview(animationView, belowSubview: collabCollectionView)
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            animationView.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? -30 : -10),
+            animationView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
+            animationView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
+            animationView.heightAnchor.constraint(equalToConstant: ((tabBar.frame.minY - 85) - minimumHeaderViewHeight) * 0.8)
+            //Height is 80% of the distance between the bottom of
+            //headerView and top of the calendarButton without accounting
+            //for it being offset by either 10 or 30 points by the topAnchor
+        
+        ].forEach({ $0.isActive = true })
+        
+        animationView.isUserInteractionEnabled = false
+        
+        animationView.contentMode = .scaleAspectFill
+        animationView.loopMode = .loop
+        animationView.backgroundBehavior = .pauseAndRestore
+        
+        animationView.play()
+    }
+    
+    
+    //MARK: - Configure Animation Title
+    
+    private func configureAnimationTitleLabel () {
+        
+        //Distance between the bottom of the animationView and the top of the calendar button
+        //Adding either 10 or 30 accounts for the fact that the animationView is offset by either 10 or 30 points
+        let proposedHeightOfLabel = (((tabBar.frame.minY - 85) - minimumHeaderViewHeight) * 0.2) + (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 30 : 10)
+        
+        self.view.insertSubview(animationTitleLabel, belowSubview: collabCollectionView)
+        animationTitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            animationTitleLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
+            animationTitleLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
+            animationTitleLabel.topAnchor.constraint(equalTo: animationView.bottomAnchor, constant: 0),
+            animationTitleLabel.heightAnchor.constraint(equalToConstant: proposedHeightOfLabel > 70 ? proposedHeightOfLabel : 70)
+        
+        ].forEach({ $0.isActive = true })
+        
+        animationTitleLabel.isUserInteractionEnabled = false
+        
+        animationTitleLabel.font = UIFont(name: "Poppins-SemiBold", size: 25)
+        animationTitleLabel.numberOfLines = 0
+        animationTitleLabel.textAlignment = .center
+        animationTitleLabel.text = "No Collabs\nYet"
+    }
+    
+    
+    //MARK: - Configure Animation Timer
+    
+    private func configureAnimationTimer () {
+        
+        loadingAnimationTimer = Timer(fireAt: Date(), interval: 0.7, target: self, selector: #selector(updateLoadingAnimation), userInfo: nil, repeats: true)
+    
+        guard let timer = loadingAnimationTimer else { return }
+        
+            RunLoop.main.add(timer, forMode: .common)
+    }
+    
+    
+    //MARK: - Configure Gesture Recognizors
+    
     private func configureGestureRecognizors () {
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
@@ -393,21 +369,135 @@ class HomeViewController: UIViewController {
         collabCollectionView.addGestureRecognizer(downSwipeGesture)
     }
     
+    
+    //MARK: - Retrieve Collabs
+    
+    private func retrieveCollabs () {
+        
+        firebaseCollab.retrieveCollabs { [weak self] (retrivedCollabs, error) in
+            
+            if let collabs = retrivedCollabs {
+                
+                //Signifying the this is the first retrieval attempt of the collabs
+                if self?.allCollabs == nil {
+                    
+                    self?.allCollabs = collabs
+                    
+                    self?.filterAcceptedCollabsForSelectedDate()
+                    
+                    UIView.transition(with: self!.collabCollectionView, duration: 0.3, options: .transitionCrossDissolve) {
+                        
+                        self?.collabCollectionView.reloadData()
+                    }
+                    
+                    //Delaying sligtly allows the collectionView time to reload and the collabCell to expand
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        
+                        self?.yCoordForExpandedCell = 0
+                        self?.expandCollabCell()
+                    }
+                }
+                
+                else {
+                    
+                    self?.collabsUpdated(collabs)
+                }
+                
+                self?.loadingAnimationTimer?.invalidate()
+                
+                //Determines the deadlines for all accepted collabs and reloads the calendars with the new deadlines
+                self?.determineDeadlinesForCollabs(collabs)
+                
+                //Determinines which collabRequests are new and in turn should be presented as a notification
+                self?.determineNotifications()
+            }
+        }
+    }
+    
+    
+    //MARK: - Retrieve Blocks
+    
+    private func retrieveBlocks () {
+        
+        firebaseBlock.retrievePersonalBlocks { [weak self] (error, blocks) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+            
+            else {
+                
+                self?.blocks = blocks
+                
+                self?.headerView.blocks = blocks
+                
+                //If the personal blocks view controller is present, this will update the blocks in that view
+                self?.navigationController?.viewControllers.forEach({ (viewController) in
+                    
+                    if let blockVC = viewController as? BlockViewController {
+                        
+                        blockVC.blocks = blocks
+                    }
+                })
+            }
+        }
+    }
+    
+    
+    //MARK: - Update Loading Animation
+    
+    @objc private func updateLoadingAnimation () {
+        
+        if loadingCount == 0 {
+            
+            animationTitleLabel.text = "Loading."
+            loadingCount += 1
+        }
+        
+        else if loadingCount == 1 {
+            
+            animationTitleLabel.text = "Loading.."
+            loadingCount += 1
+        }
+        
+        else if loadingCount == 2 {
+            
+            animationTitleLabel.text = "Loading..."
+            loadingCount = 0
+        }
+    }
+    
+    
+    //MARK: - Update Selected Date
+    
+    func updateSelectedDate (date: Date) {
+        
+        let updatedDateComponents = calendar.dateComponents([.year, .month, .day], from: date)
+        selectedDate = calendar.date(from: updatedDateComponents)
+    }
+    
+    
+    //MARK: - Filter Accepted Collabs for Selected Date
+    
     private func filterAcceptedCollabsForSelectedDate () {
         
         acceptedCollabsForSelectedDate = []
         
         for collab in allCollabs ?? [] {
             
+            //If the user has accepted this collab
             if collab.accepted?[currentUser.userID] == true {
                 
                 if let date = selectedDate, let startTime = collab.dates["startTime"], let deadline = collab.dates["deadline"] {
                     
+                    //If this selectedDate is between the startTime and deadline of this collab
                     if date.isBetween(startDate: startTime, endDate: deadline) {
                         
                         acceptedCollabsForSelectedDate?.append(collab)
                     }
                     
+                    //If the selected date is equal to the startTime or deadline
                     else if calendar.isDate(date, inSameDayAs: startTime) || calendar.isDate(date, inSameDayAs: deadline) {
                         
                         acceptedCollabsForSelectedDate?.append(collab)
@@ -416,229 +506,15 @@ class HomeViewController: UIViewController {
             }
         }
         
+        //Sorting the collabs by their deadline
         acceptedCollabsForSelectedDate?.sort(by: { $0.dates["deadline"] ?? Date() < $1.dates["deadline"] ?? Date() })
         
+        //Will present the animationView if there are no collabs for the selected date
         presentAnimationView()
     }
     
-    @objc private func handlePan (sender: UIPanGestureRecognizer) {
-        
-        if !calendarPresent {
-            
-            switch sender.state {
-            
-            case .began, .changed:
-                
-                //Ensures that the first collabCell is visible before allowing the panGesture to work
-                //Only the case if the collectionView is populated with cells, otherwise always allow the panGesture to work
-                if collabCollectionView.indexPathsForVisibleItems.contains(where: { $0.row == 0 }) || collabCollectionView.numberOfItems(inSection: 0) == 0 {
-                    
-                    moveWithPan(sender)
-                }
 
-            case .ended:
-                
-                if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight * 0.8 {
-                    
-                    shrinkHeaderView()
-                }
-                
-                else {
-                    
-                    expandHeaderView()
-                }
-                
-            default:
-                
-                break
-            }
-        }
-    }
-    
-    @objc private func collectionViewSwipedDown () {
-        
-        //Will expand the headerView when the collectionView is swiped down
-        //Required because scrollViewDidEndDragging will only expand the headerView upon a drag down when there is more than one cell in the collectionView
-        if collabCollectionView.contentOffset.y == 0 && headerViewHeightConstraint?.constant != maximumHeaderViewHeight {
-            
-            expandHeaderView()
-        }
-    }
-    
-    private func moveWithPan (_ sender: UIPanGestureRecognizer) {
-        
-        let translation = sender.translation(in: self.view)
-        
-        if translation.y > 0 {
-            
-            if (headerViewHeightConstraint?.constant ?? 0) + translation.y < maximumHeaderViewHeight {
-                
-                headerViewHeightConstraint?.constant += translation.y
-                
-                animateHeaderViewAlpha()
-                animationTitleLabelAlpha()
-            }
-            
-            else {
-                
-                headerViewHeightConstraint?.constant = maximumHeaderViewHeight
-            }
-        }
-        
-        else {
-            
-            if (headerViewHeightConstraint?.constant ?? 0) + translation.y > minimumHeaderViewHeight {
-                
-                headerViewHeightConstraint?.constant += translation.y
-                
-                animateHeaderViewAlpha()
-                animationTitleLabelAlpha()
-            }
-            
-            else {
-                
-                headerViewHeightConstraint?.constant = minimumHeaderViewHeight
-                
-                headerView.calendarHeaderLabel.alpha = 0
-                headerView.calendarView.alpha = 0
-                headerView.scheduleCollectionView.alpha = 0
-                
-                animationTitleLabel.alpha = acceptedCollabsForSelectedDate?.count ?? 0 == 0 ? 1 : 0
-            }
-        }
-        
-        sender.setTranslation(.zero, in: self.view)
-    }
-    
-    private func animateHeaderViewAlpha () {
-        
-        let alphaPart = 1 / (maximumHeaderViewHeight - minimumHeaderViewHeight)
-
-        headerView.calendarHeaderLabel.alpha = alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight)
-        headerView.calendarView.alpha = alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight)
-        headerView.personalLabel.alpha = alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight)
-        headerView.scheduleCollectionView.alpha = alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight)
-    }
-    
-    private func expandHeaderView () {
-        
-        headerViewHeightConstraint?.constant = maximumHeaderViewHeight
-        
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-            
-            self.view.layoutIfNeeded()
-            
-            self.headerView.calendarHeaderLabel.alpha = 1
-            self.headerView.calendarView.alpha = 1
-            self.headerView.personalLabel.alpha = 1
-            self.headerView.scheduleCollectionView.alpha = 1
-            self.headerView.collabContainer.alpha = 1
-            
-            self.animationTitleLabel.alpha = 0
-            
-        } completion: { (finished: Bool) in
-            
-            self.collabCollectionView.showsVerticalScrollIndicator = false
-            
-            self.headerView.collabContainer.backgroundColor = .white
-        }
-    }
-    
-    private func shrinkHeaderView () {
-        
-        headerViewHeightConstraint?.constant = !calendarPresent ? minimumHeaderViewHeight : minimumHeaderViewHeightWithCalendar
-        
-        if calendarPresent {
-            
-            headerView.collabContainer.backgroundColor = .clear
-        }
-        
-        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-            
-            self.view.layoutIfNeeded()
-            
-            self.headerView.calendarHeaderLabel.alpha = 0
-            self.headerView.calendarView.alpha = 0
-            self.headerView.personalLabel.alpha = 0
-            self.headerView.scheduleCollectionView.alpha = 0
-            self.headerView.collabContainer.alpha = self.calendarPresent ? 0 : 1
-            
-            self.animationTitleLabel.alpha = self.acceptedCollabsForSelectedDate?.count ?? 0 == 0 ? 1 : 0
-            
-        } completion: { (finished: Bool) in
-            
-            self.collabCollectionView.showsVerticalScrollIndicator = !self.calendarPresent
-            
-            self.headerView.collabContainer.backgroundColor = self.calendarPresent ? .clear : .white
-        }
-    }
-    
-    private func animationTitleLabelAlpha () {
-        
-        if acceptedCollabsForSelectedDate?.count ?? 0 == 0 {
-            
-            let alphaPart = 1 / (maximumHeaderViewHeight - minimumHeaderViewHeight)
-            
-            animationTitleLabel.alpha = 1 - (alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight))
-        }
-        
-        else {
-            
-            animationTitleLabel.alpha = 0
-        }
-    }
-    
-    private func presentAnimationView () {
-        
-        if acceptedCollabsForSelectedDate?.count ?? 0 == 0 && !calendarPresent {
-            
-            if animationView.alpha != 1 {
-                
-                animationView.play()
-                
-                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                    
-                    self.animationView.alpha = 1
-                    self.animationTitleLabel.alpha = 1
-                }
-            }
-        }
-        
-        else {
-            
-            if animationView.alpha != 0 {
-                
-                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
-                    
-                    self.animationView.alpha = 0
-                    self.animationTitleLabel.alpha = 0
-                    
-                } completion: { (finished: Bool) in
-                    
-                    self.animationView.stop()
-                }
-            }
-        }
-    }
-    
-    func updateSelectedDate (date: Date) {
-        
-        let updatedDateComponents = calendar.dateComponents([.year, .month, .day], from: date)
-        selectedDate = calendar.date(from: updatedDateComponents)
-        
-        updateCalendarsWithNewSelectedDate()
-        
-//        if let date = selectedDate {
-//
-//            headerView.calendarView.scrollToDate(date)
-//            headerView.calendarView.selectDates([date])
-//
-//            formatter.dateFormat = "yyyy MM dd"
-//
-//            let differenceInDates = calendar.dateComponents([.day], from: formatter.date(from: "2010 01 01") ?? Date(), to: date).day
-//            headerView.scheduleCollectionView.scrollToItem(at: IndexPath(item: differenceInDates ?? 0, section: 0), at: .centeredHorizontally, animated: true)
-//        }
-    }
+    //MARK: - Update Calendars with New Selected Date
     
     private func updateCalendarsWithNewSelectedDate () {
         
@@ -697,6 +573,9 @@ class HomeViewController: UIViewController {
         calendarTableView.visibleCells.forEach({ if let cell = $0 as? HomeCalendarCell { cell.deadlinesForCollabs = deadlines } })
     }
     
+    
+    //MARK: - Determine Notifications
+    
     @objc private func determineNotifications () {
         
         var newFriendRequestsCount: Int = 0
@@ -704,6 +583,7 @@ class HomeViewController: UIViewController {
         
         for friend in firebaseCollab.friends {
             
+            //If this friendRequest has not been viewed yet and the request was not sent by the currentUser
             if friend.accepted == nil, friend.requestSentBy != currentUser.userID {
                 
                 newFriendRequestsCount += 1
@@ -712,6 +592,7 @@ class HomeViewController: UIViewController {
         
         for collab in allCollabs ?? [] {
             
+            //If this collabRequest has not been viewed yet
             if collab.accepted?[currentUser.userID] as? Bool == nil {
 
                 newCollabRequestsCount += 1
@@ -721,17 +602,21 @@ class HomeViewController: UIViewController {
         tabBar.setNotificationIndicator(notificationCount: newFriendRequestsCount + newCollabRequestsCount)
     }
     
+    
+    //MARK: - Collabs Updated
+    
     private func collabsUpdated (_ retrievedCollabs: [Collab]) {
         
+        //The collabs that have just been retrieved from Firebase
         var retrievedAcceptedCollabIDs: [String] = []
         retrievedCollabs.forEach({ if $0.accepted?[currentUser.userID] == true { retrievedAcceptedCollabIDs.append($0.collabID) } })
         
+        //The collabs that have been previously cached in the allCollabs array
         var cachedAcceptedCollabIDs: [String] = []
         allCollabs?.forEach({ if $0.accepted?[currentUser.userID] == true { cachedAcceptedCollabIDs.append($0.collabID) } })
         
         allCollabs = retrievedCollabs
         filterAcceptedCollabsForSelectedDate()
-//        acceptedCollabs = allCollabs?.filter({ $0.accepted?[currentUser.userID] == true }).sorted(by: { $0.dates["deadline"]! > $1.dates["deadline"]! })
         
         //Checks if the amount of accepted collabs have changed or if any accepted collabs have been swapped in/out
         if retrievedAcceptedCollabIDs.count != cachedAcceptedCollabIDs.count || !(retrievedAcceptedCollabIDs.allSatisfy({ cachedAcceptedCollabIDs.contains($0) })) {
@@ -787,6 +672,238 @@ class HomeViewController: UIViewController {
         }
     }
     
+    
+    //MARK: - Present Animation View
+    
+    private func presentAnimationView () {
+        
+        if acceptedCollabsForSelectedDate?.count ?? 0 == 0 && !calendarPresent {
+            
+            animationTitleLabel.text = "No Collabs\nYet"
+            
+            if animationView.alpha != 1 {
+                
+                animationView.play()
+                
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                    
+                    self.animationView.alpha = 1
+                    self.animationTitleLabel.alpha = 1
+                }
+            }
+        }
+        
+        else {
+            
+            if animationView.alpha != 0 {
+                
+                UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+                    
+                    self.animationView.alpha = 0
+                    self.animationTitleLabel.alpha = 0
+                    
+                } completion: { (finished: Bool) in
+                    
+                    self.animationView.stop()
+                    self.animationTitleLabel.text = "No Collabs\nYet"
+                }
+            }
+        }
+    }
+    
+    
+    //MARK: - Handle Pan
+    
+    @objc private func handlePan (sender: UIPanGestureRecognizer) {
+        
+        if !calendarPresent {
+            
+            switch sender.state {
+            
+            case .began, .changed:
+                
+                //Ensures that the first collabCell is visible before allowing the panGesture to work
+                //Only the case if the collectionView is populated with cells, otherwise always allow the panGesture to work
+                if collabCollectionView.indexPathsForVisibleItems.contains(where: { $0.row == 0 }) || collabCollectionView.numberOfItems(inSection: 0) == 0 {
+                    
+                    moveWithPan(sender)
+                }
+
+            case .ended:
+                
+                if headerViewHeightConstraint?.constant ?? 0 < maximumHeaderViewHeight * 0.8 {
+                    
+                    shrinkHeaderView()
+                }
+                
+                else {
+                    
+                    expandHeaderView()
+                }
+                
+            default:
+                
+                break
+            }
+        }
+    }
+    
+    
+    //MARK: - Move with Pan
+    
+    private func moveWithPan (_ sender: UIPanGestureRecognizer) {
+        
+        let translation = sender.translation(in: self.view)
+        
+        //The user is dragging down
+        if translation.y > 0 {
+            
+            if (headerViewHeightConstraint?.constant ?? 0) + translation.y < maximumHeaderViewHeight {
+                
+                headerViewHeightConstraint?.constant += translation.y
+                
+                animateHeaderViewAlpha()
+                animateAnimationTitleLabelAlpha()
+            }
+            
+            else {
+                
+                headerViewHeightConstraint?.constant = maximumHeaderViewHeight
+            }
+        }
+        
+        //The user is dragging up
+        else {
+            
+            if (headerViewHeightConstraint?.constant ?? 0) + translation.y > minimumHeaderViewHeight {
+                
+                headerViewHeightConstraint?.constant += translation.y
+                
+                animateHeaderViewAlpha()
+                animateAnimationTitleLabelAlpha()
+            }
+            
+            else {
+                
+                headerViewHeightConstraint?.constant = minimumHeaderViewHeight
+                
+                headerView.calendarHeaderLabel.alpha = 0
+                headerView.calendarView.alpha = 0
+                headerView.scheduleCollectionView.alpha = 0
+                
+                animationTitleLabel.alpha = acceptedCollabsForSelectedDate?.count ?? 0 == 0 ? 1 : 0
+            }
+        }
+        
+        sender.setTranslation(.zero, in: self.view)
+    }
+    
+    
+    //MARK: - CollectionView Swiped Down
+    
+    @objc private func collectionViewSwipedDown () {
+        
+        //Will expand the headerView when the collectionView is swiped down
+        //Required because scrollViewDidEndDragging will only expand the headerView upon a drag down when there is more than one cell in the collectionView
+        if collabCollectionView.contentOffset.y == 0 && headerViewHeightConstraint?.constant != maximumHeaderViewHeight {
+            
+            expandHeaderView()
+        }
+    }
+    
+    
+    //MARK: - Animate Header View Alpha
+    
+    private func animateHeaderViewAlpha () {
+        
+        let alphaPart = 1 / (maximumHeaderViewHeight - minimumHeaderViewHeight)
+
+        headerView.calendarHeaderLabel.alpha = alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight)
+        headerView.calendarView.alpha = alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight)
+        headerView.personalLabel.alpha = alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight)
+        headerView.scheduleCollectionView.alpha = alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight)
+    }
+    
+    
+    //MARK: - Animate Animation Title Label Alpha
+    
+    private func animateAnimationTitleLabelAlpha () {
+        
+        if acceptedCollabsForSelectedDate?.count ?? 0 == 0 {
+            
+            let alphaPart = 1 / (maximumHeaderViewHeight - minimumHeaderViewHeight)
+            
+            animationTitleLabel.alpha = 1 - (alphaPart * ((headerViewHeightConstraint?.constant ?? 0) - minimumHeaderViewHeight))
+        }
+        
+        else {
+            
+            animationTitleLabel.alpha = 0
+        }
+    }
+    
+    
+    //MARK: - Expand Header View
+    
+    private func expandHeaderView () {
+        
+        headerViewHeightConstraint?.constant = maximumHeaderViewHeight
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            
+            self.view.layoutIfNeeded()
+            
+            self.headerView.calendarHeaderLabel.alpha = 1
+            self.headerView.calendarView.alpha = 1
+            self.headerView.personalLabel.alpha = 1
+            self.headerView.scheduleCollectionView.alpha = 1
+            self.headerView.collabContainer.alpha = 1
+            
+            self.animationTitleLabel.alpha = 0
+            
+        } completion: { (finished: Bool) in
+            
+            self.collabCollectionView.showsVerticalScrollIndicator = false
+            
+            self.headerView.collabContainer.backgroundColor = .white
+        }
+    }
+    
+    
+    //MARK: - Shrink Header View
+    
+    private func shrinkHeaderView () {
+        
+        headerViewHeightConstraint?.constant = !calendarPresent ? minimumHeaderViewHeight : minimumHeaderViewHeightWithCalendar
+        
+        if calendarPresent {
+            
+            headerView.collabContainer.backgroundColor = .clear
+        }
+        
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            
+            self.view.layoutIfNeeded()
+            
+            self.headerView.calendarHeaderLabel.alpha = 0
+            self.headerView.calendarView.alpha = 0
+            self.headerView.personalLabel.alpha = 0
+            self.headerView.scheduleCollectionView.alpha = 0
+            self.headerView.collabContainer.alpha = self.calendarPresent ? 0 : 1
+            
+            self.animationTitleLabel.alpha = self.acceptedCollabsForSelectedDate?.count ?? 0 == 0 ? 1 : 0
+            
+        } completion: { (finished: Bool) in
+            
+            self.collabCollectionView.showsVerticalScrollIndicator = !self.calendarPresent
+            
+            self.headerView.collabContainer.backgroundColor = self.calendarPresent ? .clear : .white
+        }
+    }
+    
+    
+    //MARK: - Expand Collab Cell
+    
     private func expandCollabCell (recursionCount: Int = 0) {
         
         var cellFound: Bool = false
@@ -817,6 +934,7 @@ class HomeViewController: UIViewController {
             }
             
             //If a cell was not found, this function will will try again up to 2 more times
+            //Fixes issue where a cell may not have been expanded when the user was scrolling back up
             if !cellFound, recursionCount < 3 {
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -826,6 +944,9 @@ class HomeViewController: UIViewController {
             }
         }
     }
+    
+    
+    //MARK: - Shrink Collab Cell
     
     private func shrinkCollabCell () {
         
@@ -846,12 +967,29 @@ class HomeViewController: UIViewController {
         }
     }
     
-    func moveToBlocksView (_ selectedDate: Date) {
+    
+    //MARK: - Move to Home Sidebar View
+    
+    private func moveToHomeSidebarView () {
         
-//        self.selectedDate = selectedDate
+        let homeSidebarVC = HomeSidebarViewController()
+        homeSidebarVC.modalPresentationStyle = .overFullScreen
+        
+        homeSidebarVC.sidebarDelegate = self
+        
+        self.present(homeSidebarVC, animated: false, completion: nil)
+    }
+    
+    
+    //MARK: - Move to Blocks View
+    
+    func moveToBlocksView (_ selectedDate: Date) {
         
         performSegue(withIdentifier: "moveToPersonalBlocksView", sender: self)
     }
+    
+    
+    //MARK: - Move to Add Collab View
     
     func moveToAddCollabView () {
         
@@ -869,14 +1007,20 @@ class HomeViewController: UIViewController {
         self.present(configureCollabNavigationController, animated: true, completion: nil)
     }
     
+    
+    //MARK: - Profile Picture Button Pressed
+    
     @objc private func profilePictureButtonPressed () {
         
         //Double check to ensure the HomeViewController is present
         if self.navigationController?.visibleViewController == self {
             
-            performSegue(withIdentifier: "moveToProfileSideview", sender: self)
+            moveToHomeSidebarView()
         }
     }
+    
+    
+    //MARK: - Calendar Button Pressed
     
     @objc func calendarButtonPressed () {
         
@@ -949,10 +1093,8 @@ class HomeViewController: UIViewController {
         presentAnimationView()
     }
     
-//    func moveToProfileView () {
-//        
-//        performSegue(withIdentifier: "moveToProfileView", sender: self)
-//    }
+    
+    //MARK: - Prepare for Segue
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
@@ -977,14 +1119,11 @@ class HomeViewController: UIViewController {
             backBarItem.title = ""
             self.navigationItem.backBarButtonItem = backBarItem
         }
-        
-//        else if segue.identifier == "moveToProfileView" {
-//            
-//            let profileVC = segue.destination as! ProfileViewController
-////            profileVC.profileViewDelegate = self
-//        }
     }
 }
+
+
+//MARK: - Gesture Recognizor Delegate
 
 extension HomeViewController: UIGestureRecognizerDelegate {
     
@@ -993,12 +1132,16 @@ extension HomeViewController: UIGestureRecognizerDelegate {
     }
 }
 
+
+//MARK: - CollectionView DataSource and Delegate Extension
+
 extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         return acceptedCollabsForSelectedDate?.count ?? 0
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             
@@ -1008,6 +1151,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
     
         cell.collab = acceptedCollabsForSelectedDate?[indexPath.row]
         
+        //If this current cell should be expanded
         if expandedIndexPath == indexPath {
 
             cell.expandCell(animate: false)
@@ -1020,13 +1164,13 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         
         return cell
     }
-
-
+    
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         return expandedIndexPath == indexPath ? CGSize(width: UIScreen.main.bounds.width, height: 190) : CGSize(width: UIScreen.main.bounds.width, height: 100)
     }
+    
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
@@ -1041,6 +1185,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
     }
     
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
         if scrollView.contentOffset.y >= 0, scrollView == collabCollectionView {
@@ -1052,7 +1197,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
                 scrollView.contentOffset.y = 0
 
                 animateHeaderViewAlpha()
-                animationTitleLabelAlpha()
+                animateAnimationTitleLabelAlpha()
             }
 
             else {
@@ -1104,6 +1249,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
     }
     
+    
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         
         //If the headerView is shrunken, and the first cell isn't the one currently expanded
@@ -1112,6 +1258,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
             self.shrinkCollabCell()
         }
     }
+    
     
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         
@@ -1165,6 +1312,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         }
     }
     
+    
     func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
         
         if scrollView == collabCollectionView {
@@ -1174,6 +1322,7 @@ extension HomeViewController: UICollectionViewDataSource, UICollectionViewDelega
         
         return true
     }
+    
     
     func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
         
@@ -1199,6 +1348,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
         return ((calendar.dateComponents([.month], from: formatter.date(from: "2010 01 01") ?? Date(), to: formatter.date(from: "2050 02 01") ?? Date()).month ??
             0) * 2)
     }
+    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
@@ -1271,6 +1421,9 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     }
 }
 
+
+//MARK: - Collab Created Protocol
+
 extension HomeViewController: CollabCreatedProtocol {
     
     func collabCreated (_ collabID: String) {
@@ -1281,5 +1434,44 @@ extension HomeViewController: CollabCreatedProtocol {
             
             performSegue(withIdentifier: "moveToCollabView", sender: self)
         }
+    }
+}
+
+
+//MARK: - Sidebar Protocol
+
+extension HomeViewController: SidebarProtocol {
+    
+    func moveToProfileView () {
+        
+        performSegue(withIdentifier: "moveToProfileView", sender: self)
+    }
+    
+    func moveToFriendsView() {
+        
+        print("friends view")
+    }
+    
+    func moveToPrivacyView () {
+        
+        print("move to privacy view")
+    }
+    
+    func userSignedOut() {
+        
+//        firebaseAuth.logOutUser { (error) in
+//
+//            if error != nil {
+//
+//                SVProgressHUD.showError(withStatus: error?.localizedDescription)
+//            }
+//
+//            else {
+//
+//                SVProgressHUD.showSuccess(withStatus: "Signed Out")
+//            }
+//        }
+        
+        print("signed out")
     }
 }

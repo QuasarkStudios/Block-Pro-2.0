@@ -978,6 +978,7 @@ extension CollabNavigationView: JTAppleCalendarViewDataSource, JTAppleCalendarVi
         
             handleCellDotView(cell: cell, cellState: cellState)
             handleCellSelection(cell: cell, cellState: cellState)
+            handleCellText(cell: cell, cellState: cellState)
     }
     
     
@@ -1029,8 +1030,24 @@ extension CollabNavigationView: JTAppleCalendarViewDataSource, JTAppleCalendarVi
 
         cell.singleSelectionView.isHidden = cellState.isSelected ? false : true
         cell.singleSelectionView.layer.cornerRadius = 0.5 * cell.singleSelectionView.frame.width
+    }
+    
+    
+    //MARK: - Handle Cell Text
+    
+    private func handleCellText (cell: DateCell, cellState: CellState) {
         
-        cell.dateLabel.textColor = cellState.isSelected ? .white : UIColor(hexString: "222222")
-        cell.dateLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
+        //If this is the cell for the currentDate
+        if calendar.isDate(cellState.date, inSameDayAs: Date()) {
+            
+            cell.dateLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
+            cell.dateLabel.textColor = UIColor.systemRed.flatten().lighten(byPercentage: 0.1)
+        }
+        
+        else {
+            
+            cell.dateLabel.textColor = cellState.isSelected ? .white : UIColor(hexString: "222222")
+            cell.dateLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
+        }
     }
 }

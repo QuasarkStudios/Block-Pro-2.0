@@ -65,6 +65,9 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.navigationController?.navigationBar.prefersLargeTitles = true
+        self.navigationItem.largeTitleDisplayMode = .always
+        
         navBarExtensionView.backgroundColor = .white
         
         configureSearchBar()
@@ -76,9 +79,6 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         configureGestureRecognizors()
         
         addConversationListeners()
-        
-        self.navigationController?.navigationBar.prefersLargeTitles = true
-        self.navigationItem.largeTitleDisplayMode = .always
         
         messagingTableViewTopAnchor.constant = 65
     }
@@ -535,6 +535,12 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
     private func configureConversationsAnimation (conversationsLoading: Bool) {
         
+        //This topBarHeight accounts for the fact that this navigationController allows large titles
+        let topBarHeight = (keyWindow?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0) + (self.navigationController?.navigationBar.frame.height ?? 0)
+        
+        //Distance from the bottom of the navBarExtension view to the top of the addConversations button
+        let containerHeight = ((tabBar.frame.minY - 85) - (topBarHeight + 65))
+        
         self.view.addSubview(conversationsAnimationContainer)
         conversationsAnimationContainer.translatesAutoresizingMaskIntoConstraints = false
 
@@ -543,14 +549,11 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             conversationsAnimationContainer.topAnchor.constraint(equalTo: navBarExtensionView.bottomAnchor, constant: 0),
             conversationsAnimationContainer.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
             conversationsAnimationContainer.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
-            conversationsAnimationContainer.heightAnchor.constraint(equalToConstant: conversationsAnimationContainer.containerHeight)
+            conversationsAnimationContainer.heightAnchor.constraint(equalToConstant: containerHeight)
 
         ].forEach({ $0.isActive = true })
         
-        conversationsAnimationContainer.setNeedsLayout() //Needs to be called so the animationView and animationTitle can be configured properly
-        conversationsAnimationContainer.layoutIfNeeded() //Needs to be called so the animationView and animationTitle can be configured properly
-        conversationsAnimationContainer.configureAnimationView()
-        conversationsAnimationContainer.configureAnimationTitle()
+        conversationsAnimationContainer.containerHeight = containerHeight
         
         //If the conversations are being loaded for the first time
         if conversationsLoading {
@@ -594,13 +597,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
     
     private func configureNewConversationButton () {
         
-        newConversationButton.addTarget(self, action: #selector(newMessageButtonPressed), for: .touchUpInside)
-        newConversationButton.backgroundColor = UIColor(hexString: "222222")
-        newConversationButton.setImage(UIImage(named: "plus 2"), for: .normal)
-        newConversationButton.tintColor = .white
-        
         view.addSubview(newConversationButton)
-        
         newConversationButton.translatesAutoresizingMaskIntoConstraints = false
         
         [
@@ -617,6 +614,13 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         newConversationButton.layer.shadowRadius = 2
         newConversationButton.layer.shadowOffset = CGSize(width: 0, height: 1)
         newConversationButton.layer.shadowOpacity = 0.65
+        
+        newConversationButton.backgroundColor = UIColor(hexString: "222222")
+        newConversationButton.tintColor = .white
+        newConversationButton.setImage(UIImage(named: "plus 2"/*"chat"*/), for: .normal)
+        newConversationButton.addTarget(self, action: #selector(newMessageButtonPressed), for: .touchUpInside)
+    
+//        newConversationButton.imageEdgeInsets = UIEdgeInsets(top: 15.5, left: 15.5, bottom: 15.5, right: 15.5)
     }
     
     

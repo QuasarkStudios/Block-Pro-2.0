@@ -110,7 +110,7 @@ class FirebaseAuthentication {
                             }
                         })
                         
-                        currentUser.profilePictureURL = snapshot?["profilePicture"] as? String
+//                        currentUser.profilePictureURL = snapshot?["profilePicture"] as? String
                         
                         completion(nil)
                     }

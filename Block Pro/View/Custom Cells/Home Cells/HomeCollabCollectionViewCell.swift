@@ -13,15 +13,13 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
     
     let collabContainer = UIView()
     
-    var coverPhoto = ProfilePicture(profilePic: UIImage(named: "Mountains"), shadowColor: UIColor.clear.cgColor, borderWidth: 0)
+    let coverPhoto = ProfilePicture(profilePic: UIImage(named: "Mountains")!, shadowRadius: 0, shadowOpacity: 0.35, borderColor: UIColor(hexString: "F4F4F4", withAlpha: 0.1)!.cgColor, borderWidth: 0)
     
     let nameLabel = UILabel()
     let deadlineLabel = UILabel()
     
     let membersLabel = UILabel()
     var memberStackView = UIStackView()
-    
-//    lazy var progressCircle: ProgressCircles = ProgressCircles(radius: 38.5, lineWidth: 7, strokeColor: calcCollabProgress() != 1 ? UIColor(hexString: "222222")!.cgColor : UIColor(hexString: "2ECC70", withAlpha: 0.80)!.cgColor, strokeEnd: calcCollabProgress())
     
     var progressCircle: ProgressCircles?
     let progressLabel = UILabel()
@@ -67,16 +65,15 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         configureNameLabel()
         configureDeadlineLabel()
         
-//        configureProgressCircle()
-//        configureProgressLabel()
-//        configureCheckBox()
-        
         configureMembersLabel()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    
+    //MARK: - Configure Collab Container
     
     private func configureCollabContainer () {
         
@@ -100,6 +97,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         collabContainer.clipsToBounds = true
     }
     
+    
+    //MARK: - Configure Cover Photo
+    
     private func configureCoverPhoto () {
         
         if coverPhoto.superview == nil {
@@ -117,6 +117,7 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             ].forEach({ $0.isActive = true })
         }
         
+        //If there is a cover photo for this collab
         if let collab = collab, collab.coverPhotoID != nil {
             
             coverPhoto.alpha = 1
@@ -132,6 +133,7 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             retrieveCoverPhoto(collab)
         }
         
+        //If there is not a cover photo for this collab
         else {
             
             coverPhoto.alpha = 0
@@ -149,6 +151,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             coverPhoto.layer.borderWidth = 0
         }
     }
+    
+    
+    //MARK: - Configure Name Label
     
     private func configureNameLabel () {
         
@@ -171,6 +176,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         nameLabel.textAlignment = .left
     }
     
+    
+    //MARK: - Configure Deadline Label
+    
     private func configureDeadlineLabel () {
         
         collabContainer.addSubview(deadlineLabel)
@@ -187,6 +195,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         deadlineLabelLeadingConstraintWithContainer = deadlineLabel.leadingAnchor.constraint(equalTo: collabContainer.leadingAnchor, constant: 20)
         deadlineLabelLeadingConstraintWithCoverPhoto = deadlineLabel.leadingAnchor.constraint(equalTo: coverPhoto.trailingAnchor, constant: 20)
     }
+    
+    
+    //MARK: - Configure Members Label
     
     private func configureMembersLabel () {
         
@@ -209,22 +220,24 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         membersLabel.textColor = .black
     }
     
+    
+    //MARK: - Configure Members StackView
+    
     private func configureMemberStackView () {
         
         memberStackView.removeFromSuperview()
         
         if var members = collab?.currentMembersIDs {
             
+            //If the currentUser isn't the only member in this collab
             if members.count > 1 {
                 
                 members.removeAll(where: { $0 == currentUser.userID })
             }
             
-//            memberStackView.arrangedSubviews.forEach({ $0.removeFromSuperview() })
-            
             let stackViewWidth = (members.count * 38) - ((members.count - 1) * 19)
             
-            /*let*/ memberStackView = UIStackView(frame: CGRect(x: 20, y: 140, width: CGFloat(stackViewWidth), height: 38))
+            memberStackView = UIStackView(frame: CGRect(x: 20, y: 140, width: CGFloat(stackViewWidth), height: 38))
             memberStackView.alignment = .center
             memberStackView.distribution = .fillProportionally
             memberStackView.axis = .horizontal
@@ -235,10 +248,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             for member in members {
                 
                 let profilePicOutline = UIView()
+                profilePicOutline.backgroundColor = memberCount == 0 ? .clear : .white
                 profilePicOutline.layer.cornerRadius = 0.5 * 38
                 profilePicOutline.clipsToBounds = true
-                
-                profilePicOutline.backgroundColor = memberCount == 0 ? .clear : .white
                 
                 var profilePicture: ProfilePicture
                 
@@ -272,57 +284,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
                 
                 ].forEach({ $0.isActive = true })
                 
-                //Setting the profile picture image
-                if member == currentUser.userID {
+                retrieveMembersProfilePic(member) { (profilePic) in
                     
-                    if currentUser.profilePictureImage != nil {
-                        
-                        profilePicture.profilePic = currentUser.profilePictureImage
-                    }
-                    
-                    else {
-                        
-                        firebaseStorage.retrieveUserProfilePicFromStorage(userID: currentUser.userID) { (profilePic, _) in
-                            
-                            profilePicture.profilePic = profilePic
-                        }
-                    }
-                }
-                
-                else if let friend = firebaseCollab.friends.first(where: { $0.userID == member }) {
-                    
-                    if friend.profilePictureImage != nil {
-                        
-                        profilePicture.profilePic = friend.profilePictureImage
-                    }
-                    
-                    else {
-                        
-                        firebaseStorage.retrieveUserProfilePicFromStorage(userID: friend.userID) { [weak self] (profilePic, userID) in
-                            
-                            profilePicture.profilePic = profilePic
-                            
-                            if let friendIndex = self?.firebaseCollab.friends.firstIndex(where: { $0.userID == userID }) {
-                                
-                                self?.firebaseCollab.friends[friendIndex].profilePictureImage = profilePic
-                            }
-                        }
-                    }
-                }
-
-                else if let memberProfilePic = firebaseCollab.membersProfilePics[member] {
-                    
-                    profilePicture.profilePic = memberProfilePic
-                }
-
-                else {
-
-                    firebaseStorage.retrieveUserProfilePicFromStorage(userID: member) { [weak self] (retrievedProfilePic, userID) in
-                        
-                        profilePicture.profilePic = retrievedProfilePic
-
-                        self?.firebaseCollab.cacheMemberProfilePics(userID: member, profilePic: retrievedProfilePic)
-                    }
+                    profilePicture.profilePic = profilePic
                 }
                 
                 memberCount += 1
@@ -331,6 +295,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             collabContainer.addSubview(memberStackView)
         }
     }
+    
+    
+    //MARK: - Configure Progress Circle
     
     private func configureProgressCircle () {
         
@@ -356,34 +323,8 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             progressCircle?.shapeLayer.strokeColor = calcCollabProgress() != 1 ? UIColor(hexString: "222222")!.cgColor : UIColor(hexString: "2ECC70", withAlpha: 0.80)!.cgColor
             progressCircle?.shapeLayer.strokeEnd = calcCollabProgress()
         }
-        
-//        progressCircle.alpha = 0
-        
-//        if progressCircle == nil {
-//
-//            progressCircle = ProgressCircles(radius: 38.5, lineWidth: 7, strokeColor: calcCollabProgress() != 1 ? UIColor(hexString: "222222")!.cgColor : UIColor(hexString: "2ECC70", withAlpha: 0.80)!.cgColor, strokeEnd: calcCollabProgress())
-//
-//            self.collabContainer.addSubview(progressCircle!)
-//            progressCircle!.translatesAutoresizingMaskIntoConstraints = false
-//
-//            [
-//
-//                progressCircle!.trailingAnchor.constraint(equalTo: collabContainer.trailingAnchor, constant: -15),
-//                progressCircle!.topAnchor.constraint(equalTo: coverPhoto.bottomAnchor, constant: 22.5),
-//                progressCircle!.widthAnchor.constraint(equalToConstant: 77),
-//                progressCircle!.heightAnchor.constraint(equalToConstant: 77)
-//
-//            ].forEach({ $0.isActive = true })
-//
-//            progressCircle!.alpha = 0
-//        }
-//
-//        else {
-//
-//            progressCircle?.shapeLayer.strokeColor = calcCollabProgress() != 1 ? UIColor(hexString: "222222")!.cgColor : UIColor(hexString: "2ECC70", withAlpha: 0.80)!.cgColor
-//            progressCircle?.shapeLayer.strokeEnd = calcCollabProgress()
-//        }
     }
+    
     
     //MARK: - Configure Progress Label
     
@@ -412,31 +353,10 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         }
         
         setProgressLabelText()
-        
-//        progressLabel.text = "62%"
-        
-//        if let circle = progressCircle, progressLabel.superview == nil {
-//
-//            collabContainer.addSubview(progressLabel)
-//            progressLabel.translatesAutoresizingMaskIntoConstraints = false
-//
-//
-//
-//            [
-//
-//                progressLabel.centerXAnchor.constraint(equalTo: circle.centerXAnchor, constant: 0),
-//                progressLabel.centerYAnchor.constraint(equalTo: circle.centerYAnchor, constant: 0),
-//                progressLabel.widthAnchor.constraint(equalToConstant: 40),
-//                progressLabel.heightAnchor.constraint(equalToConstant: 40)
-//
-//            ].forEach({ $0.isActive = true })
-//
-//            progressLabel.alpha = 0
-//            progressLabel.font = UIFont(name: "Poppins-SemiBoldItalic", size: 20)
-//            progressLabel.textColor = .black
-//            progressLabel.textAlignment = .center
-//        }
     }
+    
+    
+    //MARK: - Configure Check Box
     
     private func configureCheckBox () {
             
@@ -465,6 +385,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    
+    //MARK: - Retrieve Cover Photo
+    
     private func retrieveCoverPhoto (_ collab: Collab) {
         
         if let collabIndex = firebaseCollab.collabs.firstIndex(where: { $0.collabID == collab.collabID }) {
@@ -472,13 +395,15 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             if let cover = firebaseCollab.collabs[collabIndex].coverPhoto {
                 
                 coverPhoto.profilePic = cover
-                coverPhoto.layer.shadowColor = UIColor(hexString: "39434A")!.cgColor
+                coverPhoto.layer.shadowRadius = 2
                 coverPhoto.layer.borderWidth = 1
             }
             
             else {
                 
                 coverPhoto.profilePic = UIImage(named: "Mountains")
+                coverPhoto.layer.shadowRadius = 0
+                coverPhoto.layer.borderWidth = 0
                 
                 firebaseStorage.retrieveCollabCoverPhoto(collabID: collab.collabID) { [weak self] (cover, error) in
                     
@@ -493,7 +418,7 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
                         if collab.collabID == self?.collab?.collabID {
                             
                             self?.coverPhoto.profilePic = cover
-                            self?.coverPhoto.layer.shadowColor = UIColor(hexString: "39434A")!.cgColor
+                            self?.coverPhoto.layer.shadowRadius = 2
                             self?.coverPhoto.layer.borderWidth = 1
                             
                             self?.firebaseCollab.collabs[collabIndex].coverPhoto = cover
@@ -512,6 +437,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             }
         }
     }
+    
+    
+    //MARK: - Set Daedline Text
     
     private func setDeadlineText () {
         
@@ -535,6 +463,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    
+    //MARK: - Set Members Text
+    
     private func setMembersText () {
         
         if let members = collab?.currentMembersIDs {
@@ -555,6 +486,66 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             }
         }
     }
+    
+    //MARK: - Retrieve Profile Pic
+    
+    private func retrieveMembersProfilePic (_ member: String, completion: @escaping (( _ profilePic: UIImage?) -> Void)) {
+    
+        if member == currentUser.userID {
+            
+            if let profilePic = currentUser.profilePictureImage {
+                
+                completion(profilePic)
+            }
+            
+            else {
+                
+                firebaseStorage.retrieveUserProfilePicFromStorage(userID: currentUser.userID) { (profilePic, _) in
+                    
+                    completion(profilePic)
+                }
+            }
+        }
+        
+        else if let friend = firebaseCollab.friends.first(where: { $0.userID == member }) {
+            
+            if let profilePic = friend.profilePictureImage {
+                
+                completion(profilePic)
+            }
+            
+            else {
+                
+                firebaseStorage.retrieveUserProfilePicFromStorage(userID: friend.userID) { [weak self] (profilePic, userID) in
+                    
+                    completion(profilePic)
+                    
+                    if let friendIndex = self?.firebaseCollab.friends.firstIndex(where: { $0.userID == userID }) {
+                        
+                        self?.firebaseCollab.friends[friendIndex].profilePictureImage = profilePic
+                    }
+                }
+            }
+        }
+
+        else if let profilePic = firebaseCollab.membersProfilePics[member] {
+            
+            completion(profilePic)
+        }
+
+        else {
+
+            firebaseStorage.retrieveUserProfilePicFromStorage(userID: member) { [weak self] (profilePic, userID) in
+                
+                completion(profilePic)
+
+                self?.firebaseCollab.cacheMemberProfilePics(userID: member, profilePic: profilePic)
+            }
+        }
+    }
+    
+    
+    //MARK: - Set Progress Label Text
     
     private func setProgressLabelText () {
         
@@ -577,6 +568,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             progressLabel.text = "\(Int(completedPercentage))%"
         }
     }
+    
+    
+    //MARK: - Calc Collab Progress
     
     private func calcCollabProgress () -> CGFloat {
         
@@ -610,6 +604,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    
+    //MARK: - Expand Cell
+    
     func expandCell (animate: Bool = true) {
     
         progressCircle?.shapeLayer.strokeColor = calcCollabProgress() != 1 ? UIColor(hexString: "222222")!.cgColor : UIColor(hexString: "2ECC70", withAlpha: 0.80)!.cgColor
@@ -627,6 +624,9 @@ class HomeCollabCollectionViewCell: UICollectionViewCell {
             self.checkBox.alpha = self.calcCollabProgress() == 1 ? 1 : 0
         }
     }
+    
+    
+    //MARK: - Shrink Cell
     
     func shrinkCell (animate: Bool = true) {
         

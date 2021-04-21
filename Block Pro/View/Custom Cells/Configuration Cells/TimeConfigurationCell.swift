@@ -1530,7 +1530,7 @@ extension TimeConfigurationCell: JTAppleCalendarViewDataSource, JTAppleCalendarV
             handleCellVisibility(cell: cell, cellState: cellState)
             handleCellDotView(cell: cell, cellState: cellState)
             handleCellSelection(cell: cell, cellState: cellState)
-//            handleCellTextColor(cell: cell, cellState: cellState)
+            handleCellText(cell: cell, cellState: cellState)
     }
     
     
@@ -1584,9 +1584,6 @@ extension TimeConfigurationCell: JTAppleCalendarViewDataSource, JTAppleCalendarV
     
     private func handleCellSelection (cell: DateCell, cellState: CellState) {
         
-        cell.dateLabel.textColor = cellState.isSelected ? .white : UIColor(hexString: "222222")
-        cell.dateLabel.font = cellState.isSelected ? UIFont(name: "Poppins-SemiBold", size: 19) : UIFont(name: "Poppins-Medium", size: 19)
-        
         cell.singleSelectionView.isHidden = cellState.isSelected ? false : true
         cell.rangeSelectionView.isHidden = true
         
@@ -1603,34 +1600,23 @@ extension TimeConfigurationCell: JTAppleCalendarViewDataSource, JTAppleCalendarV
     }
     
     
-//    //MARK: - Handle Cell Text Color
-//
-//    func handleCellTextColor (cell: DateCell, cellState: CellState) {
-//
-//        if let collabStartTime = collab?.dates["startTime"], let deadline = collab?.dates["deadline"] {
-//
-//            var startTimeDateComponents = calendar.dateComponents(in: .current, from: collabStartTime)
-//            startTimeDateComponents.hour = 0
-//            startTimeDateComponents.minute = 0
-//
-//            var deadlineDateComponents = calendar.dateComponents(in: .current, from: deadline)
-//            deadlineDateComponents.hour = 23
-//            deadlineDateComponents.minute = 55
-//
-//            if let startTimeDate = startTimeDateComponents.date, let deadlineDate = deadlineDateComponents.date {
-//
-//                if cellState.date < startTimeDate || cellState.date > deadlineDate {
-//
-//                    cell.dateLabel.textColor = .placeholderText
-//                }
-//
-//                else {
-//
-//                    cell.dateLabel.textColor = .black
-//                }
-//            }
-//        }
-//    }
+    //MARK: - Handle Cell Text
+    
+    private func handleCellText (cell: DateCell, cellState: CellState) {
+        
+        //If this is the cell for the currentDate
+        if calendar.isDate(cellState.date, inSameDayAs: Date()) {
+            
+            cell.dateLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)
+            cell.dateLabel.textColor = UIColor.systemRed.flatten().lighten(byPercentage: 0.1)
+        }
+        
+        else {
+            
+            cell.dateLabel.font = cellState.isSelected ? UIFont(name: "Poppins-SemiBold", size: 19) : UIFont(name: "Poppins-Medium", size: 19)
+            cell.dateLabel.textColor = cellState.isSelected ? .white : UIColor(hexString: "222222")
+        }
+    }
 }
 
 

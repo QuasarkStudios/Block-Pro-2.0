@@ -19,16 +19,13 @@ class HomeHeaderView: UIView {
     let calendarView = JTAppleCalendarView()
     
     let personalLabel = UILabel()
-    
     let scheduleCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
     
     let collabContainer = UIView()
-    
     let collabsLabel = UILabel()
     let addCollabButton = UIButton(type: .system)
     
     let currentUser = CurrentUser.sharedInstance
-    
     let firebaseStorage = FirebaseStorage()
     
     let calendar = Calendar.current
@@ -44,12 +41,11 @@ class HomeHeaderView: UIView {
     var deadlinesForCollabs: [Date]? {
         didSet {
             
+            //Small delay allows the calendarView to load data correctly upon its first presentation
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 
                 self.calendarView.reloadData()
             }
-            
-//            calendarView.reloadData()
         }
     }
     
@@ -84,6 +80,9 @@ class HomeHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+    //MARK: - Configure Profile Picture
+    
     private func configureProfilePicture () {
         
         self.addSubview(profilePicture)
@@ -100,6 +99,9 @@ class HomeHeaderView: UIView {
         
         retrieveProfilePicture()
     }
+    
+    
+    //MARK: - Configure Profile Picture Progress View
     
     private func configureProfilePictureProgressView () {
         
@@ -120,6 +122,9 @@ class HomeHeaderView: UIView {
         profilePictureProgressView.layer.cornerRadius = 30
         profilePictureProgressView.clipsToBounds = true
     }
+    
+    
+    //MARK: - Configure Welcome Label
     
     private func configureWelcomeLabel () {
         
@@ -143,6 +148,9 @@ class HomeHeaderView: UIView {
         setWelcomeLabelText()
     }
     
+    
+    //MARK: - Configure Calendar Header
+    
     private func configureCalendarHeader () {
         
         self.addSubview(calendarHeaderLabel)
@@ -161,6 +169,7 @@ class HomeHeaderView: UIView {
         calendarHeaderLabel.textColor = .black
         calendarHeaderLabel.textAlignment = .left
     }
+    
     
     //MARK: - Configure Calendar View
     
@@ -207,6 +216,9 @@ class HomeHeaderView: UIView {
         calendarView.selectDates([selectedDate])
     }
     
+    
+    //MARK: - Configure Personal Label
+    
     private func configurePersonalLabel () {
         
         self.addSubview(personalLabel)
@@ -226,6 +238,9 @@ class HomeHeaderView: UIView {
         personalLabel.textAlignment = .left
         personalLabel.text = "Personal"
     }
+    
+    
+    //MARK: - Configure Collection View
     
     private func configureCollectionView (_ collectionView: UICollectionView) {
         
@@ -270,6 +285,9 @@ class HomeHeaderView: UIView {
         }
     }
     
+    
+    //MARK: - Configure Collab Container
+    
     private func configureCollabContainer () {
         
         self.addSubview(collabContainer)
@@ -287,6 +305,9 @@ class HomeHeaderView: UIView {
         collabContainer.backgroundColor = .white
     }
     
+    
+    //MARK: - Configure Collabs Label
+    
     private func configureCollabsLabel () {
         
         collabContainer.addSubview(collabsLabel)
@@ -295,7 +316,6 @@ class HomeHeaderView: UIView {
         [
         
             collabsLabel.leadingAnchor.constraint(equalTo: collabContainer.leadingAnchor, constant: 30),
-//            collabsLabel.topAnchor.constraint(equalTo: collabContainer.topAnchor, constant: 22.5),
             collabsLabel.centerYAnchor.constraint(equalTo: collabContainer.centerYAnchor, constant: 0),
             collabsLabel.widthAnchor.constraint(equalToConstant: 125),
             collabsLabel.heightAnchor.constraint(equalToConstant: 25)
@@ -307,6 +327,9 @@ class HomeHeaderView: UIView {
         collabsLabel.textAlignment = .left
         collabsLabel.text = "Collabs"
     }
+    
+    
+    //MARK: - Configure Add Collab Button
     
     private func configureAddCollabButton () {
         
@@ -333,6 +356,9 @@ class HomeHeaderView: UIView {
         addCollabButton.addTarget(self, action: #selector(addCollabButtonPressed), for: .touchUpInside)
     }
     
+    
+    //MARK: - Retrieve Profile Picture
+    
     private func retrieveProfilePicture (animate: Bool = true) {
         
         showProfilePictureLoadingProgress = true
@@ -356,6 +382,9 @@ class HomeHeaderView: UIView {
             self?.showProfilePictureLoadingProgress = false
         }
     }
+    
+    
+    //MARK: - Set Welcome Label Text
     
     private func setWelcomeLabelText () {
         
@@ -390,6 +419,9 @@ class HomeHeaderView: UIView {
         }
     }
     
+    
+    //MARK: - Scroll to Schedule Cell for Date
+    
     func scrollToScheduleCellForDate () {
         
         formatter.dateFormat = "yyyy MM dd"
@@ -397,6 +429,9 @@ class HomeHeaderView: UIView {
         let differenceInDates = self.calendar.dateComponents([.day], from: formatter.date(from: "2010 01 01") ?? Date(), to: selectedDate).day
         scheduleCollectionView.scrollToItem(at: IndexPath(item: differenceInDates ?? 0, section: 0), at: .centeredHorizontally, animated: true)
     }
+    
+    
+    //MARK: - Add Collab Button Pressed
     
     @objc private func addCollabButtonPressed () {
         
@@ -406,6 +441,9 @@ class HomeHeaderView: UIView {
         }
     }
 }
+
+
+//MARK: - CalendarView DataSource & Delegate Extension
 
 extension HomeHeaderView: JTAppleCalendarViewDataSource, JTAppleCalendarViewDelegate {
     
@@ -553,6 +591,9 @@ extension HomeHeaderView: JTAppleCalendarViewDataSource, JTAppleCalendarViewDele
         }
     }
 }
+
+
+//MARK: - CollectionView DataSource & Delegate Extension
 
 extension HomeHeaderView: UICollectionViewDataSource, UICollectionViewDelegate {
     

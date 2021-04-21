@@ -60,5 +60,10 @@ class iProgressView: UIView {
             
             self.showProgress()
         }
+        
+        else if let view = parentView as? HomeSidebarViewController, !view.currentUser.profilePictureRetrieved {
+            
+            self.showProgress()
+        }
     }
 }

@@ -31,6 +31,7 @@ class ProfileSidebarViewController: UIViewController {
     
     var viewInitiallyLoaded: Bool = false
     
+    weak var homeViewController: AnyObject?
     weak var moveToProfileDelegate: MoveToProfile?
     
     override func viewDidLoad() {
@@ -45,7 +46,7 @@ class ProfileSidebarViewController: UIViewController {
         dismissButton.addGestureRecognizer(pan)
         
         //If the profile picture hasn't finished downloading from Firebase
-        if currentUser.profilePictureURL != nil && currentUser.profilePictureImage == nil {
+        if /*currentUser.profilePictureURL != nil && */currentUser.profilePictureImage == nil {
             
             //Adds an observor watching for when the profile pic finishes loading
             NotificationCenter.default.addObserver(self, selector: #selector(profilePicLoaded), name: .didDownloadProfilePic, object: nil)
@@ -188,7 +189,15 @@ class ProfileSidebarViewController: UIViewController {
         
         animateSideBar(toValue: -290) {
             
-            self.moveToProfileDelegate?.moveToProfileView()
+            self.dismiss(animated: false) {
+                
+                if let viewController = self.homeViewController as? HomeViewController {
+                    
+                    viewController.moveToProfileView()
+                }
+            }
+            
+//            self.moveToProfileDelegate?.moveToProfileView()
         }
     }
     

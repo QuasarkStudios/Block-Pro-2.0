@@ -475,6 +475,7 @@ extension CollabCalendarView: JTAppleCalendarViewDataSource, JTAppleCalendarView
             handleCellVisibilty(cell: cell, cellState: cellState)
             handleCellDotView(cell: cell, cellState: cellState)
             handleCellSelection(cell: cell, cellState: cellState)
+            handleCellText(cell: cell, cellState: cellState)
     }
     
     
@@ -542,8 +543,6 @@ extension CollabCalendarView: JTAppleCalendarViewDataSource, JTAppleCalendarView
         
         if cellState.isSelected {
             
-            cell.dateLabel.textColor = .black
-            
             cell.singleSelectionView.backgroundColor = .white
             cell.singleSelectionView.layer.cornerRadius = 0.5 * cell.singleSelectionView.frame.width
             cell.singleSelectionView.isHidden = false
@@ -562,9 +561,24 @@ extension CollabCalendarView: JTAppleCalendarViewDataSource, JTAppleCalendarView
         
         else {
             
-            cell.dateLabel.textColor = .white
-            
             cell.singleSelectionView.isHidden = true
+        }
+    }
+    
+    
+    //MARK: - Handle Cell Text
+    
+    private func handleCellText (cell: DateCell, cellState: CellState) {
+        
+        //If this is the cell for the currentDate
+        if calendar.isDate(cellState.date, inSameDayAs: Date()) {
+            
+            cell.dateLabel.textColor = UIColor.systemRed.flatten().lighten(byPercentage: 0.1)
+        }
+        
+        else {
+            
+            cell.dateLabel.textColor = cellState.isSelected ? .black : .white
         }
     }
 }

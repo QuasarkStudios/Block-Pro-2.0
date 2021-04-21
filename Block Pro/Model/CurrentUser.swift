@@ -18,7 +18,7 @@ class CurrentUser {
     var username: String = ""
     var accountCreated: Date?
     
-    var profilePictureURL: String?
+    var profilePictureRetrieved: Bool = false
     var profilePictureImage: UIImage?
     
     var fcmToken: String = ""

@@ -207,7 +207,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ea8-dh-Iaa">
-                                <rect key="frame" x="112" y="363" width="151" height="30"/>
+                                <rect key="frame" x="118.66666666666669" y="363" width="138" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="xdm-2M-qpq"/>
                                 </constraints>

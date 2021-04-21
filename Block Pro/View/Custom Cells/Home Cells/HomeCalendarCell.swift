@@ -36,6 +36,7 @@ class HomeCalendarCell: UITableViewCell {
             
             DispatchQueue.main.async {
                 
+                //Will reload the calendar with the correct date for this cell
                 self.calendarView.reloadData(withanchor: nil) {
 
                     if let date = self.selectedDate {
@@ -290,6 +291,7 @@ extension HomeCalendarCell: JTAppleCalendarViewDataSource, JTAppleCalendarViewDe
     
     private func handleCellText (cell: DateCell, cellState: CellState) {
         
+        //If this is the cell for the currentDate
         if calendar.isDate(cellState.date, inSameDayAs: Date()) {
             
             cell.dateLabel.font = UIFont(name: "Poppins-SemiBold", size: 19)

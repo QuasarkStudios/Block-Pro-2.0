@@ -107,6 +107,7 @@ class FirebaseStorage {
                 
                 if userID == self.currentUser.userID {
                     
+                    self.currentUser.profilePictureRetrieved = true
                     self.currentUser.profilePictureImage = nil//UIImage(named: "DefaultProfilePic")!
                     
                     NotificationCenter.default.post(name: .didDownloadProfilePic, object: nil)
@@ -121,6 +122,7 @@ class FirebaseStorage {
                     
                     if userID == self.currentUser.userID {
                         
+                        self.currentUser.profilePictureRetrieved = true
                         self.currentUser.profilePictureImage = UIImage(data: imageData)
                         
                         NotificationCenter.default.post(name: .didDownloadProfilePic, object: nil)

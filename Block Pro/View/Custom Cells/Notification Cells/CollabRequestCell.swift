@@ -10,7 +10,7 @@ import Foundation
 
 class CollabRequestCell: UITableViewCell {
     
-    let coverPhoto = ProfilePicture(profilePic: UIImage(named: "Mountains"), shadowColor: UIColor.clear.cgColor, borderWidth: 0)
+    let coverPhoto = ProfilePicture(profilePic: UIImage(named: "Mountains")!, shadowRadius: 0, shadowOpacity: 0.35, borderColor: UIColor(hexString: "F4F4F4", withAlpha: 0.1)!.cgColor, borderWidth: 0)
     
     let nameLabel = UILabel()
     let deadlineLabel = UILabel()
@@ -430,13 +430,15 @@ class CollabRequestCell: UITableViewCell {
             if let cover = firebaseCollab.collabs[collabIndex].coverPhoto {
                 
                 coverPhoto.profilePic = cover
-                coverPhoto.layer.shadowColor = UIColor(hexString: "39434A")!.cgColor
+                coverPhoto.layer.shadowRadius = 2
                 coverPhoto.layer.borderWidth = 1
             }
             
             else {
                 
                 coverPhoto.profilePic = UIImage(named: "Mountains")
+                coverPhoto.layer.shadowRadius = 0
+                coverPhoto.layer.borderWidth = 0
                 
                 firebaseStorage.retrieveCollabCoverPhoto(collabID: collab.collabID) { [weak self] (cover, error) in
                     
@@ -447,11 +449,24 @@ class CollabRequestCell: UITableViewCell {
                     
                     else {
                         
-                        self?.coverPhoto.profilePic = cover
-                        self?.coverPhoto.layer.shadowColor = UIColor(hexString: "39434A")!.cgColor
-                        self?.coverPhoto.layer.borderWidth = 1
+                        //If false, this cell was likely reused for another collab before the cover picture was finished being retrieved for it's previous collab
+                        if collab.collabID == self?.collabRequest?.collabID {
+                            
+                            self?.coverPhoto.profilePic = cover
+                            self?.coverPhoto.layer.shadowRadius = 2
+                            self?.coverPhoto.layer.borderWidth = 1
+                            
+                            self?.firebaseCollab.collabs[collabIndex].coverPhoto = cover
+                        }
                         
-                        self?.firebaseCollab.collabs[collabIndex].coverPhoto = cover
+                        else {
+                            
+                            //Caching the cover photo for the previous collab
+                            if let previousCollabIndex = self?.firebaseCollab.collabs.firstIndex(where: { $0.collabID == collab.collabID }) {
+                                
+                                self?.firebaseCollab.collabs[previousCollabIndex].coverPhoto = cover
+                            }
+                        }
                     }
                 }
             }
