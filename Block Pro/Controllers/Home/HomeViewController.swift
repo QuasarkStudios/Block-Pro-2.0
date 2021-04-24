@@ -8,6 +8,7 @@
 
 import UIKit
 import Lottie
+import SVProgressHUD
 
 class HomeViewController: UIViewController {
     
@@ -25,6 +26,7 @@ class HomeViewController: UIViewController {
     lazy var tabBar = CustomTabBar.sharedInstance
     
     let currentUser = CurrentUser.sharedInstance
+    let firebaseAuth = FirebaseAuthentication()
     let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseBlock = FirebaseBlock.sharedInstance
     
@@ -1008,6 +1010,34 @@ class HomeViewController: UIViewController {
     }
     
     
+    //MARK: - Prepare for Segue
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "moveToCollabView" {
+            
+            let collabVC = segue.destination as! CollabViewController
+            collabVC.collab = selectedCollab
+            
+            let backButtonItem = UIBarButtonItem()
+            backButtonItem.title = ""
+            self.navigationItem.backBarButtonItem = backButtonItem
+        }
+        
+        else if segue.identifier == "moveToPersonalBlocksView" {
+            
+            let blocksVC = segue.destination as! BlockViewController
+            blocksVC.formatter = formatter
+            blocksVC.selectedDate = selectedDate
+            blocksVC.blocks = blocks
+            
+            let backBarItem = UIBarButtonItem()
+            backBarItem.title = ""
+            self.navigationItem.backBarButtonItem = backBarItem
+        }
+    }
+    
+    
     //MARK: - Profile Picture Button Pressed
     
     @objc private func profilePictureButtonPressed () {
@@ -1091,34 +1121,6 @@ class HomeViewController: UIViewController {
         
         //Handling the visibility of the animationView
         presentAnimationView()
-    }
-    
-    
-    //MARK: - Prepare for Segue
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == "moveToCollabView" {
-            
-            let collabVC = segue.destination as! CollabViewController
-            collabVC.collab = selectedCollab
-            
-            let backButtonItem = UIBarButtonItem()
-            backButtonItem.title = ""
-            self.navigationItem.backBarButtonItem = backButtonItem
-        }
-        
-        else if segue.identifier == "moveToPersonalBlocksView" {
-            
-            let blocksVC = segue.destination as! BlockViewController
-            blocksVC.formatter = formatter
-            blocksVC.selectedDate = selectedDate
-            blocksVC.blocks = blocks
-            
-            let backBarItem = UIBarButtonItem()
-            backBarItem.title = ""
-            self.navigationItem.backBarButtonItem = backBarItem
-        }
     }
 }
 
@@ -1459,19 +1461,24 @@ extension HomeViewController: SidebarProtocol {
     
     func userSignedOut() {
         
-//        firebaseAuth.logOutUser { (error) in
-//
-//            if error != nil {
-//
-//                SVProgressHUD.showError(withStatus: error?.localizedDescription)
-//            }
-//
-//            else {
-//
-//                SVProgressHUD.showSuccess(withStatus: "Signed Out")
-//            }
-//        }
+        SVProgressHUD.show()
         
-        print("signed out")
+        firebaseAuth.logOutUser { (error) in
+
+            if error != nil {
+
+                SVProgressHUD.showError(withStatus: error?.localizedDescription)
+            }
+
+            else {
+
+                self.navigationController?.popToRootViewController(animated: true)
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    
+                    SVProgressHUD.showSuccess(withStatus: "You've been signed out")
+                }
+            }
+        }
     }
 }

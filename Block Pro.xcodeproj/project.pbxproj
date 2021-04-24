@@ -14,10 +14,6 @@
 		0D0C8D9A2442488300EB51F7 /* Collab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0C8D992442488300EB51F7 /* Collab.swift */; };
 		0D0D0B4E25D1FDD400DE6FAD /* progress-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D0B4D25D1FDD400DE6FAD /* progress-animation.json */; };
 		0D0ECF3B243E5B0E00D947F4 /* previous_nextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ECF3A243E5B0E00D947F4 /* previous_nextButton.swift */; };
-		0D0ECF3F243E5FCF00D947F4 /* HomeCollabTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ECF3D243E5FCF00D947F4 /* HomeCollabTableViewCell.swift */; };
-		0D0ECF40243E5FCF00D947F4 /* HomeCollabTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0ECF3E243E5FCF00D947F4 /* HomeCollabTableViewCell.xib */; };
-		0D0ECF43243E6E9300D947F4 /* CollabCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ECF41243E6E9300D947F4 /* CollabCell.swift */; };
-		0D0ECF44243E6E9300D947F4 /* CollabCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D0ECF42243E6E9300D947F4 /* CollabCell.xib */; };
 		0D13AC02232DDBD40025EDC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D13AC01232DDBD40025EDC3 /* Assets.xcassets */; };
 		0D153CE82433CD2C00741B67 /* Firebase+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D153CE72433CD2C00741B67 /* Firebase+Storage.swift */; };
 		0D153CEA2435B85B00741B67 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D153CE92435B85B00741B67 /* ProfileViewController.swift */; };
@@ -93,7 +89,6 @@
 		0D589DEC2458C7C2005AC7BC /* CollabRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D589DEB2458C7C2005AC7BC /* CollabRequest.swift */; };
 		0D589DEE24593D4A005AC7BC /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D589DED24593D4A005AC7BC /* Message.swift */; };
 		0D589DF024593FB6005AC7BC /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D589DEF24593FB6005AC7BC /* String+Extension.swift */; };
-		0D5BEFE723E286DA00B5DCE5 /* HomeViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5BEFE623E286DA00B5DCE5 /* HomeViewController2.swift */; };
 		0D5FD0BC25BC014D00E9BA2D /* SelectedBlock.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D5FD0BB25BC014D00E9BA2D /* SelectedBlock.storyboard */; };
 		0D5FD0BF25BC01C100E9BA2D /* SelectedBlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5FD0BE25BC01C100E9BA2D /* SelectedBlockViewController.swift */; };
 		0D5FD0C325BC027700E9BA2D /* BlockSelectedProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5FD0C225BC027700E9BA2D /* BlockSelectedProtocols.swift */; };
@@ -126,9 +121,8 @@
 		0D687DB026159F6300A9BB7D /* notifications-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D687DAF26159F6300A9BB7D /* notifications-animation.json */; };
 		0D687DB72617CEA100A9BB7D /* CollabRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D687DB62617CEA100A9BB7D /* CollabRequestCell.swift */; };
 		0D687DBB261AD40400A9BB7D /* CollabRequestProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D687DBA261AD40400A9BB7D /* CollabRequestProtocol.swift */; };
-		0D70F91B2428730F00407E4A /* ProfileSidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D70F91A2428730F00407E4A /* ProfileSidebarViewController.swift */; };
 		0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */; };
-		0D70F91F2429BF0800407E4A /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D70F91E2429BF0800407E4A /* LogInViewController.swift */; };
+		0D70F91F2429BF0800407E4A /* LogInViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D70F91E2429BF0800407E4A /* LogInViewController2.swift */; };
 		0D716262262BA773006FC1AB /* conversation-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D716261262BA772006FC1AB /* conversation-animation.json */; };
 		0D716265262BBBDE006FC1AB /* HomeSidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D716264262BBBDE006FC1AB /* HomeSidebarViewController.swift */; };
 		0D716268262C1833006FC1AB /* SidebarProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D716267262C1833006FC1AB /* SidebarProtocol.swift */; };
@@ -158,10 +152,6 @@
 		0D78657F23E4B56B00BD4C4D /* Poppins-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656D23E4B56800BD4C4D /* Poppins-ExtraBoldItalic.ttf */; };
 		0D78658023E4B56B00BD4C4D /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656E23E4B56A00BD4C4D /* Poppins-Thin.ttf */; };
 		0D78658123E4B56B00BD4C4D /* Poppins-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656F23E4B56B00BD4C4D /* Poppins-MediumItalic.ttf */; };
-		0D78658723E51C7D00BD4C4D /* HomeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78658523E51C7D00BD4C4D /* HomeTableViewCell.swift */; };
-		0D78658823E51C7D00BD4C4D /* HomeTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78658623E51C7D00BD4C4D /* HomeTableViewCell.xib */; };
-		0D78658B23E6928000BD4C4D /* PersonalCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78658923E6928000BD4C4D /* PersonalCell.swift */; };
-		0D78658C23E6928000BD4C4D /* PersonalCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D78658A23E6928000BD4C4D /* PersonalCell.xib */; };
 		0D78659923F5BBCE00BD4C4D /* PersonalRealmDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78659823F5BBCE00BD4C4D /* PersonalRealmDatabase.swift */; };
 		0D7865B523F7709500BD4C4D /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D7865B423F7709500BD4C4D /* Home.storyboard */; };
 		0D78684E2446920200A92DD1 /* NavBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78684D2446920200A92DD1 /* NavBar+Extension.swift */; };
@@ -173,6 +163,8 @@
 		0D7CD51D2433067A00BE1BE6 /* Firebase+Auth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7CD51C2433067A00BE1BE6 /* Firebase+Auth.swift */; };
 		0D7E1B78247435AC00BB8E58 /* MessageHomeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7E1B76247435AC00BB8E58 /* MessageHomeCell.swift */; };
 		0D7E1B79247435AC00BB8E58 /* MessageHomeCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D7E1B77247435AC00BB8E58 /* MessageHomeCell.xib */; };
+		0D7E5DE6262FE2FC00620D6B /* Launch-Log In Screen Illustration (Scaled).png in Resources */ = {isa = PBXBuildFile; fileRef = 0D7E5DE5262FE2FC00620D6B /* Launch-Log In Screen Illustration (Scaled).png */; };
+		0D7E5DE9262FF36100620D6B /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7E5DE8262FF36100620D6B /* LogInViewController.swift */; };
 		0D8096A0250AABBA00469934 /* PresentCopiedAnimationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D80969F250AABBA00469934 /* PresentCopiedAnimationProtocol.swift */; };
 		0D82281224D3B8CF00D0BBA0 /* LeaveConvoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D82281024D3B8CF00D0BBA0 /* LeaveConvoCell.swift */; };
 		0D82281324D3B8CF00D0BBA0 /* LeaveConvoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D82281124D3B8CF00D0BBA0 /* LeaveConvoCell.xib */; };
@@ -238,7 +230,6 @@
 		0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */; };
 		0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */; };
 		0DBFED69247C52B900EDFEC3 /* MessagingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */; };
-		0DC119CD24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC119CC24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift */; };
 		0DC2FADB25E493A400EF22DA /* CollabMemberProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC2FADA25E493A400EF22DA /* CollabMemberProfileViewController.swift */; };
 		0DC2FADE25E4956600EF22DA /* CollabMemberProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC2FADD25E4956600EF22DA /* CollabMemberProtocol.swift */; };
 		0DC7E71824CBAE8500306A83 /* CopiedAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC7E71724CBAE8500306A83 /* CopiedAnimationView.swift */; };
@@ -282,10 +273,6 @@
 		0D0C8D992442488300EB51F7 /* Collab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collab.swift; sourceTree = "<group>"; };
 		0D0D0B4D25D1FDD400DE6FAD /* progress-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "progress-animation.json"; sourceTree = "<group>"; };
 		0D0ECF3A243E5B0E00D947F4 /* previous_nextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = previous_nextButton.swift; sourceTree = "<group>"; };
-		0D0ECF3D243E5FCF00D947F4 /* HomeCollabTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeCollabTableViewCell.swift; sourceTree = "<group>"; };
-		0D0ECF3E243E5FCF00D947F4 /* HomeCollabTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeCollabTableViewCell.xib; sourceTree = "<group>"; };
-		0D0ECF41243E6E9300D947F4 /* CollabCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabCell.swift; sourceTree = "<group>"; };
-		0D0ECF42243E6E9300D947F4 /* CollabCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollabCell.xib; sourceTree = "<group>"; };
 		0D13AC01232DDBD40025EDC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0D153CE72433CD2C00741B67 /* Firebase+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Firebase+Storage.swift"; sourceTree = "<group>"; };
 		0D153CE92435B85B00741B67 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
@@ -363,7 +350,6 @@
 		0D589DEB2458C7C2005AC7BC /* CollabRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabRequest.swift; sourceTree = "<group>"; };
 		0D589DED24593D4A005AC7BC /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		0D589DEF24593FB6005AC7BC /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
-		0D5BEFE623E286DA00B5DCE5 /* HomeViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController2.swift; sourceTree = "<group>"; };
 		0D5FD0BB25BC014D00E9BA2D /* SelectedBlock.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SelectedBlock.storyboard; sourceTree = "<group>"; };
 		0D5FD0BE25BC01C100E9BA2D /* SelectedBlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedBlockViewController.swift; sourceTree = "<group>"; };
 		0D5FD0C225BC027700E9BA2D /* BlockSelectedProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockSelectedProtocols.swift; sourceTree = "<group>"; };
@@ -396,9 +382,8 @@
 		0D687DAF26159F6300A9BB7D /* notifications-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "notifications-animation.json"; sourceTree = "<group>"; };
 		0D687DB62617CEA100A9BB7D /* CollabRequestCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabRequestCell.swift; sourceTree = "<group>"; };
 		0D687DBA261AD40400A9BB7D /* CollabRequestProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabRequestProtocol.swift; sourceTree = "<group>"; };
-		0D70F91A2428730F00407E4A /* ProfileSidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSidebarViewController.swift; sourceTree = "<group>"; };
 		0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LogInRegister.storyboard; sourceTree = "<group>"; };
-		0D70F91E2429BF0800407E4A /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		0D70F91E2429BF0800407E4A /* LogInViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController2.swift; sourceTree = "<group>"; };
 		0D716261262BA772006FC1AB /* conversation-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conversation-animation.json"; sourceTree = "<group>"; };
 		0D716264262BBBDE006FC1AB /* HomeSidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSidebarViewController.swift; sourceTree = "<group>"; };
 		0D716267262C1833006FC1AB /* SidebarProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarProtocol.swift; sourceTree = "<group>"; };
@@ -428,10 +413,6 @@
 		0D78656D23E4B56800BD4C4D /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		0D78656E23E4B56A00BD4C4D /* Poppins-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Thin.ttf"; sourceTree = "<group>"; };
 		0D78656F23E4B56B00BD4C4D /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-MediumItalic.ttf"; sourceTree = "<group>"; };
-		0D78658523E51C7D00BD4C4D /* HomeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTableViewCell.swift; sourceTree = "<group>"; };
-		0D78658623E51C7D00BD4C4D /* HomeTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HomeTableViewCell.xib; sourceTree = "<group>"; };
-		0D78658923E6928000BD4C4D /* PersonalCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalCell.swift; sourceTree = "<group>"; };
-		0D78658A23E6928000BD4C4D /* PersonalCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PersonalCell.xib; sourceTree = "<group>"; };
 		0D78659823F5BBCE00BD4C4D /* PersonalRealmDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRealmDatabase.swift; sourceTree = "<group>"; };
 		0D7865B423F7709500BD4C4D /* Home.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		0D78684D2446920200A92DD1 /* NavBar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NavBar+Extension.swift"; sourceTree = "<group>"; };
@@ -443,6 +424,8 @@
 		0D7CD51C2433067A00BE1BE6 /* Firebase+Auth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Firebase+Auth.swift"; sourceTree = "<group>"; };
 		0D7E1B76247435AC00BB8E58 /* MessageHomeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageHomeCell.swift; sourceTree = "<group>"; };
 		0D7E1B77247435AC00BB8E58 /* MessageHomeCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageHomeCell.xib; sourceTree = "<group>"; };
+		0D7E5DE5262FE2FC00620D6B /* Launch-Log In Screen Illustration (Scaled).png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Launch-Log In Screen Illustration (Scaled).png"; sourceTree = "<group>"; };
+		0D7E5DE8262FF36100620D6B /* LogInViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
 		0D80969F250AABBA00469934 /* PresentCopiedAnimationProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentCopiedAnimationProtocol.swift; sourceTree = "<group>"; };
 		0D8096A1250B432700469934 /* Block Pro.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Block Pro.entitlements"; sourceTree = "<group>"; };
 		0D82281024D3B8CF00D0BBA0 /* LeaveConvoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaveConvoCell.swift; sourceTree = "<group>"; };
@@ -511,7 +494,6 @@
 		0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
 		0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
 		0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingViewController.swift; sourceTree = "<group>"; };
-		0DC119CC24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalCollectionViewFlowLayout.swift; sourceTree = "<group>"; };
 		0DC2FADA25E493A400EF22DA /* CollabMemberProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabMemberProfileViewController.swift; sourceTree = "<group>"; };
 		0DC2FADD25E4956600EF22DA /* CollabMemberProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabMemberProtocol.swift; sourceTree = "<group>"; };
 		0DC7E71724CBAE8500306A83 /* CopiedAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopiedAnimationView.swift; sourceTree = "<group>"; };
@@ -594,29 +576,6 @@
 			path = "Configure Collab";
 			sourceTree = "<group>";
 		};
-		0D0C8D8324410DC800EB51F7 /* Collab TableView */ = {
-			isa = PBXGroup;
-			children = (
-				0D0ECF3D243E5FCF00D947F4 /* HomeCollabTableViewCell.swift */,
-				0D0ECF3E243E5FCF00D947F4 /* HomeCollabTableViewCell.xib */,
-				0D0ECF41243E6E9300D947F4 /* CollabCell.swift */,
-				0D0ECF42243E6E9300D947F4 /* CollabCell.xib */,
-			);
-			path = "Collab TableView";
-			sourceTree = "<group>";
-		};
-		0D0ECF3C243E5F9800D947F4 /* Personal TableView */ = {
-			isa = PBXGroup;
-			children = (
-				0D78658523E51C7D00BD4C4D /* HomeTableViewCell.swift */,
-				0D78658623E51C7D00BD4C4D /* HomeTableViewCell.xib */,
-				0D78658923E6928000BD4C4D /* PersonalCell.swift */,
-				0D78658A23E6928000BD4C4D /* PersonalCell.xib */,
-				0DC119CC24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift */,
-			);
-			path = "Personal TableView";
-			sourceTree = "<group>";
-		};
 		0D1ABA7D2537B0F400878DDF /* Collab View Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -677,6 +636,7 @@
 				0DE728C62509752E00581048 /* Protocols */,
 				0DD636D2241447940026B623 /* Notification Scheduler */,
 				0D13AC01232DDBD40025EDC3 /* Assets.xcassets */,
+				0D7E5DE5262FE2FC00620D6B /* Launch-Log In Screen Illustration (Scaled).png */,
 				0D417391242E8C7B006076A5 /* giphy.gif */,
 				0D2A387A24C2A207008D69F3 /* chat-bubbles-animation.json */,
 				0D3213D124C8F2F100BC46F5 /* scissor-cutting-animated.json */,
@@ -756,7 +716,6 @@
 				0D7868512446AB1100A92DD1 /* AddMembers View */,
 				0D933012229373B000B6191D /* TimeTableViewCell */,
 				0D3473C72436FEC80000AF60 /* Registration View Cells */,
-				0D78659723F5B9F600BD4C4D /* Home View Cells */,
 				0D23076022D284F500A12393 /* JTAppleCalendar Files */,
 				0D7EE1BA246EFAD700C2CB00 /* Messaging Cells */,
 				0D86014024993A980027F043 /* Convo Info View Cells */,
@@ -958,15 +917,6 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
-		0D78659723F5B9F600BD4C4D /* Home View Cells */ = {
-			isa = PBXGroup;
-			children = (
-				0D0ECF3C243E5F9800D947F4 /* Personal TableView */,
-				0D0C8D8324410DC800EB51F7 /* Collab TableView */,
-			);
-			path = "Home View Cells";
-			sourceTree = "<group>";
-		};
 		0D78659A23F5BBD700BD4C4D /* Networking */ = {
 			isa = PBXGroup;
 			children = (
@@ -1003,9 +953,10 @@
 		0D7868532446ABD400A92DD1 /* LogIn_Registration */ = {
 			isa = PBXGroup;
 			children = (
-				0D70F91E2429BF0800407E4A /* LogInViewController.swift */,
+				0D70F91E2429BF0800407E4A /* LogInViewController2.swift */,
 				0D41738D242E883A006076A5 /* RegistrationViewController.swift */,
 				0D76F843243652CF00A52386 /* RegistrationValidationMethods.swift */,
+				0D7E5DE8262FF36100620D6B /* LogInViewController.swift */,
 			);
 			path = LogIn_Registration;
 			sourceTree = "<group>";
@@ -1229,8 +1180,6 @@
 		0DE8957325F6B03200E0D643 /* Old Home Views */ = {
 			isa = PBXGroup;
 			children = (
-				0D5BEFE623E286DA00B5DCE5 /* HomeViewController2.swift */,
-				0D70F91A2428730F00407E4A /* ProfileSidebarViewController.swift */,
 				0D153CE92435B85B00741B67 /* ProfileViewController.swift */,
 			);
 			path = "Old Home Views";
@@ -1358,16 +1307,14 @@
 				0D85AB342624CA5000FF07E4 /* home-animation.json in Resources */,
 				0D670D8825567316001D2634 /* Location.storyboard in Resources */,
 				0D687DB026159F6300A9BB7D /* notifications-animation.json in Resources */,
+				0D7E5DE6262FE2FC00620D6B /* Launch-Log In Screen Illustration (Scaled).png in Resources */,
 				0D480F072597C60500E14D1E /* ConfigureBlock.storyboard in Resources */,
 				0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */,
-				0D78658823E51C7D00BD4C4D /* HomeTableViewCell.xib in Resources */,
 				0DAD3B5F24A7C66F00607579 /* ConvoCoverInfoCell.xib in Resources */,
 				0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */,
 				0DE728C82509BB7400581048 /* SendPhoto.storyboard in Resources */,
-				0D78658C23E6928000BD4C4D /* PersonalCell.xib in Resources */,
 				0D78657823E4B56B00BD4C4D /* Poppins-Light.ttf in Resources */,
 				0D78657223E4B56B00BD4C4D /* Poppins-BoldItalic.ttf in Resources */,
-				0D0ECF44243E6E9300D947F4 /* CollabCell.xib in Resources */,
 				0D82282924DA259200D0BBA0 /* ConvoUpdatedMessageCell.xib in Resources */,
 				0D78657F23E4B56B00BD4C4D /* Poppins-ExtraBoldItalic.ttf in Resources */,
 				0D2CED0B2290829300CC9180 /* CustomTimeTableCell.xib in Resources */,
@@ -1384,7 +1331,6 @@
 				0D78657723E4B56B00BD4C4D /* Poppins-BlackItalic.ttf in Resources */,
 				0DA2A6FE248AC3250051ADAB /* PhotoMessageWithCaptionCell.xib in Resources */,
 				0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */,
-				0D0ECF40243E5FCF00D947F4 /* HomeCollabTableViewCell.xib in Resources */,
 				0D5FD0BC25BC014D00E9BA2D /* SelectedBlock.storyboard in Resources */,
 				0D78657C23E4B56B00BD4C4D /* Poppins-Italic.ttf in Resources */,
 				0D7865B523F7709500BD4C4D /* Home.storyboard in Resources */,
@@ -1458,7 +1404,6 @@
 				0D3213D424CA106B00BC46F5 /* MessagingMethods.swift in Sources */,
 				0DF609C925B0BCC900B0BB63 /* LinksConfigurationCell.swift in Sources */,
 				0D670D902558778F001D2634 /* Location+Extension.swift in Sources */,
-				0DC119CD24253A6A008DC922 /* PersonalCollectionViewFlowLayout.swift in Sources */,
 				0D50A90024783BD700D71654 /* Conversation.swift in Sources */,
 				0D891CF425BA980600B04C2F /* UILabel+Extension.swift in Sources */,
 				0DC7E71824CBAE8500306A83 /* CopiedAnimationView.swift in Sources */,
@@ -1487,12 +1432,10 @@
 				0DD9D89324437F4E006AA8AB /* ImageView+Extension.swift in Sources */,
 				0D879AD824B8357E0037C880 /* ConvoPhotosHeaderInfoCell.swift in Sources */,
 				0D5FD11625BF6E4900E9BA2D /* SelectedBlockStatusCell.swift in Sources */,
-				0D70F91B2428730F00407E4A /* ProfileSidebarViewController.swift in Sources */,
 				0D82281224D3B8CF00D0BBA0 /* LeaveConvoCell.swift in Sources */,
 				0D78659923F5BBCE00BD4C4D /* PersonalRealmDatabase.swift in Sources */,
 				0D3F29392486094B00C7763F /* MessageTextView.swift in Sources */,
 				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
-				0D0ECF43243E6E9300D947F4 /* CollabCell.swift in Sources */,
 				0D86386425AAAB69000DB1A3 /* ReminderConfigurationCell.swift in Sources */,
 				0D8C40BA254661D800A09E7D /* LocationSearchCell.swift in Sources */,
 				0DE728C52509751B00581048 /* CachePhotoProtocol.swift in Sources */,
@@ -1549,7 +1492,6 @@
 				0D5FD0C925BC0CE800E9BA2D /* SelectedBlockTimeCell.swift in Sources */,
 				0D7CD51D2433067A00BE1BE6 /* Firebase+Auth.swift in Sources */,
 				0D2CED0A2290829300CC9180 /* CustomTimeTableCell.swift in Sources */,
-				0D78658723E51C7D00BD4C4D /* HomeTableViewCell.swift in Sources */,
 				0D716268262C1833006FC1AB /* SidebarProtocol.swift in Sources */,
 				0D49B37825CB4280007C666A /* CollabProgressProtocol.swift in Sources */,
 				0DEDCCBC2487848900E0AEFD /* AddPhotoButton.swift in Sources */,
@@ -1572,17 +1514,17 @@
 				0D5FD0C325BC027700E9BA2D /* BlockSelectedProtocols.swift in Sources */,
 				0D891CCD25B7646600B04C2F /* BlockPositionEnum.swift in Sources */,
 				0D39A67C25AEE63600D9840B /* LocationsConfigurationCell.swift in Sources */,
-				0D70F91F2429BF0800407E4A /* LogInViewController.swift in Sources */,
+				0D70F91F2429BF0800407E4A /* LogInViewController2.swift in Sources */,
 				0D44BA862476EF8D00647E06 /* Firebase+Messaging.swift in Sources */,
 				0DE895B225FC523000E0D643 /* HomeCollabCollectionViewCell.swift in Sources */,
 				0DB3FEC6249A9A6D00A14FF9 /* ConvoMemberInfoCell.swift in Sources */,
 				0DF609F525B3F2E900B0BB63 /* CollabView+Blocks.swift in Sources */,
-				0D78658B23E6928000BD4C4D /* PersonalCell.swift in Sources */,
 				0D41738C242E8738006076A5 /* Swift+Gif.swift in Sources */,
 				0DA2A6FD248AC3250051ADAB /* PhotoMessageWithCaptionCell.swift in Sources */,
 				0DB0876325E83EC000FEE6FF /* CollabCreatedProtocol.swift in Sources */,
 				0D60F00726080A4900DF88DE /* SearchViewController.swift in Sources */,
 				0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */,
+				0D7E5DE9262FF36100620D6B /* LogInViewController.swift in Sources */,
 				0D7655D42452909500707867 /* Member.swift in Sources */,
 				0D153CE82433CD2C00741B67 /* Firebase+Storage.swift in Sources */,
 				0D891CCA25B5721700B04C2F /* OneThirdBlock.swift in Sources */,
@@ -1595,7 +1537,6 @@
 				0D480F42259BB6D800E14D1E /* Block.swift in Sources */,
 				0D78684E2446920200A92DD1 /* NavBar+Extension.swift in Sources */,
 				0D480F4825A7A47D00E14D1E /* MemberConfigurationCell.swift in Sources */,
-				0D0ECF3F243E5FCF00D947F4 /* HomeCollabTableViewCell.swift in Sources */,
 				0D5FD0D125BCF1B200E9BA2D /* SelectedBlockMembersCell.swift in Sources */,
 				0DF609C625AF7A8200B0BB63 /* VoiceMemoConfigurationCollectionViewCell.swift in Sources */,
 				0DA7FA6B2532CA56006B1825 /* BlocksTableViewCell.swift in Sources */,
@@ -1605,7 +1546,6 @@
 				0D891CC425B51B6000B04C2F /* BlockStatusEnum.swift in Sources */,
 				0DB0875D25E82A5100FEE6FF /* CollabView+TableViewExtension.swift in Sources */,
 				0D480F112598284900E14D1E /* CustomSegmentControl.swift in Sources */,
-				0D5BEFE723E286DA00B5DCE5 /* HomeViewController2.swift in Sources */,
 				0D7CABEF252CF2640045006C /* ZoomingImageViewMethods.swift in Sources */,
 				0DE895AC25FC029C00E0D643 /* CollabCollectionViewFlowLayout.swift in Sources */,
 				0D62771425AA1EEE00B2B2C0 /* MemberConfigurationCollectionViewCell.swift in Sources */,

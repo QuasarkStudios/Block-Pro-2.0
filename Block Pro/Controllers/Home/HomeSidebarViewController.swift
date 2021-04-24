@@ -618,7 +618,6 @@ class HomeSidebarViewController: UIViewController {
                 else if sender.tag == 3 {
                     
                     self.sidebarDelegate?.moveToFriendsView()
-                    
                 }
                 
                 //Privacy Button
