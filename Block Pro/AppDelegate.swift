@@ -41,6 +41,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         SVProgressHUD.setDefaultStyle(.dark)
         
+        SVProgressHUD.setMinimumDismissTimeInterval(3)
+        
         if let image = UIImage(systemName: "xmark.circle.fill") {
             
             SVProgressHUD.setErrorImage(image)
@@ -74,15 +76,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let defaults = UserDefaults.standard
         defaults.setValue(false, forKey: "splashViewPresented")
         
-        if defaults.value(forKey: "keepUserSignedIn") as? Bool ?? false == false {
-            
-            do {
-                try Auth.auth().signOut()
-                print("user signed out")
-            } catch let signOutError as NSError {
-                print("Error signing out", signOutError.localizedDescription)
-            }
-        }
+//        if defaults.value(forKey: "keepUserSignedIn") as? Bool ?? false == false {
+//            
+//            do {
+//                try Auth.auth().signOut()
+//                print("user signed out")
+//            } catch let signOutError as NSError {
+//                print("Error signing out", signOutError.localizedDescription)
+//            }
+//        }
     }
     
     

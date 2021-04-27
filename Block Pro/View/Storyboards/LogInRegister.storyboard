@@ -411,7 +411,7 @@
         <!--Log In View Controller-->
         <scene sceneID="2C2-lq-rCk">
             <objects>
-                <viewController id="txp-O3-EoP" customClass="LogInViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="txp-O3-EoP" customClass="LogInViewController" customModule="Block_Pro" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="WpE-1n-qlh">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -435,7 +435,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5D-Jp-dvO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3550" y="-90"/>
+            <point key="canvasLocation" x="2906" y="-188"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="xbh-Rc-SR5">

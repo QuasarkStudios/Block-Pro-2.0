@@ -86,6 +86,7 @@ class CustomTabBar: UIView {
         let yCoord = UIScreen.main.bounds.height - (45 + 15 + distanceFromBottom)
         
         frame = CGRect(x: centeredXCoord, y: yCoord, width: 240, height: 55)
+        alpha = 0
         backgroundColor = UIColor(hexString: "222222")
         layer.cornerRadius = 28.5
         

@@ -120,7 +120,21 @@ class HomeViewController: UIViewController {
         
         profilePictureButton.isUserInteractionEnabled = true
         
-        tabBar.shouldHide = false
+        //Checking to see if the splash screen is still present on the screen
+        if keyWindow?.subviews.first(where: { $0 as? UIImageView != nil && $0.tag == 2 }) == nil {
+            
+            tabBar.shouldHide = false
+        }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        //Should only still be nil when this view is being presented from the LogInViewController
+        if !(tabBar.shouldHide ?? false) {
+            
+            tabBar.shouldHide = false
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -1472,6 +1486,8 @@ extension HomeViewController: SidebarProtocol {
 
             else {
 
+                self.tabBar.shouldHide = true
+                
                 self.navigationController?.popToRootViewController(animated: true)
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
