@@ -12,7 +12,6 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseCore
 import FirebaseMessaging
-import RealmSwift
 import UserNotifications
 import SVProgressHUD
 
@@ -24,12 +23,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-        print("realm location:", Realm.Configuration.defaultConfiguration.fileURL!) //Used to locate where our Realm database is
+//        print("realm location:", Realm.Configuration.defaultConfiguration.fileURL!) //Used to locate where our Realm database is
         print("user defaults location:", NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
         
         //let realm = try! Realm()//
-        
-        migrateRealmModel()
         
         configureNotifications()
         
@@ -212,49 +209,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         settings.isPersistenceEnabled = false
         db.settings = settings
-    }
-
-    private func migrateRealmModel () {
-        
-        let configuration = Realm.Configuration(
-            
-            schemaVersion: 1,
-            
-            migrationBlock: { (migration, oldSchemaVersion) in
-                
-                if oldSchemaVersion < 1 {
-                    
-                    migration.enumerateObjects(ofType: Block2.className()) { (oldObject, newObject) in
-                        
-                        let formatter = DateFormatter()
-                        formatter.dateFormat = "h:mm a"
-                        #warning("change the format of the date because it should include the actual date the block was created BAKA")
-                        
-                        let startHour = oldObject!["startHour"] as! String
-                        let startMinute = oldObject!["startMinute"] as! String
-                        let startPeriod = oldObject!["startPeriod"] as! String
-                        let startTime = "\(startHour):\(startMinute) \(startPeriod)"
-                            //startHour + ":" + startMinute + " " + startPeriod
-                        
-                        
-                        let endHour = oldObject!["endHour"] as! String
-                        let endMinute = oldObject!["endMinute"] as! String
-                        let endPeriod = oldObject!["endPeriod"] as! String
-                        let endTime = "\(endHour):\(endMinute) \(endPeriod)"
-                            //endHour + ":" + endMinute + " " + endPeriod
-                        
-                        let blockCategory = oldObject!["blockCategory"] as! String
-                        
-                        newObject!["begins"] = formatter.date(from: startTime)
-                        newObject!["ends"] = formatter.date(from: endTime)
-                        newObject!["category"] = blockCategory
-                    }
-                }
-        })
-        
-        Realm.Configuration.defaultConfiguration = configuration
-        
-        _ = try! Realm()
     }
     
     private func deleteSavedVoiceMemos () {

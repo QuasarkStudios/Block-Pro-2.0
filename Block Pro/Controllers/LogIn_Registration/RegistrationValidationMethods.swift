@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension RegistrationViewController {
+extension RegistrationViewController2 {
     
     private func validateText (_ text: String) -> Bool {
         

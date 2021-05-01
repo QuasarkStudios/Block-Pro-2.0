@@ -6,7 +6,6 @@ target 'Block Pro' do
 
   # Pods for Block Pro
 
-pod 'RealmSwift'
 pod 'Firebase/Core'
 pod 'Firebase/Firestore'
 pod 'Firebase/Auth'
@@ -16,7 +15,6 @@ pod 'Firebase/Analytics'
 pod 'ChameleonFramework/Swift', :git => 'https://github.com/ViccAlexander/Chameleon.git'
 pod 'JTAppleCalendar'
 pod 'iProgressHUD', '~> 1.1.1' 
-pod 'SwipeCellKit'
 pod 'BEMCheckBox'
 pod 'SVProgressHUD'
 pod 'lottie-ios'

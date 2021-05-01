@@ -56,6 +56,8 @@ class LogInViewController: UIViewController {
     var progressAttachedToSignInButton: Bool = false
     var allowProgressToShow: Bool = false
     
+    var userSigningUp: Bool = false
+    
     var zoomingIllustrationImageViewTopAnchor: NSLayoutConstraint?
     var zoomingIllustrationImageViewWidthConstraint: NSLayoutConstraint?
     var zoomingIllustrationImageViewHeightConstraint: NSLayoutConstraint?
@@ -74,6 +76,8 @@ class LogInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.view.backgroundColor = .white
         
         configureSplashScreenBackgroundView()
         configureZoomingIllustrationImageView()
@@ -137,6 +141,8 @@ class LogInViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        
+        self.view.subviews.forEach({ $0.alpha = 1 })
         
         if splashScreenBackgroundView.superview != nil || zoomingIllustrationImageView.superview != nil {
             
@@ -272,14 +278,9 @@ class LogInViewController: UIViewController {
         
         ].forEach({ $0.isActive = true })
         
-        let lightGrayText: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font : UIFont(name: "Poppins-SemiBold", size: 14) as Any, NSAttributedString.Key.foregroundColor : UIColor.lightGray]
-        let blackText: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font : UIFont(name: "Poppins-SemiBold", size: 14) as Any, NSAttributedString.Key.foregroundColor : UIColor.black]
-        let attributedString = NSMutableAttributedString(string: "")
+        setSignUpButtonText()
         
-        attributedString.append(NSAttributedString(string: "Don't have an account?  ", attributes: lightGrayText))
-        attributedString.append(NSAttributedString(string: "Sign Up!", attributes: blackText))
-        
-        signUpButton.setAttributedTitle(attributedString, for: .normal)
+        signUpButton.addTarget(self, action: #selector(signUpButtonPressed), for: .touchUpInside)
     }
     
     
@@ -298,6 +299,8 @@ class LogInViewController: UIViewController {
             stackViewContainer.bottomAnchor.constraint(equalTo: signUpButton.topAnchor, constant: 0),
         
         ].forEach({ $0.isActive = true })
+        
+//        stackViewContainer.backgroundColor = .white
     }
     
 
@@ -315,7 +318,9 @@ class LogInViewController: UIViewController {
             buttonStackView.centerYAnchor.constraint(equalTo: stackViewContainer.centerYAnchor, constant: 0)
         
         ].forEach({ $0.isActive = true })
-
+//
+//        buttonStackView.backgroundColor = .white
+        
         buttonStackView.axis = .vertical
         buttonStackView.distribution = .fillProportionally
         buttonStackView.alignment = .center
@@ -439,7 +444,7 @@ class LogInViewController: UIViewController {
         
         ].forEach({ $0.isActive = true })
         
-        withAppleButton.backgroundColor = .white
+        withAppleButton.backgroundColor = .clear//.white
         
         withAppleButton.layer.borderWidth = 1
         withAppleButton.layer.borderColor = UIColor(hexString: "D8D8D8")?.cgColor
@@ -496,7 +501,7 @@ class LogInViewController: UIViewController {
         
         ].forEach({ $0.isActive = true })
         
-        withGoogleButton.backgroundColor = .white
+        withGoogleButton.backgroundColor = .clear//.white
         
         withGoogleButton.layer.borderWidth = 1
         withGoogleButton.layer.borderColor = UIColor(hexString: "D8D8D8")?.cgColor
@@ -737,6 +742,8 @@ class LogInViewController: UIViewController {
             allowProgressToShow = true
             animateSignInButton(shrink: true)
             
+            signUpButton.isEnabled = false
+            
             firebaseAuth.logInUser(email: emailTextField.text ?? "", password: passwordTextField.text ?? "") { [weak self] (error) in
 
                 if error != nil {
@@ -751,6 +758,8 @@ class LogInViewController: UIViewController {
 
                     self?.performSegue(withIdentifier: "moveToHomeView", sender: self)
                 }
+                
+                self?.signUpButton.isEnabled = true
             }
         }
     }
@@ -833,6 +842,21 @@ class LogInViewController: UIViewController {
             
             view.updateIndicator(style: .ballRotateChase)
         }
+    }
+    
+    
+    //MARK: - Set Sign Up Button Text
+    
+    private func setSignUpButtonText () {
+        
+        let lightGrayText: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font : UIFont(name: "Poppins-SemiBold", size: 14) as Any, NSAttributedString.Key.foregroundColor : UIColor.lightGray]
+        let blackText: [NSAttributedString.Key : Any] = [NSAttributedString.Key.font : UIFont(name: "Poppins-SemiBold", size: 14) as Any, NSAttributedString.Key.foregroundColor : UIColor.black]
+        let attributedString = NSMutableAttributedString(string: "")
+        
+        attributedString.append(NSAttributedString(string: userSigningUp ? "Already have an account?  " : "Don't have an account?  ", attributes: lightGrayText))
+        attributedString.append(NSAttributedString(string: userSigningUp ? "Sign In!" : "Sign Up!" , attributes: blackText))
+        
+        signUpButton.setAttributedTitle(attributedString, for: .normal)
     }
     
 
@@ -990,6 +1014,17 @@ class LogInViewController: UIViewController {
         }
     }
     
+    
+    private func moveToRegistrationView () {
+        
+        let registrationVC = RegistrationViewController()
+        registrationVC.modalPresentationStyle = .fullScreen
+        registrationVC.modalTransitionStyle = .crossDissolve
+
+        registrationVC.logInViewController = self
+        
+        self.present(registrationVC, animated: false)
+    }
 
     //MARK: - Button Touch Down
     
@@ -1044,44 +1079,97 @@ class LogInViewController: UIViewController {
         
         if sender == withEmailButton {
             
-            UIView.transition(from: buttonStackView, to: textFieldStackView, duration: 0.4, options: [.transitionCrossDissolve, .showHideTransitionViews]) { (finished: Bool) in
+            if !userSigningUp {
                 
-                sender.transform = .identity
+                UIView.transition(from: buttonStackView, to: textFieldStackView, duration: 0.4, options: [.transitionCrossDissolve, .showHideTransitionViews]) { (finished: Bool) in
+                    
+                    sender.transform = .identity
 
-                self.signInButtonLeadingAnchor?.constant = 100
-                self.cancelButtonLeadingAnchor?.constant = 5
+                    self.signInButtonLeadingAnchor?.constant = 100
+                    self.cancelButtonLeadingAnchor?.constant = 5
 
-                UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.85, initialSpringVelocity: 1, options: .curveEaseInOut) {
+                    UIView.animate(withDuration: 0.3, delay: 0, usingSpringWithDamping: 0.85, initialSpringVelocity: 1, options: .curveEaseInOut) {
 
-                    self.view.layoutIfNeeded()
+                        self.view.layoutIfNeeded()
 
-                    self.cancelButton.alpha = 1
+                        self.cancelButton.alpha = 1
+                    }
+                }
+            }
+            
+            else {
+                
+                UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
+                    
+                    sender.transform = .identity
+                    
+                } completion: { (finished: Bool) in
+                    
+                    
+                }
+                
+                UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut) {
+                    
+                    self.view.subviews.forEach({ $0.alpha = 0 })
+                    
+                } completion: { (finished: Bool) in
+                    
+                    self.moveToRegistrationView()
                 }
             }
         }
         
         else if sender == withAppleButton {
             
-            UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
+            if !userSigningUp {
                 
-                sender.transform = .identity
-                
-            } completion: { (finished: Bool) in
-                
-                
+                UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
+                    
+                    sender.transform = .identity
+                    
+                } completion: { (finished: Bool) in
+                    
+                    
+                }
             }
-
+            
+            else {
+                
+                UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
+                    
+                    sender.transform = .identity
+                    
+                } completion: { (finished: Bool) in
+                    
+                    
+                }
+            }
         }
         
         else if sender == withGoogleButton {
             
-            UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
+            if !userSigningUp {
                 
-                sender.transform = .identity
+                UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
+                    
+                    sender.transform = .identity
+                    
+                } completion: { (finished: Bool) in
+                    
+                    
+                }
+            }
+            
+            else {
                 
-            } completion: { (finished: Bool) in
-                
-                
+                UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
+                    
+                    sender.transform = .identity
+                    
+                } completion: { (finished: Bool) in
+                    
+                    
+                }
             }
         }
         
@@ -1105,6 +1193,38 @@ class LogInViewController: UIViewController {
         }
         
         buttonAnimationCompleted = false
+    }
+    
+    
+    //MARK: - Sign Up Button Pressed
+    
+    @objc private func signUpButtonPressed () {
+        
+        userSigningUp = !userSigningUp
+        
+        //Should only be hidden if the user wasn't previously attempting to sign up and was just attempting to sign in
+        if buttonStackView.isHidden {
+            
+            withEmailButton.setTitle("Sign Up with Email", for: .normal)
+            withAppleLabel.text = "Sign Up with Apple"
+            withGoogleLabel.text = "Sign Up with Google"
+            
+            setSignUpButtonText()
+            
+            revertBackToSignInOptions()
+        }
+        
+        else {
+            
+            UIView.transition(with: buttonStackView, duration: 0.5, options: userSigningUp ? .transitionFlipFromRight : .transitionFlipFromLeft) {
+                
+                self.withEmailButton.setTitle((self.userSigningUp ? "Sign Up" : "Sign In") + " with Email", for: .normal)
+                self.withAppleLabel.text = (self.userSigningUp ? "Sign Up" : "Sign In") + " with Apple"
+                self.withGoogleLabel.text = (self.userSigningUp ? "Sign Up" : "Sign In") + " with Google"
+            }
+            
+            setSignUpButtonText()
+        }
     }
     
     

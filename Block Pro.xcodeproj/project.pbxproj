@@ -17,6 +17,9 @@
 		0D13AC02232DDBD40025EDC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D13AC01232DDBD40025EDC3 /* Assets.xcassets */; };
 		0D153CE82433CD2C00741B67 /* Firebase+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D153CE72433CD2C00741B67 /* Firebase+Storage.swift */; };
 		0D153CEA2435B85B00741B67 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D153CE92435B85B00741B67 /* ProfileViewController.swift */; };
+		0D1D028B263C989A0020687F /* MessagingOnboardingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1D028A263C989A0020687F /* MessagingOnboardingCollectionViewCell.swift */; };
+		0D1D028E263CBF620020687F /* CollabOnboardingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1D028D263CBF620020687F /* CollabOnboardingCollectionViewCell.swift */; };
+		0D1E88902639230C00B762B7 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1E888F2639230C00B762B7 /* RegistrationViewController.swift */; };
 		0D1F1E1026084559009EA8C5 /* SearchFriendResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1F1E0F26084559009EA8C5 /* SearchFriendResultCell.swift */; };
 		0D1F1E14260873DE009EA8C5 /* search-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D1F1E13260873DD009EA8C5 /* search-animation.json */; };
 		0D2175DC24E9CD0F00A7AF2E /* Personal_CollabContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2175DB24E9CD0F00A7AF2E /* Personal_CollabContainer.swift */; };
@@ -48,7 +51,7 @@
 		0D3F29372486027300C7763F /* SendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3F29362486027300C7763F /* SendButton.swift */; };
 		0D3F29392486094B00C7763F /* MessageTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3F29382486094B00C7763F /* MessageTextView.swift */; };
 		0D41738C242E8738006076A5 /* Swift+Gif.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41738B242E8738006076A5 /* Swift+Gif.swift */; };
-		0D41738E242E883A006076A5 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41738D242E883A006076A5 /* RegistrationViewController.swift */; };
+		0D41738E242E883A006076A5 /* RegistrationViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D41738D242E883A006076A5 /* RegistrationViewController2.swift */; };
 		0D417392242E8C7B006076A5 /* giphy.gif in Resources */ = {isa = PBXBuildFile; fileRef = 0D417391242E8C7B006076A5 /* giphy.gif */; };
 		0D417399242EC1FB006076A5 /* RegistrationNameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D417397242EC1FB006076A5 /* RegistrationNameCell.swift */; };
 		0D41739A242EC1FB006076A5 /* RegistrationNameCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D417398242EC1FB006076A5 /* RegistrationNameCell.xib */; };
@@ -152,7 +155,6 @@
 		0D78657F23E4B56B00BD4C4D /* Poppins-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656D23E4B56800BD4C4D /* Poppins-ExtraBoldItalic.ttf */; };
 		0D78658023E4B56B00BD4C4D /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656E23E4B56A00BD4C4D /* Poppins-Thin.ttf */; };
 		0D78658123E4B56B00BD4C4D /* Poppins-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78656F23E4B56B00BD4C4D /* Poppins-MediumItalic.ttf */; };
-		0D78659923F5BBCE00BD4C4D /* PersonalRealmDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78659823F5BBCE00BD4C4D /* PersonalRealmDatabase.swift */; };
 		0D7865B523F7709500BD4C4D /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D7865B423F7709500BD4C4D /* Home.storyboard */; };
 		0D78684E2446920200A92DD1 /* NavBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D78684D2446920200A92DD1 /* NavBar+Extension.swift */; };
 		0D7C878A2601235900D1B833 /* BlockViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7C87892601235900D1B833 /* BlockViewController.swift */; };
@@ -197,15 +199,14 @@
 		0D891CCA25B5721700B04C2F /* OneThirdBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D891CC925B5721700B04C2F /* OneThirdBlock.swift */; };
 		0D891CCD25B7646600B04C2F /* BlockPositionEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D891CCC25B7646600B04C2F /* BlockPositionEnum.swift */; };
 		0D891CF425BA980600B04C2F /* UILabel+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D891CF325BA980500B04C2F /* UILabel+Extension.swift */; };
+		0D898525263D0C5700FDB366 /* block-onboarding-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D898524263D0C5700FDB366 /* block-onboarding-animation.json */; };
 		0D8C40BA254661D800A09E7D /* LocationSearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8C40B9254661D800A09E7D /* LocationSearchCell.swift */; };
 		0D92BB9925833C6D00D9C561 /* Link.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BB9825833C6D00D9C561 /* Link.swift */; };
 		0D92BB9F2585698F00D9C561 /* UITextField+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BB9E2585698F00D9C561 /* UITextField+Extension.swift */; };
 		0D92BBA82587137E00D9C561 /* CacheIconProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D92BBA72587137E00D9C561 /* CacheIconProtocol.swift */; };
-		0D93300822927C7500B6191D /* Block2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D93300722927C7500B6191D /* Block2.swift */; };
 		0DA2A6FD248AC3250051ADAB /* PhotoMessageWithCaptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA2A6FB248AC3240051ADAB /* PhotoMessageWithCaptionCell.swift */; };
 		0DA2A6FE248AC3250051ADAB /* PhotoMessageWithCaptionCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DA2A6FC248AC3250051ADAB /* PhotoMessageWithCaptionCell.xib */; };
 		0DA7FA6B2532CA56006B1825 /* BlocksTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA7FA692532CA55006B1825 /* BlocksTableViewCell.swift */; };
-		0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */; };
 		0DAD3B5E24A7C66F00607579 /* ConvoCoverInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAD3B5C24A7C66F00607579 /* ConvoCoverInfoCell.swift */; };
 		0DAD3B5F24A7C66F00607579 /* ConvoCoverInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAD3B5D24A7C66F00607579 /* ConvoCoverInfoCell.xib */; };
 		0DADDAB823579D1500E79F89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */; };
@@ -229,6 +230,7 @@
 		0DBEA4CB26278E9A0074959E /* HomeCalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBEA4CA26278E9A0074959E /* HomeCalendarCell.swift */; };
 		0DBF3E9722B03DC800E180D2 /* ProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */; };
 		0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */; };
+		0DBF9F41263C88BB009D8E68 /* BlockOnboardingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBF9F40263C88BB009D8E68 /* BlockOnboardingCollectionViewCell.swift */; };
 		0DBFED69247C52B900EDFEC3 /* MessagingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */; };
 		0DC2FADB25E493A400EF22DA /* CollabMemberProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC2FADA25E493A400EF22DA /* CollabMemberProfileViewController.swift */; };
 		0DC2FADE25E4956600EF22DA /* CollabMemberProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC2FADD25E4956600EF22DA /* CollabMemberProtocol.swift */; };
@@ -244,8 +246,6 @@
 		0DDE6FE7253E460E00A9DF71 /* LocationSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDE6FE6253E460E00A9DF71 /* LocationSearchView.swift */; };
 		0DDF87E5256210700051C8F6 /* VoiceMemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DDF87E4256210700051C8F6 /* VoiceMemo.swift */; };
 		0DE31E15244BA97800DE6EE3 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */; };
-		0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD7235FDD3A005255A1 /* Cards.swift */; };
-		0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE3CDD9235FDD49005255A1 /* Tasks.swift */; };
 		0DE728C3250881F800581048 /* CollabView+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE728C2250881F800581048 /* CollabView+Messages.swift */; };
 		0DE728C52509751B00581048 /* CachePhotoProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE728C42509751B00581048 /* CachePhotoProtocol.swift */; };
 		0DE728C82509BB7400581048 /* SendPhoto.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DE728C72509BB7400581048 /* SendPhoto.storyboard */; };
@@ -262,7 +262,7 @@
 		0DF609CC25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609CB25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift */; };
 		0DF609CF25B159E600B0BB63 /* Firebase+Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609CE25B159E600B0BB63 /* Firebase+Block.swift */; };
 		0DF609F525B3F2E900B0BB63 /* CollabView+Blocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609F425B3F2E900B0BB63 /* CollabView+Blocks.swift */; };
-		BF3780A68B78275643E3A760 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D06DFBCF9AAEBEE0188F2376 /* Pods_Block_Pro.framework */; };
+		A866B14E821C6BC396445AD2 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E0D964A6D70C98544F8690B /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -276,6 +276,9 @@
 		0D13AC01232DDBD40025EDC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0D153CE72433CD2C00741B67 /* Firebase+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Firebase+Storage.swift"; sourceTree = "<group>"; };
 		0D153CE92435B85B00741B67 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		0D1D028A263C989A0020687F /* MessagingOnboardingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingOnboardingCollectionViewCell.swift; sourceTree = "<group>"; };
+		0D1D028D263CBF620020687F /* CollabOnboardingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabOnboardingCollectionViewCell.swift; sourceTree = "<group>"; };
+		0D1E888F2639230C00B762B7 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		0D1F1E0F26084559009EA8C5 /* SearchFriendResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchFriendResultCell.swift; sourceTree = "<group>"; };
 		0D1F1E13260873DD009EA8C5 /* search-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "search-animation.json"; sourceTree = "<group>"; };
 		0D2175DB24E9CD0F00A7AF2E /* Personal_CollabContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Personal_CollabContainer.swift; sourceTree = "<group>"; };
@@ -309,7 +312,7 @@
 		0D3F29362486027300C7763F /* SendButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendButton.swift; sourceTree = "<group>"; };
 		0D3F29382486094B00C7763F /* MessageTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTextView.swift; sourceTree = "<group>"; };
 		0D41738B242E8738006076A5 /* Swift+Gif.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Swift+Gif.swift"; sourceTree = "<group>"; };
-		0D41738D242E883A006076A5 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
+		0D41738D242E883A006076A5 /* RegistrationViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController2.swift; sourceTree = "<group>"; };
 		0D417391242E8C7B006076A5 /* giphy.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = giphy.gif; sourceTree = "<group>"; };
 		0D417397242EC1FB006076A5 /* RegistrationNameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationNameCell.swift; sourceTree = "<group>"; };
 		0D417398242EC1FB006076A5 /* RegistrationNameCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RegistrationNameCell.xib; sourceTree = "<group>"; };
@@ -413,7 +416,6 @@
 		0D78656D23E4B56800BD4C4D /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		0D78656E23E4B56A00BD4C4D /* Poppins-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Thin.ttf"; sourceTree = "<group>"; };
 		0D78656F23E4B56B00BD4C4D /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-MediumItalic.ttf"; sourceTree = "<group>"; };
-		0D78659823F5BBCE00BD4C4D /* PersonalRealmDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalRealmDatabase.swift; sourceTree = "<group>"; };
 		0D7865B423F7709500BD4C4D /* Home.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
 		0D78684D2446920200A92DD1 /* NavBar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NavBar+Extension.swift"; sourceTree = "<group>"; };
 		0D7C87892601235900D1B833 /* BlockViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockViewController.swift; sourceTree = "<group>"; };
@@ -459,15 +461,14 @@
 		0D891CC925B5721700B04C2F /* OneThirdBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneThirdBlock.swift; sourceTree = "<group>"; };
 		0D891CCC25B7646600B04C2F /* BlockPositionEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockPositionEnum.swift; sourceTree = "<group>"; };
 		0D891CF325BA980500B04C2F /* UILabel+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Extension.swift"; sourceTree = "<group>"; };
+		0D898524263D0C5700FDB366 /* block-onboarding-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "block-onboarding-animation.json"; sourceTree = "<group>"; };
 		0D8C40B9254661D800A09E7D /* LocationSearchCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchCell.swift; sourceTree = "<group>"; };
 		0D92BB9825833C6D00D9C561 /* Link.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Link.swift; sourceTree = "<group>"; };
 		0D92BB9E2585698F00D9C561 /* UITextField+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Extension.swift"; sourceTree = "<group>"; };
 		0D92BBA72587137E00D9C561 /* CacheIconProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheIconProtocol.swift; sourceTree = "<group>"; };
-		0D93300722927C7500B6191D /* Block2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Block2.swift; sourceTree = "<group>"; };
 		0DA2A6FB248AC3240051ADAB /* PhotoMessageWithCaptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoMessageWithCaptionCell.swift; sourceTree = "<group>"; };
 		0DA2A6FC248AC3250051ADAB /* PhotoMessageWithCaptionCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoMessageWithCaptionCell.xib; sourceTree = "<group>"; };
 		0DA7FA692532CA55006B1825 /* BlocksTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlocksTableViewCell.swift; sourceTree = "<group>"; };
-		0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeBlocksDate.swift; sourceTree = "<group>"; };
 		0DAD3B5C24A7C66F00607579 /* ConvoCoverInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoCoverInfoCell.swift; sourceTree = "<group>"; };
 		0DAD3B5D24A7C66F00607579 /* ConvoCoverInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoCoverInfoCell.xib; sourceTree = "<group>"; };
 		0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -493,6 +494,7 @@
 		0DBF3E9422B03DC800E180D2 /* ProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProgressHUD.h; sourceTree = "<group>"; };
 		0DBF3E9522B03DC800E180D2 /* ProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProgressHUD.m; sourceTree = "<group>"; };
 		0DBF3E9622B03DC800E180D2 /* ProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ProgressHUD.bundle; sourceTree = "<group>"; };
+		0DBF9F40263C88BB009D8E68 /* BlockOnboardingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockOnboardingCollectionViewCell.swift; sourceTree = "<group>"; };
 		0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingViewController.swift; sourceTree = "<group>"; };
 		0DC2FADA25E493A400EF22DA /* CollabMemberProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabMemberProfileViewController.swift; sourceTree = "<group>"; };
 		0DC2FADD25E4956600EF22DA /* CollabMemberProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabMemberProtocol.swift; sourceTree = "<group>"; };
@@ -508,8 +510,6 @@
 		0DDE6FE6253E460E00A9DF71 /* LocationSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSearchView.swift; sourceTree = "<group>"; };
 		0DDF87E4256210700051C8F6 /* VoiceMemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceMemo.swift; sourceTree = "<group>"; };
 		0DE31E14244BA97800DE6EE3 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
-		0DE3CDD7235FDD3A005255A1 /* Cards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cards.swift; sourceTree = "<group>"; };
-		0DE3CDD9235FDD49005255A1 /* Tasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 		0DE728C2250881F800581048 /* CollabView+Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabView+Messages.swift"; sourceTree = "<group>"; };
 		0DE728C42509751B00581048 /* CachePhotoProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachePhotoProtocol.swift; sourceTree = "<group>"; };
 		0DE728C72509BB7400581048 /* SendPhoto.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SendPhoto.storyboard; sourceTree = "<group>"; };
@@ -526,9 +526,9 @@
 		0DF609CB25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinksConfigurationCollectionViewCell.swift; sourceTree = "<group>"; };
 		0DF609CE25B159E600B0BB63 /* Firebase+Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Firebase+Block.swift"; sourceTree = "<group>"; };
 		0DF609F425B3F2E900B0BB63 /* CollabView+Blocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabView+Blocks.swift"; sourceTree = "<group>"; };
-		358073C2323396BAC00C39E3 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
-		8A4E27B57687C9C7A80E53AB /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
-		D06DFBCF9AAEBEE0188F2376 /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2ED2CE8F3D81778923E4D887 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
+		44DAAEBC63F166B0BC9B570F /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
+		8E0D964A6D70C98544F8690B /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -537,7 +537,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D5FD14825C2848200E9BA2D /* MapKit.framework in Frameworks */,
-				BF3780A68B78275643E3A760 /* Pods_Block_Pro.framework in Frameworks */,
+				A866B14E821C6BC396445AD2 /* Pods_Block_Pro.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -638,6 +638,7 @@
 				0D13AC01232DDBD40025EDC3 /* Assets.xcassets */,
 				0D7E5DE5262FE2FC00620D6B /* Launch-Log In Screen Illustration (Scaled).png */,
 				0D417391242E8C7B006076A5 /* giphy.gif */,
+				0D898524263D0C5700FDB366 /* block-onboarding-animation.json */,
 				0D2A387A24C2A207008D69F3 /* chat-bubbles-animation.json */,
 				0D3213D124C8F2F100BC46F5 /* scissor-cutting-animated.json */,
 				0D0D0B4D25D1FDD400DE6FAD /* progress-animation.json */,
@@ -704,6 +705,7 @@
 		0D2CED0722907B0E00CC9180 /* Custom Cells */ = {
 			isa = PBXGroup;
 			children = (
+				0DBF9F44263C88C5009D8E68 /* Registration Cells */,
 				0DE8958125F867C600E0D643 /* Home Cells */,
 				0D687DB42617CE7D00A9BB7D /* Block Cells */,
 				0D1F1E0E2608452C009EA8C5 /* Search Cells */,
@@ -920,7 +922,6 @@
 		0D78659A23F5BBD700BD4C4D /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				0D78659823F5BBCE00BD4C4D /* PersonalRealmDatabase.swift */,
 				0D7CD51C2433067A00BE1BE6 /* Firebase+Auth.swift */,
 				0D153CE72433CD2C00741B67 /* Firebase+Storage.swift */,
 				0DD9D8942443812A006AA8AB /* Firebase+Collab.swift */,
@@ -954,9 +955,10 @@
 			isa = PBXGroup;
 			children = (
 				0D70F91E2429BF0800407E4A /* LogInViewController2.swift */,
-				0D41738D242E883A006076A5 /* RegistrationViewController.swift */,
+				0D41738D242E883A006076A5 /* RegistrationViewController2.swift */,
 				0D76F843243652CF00A52386 /* RegistrationValidationMethods.swift */,
 				0D7E5DE8262FF36100620D6B /* LogInViewController.swift */,
+				0D1E888F2639230C00B762B7 /* RegistrationViewController.swift */,
 			);
 			path = LogIn_Registration;
 			sourceTree = "<group>";
@@ -1034,10 +1036,7 @@
 		0D93300B22927C9100B6191D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				0DA9F83E22A86C26008BECAE /* TimeBlocksDate.swift */,
-				0D93300722927C7500B6191D /* Block2.swift */,
 				0D480F41259BB6D800E14D1E /* Block.swift */,
-				0DE3CDDB235FDD5A005255A1 /* FreeTime Model */,
 				0D872F7D22E2AB72001D35B4 /* Collab Model Files */,
 				0D7CD51A2432FCBE00BE1BE6 /* NewUser.swift */,
 				0D7655D52452915D00707867 /* NewCollab.swift */,
@@ -1099,6 +1098,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		0DBF9F44263C88C5009D8E68 /* Registration Cells */ = {
+			isa = PBXGroup;
+			children = (
+				0DBF9F40263C88BB009D8E68 /* BlockOnboardingCollectionViewCell.swift */,
+				0D1D028A263C989A0020687F /* MessagingOnboardingCollectionViewCell.swift */,
+				0D1D028D263CBF620020687F /* CollabOnboardingCollectionViewCell.swift */,
+			);
+			path = "Registration Cells";
+			sourceTree = "<group>";
+		};
 		0DC5D96F253A89DD00151598 /* CollabHome Cells */ = {
 			isa = PBXGroup;
 			children = (
@@ -1133,15 +1142,6 @@
 				0D2576EA25C3E00D008C2711 /* Error+Extension.swift */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		0DE3CDDB235FDD5A005255A1 /* FreeTime Model */ = {
-			isa = PBXGroup;
-			children = (
-				0DE3CDD7235FDD3A005255A1 /* Cards.swift */,
-				0DE3CDD9235FDD49005255A1 /* Tasks.swift */,
-			);
-			path = "FreeTime Model";
 			sourceTree = "<group>";
 		};
 		0DE728C1250872A200581048 /* Messaging */ = {
@@ -1207,7 +1207,7 @@
 			isa = PBXGroup;
 			children = (
 				0D5FD14725C2848100E9BA2D /* MapKit.framework */,
-				D06DFBCF9AAEBEE0188F2376 /* Pods_Block_Pro.framework */,
+				8E0D964A6D70C98544F8690B /* Pods_Block_Pro.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1215,8 +1215,8 @@
 		C54E61ACB30B0D4CDBD0499A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				8A4E27B57687C9C7A80E53AB /* Pods-Block Pro.debug.xcconfig */,
-				358073C2323396BAC00C39E3 /* Pods-Block Pro.release.xcconfig */,
+				44DAAEBC63F166B0BC9B570F /* Pods-Block Pro.debug.xcconfig */,
+				2ED2CE8F3D81778923E4D887 /* Pods-Block Pro.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1228,11 +1228,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0D2CECFE228FB55800CC9180 /* Build configuration list for PBXNativeTarget "Block Pro" */;
 			buildPhases = (
-				CAD5295D5873B40484051601 /* [CP] Check Pods Manifest.lock */,
+				AD545EDAABA65D6F3837F2A9 /* [CP] Check Pods Manifest.lock */,
 				0D2CECE8228FB55600CC9180 /* Sources */,
 				0D2CECE9228FB55600CC9180 /* Frameworks */,
 				0D2CECEA228FB55600CC9180 /* Resources */,
-				C29B3F6B569BB4FFDF9E962E /* [CP] Embed Pods Frameworks */,
+				D1F68155904A5EC499B494B4 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1306,6 +1306,7 @@
 				0D879AD524B834DE0037C880 /* ConvoPhotoInfoCell.xib in Resources */,
 				0D85AB342624CA5000FF07E4 /* home-animation.json in Resources */,
 				0D670D8825567316001D2634 /* Location.storyboard in Resources */,
+				0D898525263D0C5700FDB366 /* block-onboarding-animation.json in Resources */,
 				0D687DB026159F6300A9BB7D /* notifications-animation.json in Resources */,
 				0D7E5DE6262FE2FC00620D6B /* Launch-Log In Screen Illustration (Scaled).png in Resources */,
 				0D480F072597C60500E14D1E /* ConfigureBlock.storyboard in Resources */,
@@ -1354,24 +1355,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		C29B3F6B569BB4FFDF9E962E /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CAD5295D5873B40484051601 /* [CP] Check Pods Manifest.lock */ = {
+		AD545EDAABA65D6F3837F2A9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1391,6 +1375,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D1F68155904A5EC499B494B4 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1433,12 +1434,12 @@
 				0D879AD824B8357E0037C880 /* ConvoPhotosHeaderInfoCell.swift in Sources */,
 				0D5FD11625BF6E4900E9BA2D /* SelectedBlockStatusCell.swift in Sources */,
 				0D82281224D3B8CF00D0BBA0 /* LeaveConvoCell.swift in Sources */,
-				0D78659923F5BBCE00BD4C4D /* PersonalRealmDatabase.swift in Sources */,
 				0D3F29392486094B00C7763F /* MessageTextView.swift in Sources */,
 				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
 				0D86386425AAAB69000DB1A3 /* ReminderConfigurationCell.swift in Sources */,
 				0D8C40BA254661D800A09E7D /* LocationSearchCell.swift in Sources */,
 				0DE728C52509751B00581048 /* CachePhotoProtocol.swift in Sources */,
+				0D1E88902639230C00B762B7 /* RegistrationViewController.swift in Sources */,
 				0DD9D88D24437A64006AA8AB /* MembersTableViewCell.swift in Sources */,
 				0DDDA65522DA842A00B69A4E /* FriendSearchResults.swift in Sources */,
 				0D2576F325C53127008C2711 /* BlockCell.swift in Sources */,
@@ -1466,7 +1467,6 @@
 				0D4173A924304EF7006076A5 /* RegistrationProfilePicCell.swift in Sources */,
 				0DB52ACD25D66DF000645D27 /* MessagesAnimationView.swift in Sources */,
 				0DBEA4CB26278E9A0074959E /* HomeCalendarCell.swift in Sources */,
-				0DE3CDD8235FDD3A005255A1 /* Cards.swift in Sources */,
 				0D3213D724CAB21200BC46F5 /* VibrateMethods.swift in Sources */,
 				0D470317257B283D00B6A8FA /* VoiceMemoPlayer.swift in Sources */,
 				0D891CC725B5547A00B04C2F /* HalfBlock.swift in Sources */,
@@ -1477,11 +1477,11 @@
 				0D92BB9F2585698F00D9C561 /* UITextField+Extension.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
 				0D879ADC24B853F70037C880 /* ConvoPhotoCollectionViewCell.swift in Sources */,
+				0D1D028E263CBF620020687F /* CollabOnboardingCollectionViewCell.swift in Sources */,
 				0D4173A524303610006076A5 /* RegistrationAccountCreationCell.swift in Sources */,
 				0D48468125281744002CF201 /* CollabHeaderView.swift in Sources */,
 				0D4173A1242FDE38006076A5 /* RegistrationUsernameCell.swift in Sources */,
 				0D3A9E2522F367460052BCB6 /* CollabBlock.swift in Sources */,
-				0D93300822927C7500B6191D /* Block2.swift in Sources */,
 				0D5FD0BF25BC01C100E9BA2D /* SelectedBlockViewController.swift in Sources */,
 				0D7CD51B2432FCBE00BE1BE6 /* NewUser.swift in Sources */,
 				0D879AD424B834DE0037C880 /* ConvoPhotoInfoCell.swift in Sources */,
@@ -1504,7 +1504,6 @@
 				0D5FD10C25BF575100E9BA2D /* VoiceMemosPresentationCollectionViewCell.swift in Sources */,
 				0DF609C325AF76AF00B0BB63 /* VoiceMemosConfigurationCell.swift in Sources */,
 				0DB52AD625D7ABA100645D27 /* CollabCalendarView.swift in Sources */,
-				0DA9F83F22A86C26008BECAE /* TimeBlocksDate.swift in Sources */,
 				0D86386725ACCC11000DB1A3 /* ReminderConfigurationCollectionViewCell.swift in Sources */,
 				0DB0876025E83D3000FEE6FF /* ConfigureCollabViewController.swift in Sources */,
 				0D8096A0250AABBA00469934 /* PresentCopiedAnimationProtocol.swift in Sources */,
@@ -1551,6 +1550,7 @@
 				0D62771425AA1EEE00B2B2C0 /* MemberConfigurationCollectionViewCell.swift in Sources */,
 				0DD9D89024437DC2006AA8AB /* View+Extension.swift in Sources */,
 				0DD9D8952443812A006AA8AB /* Firebase+Collab.swift in Sources */,
+				0D1D028B263C989A0020687F /* MessagingOnboardingCollectionViewCell.swift in Sources */,
 				0D5FD0DF25BDF98100E9BA2D /* PhotosPresentationCollectionViewCell.swift in Sources */,
 				0DAD3B5E24A7C66F00607579 /* ConvoCoverInfoCell.swift in Sources */,
 				0DF609CC25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift in Sources */,
@@ -1568,7 +1568,7 @@
 				0D5FD0DB25BD246100E9BA2D /* PhotosPresentationCell.swift in Sources */,
 				0D589DEE24593D4A005AC7BC /* Message.swift in Sources */,
 				0D2B5BCE24744AE800FC2536 /* ProfilePicture.swift in Sources */,
-				0D41738E242E883A006076A5 /* RegistrationViewController.swift in Sources */,
+				0D41738E242E883A006076A5 /* RegistrationViewController2.swift in Sources */,
 				0DDF87E5256210700051C8F6 /* VoiceMemo.swift in Sources */,
 				0D7E1B78247435AC00BB8E58 /* MessageHomeCell.swift in Sources */,
 				0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */,
@@ -1580,8 +1580,8 @@
 				0D879ACB24B828140037C880 /* FriendProfileViewController.swift in Sources */,
 				0D7655D62452915D00707867 /* NewCollab.swift in Sources */,
 				0DE728C3250881F800581048 /* CollabView+Messages.swift in Sources */,
+				0DBF9F41263C88BB009D8E68 /* BlockOnboardingCollectionViewCell.swift in Sources */,
 				0D589DE52458A0D9005AC7BC /* MessageCell.swift in Sources */,
-				0DE3CDDA235FDD49005255A1 /* Tasks.swift in Sources */,
 				0D02C2412443744600D255D7 /* AddMembersViewController.swift in Sources */,
 				0D5FD11325BF64A300E9BA2D /* LinksPresentationCollectionViewCell.swift in Sources */,
 				0D2175DC24E9CD0F00A7AF2E /* Personal_CollabContainer.swift in Sources */,
@@ -1731,7 +1731,7 @@
 		};
 		0D2CECFF228FB55800CC9180 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8A4E27B57687C9C7A80E53AB /* Pods-Block Pro.debug.xcconfig */;
+			baseConfigurationReference = 44DAAEBC63F166B0BC9B570F /* Pods-Block Pro.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1759,7 +1759,7 @@
 		};
 		0D2CED00228FB55800CC9180 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 358073C2323396BAC00C39E3 /* Pods-Block Pro.release.xcconfig */;
+			baseConfigurationReference = 2ED2CE8F3D81778923E4D887 /* Pods-Block Pro.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
