@@ -1,275 +1,231 @@
 //
-//  RegistrationValidationFunctions.swift
+//  RegistrationValidationMethods.swift
 //  Block Pro
 //
-//  Created by Nimat Azeez on 4/2/20.
-//  Copyright © 2020 Nimat Azeez. All rights reserved.
+//  Created by Nimat Azeez on 5/6/21.
+//  Copyright © 2021 Nimat Azeez. All rights reserved.
 //
 
 import Foundation
+import SVProgressHUD
 
-extension RegistrationViewController2 {
+extension RegistrationViewController {
     
-    private func validateText (_ text: String) -> Bool {
+    internal func validateName (_ cell: NameOnboardingCollectionViewCell) {
         
-        let letters = CharacterSet.letters
-        let numbers = CharacterSet.decimalDigits
-        
-        for char in text.unicodeScalars {
+        if newUser.firstName.strictValidationOfTextEntered(withSpecialCharacters: ["-"]) && newUser.lastName.strictValidationOfTextEntered(withSpecialCharacters: ["-"]) {
             
-            if letters.contains(char) || numbers.contains(char) {
+            progressBarWidthConstraint?.constant = 36
+            
+            UIView.animate(withDuration: 0.5) {
                 
-                return true
+                self.view.layoutIfNeeded()
             }
-        }
-        
-        return false
-    }
-    
-    //MARK: - Validate User Name
-    
-    internal func validateName (completion: ((_ validated: Bool) -> Void)) {
-        
-        if validateText(newUser.firstName) && validateText(newUser.lastName) {
             
-            completion(true)
+            UIView.transition(with: onboardingPreviousButton, duration: 0.25, options: .transitionCrossDissolve) {
+                
+                self.onboardingPreviousButton.isEnabled = true
+            }
+
+            registrationCollectionView.scrollToItem(at: IndexPath(row: 4, section: 0), at: .centeredHorizontally, animated: true)
         }
         
         else {
             
-            guard let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 0, section: 0)) as? RegistrationNameCell else { return }
-            
-                if !validateText(newUser.firstName) {
-                    
-                    cell.firstNameErrorLabel.isHidden = false
-                }
+            if !newUser.firstName.leniantValidationOfTextEntered() {
                 
-                if !validateText(newUser.lastName) {
-                    
-                    cell.lastNameErrorLabel.isHidden = false
-                }
+                cell.firstNameErrorLabel.text = "Please enter in your first name"
+                cell.presentFirstNameErrorLabel(present: true)
+            }
             
-                completion(false)
+            else if !newUser.firstName.strictValidationOfTextEntered(withSpecialCharacters: ["-"]) {
+                
+                cell.firstNameErrorLabel.text = "Sorry, but your first name is badly formatted"
+                cell.presentFirstNameErrorLabel(present: true)
+            }
+            
+            if !newUser.lastName.leniantValidationOfTextEntered() {
+                
+                cell.lastNameErrorLabel.text = "Please enter in your last name"
+                cell.presentLastNameErrorLabel(present: true)
+            }
+            
+            else if !newUser.lastName.strictValidationOfTextEntered(withSpecialCharacters: ["-"]) {
+                
+                cell.lastNameErrorLabel.text = "Sorry, but your last name is badly formatted"
+                cell.presentLastNameErrorLabel(present: true)
+            }
         }
     }
     
-    
-    //MARK: - Validate Username
-    
-    internal func validateUsername (completion: @escaping ((_ validated: Bool) -> Void)) {
+    internal func validateEmail (_ cell: EmailOnboardingCollectionViewCell) {
         
-        if validateText(newUser.username) {
+        if newUser.email.leniantValidationOfTextEntered() {
             
-            guard let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as? RegistrationUsernameCell else { return }
+            cell.errorLabel.textColor = .black
+            cell.errorLabel.text = "Verifying..."
             
-                cell.usernameErrorLabel.text = "Verifying..."
-                cell.usernameErrorLabel.textColor = .black
-                cell.usernameErrorLabel.isHidden = false
+            cell.displayProgress()
+            
+            firebaseAuth.verifyEmailAddress(newUser.email) { [weak self] (emailInUse, error) in
                 
-                cell.progressView.showProgress()
+                cell.progressView.dismissProgress()
                 
-            userAuth.validateUsername(username: newUser.username) { (snapshot, error) in
+                if let error = error {
                     
-                    if error != nil {
+                    //Retrives the error code from Firebase
+                    if let errorCode = self?.firebaseAuth.getErrorCode(error) {
                         
-                        ProgressHUD.showError(error?.localizedDescription)
+                        switch errorCode {
+                            
+                            case .invalidEmail:
+                                
+                                cell.errorLabel.textColor = .systemRed
+                                cell.errorLabel.text = "Sorry, but this email is badly formatted"
+                            
+                            default:
+                                
+                                SVProgressHUD.showError(withStatus: error.localizedDescription)
+                                
+                                cell.errorLabel.text = ""
+                        }
+                    }
+                }
+                
+                else {
+                    
+                    if emailInUse ?? true {
                         
-                        cell.progressView.dismissProgress()
-                        
-                        completion(false)
+                        cell.errorLabel.textColor = .systemRed
+                        cell.errorLabel.text = "Sorry, but this email is already in use"
                     }
                     
                     else {
                         
-                        if snapshot?.isEmpty == false {
-                            
-                            cell.usernameErrorLabel.textColor = .systemRed
-                            cell.usernameErrorLabel.text = "Sorry, but this username is already being used"
-                            
-                            cell.progressView.dismissProgress()
-                            
-                            completion(false)
-                        }
+                        self?.progressBarWidthConstraint?.constant = 72
                         
-                        else {
+                        UIView.animate(withDuration: 0.5) {
                             
-                            cell.progressView.dismissProgress()
-                            
-                            cell.usernameErrorLabel.isHidden = true
-                            
-                            completion(true)
+                            self?.view.layoutIfNeeded()
                         }
+
+                        self?.registrationCollectionView.scrollToItem(at: IndexPath(row: 5, section: 0), at: .centeredHorizontally, animated: true)
+                        
+                        cell.errorLabel.text = ""
                     }
                 }
+            }
         }
         
         else {
             
-            guard let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 1, section: 0)) as? RegistrationUsernameCell else { return }
-            
-                cell.usernameErrorLabel.textColor = .systemRed
-                cell.usernameErrorLabel.text = "Please enter in a username"
-                cell.usernameErrorLabel.isHidden = false
-            
-                completion(false)
+            cell.errorLabel.textColor = .systemRed
+            cell.errorLabel.text = "Please enter in your E-mail Address"
         }
     }
     
-    
-    //MARK: - Validate Account Info and Create New Account
-    
-    internal func validateAccountInfoAndCreateUser (completion: @escaping (( _ validated: Bool, _ userID: String?) -> Void)) {
+    internal func validateUsername (_ cell: UsernameOnboardingCollectionViewCell) {
         
-        if validateText(newUser.email) && validateText(newUser.password) && validateText(newUser.passwordReentry) {
+        if newUser.username.leniantValidationOfTextEntered() {
             
-            if newUser.password == newUser.passwordReentry {
+            cell.usernameTextField.text = newUser.username.lowercased()
+            
+            if newUser.username.strictValidationOfTextEntered(withSpecialCharacters: ["-", "_"]) {
                 
-                guard let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as? RegistrationAccountCreationCell else { return }
+                cell.errorLabel.textColor = .black
+                cell.errorLabel.text = "Verifying..."
                 
-                    cell.emailErrorLabel.text = "Verifying..."
-                    cell.emailErrorLabel.textColor = .black
-                    cell.emailErrorLabel.isHidden = false
+                cell.displayProgress()
+                
+                firebaseAuth.validateUsername(username: newUser.username) { [weak self] (snapshot, error) in
                     
-                    cell.passwordErrorLabel.text = "Verifying..."
-                    cell.passwordErrorLabel.textColor = .black
-                    cell.passwordErrorLabel.isHidden = false
+                    cell.progressView.dismissProgress()
                     
-                    cell.passwordReentryErrorLabel.text = "Verifying..."
-                    cell.passwordReentryErrorLabel.textColor = .black
-                    cell.passwordReentryErrorLabel.isHidden = false
-                    
-                    cell.progressView1.showProgress()
-                    cell.progressView2.showProgress()
-                    cell.progressView3.showProgress()
-                    
-                    userAuth.validateAccountInfoAndRegisterNewUser(email: newUser.email, password: newUser.password) { [weak self] (userID, error) in
+                    if error != nil {
                         
-                        //Cast error to type NSError to be able to retrieve it's error code
-                        if let error = error as NSError? {
+                        SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                        
+                        cell.errorLabel.text = ""
+                    }
+                    
+                    else {
+                        
+                        if snapshot?.isEmpty ?? false {
                             
-                            self?.handleAccountInfoErrors(error, cell)
+                            self?.progressBarWidthConstraint?.constant = 108
                             
-                            completion(false, nil)
+                            UIView.animate(withDuration: 0.5) {
+                                
+                                self?.view.layoutIfNeeded()
+                            }
+                            
+                            self?.onboardingNextButton.setTitle("Done", for: .normal)
+                            
+                            self?.registrationCollectionView.scrollToItem(at: IndexPath(row: 6, section: 0), at: .centeredHorizontally, animated: true)
+                            
+                            cell.errorLabel.text = ""
                         }
                         
                         else {
                             
-                            if let userID = userID {
-                                
-                                self?.backToSignInButton.setTitleColor(.clear, for: .normal)
-                                
-                                completion(true, userID)
-                            }
-                            
-                            else {
-                                
-                                ProgressHUD.showError("Sorry, something went wrong while making your account. Please try again!")
-
-                                self?.backToSignInButton.isEnabled = true
-                                
-                                completion(false, nil)
-                            }
+                            cell.errorLabel.textColor = .systemRed
+                            cell.errorLabel.text = "Sorry, but this username is already being used"
                         }
-                        
-                        cell.progressView1.dismissProgress()
-                        cell.progressView2.dismissProgress()
-                        cell.progressView3.dismissProgress()
                     }
+                }
             }
             
             else {
                 
-                guard let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as? RegistrationAccountCreationCell else { return }
-                
-                    cell.passwordReentryErrorLabel.textColor = .systemRed
-                    cell.passwordReentryErrorLabel.text = "Sorry, but your passwords don't match"
-                    cell.passwordReentryErrorLabel.isHidden = false
-                
-                    cell.progressView1.dismissProgress()
-                    cell.progressView2.dismissProgress()
-                    cell.progressView3.dismissProgress()
-                
-                    completion(false, nil)
+                cell.errorLabel.textColor = .systemRed
+                cell.errorLabel.text = "Sorry, but this username is badly formatted"
             }
         }
         
         else {
             
-            guard let cell = registrationCollectionView.cellForItem(at: IndexPath(item: 2, section: 0)) as? RegistrationAccountCreationCell else { return }
-            
-                if !validateText(newUser.email) {
-                    
-                    cell.emailErrorLabel.text = "Please enter in your email"
-                    cell.emailErrorLabel.textColor = .systemRed
-                    cell.emailErrorLabel.isHidden = false
-                }
-            
-                if !validateText(newUser.password) {
-                    
-                    cell.passwordErrorLabel.textColor = .systemRed
-                    cell.passwordErrorLabel.text = "Please enter your password"
-                    cell.passwordErrorLabel.isHidden = false
-                }
-                
-                if !validateText(newUser.passwordReentry) {
-                    
-                    cell.passwordReentryErrorLabel.textColor = .systemRed
-                    cell.passwordReentryErrorLabel.text = "Please re-enter your password"
-                    cell.passwordReentryErrorLabel.isHidden = false
-                }
-            
-                cell.progressView1.dismissProgress()
-                cell.progressView2.dismissProgress()
-                cell.progressView3.dismissProgress()
-            
-                completion(false, nil)
+            cell.errorLabel.textColor = .systemRed
+            cell.errorLabel.text = "Please enter in your username"
         }
     }
     
-    
-    //MARK: - Handle Account Info Errors
-    
-    private func handleAccountInfoErrors (_ error: NSError, _ cell: RegistrationAccountCreationCell) {
+    internal func validatePassword (_ cell: PasswordOnboardingCollectionViewCell) {
         
-        //Retrives the error code from Firebase
-        if let errorCode = userAuth.getErrorCode(error) {
+        if newUser.password.leniantValidationOfTextEntered() {
             
-            switch errorCode {
+            SVProgressHUD.show()
+            
+            signInButton.alpha = 0
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
                 
-            case .invalidEmail:
+                SVProgressHUD.dismiss()
                 
-                cell.emailErrorLabel.text = "Sorry, but this email is badly formatted"
-                cell.emailErrorLabel.textColor = .systemRed
-                cell.emailErrorLabel.isHidden = false
+                self.progressBarWidthConstraint?.constant = 144
                 
-                cell.passwordErrorLabel.isHidden = true
-                cell.passwordReentryErrorLabel.isHidden = true
+                self.collectionViewBottomAnchorWithSignInButton?.isActive = false
+                self.collectionViewBottomAnchorWithView?.isActive = true
                 
-            case .emailAlreadyInUse:
+                UIView.animate(withDuration: 0.5) {
+                    
+                    self.view.layoutIfNeeded()
+                    
+                    self.onboardingPreviousButton.alpha = 0
+                    self.onboardingNextButton.alpha = 0
+                    
+                    self.reconfigureCollectionViewLayoutForProfilePicture()
+                    
+//                    self.signInButton.alpha = 1
+                }
                 
-                cell.emailErrorLabel.text = "Sorry, but this email is already in use"
-                cell.emailErrorLabel.textColor = .systemRed
-                cell.emailErrorLabel.isHidden = false
-                
-                cell.passwordErrorLabel.isHidden = true
-                cell.passwordReentryErrorLabel.isHidden = true
-                
-            case .weakPassword:
-                
-                cell.emailErrorLabel.isHidden = true
-                
-                cell.passwordErrorLabel.text = error.localizedDescription
-                cell.passwordErrorLabel.textColor = .systemRed
-                cell.passwordErrorLabel.isHidden = false
-                
-                cell.passwordReentryErrorLabel.text = error.localizedDescription
-                cell.passwordReentryErrorLabel.textColor = .systemRed
-                cell.passwordReentryErrorLabel.isHidden = false
-                
-            default:
-                
-                ProgressHUD.showError(error.localizedDescription)
+                self.registrationCollectionView.scrollToItem(at: IndexPath(row: 7, section: 0), at: .centeredHorizontally, animated: true)
             }
+        }
+        
+        else {
+            
+            cell.errorLabel.textColor = .systemRed
+            cell.errorLabel.text = "Please enter in your password"
         }
     }
 }

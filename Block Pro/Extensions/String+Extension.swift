@@ -26,20 +26,12 @@ extension String {
         return textEntered
     }
     
-    func strictValidationOfTextEntered () -> Bool {
+    func strictValidationOfTextEntered (withSpecialCharacters: CharacterSet) -> Bool {
         
-        let letters = CharacterSet.letters
-        let numbers = CharacterSet.decimalDigits
+//        let dashSet: CharacterSet = ["-"]
+        let finalSet = CharacterSet.alphanumerics.union(withSpecialCharacters)
         
-        for char in self.unicodeScalars {
-            
-            if !letters.contains(char) || !numbers.contains(char) {
-                
-                return true
-            }
-        }
-        
-        return true
+        return finalSet.isSuperset(of: CharacterSet(charactersIn: self)) && !self.isEmpty
     }
     
     func estimateFrameForMessageCell () -> CGRect {
@@ -58,7 +50,7 @@ extension String {
         return NSString(string: self).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont(name: "Poppins-Regular", size: 14) as Any], context: nil)
     }
     
-    func estimateHeightForLongestOnboardingMessage () -> CGRect {
+    func estimateHeightForLongestPreviewMessage () -> CGRect {
         
         let size = CGSize(width: UIScreen.main.bounds.size.width - (UIScreen.main.bounds.width != 320 ? 80 : 40), height: 500)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)

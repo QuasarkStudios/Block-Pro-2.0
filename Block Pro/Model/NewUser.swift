@@ -19,6 +19,4 @@ struct NewUser {
     var username: String = ""
     
     var password: String = ""
-    
-    var passwordReentry: String = "" 
 }

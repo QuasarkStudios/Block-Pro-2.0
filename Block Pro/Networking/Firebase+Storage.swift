@@ -11,6 +11,7 @@ import Foundation
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseStorage
+import SVProgressHUD
 
 class FirebaseStorage {
     
@@ -23,54 +24,28 @@ class FirebaseStorage {
     
     func saveProfilePictureToStorage (_ profilePicture: UIImage) {
         
-        //let profilePicName = UUID().uuidString
-        
         let profilePicJPEGData = profilePicture.jpegData(compressionQuality: 0.2)
         
         if let data = profilePicJPEGData {
             
-            profilePicturesRef.child("\(currentUser.userID).jpeg").putData(data, metadata: nil) { (metadata, error) in
+            profilePicturesRef.child("\(currentUser.userID).jpeg").putData(data, metadata: nil) { [weak self] (metadata, error) in
                 
                 if error != nil {
                     
-                    ProgressHUD.showError(error?.localizedDescription)
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
                 }
                 
                 else {
                     
-                    self.profilePicturesRef.child("\(Auth.auth().currentUser!.uid).jpeg").downloadURL { (url, error) in
-                        
-                        if error != nil {
-                            
-                            ProgressHUD.showError(error?.localizedDescription)
-                        }
-                        
-                        else {
-                            
-                            let currentUser = CurrentUser.sharedInstance
-                            currentUser.profilePictureImage = profilePicture
-                            
-                            guard let profilePicURL = url?.absoluteString else { return }
-                            
-                                self.saveProfilePictureToDatabase(profilePicURL)
-                        }
-                    }
+                    self?.currentUser.profilePictureImage = profilePicture
                 }
             }
         }
         
         else {
             
-            ProgressHUD.showError("Sorry, something went wrong. Please try again later!")
+            SVProgressHUD.showError(withStatus: "Sorry, something went wrong. Please try again later!")
         }
-    }
-    
-    //delete later
-    private func saveProfilePictureToDatabase (_ profilePicURL: String) {
-        
-        let db = Firestore.firestore()
-        
-        db.collection("Users").document(Auth.auth().currentUser!.uid).setData(["profilePicture": profilePicURL], merge: true)
     }
     
 //    func retrieveCurrentUsersProfilePicFromStorage (profilePicURL: String, completion: @escaping (() -> Void)) {

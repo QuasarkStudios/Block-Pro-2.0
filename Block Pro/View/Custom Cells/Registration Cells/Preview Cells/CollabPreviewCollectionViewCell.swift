@@ -1,5 +1,5 @@
 //
-//  CollabOnboardingCollectionViewCell.swift
+//  CollabPreviewCollectionViewCell.swift
 //  Block Pro
 //
 //  Created by Nimat Azeez on 4/30/21.
@@ -9,16 +9,16 @@
 import UIKit
 import Lottie
 
-class CollabOnboardingCollectionViewCell: UICollectionViewCell {
+class CollabPreviewCollectionViewCell: UICollectionViewCell {
     
     lazy var animationView = AnimationView(name: "home-animation")
     let collabLabel = UILabel()
     
     var heightForLabel: CGFloat {
         
-        let onboardingMessageWithTheGreatestRequiredHeight = onboardingMessages.sorted(by: { $0.estimateHeightForLongestOnboardingMessage().height > $1.estimateHeightForLongestOnboardingMessage().height }).first
+        let onboardingMessageWithTheGreatestRequiredHeight = onboardingMessages.sorted(by: { $0.estimateHeightForLongestPreviewMessage().height > $1.estimateHeightForLongestPreviewMessage().height }).first
         
-        return onboardingMessageWithTheGreatestRequiredHeight!.estimateHeightForLongestOnboardingMessage().height
+        return onboardingMessageWithTheGreatestRequiredHeight!.estimateHeightForLongestPreviewMessage().height
     }
     
     override init(frame: CGRect) {

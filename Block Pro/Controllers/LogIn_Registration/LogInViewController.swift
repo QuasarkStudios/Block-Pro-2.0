@@ -389,7 +389,7 @@ class LogInViewController: UIViewController {
         withEmailButton.layer.shadowOpacity = 0.3
 
         withEmailButton.titleLabel?.font = UIFont(name: "Poppins-SemiBold", size: 15)
-        withEmailButton.setTitle("Sign in with E -mail", for: .normal)
+        withEmailButton.setTitle("Sign In with E -mail", for: .normal)
 
         withEmailButton.addTarget(self, action: #selector(buttonTouchDown(sender:)), for: .touchDown)
         withEmailButton.addTarget(self, action: #selector(buttonTouchDragExit(sender:)), for: .touchDragExit)
@@ -460,7 +460,7 @@ class LogInViewController: UIViewController {
         withAppleLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
         withAppleLabel.adjustsFontSizeToFitWidth = true
         withAppleLabel.textAlignment = (UIScreen.main.bounds.width - 100) > 250 ? .center : .left
-        withAppleLabel.text = "Sign in with Apple"
+        withAppleLabel.text = "Sign In with Apple"
         
         withAppleButton.addTarget(self, action: #selector(buttonTouchDown(sender:)), for: .touchDown)
         withAppleButton.addTarget(self, action: #selector(buttonTouchDragExit(sender:)), for: .touchDragExit)
@@ -517,7 +517,7 @@ class LogInViewController: UIViewController {
         withGoogleLabel.font = UIFont(name: "Poppins-SemiBold", size: 15)
         withGoogleLabel.adjustsFontSizeToFitWidth = true
         withGoogleLabel.textAlignment = (UIScreen.main.bounds.width - 100) > 250 ? .center : .left
-        withGoogleLabel.text = "Sign in with Google"
+        withGoogleLabel.text = "Sign In with Google"
         
         withGoogleButton.addTarget(self, action: #selector(buttonTouchDown(sender:)), for: .touchDown)
         withGoogleButton.addTarget(self, action: #selector(buttonTouchDragExit(sender:)), for: .touchDragExit)

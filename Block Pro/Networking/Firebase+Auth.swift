@@ -122,6 +122,30 @@ class FirebaseAuthentication {
         }
     }
     
+    func verifyEmailAddress (_ email: String, completion: @escaping ((_ emailInUse: Bool?, _ error: NSError?) -> Void)) {
+        
+        Auth.auth().fetchSignInMethods(forEmail: email) { (signInMethods, error) in
+            
+            if error != nil {
+                
+                completion(nil, error as NSError?)
+            }
+            
+            else {
+                
+                if signInMethods == nil {
+                    
+                    completion(false, nil)
+                }
+                
+                else {
+                    
+                   completion(true, nil)
+                }
+            }
+        }
+    }
+    
     
     //MARK: - Registration Process
 
@@ -138,15 +162,17 @@ class FirebaseAuthentication {
             
             else {
                 
-                if snapshot?.isEmpty == false {
-                    
-                    completion(snapshot, nil)
-                }
+                completion(snapshot, nil)
                 
-                else {
-                    
-                    completion(nil, nil)
-                }
+//                if snapshot?.isEmpty == false {
+//
+//                    completion(snapshot, nil)
+//                }
+//
+//                else {
+//
+//                    completion(nil, nil)
+//                }
             }
         }
     }

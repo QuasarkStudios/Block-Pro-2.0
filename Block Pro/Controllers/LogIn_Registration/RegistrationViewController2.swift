@@ -393,7 +393,7 @@ extension RegistrationViewController2: AccountLogInInfoEntered {
     
     func passwordReentryEntered(passwordReentry: String) {
         
-        newUser.passwordReentry = passwordReentry
+//        newUser.passwordReentry = passwordReentry
     }
 }
 

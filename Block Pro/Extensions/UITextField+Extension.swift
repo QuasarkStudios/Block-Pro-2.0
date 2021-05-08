@@ -10,6 +10,23 @@ import Foundation
 
 extension UITextField {
     
+    func setOnboardingTextFieldConstraints () {
+        
+        if let superview = self.superview {
+            
+            self.translatesAutoresizingMaskIntoConstraints = false
+            
+            [
+            
+                self.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: 20),
+                self.trailingAnchor.constraint(equalTo: superview.trailingAnchor, constant: -10),
+                self.topAnchor.constraint(equalTo: superview.topAnchor, constant: 0),
+                self.bottomAnchor.constraint(equalTo: superview.bottomAnchor, constant: 0)
+            
+            ].forEach({ $0.isActive = true })
+        }
+    }
+    
     func setCustomPlaceholder (text: String, alignment: NSTextAlignment) {
         
         let centeredParagraphStyle = NSMutableParagraphStyle()
