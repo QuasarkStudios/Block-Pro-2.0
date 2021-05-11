@@ -461,6 +461,25 @@ class HomeViewController: UIViewController {
     }
     
     
+    //MARK: - Animate Entry from Registration
+    
+    func animateEntryToViewFromRegistration () {
+        
+        //Fixes bug that wasn't allowing the scheduleCollectionView to scroll to the cell that cooresponds with the currentDate
+        //Only occured after a user finished registration/onboarding
+        formatter.dateFormat = "yyyy MM dd"
+        let differenceInDates = self.calendar.dateComponents([.day], from: self.formatter.date(from: "2010 01 01") ?? Date(), to: Date()).day
+        headerView.scheduleCollectionView.scrollToItem(at: IndexPath(item: differenceInDates ?? 0, section: 0), at: .centeredHorizontally, animated: false)
+        
+        UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut) {
+            
+            self.headerView.alpha = 1
+            self.animationView.alpha = 1
+            self.calendarButton.alpha = 1
+        }
+    }
+    
+    
     //MARK: - Update Loading Animation
     
     @objc private func updateLoadingAnimation () {
@@ -1490,10 +1509,12 @@ extension HomeViewController: SidebarProtocol {
                 
                 self.navigationController?.popToRootViewController(animated: true)
                 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    
-                    SVProgressHUD.showSuccess(withStatus: "You've been signed out")
-                }
+                SVProgressHUD.dismiss()
+                
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//                    
+//                    SVProgressHUD.showSuccess(withStatus: "You've been signed out")
+//                }
             }
         }
     }

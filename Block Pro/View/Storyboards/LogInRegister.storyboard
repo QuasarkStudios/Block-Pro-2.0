@@ -216,7 +216,6 @@
                         <outlet property="skipAnimationView" destination="D4Z-qR-W84" id="fhN-gh-Q5c"/>
                         <outlet property="skipViewHeightConstraint" destination="YZC-IU-wSQ" id="rHB-73-D7A"/>
                         <outlet property="skipViewWidthConstraint" destination="TAt-ED-gP1" id="LSd-BT-UuT"/>
-                        <segue destination="QMI-pD-lBF" kind="show" identifier="moveToHomeView" animates="NO" id="rAg-rr-XWa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7xR-K4-QSe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -401,7 +400,6 @@
                         <outlet property="startButton" destination="a25-ii-x3p" id="SFr-V1-38H"/>
                         <outlet property="trackBar" destination="vpT-Ut-0fd" id="HQw-gb-nRP"/>
                         <outlet property="welcomeLabel" destination="7HN-Wo-Hh3" id="dYY-e3-zA6"/>
-                        <segue destination="QMI-pD-lBF" kind="show" identifier="moveToHomeView" animates="NO" id="tP5-D2-Z2K"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bWd-Yx-3c9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -421,7 +419,7 @@
                     <navigationItem key="navigationItem" id="i8O-ht-NjG"/>
                     <connections>
                         <segue destination="QMI-pD-lBF" kind="show" identifier="moveToHomeView" id="GpF-kS-wRO"/>
-                        <segue destination="5Nt-Hl-DHL" kind="showDetail" identifier="moveToRegistrationView" id="71d-xX-lYh"/>
+                        <segue destination="QMI-pD-lBF" kind="show" identifier="moveToHomeViewWithoutAnimation" animates="NO" id="9q6-Qj-XUJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Tmh-lX-BkN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -436,7 +434,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5D-Jp-dvO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2906" y="-188"/>
+            <point key="canvasLocation" x="2866" y="-99"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="xbh-Rc-SR5">
@@ -463,8 +461,7 @@
         </designable>
     </designables>
     <inferredMetricsTieBreakers>
-        <segue reference="GpF-kS-wRO"/>
-        <segue reference="71d-xX-lYh"/>
+        <segue reference="9q6-Qj-XUJ"/>
     </inferredMetricsTieBreakers>
     <resources>
         <systemColor name="systemBackgroundColor">

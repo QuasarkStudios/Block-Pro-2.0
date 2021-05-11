@@ -11,8 +11,11 @@ import SVProgressHUD
 
 extension RegistrationViewController {
     
+    //MARK: - Validate Name
+    
     internal func validateName (_ cell: NameOnboardingCollectionViewCell) {
         
+        //The first and last name has been entered properly
         if newUser.firstName.strictValidationOfTextEntered(withSpecialCharacters: ["-"]) && newUser.lastName.strictValidationOfTextEntered(withSpecialCharacters: ["-"]) {
             
             progressBarWidthConstraint?.constant = 36
@@ -22,6 +25,7 @@ extension RegistrationViewController {
                 self.view.layoutIfNeeded()
             }
             
+            //The onboardingPreviousButton would've been disbaled at this point of the registration process
             UIView.transition(with: onboardingPreviousButton, duration: 0.25, options: .transitionCrossDissolve) {
                 
                 self.onboardingPreviousButton.isEnabled = true
@@ -30,14 +34,17 @@ extension RegistrationViewController {
             registrationCollectionView.scrollToItem(at: IndexPath(row: 4, section: 0), at: .centeredHorizontally, animated: true)
         }
         
+        //The first and last name hasn't been entered properly
         else {
             
+            //If the user didn't enter their name
             if !newUser.firstName.leniantValidationOfTextEntered() {
                 
                 cell.firstNameErrorLabel.text = "Please enter in your first name"
                 cell.presentFirstNameErrorLabel(present: true)
             }
             
+            //If the user entered their name incorrectly
             else if !newUser.firstName.strictValidationOfTextEntered(withSpecialCharacters: ["-"]) {
                 
                 cell.firstNameErrorLabel.text = "Sorry, but your first name is badly formatted"
@@ -58,8 +65,12 @@ extension RegistrationViewController {
         }
     }
     
+    
+    //MARK: - Validate E-mail
+    
     internal func validateEmail (_ cell: EmailOnboardingCollectionViewCell) {
         
+        //If the email has been entered
         if newUser.email.leniantValidationOfTextEntered() {
             
             cell.errorLabel.textColor = .black
@@ -67,6 +78,7 @@ extension RegistrationViewController {
             
             cell.displayProgress()
             
+            //Checks to see if the email has been formatted properly and whether or not it's been used for another account
             firebaseAuth.verifyEmailAddress(newUser.email) { [weak self] (emailInUse, error) in
                 
                 cell.progressView.dismissProgress()
@@ -94,12 +106,14 @@ extension RegistrationViewController {
                 
                 else {
                     
+                    //If this email has already been used by another account
                     if emailInUse ?? true {
                         
                         cell.errorLabel.textColor = .systemRed
                         cell.errorLabel.text = "Sorry, but this email is already in use"
                     }
                     
+                    //If this email hasn't been used by another account
                     else {
                         
                         self?.progressBarWidthConstraint?.constant = 72
@@ -124,12 +138,17 @@ extension RegistrationViewController {
         }
     }
     
+    
+    //MARK: - Validate Username
+    
     internal func validateUsername (_ cell: UsernameOnboardingCollectionViewCell) {
         
+        //If the username has been entered
         if newUser.username.leniantValidationOfTextEntered() {
             
             cell.usernameTextField.text = newUser.username.lowercased()
             
+            //If the username has been entered in properly
             if newUser.username.strictValidationOfTextEntered(withSpecialCharacters: ["-", "_"]) {
                 
                 cell.errorLabel.textColor = .black
@@ -137,6 +156,7 @@ extension RegistrationViewController {
                 
                 cell.displayProgress()
                 
+                //Checks to see if this username has been used before
                 firebaseAuth.validateUsername(username: newUser.username) { [weak self] (snapshot, error) in
                     
                     cell.progressView.dismissProgress()
@@ -150,6 +170,7 @@ extension RegistrationViewController {
                     
                     else {
                         
+                        //This username has never been used before
                         if snapshot?.isEmpty ?? false {
                             
                             self?.progressBarWidthConstraint?.constant = 108
@@ -166,6 +187,7 @@ extension RegistrationViewController {
                             cell.errorLabel.text = ""
                         }
                         
+                        //This username has been used before
                         else {
                             
                             cell.errorLabel.textColor = .systemRed
@@ -175,6 +197,7 @@ extension RegistrationViewController {
                 }
             }
             
+            //If the username hasn't been entered properly
             else {
                 
                 cell.errorLabel.textColor = .systemRed
@@ -189,36 +212,92 @@ extension RegistrationViewController {
         }
     }
     
+    
+    //MARK: - Validate Password
+    
     internal func validatePassword (_ cell: PasswordOnboardingCollectionViewCell) {
         
+        //If the password has been entered
         if newUser.password.leniantValidationOfTextEntered() {
             
             SVProgressHUD.show()
             
-            signInButton.alpha = 0
+            //Hides these views because interaction with them can interrupt the process of creating an account for the user
+            UIView.animate(withDuration: 0.3) {
+                
+                self.onboardingPreviousButton.alpha = 0
+                self.onboardingNextButton.alpha = 0
+                
+                self.signInButton.alpha = 0
+            }
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            firebaseAuth.createNewUser(newUser: newUser) { [weak self] (error) in
                 
-                SVProgressHUD.dismiss()
-                
-                self.progressBarWidthConstraint?.constant = 144
-                
-                self.collectionViewBottomAnchorWithSignInButton?.isActive = false
-                self.collectionViewBottomAnchorWithView?.isActive = true
-                
-                UIView.animate(withDuration: 0.5) {
+                if let error = error {
                     
-                    self.view.layoutIfNeeded()
+                    SVProgressHUD.dismiss()
                     
-                    self.onboardingPreviousButton.alpha = 0
-                    self.onboardingNextButton.alpha = 0
+                    UIView.animate(withDuration: 0.3) {
+                        
+                        self?.onboardingPreviousButton.alpha = 1
+                        self?.onboardingNextButton.alpha = 1
+                        
+                        self?.signInButton.alpha = 1
+                    }
                     
-                    self.reconfigureCollectionViewLayoutForProfilePicture()
-                    
-//                    self.signInButton.alpha = 1
+                    if let errorCode = self?.firebaseAuth.getErrorCode(error) {
+                        
+                        switch errorCode {
+                            
+                            case .weakPassword:
+                                
+                                cell.errorLabel.textColor = .systemRed
+                                cell.errorLabel.text = error.localizedDescription
+                              
+                            //If the email was entered in improperly and it wasn't caught by the validateEmail func
+                            //Sadly common because Firebase checkSignInMethods only invalidates some improperly entered emails
+                            case .invalidEmail:
+                                
+                                SVProgressHUD.showError(withStatus: "Sorry, but your email is badly formatted")
+                                
+                                //Brings the user back to the emailOnboardingCell
+                                self?.progressBarWidthConstraint?.constant = 36
+                                
+                                UIView.animate(withDuration: 0.5) {
+                                    
+                                    self?.view.layoutIfNeeded()
+                                }
+                                
+                                self?.onboardingNextButton.setTitle("Next", for: .normal)
+                                
+                                self?.registrationCollectionView.scrollToItem(at: IndexPath(item: 4, section: 0), at: .centeredHorizontally, animated: true)
+                                
+                            default:
+                                
+                                SVProgressHUD.showError(withStatus: error.localizedDescription)
+                        }
+                    }
                 }
                 
-                self.registrationCollectionView.scrollToItem(at: IndexPath(row: 7, section: 0), at: .centeredHorizontally, animated: true)
+                //The user's account was created
+                else {
+                    
+                    SVProgressHUD.dismiss()
+                    
+                    self?.progressBarWidthConstraint?.constant = 144
+    
+                    self?.collectionViewBottomAnchorWithSignInButton?.isActive = false
+                    self?.collectionViewBottomAnchorWithView?.isActive = true
+                    
+                    UIView.animate(withDuration: 0.5) {
+
+                        self?.view.layoutIfNeeded()
+
+                        self?.reconfigureCollectionViewLayoutForProfilePicture()
+                    }
+                    
+                    self?.registrationCollectionView.scrollToItem(at: IndexPath(row: 7, section: 0), at: .centeredHorizontally, animated: true)
+                }
             }
         }
         

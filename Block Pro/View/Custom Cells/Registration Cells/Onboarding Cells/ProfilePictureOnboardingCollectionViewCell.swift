@@ -23,8 +23,6 @@ class ProfilePictureOnboardingCollectionViewCell: UICollectionViewCell {
             
             if let height = itemHeight {
                 
-                print(titleLabel.frame.height)
-                
                 configureProfilePicture(height)
             }
         }

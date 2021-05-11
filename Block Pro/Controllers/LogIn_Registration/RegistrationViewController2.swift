@@ -230,10 +230,10 @@ class RegistrationViewController2: UIViewController, UICollectionViewDataSource,
     
     private func createNewUser (userID: String, completion: @escaping (() -> Void)) {
         
-        userAuth.createNewUser(userID: userID, newUser: newUser) {
-            
-            completion()
-        }
+//        userAuth.createNewUser(userID: userID, newUser: newUser) {
+//            
+//            completion()
+//        }
     }
     
     

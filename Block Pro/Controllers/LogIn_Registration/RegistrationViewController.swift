@@ -26,7 +26,6 @@ class RegistrationViewController: UIViewController {
     let startButton = UIButton(type: .system)
     
     let previewPageControl = UIPageControl()
-    let skipButton = UIButton(type: .system)
     let previewPreviousButton = UIButton(type: .system)
     let previewNextButton = UIButton(type: .system)
     
@@ -100,7 +99,6 @@ class RegistrationViewController: UIViewController {
         configureStartButton()
         
         configureRegistrationCollectionView(registrationCollectionView)
-//        configureSkipButton()
         configurePreviewPreviousButton()
         configurePreviewNextButton()
         configurePreviewPageControl()
@@ -117,28 +115,22 @@ class RegistrationViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        
+        //Animates the entry to the view from the LogInViewController
         UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut) {
             
             self.view.subviews.forEach { (subview) in
                 
+                //Will only animate these subviews
                 if subview == self.gifImageView || subview == self.welcomeLabelsContainer || subview == self.startButtonContainer || subview == self.signInButton {
                     
                     subview.alpha = 1
                 }
-                
-                //redo this lol
-//                if subview != self.yourTurnLabel && subview != self.trackBar && subview != self.onboardingPreviousButton && subview != self.onboardingNextButton && subview != self.skipButton && subview != self.previewPageControl && subview != self.previewPreviousButton && subview != self.previewNextButton {
-//
-//                    subview.alpha = 1
-//                }
             }
-            
-        } completion: { (finished: Bool) in
-            
-            
         }
     }
+    
+    
+    //MARK: - Configure Welcome Container
     
     private func configureWelcomeLabelsContainer () {
         
@@ -147,8 +139,6 @@ class RegistrationViewController: UIViewController {
         
         [
         
-//            welcomeLabelsContainer.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 20),
-//            welcomeLabelsContainer.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -20),
             welcomeLabelsContainer.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0),
             welcomeLabelsContainer.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width - 40),
             welcomeLabelsContainer.heightAnchor.constraint(equalToConstant: 95)
@@ -160,6 +150,9 @@ class RegistrationViewController: UIViewController {
         
         welcomeLabelsContainer.alpha = 0
     }
+    
+    
+    //MARK: - Configure Welcome Label
     
     private func configureWelcomeLabel () {
         
@@ -180,6 +173,9 @@ class RegistrationViewController: UIViewController {
         welcomeLabel.textAlignment = .center
         welcomeLabel.text = "Welcome to BlockPro 2.0"
     }
+    
+    
+    //MARK: - Configure Subheading Label
     
     private func configureSubheadingLabel () {
         
@@ -202,6 +198,9 @@ class RegistrationViewController: UIViewController {
         subheadingLabel.textColor = .lightGray
         subheadingLabel.text = "Let’s start off by getting to know each other a little better"
     }
+    
+    
+    //MARK: - Configure Gif Image View
     
     private func configureGifImageView () {
         
@@ -226,6 +225,7 @@ class RegistrationViewController: UIViewController {
         
         gifImageView.loadGif(name: "giphy")
     }
+    
     
     //MARK: - Configure Sign In Button
     
@@ -257,6 +257,9 @@ class RegistrationViewController: UIViewController {
         signInButton.addTarget(self, action: #selector(signInButtonPressed), for: .touchUpInside)
     }
     
+    
+    //MARK: - Configure Start Button Container
+    
     private func configureStartButtonContainer () {
         
         self.view.addSubview(startButtonContainer)
@@ -264,8 +267,6 @@ class RegistrationViewController: UIViewController {
         
         [
         
-//            startButtonContainer.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
-//            startButtonContainer.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
             startButtonContainer.topAnchor.constraint(equalTo: welcomeLabelsContainer.bottomAnchor, constant: 0),
             startButtonContainer.bottomAnchor.constraint(equalTo: signInButton.topAnchor, constant: 0),
             startButtonContainer.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width)
@@ -277,6 +278,9 @@ class RegistrationViewController: UIViewController {
         
         startButtonContainer.alpha = 0
     }
+    
+    
+    //MARK: - Configure Start Button
     
     private func configureStartButton () {
         
@@ -309,22 +313,19 @@ class RegistrationViewController: UIViewController {
         startButton.addTarget(self, action: #selector(startButtonPressed), for: .touchUpInside)
     }
     
+    
+    //MARK: - Configure Registration Collection View
+    
     private func configureRegistrationCollectionView (_ collectionView: UICollectionView) {
         
-//        self.view.addSubview(collectionView)
         self.view.insertSubview(collectionView, belowSubview: gifImageView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            collectionView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width),
-            
-        ].forEach({ $0.isActive = true })
         
         collectionViewTopAnchor = collectionView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: (keyWindow?.safeAreaInsets.top ?? 0) + 80)
         collectionViewBottomAnchorWithSignInButton = collectionView.bottomAnchor.constraint(equalTo: signInButton.topAnchor, constant: (keyWindow?.safeAreaInsets.bottom ?? 0) > 0 ? -145 : -125)
         collectionViewBottomAnchorWithView = collectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0)
         collectionViewCenterXAnchor = collectionView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: UIScreen.main.bounds.width)
+        collectionView.widthAnchor.constraint(equalToConstant: UIScreen.main.bounds.width).isActive = true
         
         collectionViewTopAnchor?.isActive = true
         collectionViewBottomAnchorWithSignInButton?.isActive = true
@@ -347,8 +348,6 @@ class RegistrationViewController: UIViewController {
         
         collectionView.collectionViewLayout = layout
         
-//        collectionView.lay
-        
         collectionView.register(BlockPreviewCollectionViewCell.self, forCellWithReuseIdentifier: "blockPreviewCollectionViewCell")
         collectionView.register(MessagingPreviewCollectionViewCell.self, forCellWithReuseIdentifier: "messagingPreviewCollectionViewCell")
         collectionView.register(CollabPreviewCollectionViewCell.self, forCellWithReuseIdentifier: "collabPreviewCollectionViewCell")
@@ -362,111 +361,9 @@ class RegistrationViewController: UIViewController {
         //Choppy scrolling appears to be caused by initializing two animationViews at the same time
         collectionView.dequeueReusableCell(withReuseIdentifier: "collabPreviewCollectionViewCell", for: IndexPath(item: 2, section: 0))
     }
+
     
-    private func configureProgressBar () {
-        
-        self.view.addSubview(trackBar)
-        trackBar.addSubview(progressBar)
-        
-        trackBar.translatesAutoresizingMaskIntoConstraints = false
-        progressBar.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            trackBar.topAnchor.constraint(equalTo: self.view.topAnchor, constant: (keyWindow?.safeAreaInsets.top ?? 0) + 97.5),
-            trackBar.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
-            trackBar.widthAnchor.constraint(equalToConstant: 150),
-            trackBar.heightAnchor.constraint(equalToConstant: 15),
-            
-            progressBar.topAnchor.constraint(equalTo: trackBar.topAnchor, constant: 2),
-            progressBar.bottomAnchor.constraint(equalTo: trackBar.bottomAnchor, constant: -2),
-            progressBar.leadingAnchor.constraint(equalTo: trackBar.leadingAnchor, constant: 3),
-//            progressBar.trailingAnchor.constraint(equalTo: trackBar.trailingAnchor, constant: -75)
-        
-        ].forEach({ $0.isActive = true })
-        
-        progressBarWidthConstraint = progressBar.widthAnchor.constraint(equalToConstant: 0/*11*/)
-        progressBarWidthConstraint?.isActive = true
-        
-        trackBar.alpha = 0
-        trackBar.backgroundColor = UIColor(hexString: "F1F1F1")//?.withAlphaComponent(0.8)
-        trackBar.layer.cornerRadius = 7.5
-        trackBar.layer.cornerCurve = .continuous
-        trackBar.clipsToBounds = true
-        
-        progressBar.backgroundColor = UIColor(hexString: "222222")
-        progressBar.layer.cornerRadius = 5.5
-        progressBar.layer.cornerCurve = .continuous
-        progressBar.clipsToBounds = true
-    }
-    
-    private func configureOnboardingPreviousButton () {
-        
-        self.view.addSubview(onboardingPreviousButton)
-        onboardingPreviousButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            onboardingPreviousButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 5),
-            onboardingPreviousButton.trailingAnchor.constraint(equalTo: progressBar.leadingAnchor, constant: -5),
-            onboardingPreviousButton.centerYAnchor.constraint(equalTo: trackBar.centerYAnchor, constant: 0),
-            onboardingPreviousButton.heightAnchor.constraint(equalToConstant: 50)
-        
-        ].forEach({ $0.isActive = true })
-        
-        onboardingPreviousButton.isEnabled = false
-        onboardingPreviousButton.alpha = 0
-        onboardingPreviousButton.tintColor = .black
-        
-        onboardingPreviousButton.titleLabel?.font = UIFont(name: "Poppins-SemiBold", size: 16)
-        onboardingPreviousButton.setTitle("Prev", for: .normal)
-        
-        onboardingPreviousButton.addTarget(self, action: #selector(onboardingPreviousButtonPressed), for: .touchUpInside)
-    }
-    
-    private func configureOnboardingNextButton () {
-        
-        self.view.addSubview(onboardingNextButton)
-        onboardingNextButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            onboardingNextButton.leadingAnchor.constraint(equalTo: trackBar.trailingAnchor, constant: -5),
-            onboardingNextButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -5),
-            onboardingNextButton.centerYAnchor.constraint(equalTo: trackBar.centerYAnchor, constant: 0),
-            onboardingNextButton.heightAnchor.constraint(equalToConstant: 50)
-        
-        ].forEach({ $0.isActive = true })
-        
-        onboardingNextButton.alpha = 0
-        onboardingNextButton.tintColor = .black
-        
-        onboardingNextButton.titleLabel?.font = UIFont(name: "Poppins-SemiBold", size: 16)
-        onboardingNextButton.setTitle("Next", for: .normal)
-        
-        onboardingNextButton.addTarget(self, action: #selector(onboardingNextButtonPressed), for: .touchUpInside)
-    }
-    
-    private func configureSkipButton () {
-        
-        self.view.addSubview(skipButton)
-        skipButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            skipButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -45),
-            skipButton.bottomAnchor.constraint(equalTo: registrationCollectionView.topAnchor, constant: -11),
-            skipButton.widthAnchor.constraint(equalToConstant: 45),
-            skipButton.heightAnchor.constraint(equalToConstant: 35)
-        
-        ].forEach({ $0.isActive = true })
-        
-        skipButton.alpha = 0
-        skipButton.tintColor = .lightGray
-        
-        skipButton.titleLabel?.font = UIFont(name: "Poppins-SemiBold", size: 16)
-        skipButton.setTitle("Skip", for: .normal)
-    }
+    //MARK: - Configure Preview Previous Button
     
     private func configurePreviewPreviousButton () {
         
@@ -484,7 +381,7 @@ class RegistrationViewController: UIViewController {
         
         previewPreviousButton.alpha = 0
         previewPreviousButton.isEnabled = false
-        previewPreviousButton.backgroundColor = UIColor(hexString: "AAAAAA"/*"222222"*/)
+        previewPreviousButton.backgroundColor = UIColor(hexString: "AAAAAA")
         previewPreviousButton.tintColor = .white
         
         previewPreviousButton.layer.cornerRadius = 17.5
@@ -495,6 +392,9 @@ class RegistrationViewController: UIViewController {
         
         previewPreviousButton.addTarget(self, action: #selector(previewPreviousButtonPressed), for: .touchUpInside)
     }
+    
+    
+    //MARK: - Configure Preview Next Button
     
     private func configurePreviewNextButton () {
         
@@ -523,6 +423,9 @@ class RegistrationViewController: UIViewController {
         previewNextButton.addTarget(self, action: #selector(previewNextButtonPressed), for: .touchUpInside)
     }
     
+    
+    //MARK: - Configure Preview Page Control
+    
     private func configurePreviewPageControl () {
         
         self.view.addSubview(previewPageControl)
@@ -530,7 +433,7 @@ class RegistrationViewController: UIViewController {
         
         [
         
-            previewPageControl.bottomAnchor.constraint(equalTo: previewPreviousButton.topAnchor, constant: (keyWindow?.safeAreaInsets.bottom ?? 0) > 0 ? -30 : -20/*-20*/),
+            previewPageControl.bottomAnchor.constraint(equalTo: previewPreviousButton.topAnchor, constant: (keyWindow?.safeAreaInsets.bottom ?? 0) > 0 ? -30 : -20),
             previewPageControl.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
             previewPageControl.widthAnchor.constraint(equalToConstant: 200),
             previewPageControl.heightAnchor.constraint(equalToConstant: 27.5)
@@ -545,6 +448,101 @@ class RegistrationViewController: UIViewController {
         previewPageControl.currentPage = 0
     }
     
+    
+    //MARK: - Configure Progress Bar
+    
+    private func configureProgressBar () {
+        
+        self.view.addSubview(trackBar)
+        trackBar.addSubview(progressBar)
+        
+        trackBar.translatesAutoresizingMaskIntoConstraints = false
+        progressBar.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            trackBar.topAnchor.constraint(equalTo: self.view.topAnchor, constant: (keyWindow?.safeAreaInsets.top ?? 0) + 97.5),
+            trackBar.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
+            trackBar.widthAnchor.constraint(equalToConstant: 150),
+            trackBar.heightAnchor.constraint(equalToConstant: 15),
+            
+            progressBar.topAnchor.constraint(equalTo: trackBar.topAnchor, constant: 2),
+            progressBar.bottomAnchor.constraint(equalTo: trackBar.bottomAnchor, constant: -2),
+            progressBar.leadingAnchor.constraint(equalTo: trackBar.leadingAnchor, constant: 3),
+        
+        ].forEach({ $0.isActive = true })
+        
+        progressBarWidthConstraint = progressBar.widthAnchor.constraint(equalToConstant: 0)
+        progressBarWidthConstraint?.isActive = true
+        
+        trackBar.alpha = 0
+        trackBar.backgroundColor = UIColor(hexString: "F1F1F1")
+        trackBar.layer.cornerRadius = 7.5
+        trackBar.layer.cornerCurve = .continuous
+        trackBar.clipsToBounds = true
+        
+        progressBar.backgroundColor = UIColor(hexString: "222222")
+        progressBar.layer.cornerRadius = 5.5
+        progressBar.layer.cornerCurve = .continuous
+        progressBar.clipsToBounds = true
+    }
+    
+    
+    //MARK: - Configure Onboarding Previous Button
+    
+    private func configureOnboardingPreviousButton () {
+        
+        self.view.addSubview(onboardingPreviousButton)
+        onboardingPreviousButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            onboardingPreviousButton.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 5),
+            onboardingPreviousButton.trailingAnchor.constraint(equalTo: progressBar.leadingAnchor, constant: -5),
+            onboardingPreviousButton.centerYAnchor.constraint(equalTo: trackBar.centerYAnchor, constant: 0),
+            onboardingPreviousButton.heightAnchor.constraint(equalToConstant: 50)
+        
+        ].forEach({ $0.isActive = true })
+        
+        onboardingPreviousButton.isEnabled = false
+        onboardingPreviousButton.alpha = 0
+        onboardingPreviousButton.tintColor = .black
+        
+        onboardingPreviousButton.titleLabel?.font = UIFont(name: "Poppins-SemiBold", size: 16)
+        onboardingPreviousButton.setTitle("Prev", for: .normal)
+        
+        onboardingPreviousButton.addTarget(self, action: #selector(onboardingPreviousButtonPressed), for: .touchUpInside)
+    }
+    
+    
+    //MARK: - Configure Onboarding Next Button
+    
+    private func configureOnboardingNextButton () {
+        
+        self.view.addSubview(onboardingNextButton)
+        onboardingNextButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            onboardingNextButton.leadingAnchor.constraint(equalTo: trackBar.trailingAnchor, constant: -5),
+            onboardingNextButton.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -5),
+            onboardingNextButton.centerYAnchor.constraint(equalTo: trackBar.centerYAnchor, constant: 0),
+            onboardingNextButton.heightAnchor.constraint(equalToConstant: 50)
+        
+        ].forEach({ $0.isActive = true })
+        
+        onboardingNextButton.alpha = 0
+        onboardingNextButton.tintColor = .black
+        
+        onboardingNextButton.titleLabel?.font = UIFont(name: "Poppins-SemiBold", size: 16)
+        onboardingNextButton.setTitle("Next", for: .normal)
+        
+        onboardingNextButton.addTarget(self, action: #selector(onboardingNextButtonPressed), for: .touchUpInside)
+    }
+    
+    
+    //MARK: - Configure Your Turn Label
+    
     private func configureYourTurnLabel () {
         
         self.view.addSubview(yourTurnLabel)
@@ -556,8 +554,6 @@ class RegistrationViewController: UIViewController {
             yourTurnLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -50),
             yourTurnLabel.topAnchor.constraint(equalTo: gifImageView.bottomAnchor, constant: 0),
             yourTurnLabel.bottomAnchor.constraint(equalTo: signInButton.topAnchor, constant: 0)
-//            yourTurnLabel.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0),
-//            yourTurnLabel.heightAnchor.constraint(equalToConstant: 150)
         
         ].forEach({ $0.isActive = true })
         
@@ -571,10 +567,12 @@ class RegistrationViewController: UIViewController {
         yourTurnLabel.text = "Now it's your\nturn!"
     }
     
+    
+    //MARK: - CollectionView Reconfigurations
+    
     private func reconfigureCollectionViewForOnboarding () {
         
         collectionViewTopAnchor?.constant = (keyWindow?.safeAreaInsets.top ?? 0) + 130
-//        collectionViewBottomAnchorWithSignInButton?.constant = 0
 
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -600,6 +598,9 @@ class RegistrationViewController: UIViewController {
         registrationCollectionView.collectionViewLayout = layout
     }
     
+    
+    //MARK: - Start Button Pressed
+    
     @objc private func startButtonPressed () {
         
         gifImageViewTopAnchor?.constant = self.view.safeAreaInsets.top + 5
@@ -619,7 +620,6 @@ class RegistrationViewController: UIViewController {
             self.welcomeLabelsContainer.alpha = 0
             self.startButton.alpha = 0
             
-            self.skipButton.alpha = 1
             self.previewPageControl.alpha = 1
             self.previewPreviousButton.alpha = 1
             self.previewNextButton.alpha = 1
@@ -629,13 +629,16 @@ class RegistrationViewController: UIViewController {
             self.welcomeLabelsContainer.removeFromSuperview()
             self.startButton.removeFromSuperview()
         }
-
     }
+    
+    
+    //MARK: - Preview Previous Button Pressed
     
     @objc private func previewPreviousButtonPressed () {
         
         if let indexPathForFirstVisibleItem = registrationCollectionView.indexPathsForVisibleItems.first, let visibleCell = registrationCollectionView.cellForItem(at: indexPathForFirstVisibleItem) {
             
+            //Stops the animation in the visible preview cell
             if let cell = visibleCell as? BlockPreviewCollectionViewCell {
 
                 cell.animationView.pause()
@@ -655,6 +658,7 @@ class RegistrationViewController: UIViewController {
             
             previewPageControl.currentPage = indexPathForFirstVisibleItem.row - 1
             
+            //If the current indexPath's row is the row before the row of the first preview cell
             if indexPathForFirstVisibleItem.row == 1 {
                 
                 UIView.transition(with: previewPreviousButton, duration: 0.25, options: .transitionCrossDissolve) {
@@ -662,18 +666,18 @@ class RegistrationViewController: UIViewController {
                     self.previewPreviousButton.isEnabled = false
                     self.previewPreviousButton.backgroundColor = UIColor(hexString: "AAAAAA")
                 }
-
-                
-//                previewPreviousButton.isEnabled = false
-//                previewPreviousButton.backgroundColor = UIColor(hexString: "AAAAAA")
             }
         }
     }
+    
+    
+    //MARK: - Preview Next Button Pressed
     
     @objc private func previewNextButtonPressed () {
         
         if let indexPathForFirstVisibleItem = registrationCollectionView.indexPathsForVisibleItems.first, let visibleCell = registrationCollectionView.cellForItem(at: indexPathForFirstVisibleItem) {
             
+            //Stops the animation in the visible preview cell
             if let cell = visibleCell as? BlockPreviewCollectionViewCell {
 
                 cell.animationView.pause()
@@ -689,8 +693,7 @@ class RegistrationViewController: UIViewController {
                 cell.animationView.pause()
             }
             
-            
-            
+            //Scrolling to the next cell
             if indexPathForFirstVisibleItem.row == 0 {
                 
                 UIView.transition(with: previewPreviousButton, duration: 0.25, options: .transitionCrossDissolve) {
@@ -711,6 +714,8 @@ class RegistrationViewController: UIViewController {
             
             else if indexPathForFirstVisibleItem.row == 2 {
                 
+                //Animating the transition from the preview section of the registration process
+                //to the onboarding section of the registration process
                 UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
 
                     self.registrationCollectionView.alpha = 0
@@ -729,7 +734,7 @@ class RegistrationViewController: UIViewController {
                     UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.65, initialSpringVelocity: 1, options: .curveEaseInOut) {
 
                         self.yourTurnLabel.alpha = 1
-                        self.yourTurnLabel.transform = .identity
+                        self.yourTurnLabel.transform = .identity //The yourTurn label is scaled to half of it's original size when configured
 
                     } completion: { (finished: Bool) in
                         
@@ -753,10 +758,14 @@ class RegistrationViewController: UIViewController {
         }
     }
     
+    
+    //MARK: - Onboarding Previous Button Pressed
+    
     @objc private func onboardingPreviousButtonPressed () {
         
         dismissKeyboard()
         
+        //Email Onboarding Cell
         if progressBarWidthConstraint?.constant == 36 {
             
             progressBarWidthConstraint?.constant = 0
@@ -774,6 +783,7 @@ class RegistrationViewController: UIViewController {
             registrationCollectionView.scrollToItem(at: IndexPath(row: 3, section: 0), at: .centeredHorizontally, animated: true)
         }
         
+        //Username Onboarding Cell
         else if progressBarWidthConstraint?.constant == 72 {
             
             progressBarWidthConstraint?.constant = 36
@@ -786,6 +796,7 @@ class RegistrationViewController: UIViewController {
             registrationCollectionView.scrollToItem(at: IndexPath(row: 4, section: 0), at: .centeredHorizontally, animated: true)
         }
         
+        //Password Onboarding Cell
         else if progressBarWidthConstraint?.constant == 108 {
             
             progressBarWidthConstraint?.constant = 72
@@ -795,11 +806,14 @@ class RegistrationViewController: UIViewController {
                 self.view.layoutIfNeeded()
             }
             
-            onboardingNextButton.setTitle("Next", for: .normal)
+            onboardingNextButton.setTitle("Next", for: .normal) //Is set to "Done" when this cell is present, so it has to be changed back to "Next"
             
             registrationCollectionView.scrollToItem(at: IndexPath(row: 5, section: 0), at: .centeredHorizontally, animated: true)
         }
     }
+    
+    
+    //MARK: - Onboarding Next Button Pressed
     
     @objc private func onboardingNextButtonPressed () {
         
@@ -807,6 +821,7 @@ class RegistrationViewController: UIViewController {
         
         if let indexPathForVisibleItem = registrationCollectionView.indexPathsForVisibleItems.first {
             
+            //Scrolling of the collectionView will be done in the validation methods
             if let cell = registrationCollectionView.cellForItem(at: indexPathForVisibleItem) as? NameOnboardingCollectionViewCell {
 
                 validateName(cell)
@@ -829,12 +844,16 @@ class RegistrationViewController: UIViewController {
         }
     }
 
+    
+    //MARK: - Sign In Button Pressed
+    
     @objc private func signInButtonPressed () {
         
         if let viewController = logInViewController as? LogInViewController {
             
             viewController.view.subviews.forEach({ $0.alpha = 0 })
             
+            //Animating the dismissal of this view
             UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut) {
                 
                 self.view.subviews.forEach({ $0.alpha = 0 })
@@ -843,6 +862,7 @@ class RegistrationViewController: UIViewController {
                 
                 self.dismiss(animated: false) {
                     
+                    //Will animate the alpha of every subview in the LogInViewController
                     UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut) {
                         
                         viewController.view.subviews.forEach({ $0.alpha = 1 })
@@ -851,6 +871,9 @@ class RegistrationViewController: UIViewController {
             }
         }
     }
+    
+    
+    //MARK: - Dismiss Keyboard
     
     @objc private func dismissKeyboard () {
         
@@ -878,7 +901,41 @@ class RegistrationViewController: UIViewController {
             }
         }
     }
+    
+    
+    //MARK: - Move to Home View
+    
+    private func moveToHomeView () {
+        
+        if let viewController = logInViewController as? LogInViewController {
+            
+            //Performing the segue to the homeViewController from the LogInViewController
+            viewController.performSegue(withIdentifier: "moveToHomeViewWithoutAnimation", sender: self)
+
+            UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut) {
+
+                self.view.subviews.forEach({ $0.alpha = 0 })
+
+            } completion: { (finished: Bool) in
+
+                if let homeViewController = viewController.navigationController?.viewControllers.first(where: { $0 as? HomeViewController != nil }) as? HomeViewController {
+                    
+                    homeViewController.headerView.alpha = 0
+                    homeViewController.animationView.alpha = 0
+                    homeViewController.calendarButton.alpha = 0
+                    
+                    self.dismiss(animated: false) {
+
+                        homeViewController.animateEntryToViewFromRegistration()
+                    }
+                }
+            }
+        }
+    }
 }
+
+
+//MARK: - CollectionView DataSource and Delegate Methods
 
 extension RegistrationViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
@@ -893,7 +950,6 @@ extension RegistrationViewController: UICollectionViewDataSource, UICollectionVi
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "blockPreviewCollectionViewCell", for: indexPath) as! BlockPreviewCollectionViewCell
         
-            
             return cell
         }
         
@@ -960,11 +1016,9 @@ extension RegistrationViewController: UICollectionViewDataSource, UICollectionVi
             return cell
         }
     }
-    
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
 
-        
         if let cell = cell as? BlockPreviewCollectionViewCell {
 
             cell.animationView.play()
@@ -982,6 +1036,9 @@ extension RegistrationViewController: UICollectionViewDataSource, UICollectionVi
     }
 }
 
+
+//MARK: - Name Registration Protocol Extension
+
 extension RegistrationViewController: NameRegistration {
     
     func firstNameEntered(firstName: String) {
@@ -995,6 +1052,9 @@ extension RegistrationViewController: NameRegistration {
     }
 }
 
+
+//MARK: - Email Address Registration Protocol Extension
+
 extension RegistrationViewController: EmailAddressRegistration {
     
     func emailAddressEntered (email: String) {
@@ -1002,6 +1062,9 @@ extension RegistrationViewController: EmailAddressRegistration {
         newUser.email = email
     }
 }
+
+
+//MARK: - Username Registration Protocol Extension
 
 extension RegistrationViewController: UsernameRegistration {
     
@@ -1011,6 +1074,9 @@ extension RegistrationViewController: UsernameRegistration {
     }
 }
 
+
+//MARK: - Password Registration Protocol Extension
+
 extension RegistrationViewController: PasswordRegistration {
     
     func passwordEntered (password: String) {
@@ -1018,6 +1084,9 @@ extension RegistrationViewController: PasswordRegistration {
         newUser.password = password
     }
 }
+
+
+//MARK: - Profile Picture Registration Protocol Extension
 
 extension RegistrationViewController: ProfilePictureRegistration {
     
@@ -1032,10 +1101,12 @@ extension RegistrationViewController: ProfilePictureRegistration {
     
     func skipProfilePicture() {
         
-        print("check 2")
+        moveToHomeView()
     }
-    
 }
+
+
+//MARK: - UIImagePickerDelegate Extension
 
 extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
@@ -1056,7 +1127,7 @@ extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigat
         if let image = selectedImage {
             
             let firebaseStorage = FirebaseStorage()
-//            firebaseStorage.saveProfilePictureToStorage(<#T##profilePicture: UIImage##UIImage#>)
+            firebaseStorage.saveProfilePictureToStorage(image)
             
             if let cell = registrationCollectionView.visibleCells.first as? ProfilePictureOnboardingCollectionViewCell {
                 
@@ -1069,10 +1140,7 @@ extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigat
             SVProgressHUD.showError(withStatus: "Sorry, something went wrong saving your profile picture")
         }
         
-        dismiss(animated: true) {
-            
-            
-        }
+        dismiss(animated: true, completion: nil)
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

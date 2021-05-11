@@ -203,25 +203,49 @@ class FirebaseAuthentication {
         }
     }
     
-    
-    public func getErrorCode (_ error: NSError) -> AuthErrorCode? {
+    func createNewUser (newUser: NewUser, completion: @escaping ((_ error: NSError?) -> Void)) {
         
-        return AuthErrorCode(rawValue: error.code)
+        Auth.auth().createUser(withEmail: newUser.email, password: newUser.password) { (authResult, error) in
+            
+            if error != nil {
+                
+                completion(error as NSError?)
+            }
+            
+            else {
+                
+                if let userID = authResult?.user.uid {
+                    
+                    self.saveNewUserData(newUser: newUser, userID: userID, completion: completion)
+                }
+            }
+        }
     }
     
-    
-    public func createNewUser (userID: String, newUser: NewUser, completion: (() -> Void)) {
+    func saveNewUserData (newUser: NewUser, userID: String, completion: @escaping ((_ error: NSError?) -> Void)) {
         
         let db = Firestore.firestore()
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MMMM d, yyyy"
         
-//        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : formatter.string(from: Date())])
+        let accountCreated = Date()
         
-        #warning("not tested yet, it honestly looks like this whole function needs more testing.... where is the currentUser singleton set")
-        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : Date()]) { (error) in
+        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : accountCreated]) { (error) in
             
-            if error == nil {
+            if error != nil {
+                
+                completion(error as NSError?)
+            }
+            
+            else {
+                
+                let currentUser = CurrentUser.sharedInstance
+                currentUser.userSignedIn = true
+                currentUser.userID = userID
+                currentUser.firstName = newUser.firstName
+                currentUser.lastName = newUser.lastName
+                currentUser.username = newUser.username.lowercased()
+                currentUser.accountCreated = accountCreated
+                
+                completion(nil)
                 
                 InstanceID.instanceID().instanceID(handler: { (result, error) in
 
@@ -233,26 +257,64 @@ class FirebaseAuthentication {
                     else if let result = result {
 
                         db.collection("Users").document(userID).setData(["fcmToken" : result.token], merge: true)
+                        
+                        currentUser.fcmToken = result.token
                     }
                 })
-                
-//                InstanceID.instanceID().getID { (fcmToken, error) in
+            }
+        }
+    }
+    
+    
+    public func getErrorCode (_ error: NSError) -> AuthErrorCode? {
+        
+        return AuthErrorCode(rawValue: error.code)
+    }
+    
+    
+//    public func createNewUser (userID: String, newUser: NewUser, completion: (() -> Void)) {
+//        
+//        let db = Firestore.firestore()
+////        let formatter = DateFormatter()
+////        formatter.dateFormat = "MMMM d, yyyy"
+//        
+////        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : formatter.string(from: Date())])
+//        
+//        #warning("not tested yet, it honestly looks like this whole function needs more testing.... where is the currentUser singleton set")
+//        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : Date()]) { (error) in
+//            
+//            if error == nil {
+//                
+//                InstanceID.instanceID().instanceID(handler: { (result, error) in
 //
 //                    if error != nil {
 //
 //                        print(error?.localizedDescription as Any)
 //                    }
 //
-//                    else if let token = fcmToken {
+//                    else if let result = result {
 //
-//                        db.collection("Users").document(userID).setData(["fcmToken" : token], merge: true)
+//                        db.collection("Users").document(userID).setData(["fcmToken" : result.token], merge: true)
 //                    }
-//                }
-            }
-        }
-        
-        completion()
-    }
+//                })
+//                
+////                InstanceID.instanceID().getID { (fcmToken, error) in
+////
+////                    if error != nil {
+////
+////                        print(error?.localizedDescription as Any)
+////                    }
+////
+////                    else if let token = fcmToken {
+////
+////                        db.collection("Users").document(userID).setData(["fcmToken" : token], merge: true)
+////                    }
+////                }
+//            }
+//        }
+//        
+//        completion()
+//    }
     
     func setNewFCMToken (fcmToken: String) {
         
