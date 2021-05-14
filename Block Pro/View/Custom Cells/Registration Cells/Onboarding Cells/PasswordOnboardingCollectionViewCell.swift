@@ -44,7 +44,6 @@ class PasswordOnboardingCollectionViewCell: UICollectionViewCell {
             titleLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 30),
             titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -30),
-//            titleLabel.heightAnchor.constraint(equalToConstant: 45)
         
         ].forEach({ $0.isActive = true })
         
@@ -53,6 +52,7 @@ class PasswordOnboardingCollectionViewCell: UICollectionViewCell {
         titleLabel.textAlignment = .center
         titleLabel.text = "Almost done!\nNow just create your password!"//"Cool username!\nNow just create your password!"
     }
+    
     
     private func configurePasswordTextFieldContainer () {
         
@@ -78,6 +78,7 @@ class PasswordOnboardingCollectionViewCell: UICollectionViewCell {
         passwordTextFieldContainer.clipsToBounds = true
     }
     
+    
     private func configurePasswordTextField () {
         
         passwordTextFieldContainer.addSubview(passwordTextField)
@@ -96,6 +97,7 @@ class PasswordOnboardingCollectionViewCell: UICollectionViewCell {
         passwordTextField.addTarget(self, action: #selector(passwordTextChanged), for: .editingChanged)
     }
     
+    
     private func configureSecureTextButtonContainer () {
         
         self.contentView.addSubview(secureTextButtonContainer)
@@ -110,6 +112,7 @@ class PasswordOnboardingCollectionViewCell: UICollectionViewCell {
             
         ].forEach({ $0.isActive = true })
     }
+    
     
     private func configureSecureTextButton () {
         
@@ -133,7 +136,6 @@ class PasswordOnboardingCollectionViewCell: UICollectionViewCell {
         secureTextButton.addTarget(self, action: #selector(secureTextButtonPressed), for: .touchUpInside)
     }
     
-    //MARK: - Configure Error Label
     
     private func configureErrorLabel () {
         
@@ -145,7 +147,6 @@ class PasswordOnboardingCollectionViewCell: UICollectionViewCell {
             errorLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: UIScreen.main.bounds.width != 320 ? 70 : 50),
             errorLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: UIScreen.main.bounds.width != 320 ? -70 : -50),
             errorLabel.topAnchor.constraint(equalTo: passwordTextFieldContainer.bottomAnchor, constant: 7.5),
-//            errorLabel.heightAnchor.constraint(equalToConstant: 20)
         
         ].forEach({ $0.isActive = true })
         
@@ -154,18 +155,18 @@ class PasswordOnboardingCollectionViewCell: UICollectionViewCell {
         errorLabel.font = UIFont(name: "Poppins-Regular", size: 13)
     }
     
+    
     @objc private func passwordTextChanged () {
         
         passwordRegistrationDelegate?.passwordEntered(password: passwordTextField.text ?? "")
     }
+    
     
     @objc private func secureTextButtonPressed () {
         
         if passwordTextField.isSecureTextEntry {
             
             passwordTextField.isSecureTextEntry = false
-            
-//            secureTextButton.tintColor = UIColor(hexString: "D8D8D8")
             
             secureTextButton.setImage(UIImage(systemName: "eye"), for: .normal)
             secureTextButton.setImage(UIImage(systemName: "eye.slash.fill"), for: .highlighted)
@@ -174,8 +175,6 @@ class PasswordOnboardingCollectionViewCell: UICollectionViewCell {
         else {
             
             passwordTextField.isSecureTextEntry = true
-            
-//            secureTextButton.tintColor = .black//UIColor(hexString: "D8D8D8")
             
             secureTextButton.setImage(UIImage(systemName: "eye.slash.fill"), for: .normal)
             secureTextButton.setImage(UIImage(systemName: "eye"), for: .highlighted)

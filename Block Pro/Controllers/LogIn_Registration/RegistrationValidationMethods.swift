@@ -18,7 +18,7 @@ extension RegistrationViewController {
         //The first and last name has been entered properly
         if newUser.firstName.strictValidationOfTextEntered(withSpecialCharacters: ["-"]) && newUser.lastName.strictValidationOfTextEntered(withSpecialCharacters: ["-"]) {
             
-            progressBarWidthConstraint?.constant = 36
+            progressBarWidthConstraint?.constant = signingUpWithApple ? 72 : 36
             
             UIView.animate(withDuration: 0.5) {
                 
@@ -141,6 +141,7 @@ extension RegistrationViewController {
     
     //MARK: - Validate Username
     
+    //If the user is signing with Apple or Google, this will be the last cell presented to them before their user data is saved
     internal func validateUsername (_ cell: UsernameOnboardingCollectionViewCell) {
         
         //If the username has been entered
@@ -156,6 +157,11 @@ extension RegistrationViewController {
                 
                 cell.displayProgress()
                 
+                if signingUpWithApple {
+                    
+                    prepViewForCompletionOfRegistration()
+                }
+                
                 //Checks to see if this username has been used before
                 firebaseAuth.validateUsername(username: newUser.username) { [weak self] (snapshot, error) in
                     
@@ -166,6 +172,11 @@ extension RegistrationViewController {
                         SVProgressHUD.showError(withStatus: error?.localizedDescription)
                         
                         cell.errorLabel.text = ""
+                        
+                        if self?.signingUpWithApple ?? false {
+                            
+                            self?.registrationFailed()
+                        }
                     }
                     
                     else {
@@ -182,9 +193,32 @@ extension RegistrationViewController {
                             
                             self?.onboardingNextButton.setTitle("Done", for: .normal)
                             
-                            self?.registrationCollectionView.scrollToItem(at: IndexPath(row: 6, section: 0), at: .centeredHorizontally, animated: true)
-                            
                             cell.errorLabel.text = ""
+                            
+                            //If the user is signing in with Apple, the required data has been collected and can be saved
+                            if self?.signingUpWithApple ?? false {
+                                
+                                self?.firebaseAuth.saveNewUserData(newUser: self!.newUser, completion: { [weak self](error) in
+                                    
+                                    if error != nil {
+                                        
+                                        SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                                        
+                                        self?.registrationFailed()
+                                    }
+                                    
+                                    else {
+                                        
+                                        self?.registrationCompleted()
+                                    }
+                                })
+                            }
+                            
+                            //If the user is signing in with their email
+                            else {
+                                
+                                self?.registrationCollectionView.scrollToItem(at: IndexPath(row: 6, section: 0), at: .centeredHorizontally, animated: true)
+                            }
                         }
                         
                         //This username has been used before
@@ -192,6 +226,11 @@ extension RegistrationViewController {
                             
                             cell.errorLabel.textColor = .systemRed
                             cell.errorLabel.text = "Sorry, but this username is already being used"
+                            
+                            if self?.signingUpWithApple ?? false {
+                                
+                                self?.registrationFailed()
+                            }
                         }
                     }
                 }
@@ -215,6 +254,7 @@ extension RegistrationViewController {
     
     //MARK: - Validate Password
     
+    //If the user is signing with thier email, this will be the last cell presented to them before their user data is saved
     internal func validatePassword (_ cell: PasswordOnboardingCollectionViewCell) {
         
         //If the password has been entered
@@ -222,14 +262,7 @@ extension RegistrationViewController {
             
             SVProgressHUD.show()
             
-            //Hides these views because interaction with them can interrupt the process of creating an account for the user
-            UIView.animate(withDuration: 0.3) {
-                
-                self.onboardingPreviousButton.alpha = 0
-                self.onboardingNextButton.alpha = 0
-                
-                self.signInButton.alpha = 0
-            }
+            prepViewForCompletionOfRegistration()
             
             firebaseAuth.createNewUser(newUser: newUser) { [weak self] (error) in
                 
@@ -237,13 +270,7 @@ extension RegistrationViewController {
                     
                     SVProgressHUD.dismiss()
                     
-                    UIView.animate(withDuration: 0.3) {
-                        
-                        self?.onboardingPreviousButton.alpha = 1
-                        self?.onboardingNextButton.alpha = 1
-                        
-                        self?.signInButton.alpha = 1
-                    }
+                    self?.registrationFailed()
                     
                     if let errorCode = self?.firebaseAuth.getErrorCode(error) {
                         
@@ -284,19 +311,7 @@ extension RegistrationViewController {
                     
                     SVProgressHUD.dismiss()
                     
-                    self?.progressBarWidthConstraint?.constant = 144
-    
-                    self?.collectionViewBottomAnchorWithSignInButton?.isActive = false
-                    self?.collectionViewBottomAnchorWithView?.isActive = true
-                    
-                    UIView.animate(withDuration: 0.5) {
-
-                        self?.view.layoutIfNeeded()
-
-                        self?.reconfigureCollectionViewLayoutForProfilePicture()
-                    }
-                    
-                    self?.registrationCollectionView.scrollToItem(at: IndexPath(row: 7, section: 0), at: .centeredHorizontally, animated: true)
+                    self?.registrationCompleted()
                 }
             }
         }
@@ -306,5 +321,54 @@ extension RegistrationViewController {
             cell.errorLabel.textColor = .systemRed
             cell.errorLabel.text = "Please enter in your password"
         }
+    }
+    
+    
+    //MARK: - Prep View for Completion of Registration
+    
+    private func prepViewForCompletionOfRegistration () {
+        
+        //Hides these views because interaction with them can interrupt the process of creating an account for the user
+        UIView.animate(withDuration: 0.3) {
+            
+            self.onboardingPreviousButton.alpha = 0
+            self.onboardingNextButton.alpha = 0
+            
+            self.signInButton.alpha = 0
+        }
+    }
+    
+    
+    //MARK: - Registration Failed
+    
+    private func registrationFailed () {
+        
+        UIView.animate(withDuration: 0.3) {
+            
+            self.onboardingPreviousButton.alpha = 1
+            self.onboardingNextButton.alpha = 1
+            
+            self.signInButton.alpha = 1
+        }
+    }
+    
+    
+    //MARK: - Registration Completed
+    
+    private func registrationCompleted () {
+        
+        self.progressBarWidthConstraint?.constant = 144
+
+        self.collectionViewBottomAnchorWithSignInButton?.isActive = false
+        self.collectionViewBottomAnchorWithView?.isActive = true
+        
+        UIView.animate(withDuration: 0.5) {
+
+            self.view.layoutIfNeeded()
+
+            self.reconfigureCollectionViewLayoutForProfilePicture()
+        }
+        
+        registrationCollectionView.scrollToItem(at: IndexPath(row: registrationCollectionView.numberOfItems(inSection: 0) - 1, section: 0), at: .centeredHorizontally, animated: true)
     }
 }

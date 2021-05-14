@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0B9BAA7958C3441D7DB9C240 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D129F96DFC36D1B4CAA19B0D /* Pods_Block_Pro.framework */; };
 		0D0102A62468853600A5FF28 /* Messages.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D0102A52468853600A5FF28 /* Messages.storyboard */; };
 		0D0102A92468F49D00A5FF28 /* MessagesHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0102A82468F49D00A5FF28 /* MessagesHomeViewController.swift */; };
 		0D019B1B260D2AFF00CDC7D4 /* FriendRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D019B1A260D2AFF00CDC7D4 /* FriendRequestCell.swift */; };
@@ -129,6 +130,7 @@
 		0D687DB026159F6300A9BB7D /* notifications-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D687DAF26159F6300A9BB7D /* notifications-animation.json */; };
 		0D687DB72617CEA100A9BB7D /* CollabRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D687DB62617CEA100A9BB7D /* CollabRequestCell.swift */; };
 		0D687DBB261AD40400A9BB7D /* CollabRequestProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D687DBA261AD40400A9BB7D /* CollabRequestProtocol.swift */; };
+		0D68D7B9264B57AC0011069C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D68D7B8264B57AB0011069C /* GoogleService-Info.plist */; };
 		0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */; };
 		0D70F91F2429BF0800407E4A /* LogInViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D70F91E2429BF0800407E4A /* LogInViewController2.swift */; };
 		0D716262262BA773006FC1AB /* conversation-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D716261262BA772006FC1AB /* conversation-animation.json */; };
@@ -216,7 +218,6 @@
 		0DA7FA6B2532CA56006B1825 /* BlocksTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DA7FA692532CA55006B1825 /* BlocksTableViewCell.swift */; };
 		0DAD3B5E24A7C66F00607579 /* ConvoCoverInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAD3B5C24A7C66F00607579 /* ConvoCoverInfoCell.swift */; };
 		0DAD3B5F24A7C66F00607579 /* ConvoCoverInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DAD3B5D24A7C66F00607579 /* ConvoCoverInfoCell.xib */; };
-		0DADDAB823579D1500E79F89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */; };
 		0DAFFE372537634A00C39B69 /* ProgressCircles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DAFFE362537634A00C39B69 /* ProgressCircles.swift */; };
 		0DB0875925E7A9EE00FEE6FF /* CollabHomeEdit_LeaveCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0875825E7A9EE00FEE6FF /* CollabHomeEdit_LeaveCell.swift */; };
 		0DB0875D25E82A5100FEE6FF /* CollabView+TableViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0875C25E82A5100FEE6FF /* CollabView+TableViewExtension.swift */; };
@@ -269,7 +270,6 @@
 		0DF609CC25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609CB25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift */; };
 		0DF609CF25B159E600B0BB63 /* Firebase+Block.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609CE25B159E600B0BB63 /* Firebase+Block.swift */; };
 		0DF609F525B3F2E900B0BB63 /* CollabView+Blocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DF609F425B3F2E900B0BB63 /* CollabView+Blocks.swift */; };
-		A866B14E821C6BC396445AD2 /* Pods_Block_Pro.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E0D964A6D70C98544F8690B /* Pods_Block_Pro.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -397,6 +397,7 @@
 		0D687DAF26159F6300A9BB7D /* notifications-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "notifications-animation.json"; sourceTree = "<group>"; };
 		0D687DB62617CEA100A9BB7D /* CollabRequestCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabRequestCell.swift; sourceTree = "<group>"; };
 		0D687DBA261AD40400A9BB7D /* CollabRequestProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabRequestProtocol.swift; sourceTree = "<group>"; };
+		0D68D7B8264B57AB0011069C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LogInRegister.storyboard; sourceTree = "<group>"; };
 		0D70F91E2429BF0800407E4A /* LogInViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInViewController2.swift; sourceTree = "<group>"; };
 		0D716261262BA772006FC1AB /* conversation-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conversation-animation.json"; sourceTree = "<group>"; };
@@ -485,7 +486,6 @@
 		0DA7FA692532CA55006B1825 /* BlocksTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlocksTableViewCell.swift; sourceTree = "<group>"; };
 		0DAD3B5C24A7C66F00607579 /* ConvoCoverInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoCoverInfoCell.swift; sourceTree = "<group>"; };
 		0DAD3B5D24A7C66F00607579 /* ConvoCoverInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoCoverInfoCell.xib; sourceTree = "<group>"; };
-		0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0DAFFE362537634A00C39B69 /* ProgressCircles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressCircles.swift; sourceTree = "<group>"; };
 		0DB0875825E7A9EE00FEE6FF /* CollabHomeEdit_LeaveCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabHomeEdit_LeaveCell.swift; sourceTree = "<group>"; };
 		0DB0875C25E82A5100FEE6FF /* CollabView+TableViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabView+TableViewExtension.swift"; sourceTree = "<group>"; };
@@ -540,9 +540,9 @@
 		0DF609CB25B0BFA700B0BB63 /* LinksConfigurationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinksConfigurationCollectionViewCell.swift; sourceTree = "<group>"; };
 		0DF609CE25B159E600B0BB63 /* Firebase+Block.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Firebase+Block.swift"; sourceTree = "<group>"; };
 		0DF609F425B3F2E900B0BB63 /* CollabView+Blocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabView+Blocks.swift"; sourceTree = "<group>"; };
-		2ED2CE8F3D81778923E4D887 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
-		44DAAEBC63F166B0BC9B570F /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
-		8E0D964A6D70C98544F8690B /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B9AF55975A56E71AA4127BC3 /* Pods-Block Pro.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.release.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.release.xcconfig"; sourceTree = "<group>"; };
+		C455425F49C9B47EFC2F6BE8 /* Pods-Block Pro.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Block Pro.debug.xcconfig"; path = "Target Support Files/Pods-Block Pro/Pods-Block Pro.debug.xcconfig"; sourceTree = "<group>"; };
+		D129F96DFC36D1B4CAA19B0D /* Pods_Block_Pro.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Block_Pro.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -551,7 +551,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D5FD14825C2848200E9BA2D /* MapKit.framework in Frameworks */,
-				A866B14E821C6BC396445AD2 /* Pods_Block_Pro.framework in Frameworks */,
+				0B9BAA7958C3441D7DB9C240 /* Pods_Block_Pro.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -661,7 +661,7 @@
 				0D1F1E13260873DD009EA8C5 /* search-animation.json */,
 				0D687DAF26159F6300A9BB7D /* notifications-animation.json */,
 				0D2CECFB228FB55800CC9180 /* Info.plist */,
-				0DADDAB723579D1400E79F89 /* GoogleService-Info.plist */,
+				0D68D7B8264B57AB0011069C /* GoogleService-Info.plist */,
 			);
 			path = "Block Pro";
 			sourceTree = "<group>";
@@ -1244,7 +1244,7 @@
 			isa = PBXGroup;
 			children = (
 				0D5FD14725C2848100E9BA2D /* MapKit.framework */,
-				8E0D964A6D70C98544F8690B /* Pods_Block_Pro.framework */,
+				D129F96DFC36D1B4CAA19B0D /* Pods_Block_Pro.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1252,8 +1252,8 @@
 		C54E61ACB30B0D4CDBD0499A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				44DAAEBC63F166B0BC9B570F /* Pods-Block Pro.debug.xcconfig */,
-				2ED2CE8F3D81778923E4D887 /* Pods-Block Pro.release.xcconfig */,
+				C455425F49C9B47EFC2F6BE8 /* Pods-Block Pro.debug.xcconfig */,
+				B9AF55975A56E71AA4127BC3 /* Pods-Block Pro.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -1265,11 +1265,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0D2CECFE228FB55800CC9180 /* Build configuration list for PBXNativeTarget "Block Pro" */;
 			buildPhases = (
-				AD545EDAABA65D6F3837F2A9 /* [CP] Check Pods Manifest.lock */,
+				A70DBCFE8571902C98F40BFF /* [CP] Check Pods Manifest.lock */,
 				0D2CECE8228FB55600CC9180 /* Sources */,
 				0D2CECE9228FB55600CC9180 /* Frameworks */,
 				0D2CECEA228FB55600CC9180 /* Resources */,
-				D1F68155904A5EC499B494B4 /* [CP] Embed Pods Frameworks */,
+				5337FD03A87BBDA4DF826A9F /* [CP] Embed Pods Frameworks */,
+				035926ECC48FD08E2E8F30F4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1347,6 +1348,7 @@
 				0D687DB026159F6300A9BB7D /* notifications-animation.json in Resources */,
 				0D7E5DE6262FE2FC00620D6B /* Launch-Log In Screen Illustration (Scaled).png in Resources */,
 				0D480F072597C60500E14D1E /* ConfigureBlock.storyboard in Resources */,
+				0D68D7B9264B57AC0011069C /* GoogleService-Info.plist in Resources */,
 				0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */,
 				0DAD3B5F24A7C66F00607579 /* ConvoCoverInfoCell.xib in Resources */,
 				0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */,
@@ -1384,7 +1386,6 @@
 				0D78657323E4B56B00BD4C4D /* Poppins-ExtraLight.ttf in Resources */,
 				0D13AC02232DDBD40025EDC3 /* Assets.xcassets in Resources */,
 				0D879AD924B8357E0037C880 /* ConvoPhotosHeaderInfoCell.xib in Resources */,
-				0DADDAB823579D1500E79F89 /* GoogleService-Info.plist in Resources */,
 				0D4173AA24304EF7006076A5 /* RegistrationProfilePicCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1392,7 +1393,41 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		AD545EDAABA65D6F3837F2A9 /* [CP] Check Pods Manifest.lock */ = {
+		035926ECC48FD08E2E8F30F4 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5337FD03A87BBDA4DF826A9F /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A70DBCFE8571902C98F40BFF /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1412,23 +1447,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D1F68155904A5EC499B494B4 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1775,7 +1793,7 @@
 		};
 		0D2CECFF228FB55800CC9180 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 44DAAEBC63F166B0BC9B570F /* Pods-Block Pro.debug.xcconfig */;
+			baseConfigurationReference = C455425F49C9B47EFC2F6BE8 /* Pods-Block Pro.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1790,8 +1808,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.quasarkstudios.blockspro;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.quasarkstudios.blockpro2.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Block Pro-Bridging-Header.h";
@@ -1803,7 +1821,7 @@
 		};
 		0D2CED00228FB55800CC9180 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2ED2CE8F3D81778923E4D887 /* Pods-Block Pro.release.xcconfig */;
+			baseConfigurationReference = B9AF55975A56E71AA4127BC3 /* Pods-Block Pro.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1818,8 +1836,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.2;
-				PRODUCT_BUNDLE_IDENTIFIER = com.quasarkstudios.blockspro;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.quasarkstudios.blockpro2.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Block Pro-Bridging-Header.h";

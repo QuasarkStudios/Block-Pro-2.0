@@ -37,6 +37,7 @@ class RegistrationViewController: UIViewController {
     let onboardingNextButton = UIButton(type: .system)
     
     let firebaseAuth = FirebaseAuthentication()
+    var signingUpWithApple: Bool = false
     
     var newUser = NewUser()
     
@@ -786,14 +787,22 @@ class RegistrationViewController: UIViewController {
         //Username Onboarding Cell
         else if progressBarWidthConstraint?.constant == 72 {
             
-            progressBarWidthConstraint?.constant = 36
+            progressBarWidthConstraint?.constant = signingUpWithApple ? 0 : 36
             
             UIView.animate(withDuration: 0.5) {
                 
                 self.view.layoutIfNeeded()
             }
             
-            registrationCollectionView.scrollToItem(at: IndexPath(row: 4, section: 0), at: .centeredHorizontally, animated: true)
+            if signingUpWithApple {
+                
+                registrationCollectionView.scrollToItem(at: IndexPath(row: 3, section: 0), at: .centeredHorizontally, animated: true)
+            }
+            
+            else {
+                
+                registrationCollectionView.scrollToItem(at: IndexPath(row: 4, section: 0), at: .centeredHorizontally, animated: true)
+            }
         }
         
         //Password Onboarding Cell
@@ -941,7 +950,15 @@ extension RegistrationViewController: UICollectionViewDataSource, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return 8
+        if signingUpWithApple {
+            
+            return 6
+        }
+        
+        else {
+            
+            return 8
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -973,27 +990,58 @@ extension RegistrationViewController: UICollectionViewDataSource, UICollectionVi
             
             cell.nameRegistrationDelegate = self
             
+            cell.firstNameTextField.text = newUser.firstName
+            cell.lastNameTextField.text = newUser.lastName
+            
             return cell
         }
         
         else if indexPath.row == 4 {
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emailOnboardingCollectionViewCell", for: indexPath) as! EmailOnboardingCollectionViewCell
+            if signingUpWithApple {
+                
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "usernameOnboardingCollectionViewCell", for: indexPath) as! UsernameOnboardingCollectionViewCell
+                
+                cell.userFirstName = newUser.firstName
+                
+                cell.usernameRegistrationDelegate = self
+                
+                return cell
+            }
             
-            cell.emailAddressRegistrationDelegate = self
-            
-            return cell
+            else {
+                
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "emailOnboardingCollectionViewCell", for: indexPath) as! EmailOnboardingCollectionViewCell
+                
+                cell.emailAddressRegistrationDelegate = self
+                
+                return cell
+            }
         }
         
         else if indexPath.row == 5 {
             
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "usernameOnboardingCollectionViewCell", for: indexPath) as! UsernameOnboardingCollectionViewCell
+            if signingUpWithApple {
+                
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "profilePictureOnboardingCollectionViewCell", for: indexPath) as! ProfilePictureOnboardingCollectionViewCell
+                
+                cell.itemHeight = itemHeightForProfilePictureCell
+                
+                cell.profilePictureRegistrationDelegate = self
+                
+                return cell
+            }
             
-            cell.userFirstName = newUser.firstName
-            
-            cell.usernameRegistrationDelegate = self
-            
-            return cell
+            else {
+                
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "usernameOnboardingCollectionViewCell", for: indexPath) as! UsernameOnboardingCollectionViewCell
+                
+                cell.userFirstName = newUser.firstName
+                
+                cell.usernameRegistrationDelegate = self
+                
+                return cell
+            }
         }
         
         else if indexPath.row == 6 {

@@ -9,6 +9,7 @@ target 'Block Pro' do
 pod 'Firebase/Core'
 pod 'Firebase/Firestore'
 pod 'Firebase/Auth'
+pod 'FirebaseUI'
 pod 'Firebase/Storage'
 pod 'Firebase/Messaging'
 pod 'Firebase/Analytics'

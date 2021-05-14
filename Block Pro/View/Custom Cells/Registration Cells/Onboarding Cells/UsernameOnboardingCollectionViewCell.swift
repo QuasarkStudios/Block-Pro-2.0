@@ -56,7 +56,6 @@ class UsernameOnboardingCollectionViewCell: UICollectionViewCell {
             titleLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 30),
             titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -30),
-//            titleLabel.heightAnchor.constraint(equalToConstant: 45)
         
         ].forEach({ $0.isActive = true })
         
@@ -65,6 +64,7 @@ class UsernameOnboardingCollectionViewCell: UICollectionViewCell {
         titleLabel.textAlignment = .center
         titleLabel.text = "Great! Now create your username!"
     }
+    
     
     private func configureUsernameTextFieldContainer () {
         
@@ -90,6 +90,7 @@ class UsernameOnboardingCollectionViewCell: UICollectionViewCell {
         usernameTextFieldContainer.clipsToBounds = true
     }
     
+    
     private func configureUsernameTextField () {
         
         usernameTextFieldContainer.addSubview(usernameTextField)
@@ -107,7 +108,6 @@ class UsernameOnboardingCollectionViewCell: UICollectionViewCell {
         usernameTextField.addTarget(self, action: #selector(usernameTextChanged), for: .editingChanged)
     }
     
-    //MARK: - Configure Error Label
     
     private func configureErrorLabel () {
         
@@ -119,7 +119,6 @@ class UsernameOnboardingCollectionViewCell: UICollectionViewCell {
             errorLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: UIScreen.main.bounds.width != 320 ? 70 : 50),
             errorLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: UIScreen.main.bounds.width != 320 ? -70 : -50),
             errorLabel.topAnchor.constraint(equalTo: usernameTextFieldContainer.bottomAnchor, constant: 7.5),
-//            errorLabel.heightAnchor.constraint(equalToConstant: 20)
         
         ].forEach({ $0.isActive = true })
         
@@ -127,6 +126,7 @@ class UsernameOnboardingCollectionViewCell: UICollectionViewCell {
         errorLabel.adjustsFontSizeToFitWidth = true
         errorLabel.font = UIFont(name: "Poppins-Regular", size: 13)
     }
+    
     
     private func configureProgressView () {
         
@@ -142,6 +142,7 @@ class UsernameOnboardingCollectionViewCell: UICollectionViewCell {
         
         ].forEach({ $0.isActive = true })
     }
+    
     
     func displayProgress () {
         
@@ -166,6 +167,7 @@ class UsernameOnboardingCollectionViewCell: UICollectionViewCell {
         
         progressView.showProgress()
     }
+    
     
     @objc private func usernameTextChanged () {
         

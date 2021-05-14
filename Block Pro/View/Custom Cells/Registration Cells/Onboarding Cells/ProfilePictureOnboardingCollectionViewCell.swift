@@ -39,7 +39,6 @@ class ProfilePictureOnboardingCollectionViewCell: UICollectionViewCell {
         configureStackView()
         configureProfilePictureContainer()
         configureButtonContainer()
-//        configureProfilePicture()
         configureAdd_DoneButton()
         configureSkip_ChangeButton()
     }
@@ -58,15 +57,15 @@ class ProfilePictureOnboardingCollectionViewCell: UICollectionViewCell {
             titleLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 30),
             titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -30),
-//            titleLabel.heightAnchor.constraint(equalToConstant: 45)
         
         ].forEach({ $0.isActive = true })
         
         titleLabel.numberOfLines = 2
         titleLabel.font = UIFont(name: "Poppins-SemiBold", size: 16)
         titleLabel.textAlignment = .center
-        titleLabel.text = "Would you like to add a\nprofile picture?"//"Cool username!\nNow just create your password!"
+        titleLabel.text = "Would you like to add a\nprofile picture?"
     }
+    
     
     private func configureStackView () {
         
@@ -84,11 +83,12 @@ class ProfilePictureOnboardingCollectionViewCell: UICollectionViewCell {
         
         stackView.axis = .vertical
         stackView.alignment = .fill
-        stackView.distribution = .fillProportionally//.fillEqually
+        stackView.distribution = .fillProportionally
         
         stackView.addArrangedSubview(profilePictureContainer)
         stackView.addArrangedSubview(buttonContainer)
     }
+    
     
     private func configureProfilePictureContainer () {
         
@@ -100,9 +100,8 @@ class ProfilePictureOnboardingCollectionViewCell: UICollectionViewCell {
             profilePictureContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: 0)
         
         ].forEach({ $0.isActive = true })
-        
-//        profilePictureContainer.backgroundColor = .blue
     }
+    
     
     private func configureButtonContainer () {
         
@@ -114,9 +113,8 @@ class ProfilePictureOnboardingCollectionViewCell: UICollectionViewCell {
             buttonContainer.trailingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: 0)
         
         ].forEach({ $0.isActive = true })
-        
-//        buttonContainer.backgroundColor = .green
     }
+    
     
     private func configureProfilePicture (_ height: CGFloat) {
         
@@ -127,12 +125,13 @@ class ProfilePictureOnboardingCollectionViewCell: UICollectionViewCell {
         
             profilePicture.centerXAnchor.constraint(equalTo: profilePictureContainer.centerXAnchor, constant: 0),
             profilePicture.centerYAnchor.constraint(equalTo: profilePictureContainer.centerYAnchor, constant: 0),
-            profilePicture.widthAnchor.constraint(equalToConstant: (height / 2) - (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 95 : 75)/*(UIScreen.main.bounds.width != 320 ? 85 : 65)*/),
-            profilePicture.heightAnchor.constraint(equalToConstant: (height / 2) - (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 95 : 75)/*(UIScreen.main.bounds.width != 320 ? 85 : 65)*/)
+            profilePicture.widthAnchor.constraint(equalToConstant: (height / 2) - (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 95 : 75)),
+            profilePicture.heightAnchor.constraint(equalToConstant: (height / 2) - (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 95 : 75))
         
         ].forEach({ $0.isActive = true })
         
     }
+    
     
     private func configureAdd_DoneButton () {
         
@@ -143,7 +142,6 @@ class ProfilePictureOnboardingCollectionViewCell: UICollectionViewCell {
         
             add_DoneButton.topAnchor.constraint(equalTo: buttonContainer.topAnchor, constant: 30),
             add_DoneButton.centerXAnchor.constraint(equalTo: buttonContainer.centerXAnchor, constant: 0),
-//            addButton.centerYAnchor.constraint(equalTo: buttonContainer.centerYAnchor, constant: 0),
             add_DoneButton.heightAnchor.constraint(equalToConstant: 45)
         
         ].forEach({ $0.isActive = true })
@@ -161,6 +159,7 @@ class ProfilePictureOnboardingCollectionViewCell: UICollectionViewCell {
         
         add_DoneButton.addTarget(self, action: #selector(add_ChangeButtonPressed), for: .touchUpInside)
     }
+    
     
     private func configureSkip_ChangeButton () {
         
@@ -183,6 +182,7 @@ class ProfilePictureOnboardingCollectionViewCell: UICollectionViewCell {
         skip_ChangeButton.addTarget(self, action: #selector(skip_DoneButtonPressed), for: .touchUpInside)
     }
     
+    
     func profilePictureAdded (_ profilePic: UIImage) {
         
         profilePicture.profilePic = profilePic
@@ -197,10 +197,12 @@ class ProfilePictureOnboardingCollectionViewCell: UICollectionViewCell {
         skip_ChangeButton.addTarget(self, action: #selector(add_ChangeButtonPressed), for: .touchUpInside)
     }
     
+    
     @objc private func add_ChangeButtonPressed () {
         
         profilePictureRegistrationDelegate?.addProfilePicture()
     }
+    
     
     @objc private func skip_DoneButtonPressed () {
         

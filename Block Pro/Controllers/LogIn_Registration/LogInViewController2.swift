@@ -334,12 +334,12 @@ class LogInViewController2: UIViewController, UITextFieldDelegate, BEMCheckBoxDe
         
 //        addSplashScreen()
         
-        userAuth.retrieveSignedInUser(user) { (error) in
-            
-            self.view.dismissProgress()
-            
-            self.performSegue(withIdentifier: "moveToHomeView", sender: self)
-        }
+//        userAuth.retrieveSignedInUser(user) { (error) in
+//
+//            self.view.dismissProgress()
+//
+//            self.performSegue(withIdentifier: "moveToHomeView", sender: self)
+//        }
     }
     
     @IBAction func signInButton(_ sender: Any) {
@@ -363,25 +363,25 @@ class LogInViewController2: UIViewController, UITextFieldDelegate, BEMCheckBoxDe
             allowProgressAnimation = true
             animateSignInButton(shrink: true)
 
-            userAuth.logInUser(email: emailTextField.text!, password: passwordTextField.text!) { [weak self] (error) in
-                
-                if error != nil {
-                    
-                    self?.allowProgressAnimation = false
-
-                    self?.animateSignInButton(shrink: false)
-
-                    ProgressHUD.showError(error?.localizedDescription)
-                    self?.signInButton.isEnabled = true
-                }
-                
-                else {
-                    
-                    self?.signInButton.isEnabled = true
-
-                    self?.userSignedIn()
-                }
-            }
+//            userAuth.logInUser(email: emailTextField.text!, password: passwordTextField.text!) { [weak self] (error) in
+//                
+//                if error != nil {
+//                    
+//                    self?.allowProgressAnimation = false
+//
+//                    self?.animateSignInButton(shrink: false)
+//
+//                    ProgressHUD.showError(error?.localizedDescription)
+//                    self?.signInButton.isEnabled = true
+//                }
+//                
+//                else {
+//                    
+//                    self?.signInButton.isEnabled = true
+//
+//                    self?.userSignedIn()
+//                }
+//            }
         }
     }
     

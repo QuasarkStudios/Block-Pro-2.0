@@ -186,6 +186,11 @@ class ConvoCoverInfoCell: UITableViewCell {
                        
                         self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: profilePic)
                     }
+                    
+                    else {
+                        
+                        self.configureCover(UIImage(named: "DefaultProfilePic"))
+                    }
                 }
             }
         }

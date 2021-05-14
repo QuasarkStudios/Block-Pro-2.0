@@ -50,7 +50,6 @@ class NameOnboardingCollectionViewCell: UICollectionViewCell {
             titleLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 30),
             titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -30),
-//            titleLabel.heightAnchor.constraint(equalToConstant: 45)
         
         ].forEach({ $0.isActive = true })
         
@@ -59,7 +58,6 @@ class NameOnboardingCollectionViewCell: UICollectionViewCell {
         titleLabel.textAlignment = .center
         titleLabel.text = "What's your name?"
     }
-    
     
     
     private func configureFirstNameTextFieldContainer () {
@@ -85,6 +83,7 @@ class NameOnboardingCollectionViewCell: UICollectionViewCell {
         firstNameTextFieldContainer.layer.cornerCurve = .continuous
         firstNameTextFieldContainer.clipsToBounds = true
     }
+    
     
     private func configureLastNameTextFieldContainer () {
         
@@ -113,8 +112,6 @@ class NameOnboardingCollectionViewCell: UICollectionViewCell {
     }
     
     
-    
-    
     private func configureFirstNameTextField () {
         
         firstNameTextFieldContainer.addSubview(firstNameTextField)
@@ -131,6 +128,7 @@ class NameOnboardingCollectionViewCell: UICollectionViewCell {
         
         firstNameTextField.addTarget(self, action: #selector(firstNameTextChanged), for: .editingChanged)
     }
+    
     
     private func configureLastNameTextField () {
         
@@ -149,7 +147,7 @@ class NameOnboardingCollectionViewCell: UICollectionViewCell {
         lastNameTextField.addTarget(self, action: #selector(lastNameTextChanged), for: .editingChanged)
     }
     
-    //MARK: - Configure Error Label
+
     
     private func configureFirstNameErrorLabel () {
         
@@ -169,8 +167,8 @@ class NameOnboardingCollectionViewCell: UICollectionViewCell {
         firstNameErrorLabel.adjustsFontSizeToFitWidth = true
         firstNameErrorLabel.font = UIFont(name: "Poppins-Regular", size: 13)
         firstNameErrorLabel.textColor = .systemRed
-//        firstNameErrorLabel.text = "Please enter in your first name"
     }
+    
     
     private func configureLastNameErrorLabel () {
         
@@ -192,15 +190,18 @@ class NameOnboardingCollectionViewCell: UICollectionViewCell {
         lastNameErrorLabel.textColor = .systemRed
     }
     
+    
     @objc private func firstNameTextChanged () {
         
         nameRegistrationDelegate?.firstNameEntered(firstName: firstNameTextField.text ?? "")
     }
     
+    
     @objc private func lastNameTextChanged () {
         
         nameRegistrationDelegate?.lastNameEntered(lastName: lastNameTextField.text ?? "")
     }
+    
     
     func presentFirstNameErrorLabel (present: Bool) {
         
@@ -214,6 +215,7 @@ class NameOnboardingCollectionViewCell: UICollectionViewCell {
         }
     }
     
+    
     func presentLastNameErrorLabel (present: Bool){
         
         UIView.animate(withDuration: 0.3) {
@@ -222,6 +224,7 @@ class NameOnboardingCollectionViewCell: UICollectionViewCell {
         }
     }
 }
+
 
 extension NameOnboardingCollectionViewCell: UITextFieldDelegate {
     

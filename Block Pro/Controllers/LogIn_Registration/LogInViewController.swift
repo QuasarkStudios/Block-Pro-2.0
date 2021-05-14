@@ -7,10 +7,12 @@
 //
 
 import UIKit
+//import FirebaseAuth
+import FirebaseUI
+import CryptoKit
 import BEMCheckBox
 import SVProgressHUD
 import iProgressHUD
-import FirebaseAuth
 import AuthenticationServices
 
 class LogInViewController: UIViewController {
@@ -57,6 +59,9 @@ class LogInViewController: UIViewController {
     var allowProgressToShow: Bool = false
     
     var userSigningUp: Bool = false
+    var signingInWithApple: Bool = false
+    
+    var currentNonce: String?
     
     var zoomingIllustrationImageViewTopAnchor: NSLayoutConstraint?
     var zoomingIllustrationImageViewWidthConstraint: NSLayoutConstraint?
@@ -124,17 +129,45 @@ class LogInViewController: UIViewController {
         
         //If the user is already signed in
         if let currentUser = Auth.auth().currentUser {
-            
+
             attachProgressAnimation(signingInProgressView)
             signingInProgressView.showProgress()
-            
+
             //Will retrieve the data for the signed in user
-            retrieveSignedInUserData(currentUser)
+            retrieveSignedInUserData(currentUser) { [weak self] (error, userDataFound) in
+                
+                if error != nil {
+                    
+                    print("error signing in user:", error?.localizedDescription as Any)
+                    
+                    self?.animateSplashScreen()
+                }
+                
+                else {
+                    
+                    if userDataFound ?? false {
+                        
+                        //Ensures that if the user later logs out, the main illustrationImageView will be present
+                        self?.illustrationImageView.isHidden = false
+                        
+                        self?.performSegue(withIdentifier: "moveToHomeView", sender: self)
+                    }
+                    
+                    else {
+                        
+                        //Ensures that the splashScreen is still present on the screen
+                        if self?.splashScreenBackgroundView.superview != nil {
+
+                            self?.animateSplashScreen()
+                        }
+                    }
+                }
+            }
         }
-        
+
         //Ensures that the splashScreen is still present on the screen
         else if splashScreenBackgroundView.superview != nil {
-            
+
             animateSplashScreen()
         }
     }
@@ -744,7 +777,7 @@ class LogInViewController: UIViewController {
             
             signUpButton.isEnabled = false
             
-            firebaseAuth.logInUser(email: emailTextField.text ?? "", password: passwordTextField.text ?? "") { [weak self] (error) in
+            firebaseAuth.signInUserWithEmail(email: emailTextField.text ?? "", password: passwordTextField.text ?? "") { [weak self] (error, _) in
 
                 if error != nil {
 
@@ -767,23 +800,26 @@ class LogInViewController: UIViewController {
     
     //MARK: - Retrieve Signed In User Data
     
-    private func retrieveSignedInUserData (_ user: User) {
+    private func retrieveSignedInUserData (_ user: User, completion: @escaping ((_ error: Error?, _ userDataFound: Bool?) -> Void)) {
         
-        firebaseAuth.retrieveSignedInUser(user) { [weak self] (error) in
+        firebaseAuth.retrieveSignedInUser(user) {(error, userDataFound) in
             
             if error != nil {
                 
-                print("error signing in user:", error?.localizedDescription as Any)
-                
-                self?.animateSplashScreen()
+                completion(error, nil)
             }
             
             else {
                 
-                //Ensures that if the user later logs out, the main illustrationImageView will be present
-                self?.illustrationImageView.isHidden = false
+                if userDataFound ?? false {
+                    
+                    completion(nil, true)
+                }
                 
-                self?.performSegue(withIdentifier: "moveToHomeView", sender: self)
+                else {
+                    
+                    completion(nil, false)
+                }
             }
         }
     }
@@ -1015,17 +1051,65 @@ class LogInViewController: UIViewController {
     }
     
     
-    private func moveToRegistrationView () {
+    //MARK: - Create AppleID Request
+    
+    private func createAppleIDRequest () -> ASAuthorizationAppleIDRequest {
         
-        let registrationVC = RegistrationViewController()
-        registrationVC.modalPresentationStyle = .fullScreen
-        registrationVC.modalTransitionStyle = .crossDissolve
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+        
+        let nonce = randomNonceString()
+        request.nonce = sha256(nonce)
+        currentNonce = nonce
+        
+        return request
+    }
+    
+    
+    //MARK: - Sign in with Apple
+    
+    private func signInWithApple () {
+        
+        let request = createAppleIDRequest()
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        
+        authorizationController.performRequests()
+    }
+    
+    
+    //MARK: - Move to Registration View
+    
+    private func moveToRegistrationView (newUser: NewUser? = nil) {
+        
+        UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut) {
+            
+            self.view.subviews.forEach({ $0.alpha = 0 })
+            
+        } completion: { (finished: Bool) in
+            
+            let registrationVC = RegistrationViewController()
+            registrationVC.modalPresentationStyle = .fullScreen
+            registrationVC.modalTransitionStyle = .crossDissolve
 
-        registrationVC.logInViewController = self
-        
-        self.present(registrationVC, animated: false)
+            //Will be non-nil if the user is signing in with apple
+            if let newUser = newUser {
+                
+                registrationVC.newUser = newUser
+            }
+            
+            registrationVC.signingUpWithApple = self.signingInWithApple
+            
+            registrationVC.logInViewController = self
+            
+            self.present(registrationVC, animated: false)
+        }
     }
 
+    
     //MARK: - Button Touch Down
     
     @objc private func buttonTouchDown (sender: UIButton) {
@@ -1102,48 +1186,22 @@ class LogInViewController: UIViewController {
                 UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
                     
                     sender.transform = .identity
-                    
-                } completion: { (finished: Bool) in
-                    
-                    
                 }
                 
-                UIView.animate(withDuration: 0.35, delay: 0, options: .curveEaseInOut) {
-                    
-                    self.view.subviews.forEach({ $0.alpha = 0 })
-                    
-                } completion: { (finished: Bool) in
-                    
-                    self.moveToRegistrationView()
-                }
+                signingInWithApple = false
+                self.moveToRegistrationView()
             }
         }
         
         else if sender == withAppleButton {
             
-            if !userSigningUp {
+            UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
                 
-                UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
-                    
-                    sender.transform = .identity
-                    
-                } completion: { (finished: Bool) in
-                    
-                    
-                }
+                sender.transform = .identity
             }
             
-            else {
-                
-                UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
-                    
-                    sender.transform = .identity
-                    
-                } completion: { (finished: Bool) in
-                    
-                    
-                }
-            }
+            signingInWithApple = true
+            self.signInWithApple()
         }
         
         else if sender == withGoogleButton {
@@ -1247,3 +1305,145 @@ extension LogInViewController: UITextFieldDelegate {
         return true
     }
 }
+
+extension LogInViewController: ASAuthorizationControllerDelegate {
+    
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        
+        //Extracting the authorization credential provided by Apple
+        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            
+            guard let nonce = currentNonce else {
+                
+                fatalError("Invalid state: A login callback was registered, but no login request was sent")
+            }
+            
+            //Retrieval of the identityToken
+            guard let appleIDToken = appleIDCredential.identityToken else {
+                
+                print("Unable to fetch identity token")
+                return
+            }
+            
+            //Conversion of the identity token it into a string
+            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                
+                print("Unable to serialize token string from data: \(appleIDToken.debugDescription)")
+                return
+            }
+            
+            SVProgressHUD.show()
+            
+            //Using the nonce and the idToken, this will ask the OAuth provider to mint a credential representing the user that has just signed in
+            let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nonce)
+            
+            //Using the credential to sign into Firebase
+            //If this is a new user, Firebase will create a new user account
+            firebaseAuth.signInUserWithCredential(credential) { [weak self] (user, error) in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription as Any)
+                    
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                }
+                
+                else {
+                    
+                    if let user = user {
+                        
+                        //Retrieves the users data from the "Users" collection in Firebase
+                        self?.retrieveSignedInUserData(user, completion: { (error, userDataFound) in
+                            
+                            if error != nil {
+                                
+                                print(error?.localizedDescription as Any)
+                                
+                                SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                            }
+                            
+                            else {
+                                
+                                SVProgressHUD.dismiss()
+                                
+                                if userDataFound ?? false {
+                                    
+                                    self?.performSegue(withIdentifier: "moveToHomeView", sender: self)
+                                }
+                                
+                                //If this user is signing in with Apple for the first time
+                                //or if this user did not complete the onboarding process during their first sign in
+                                else {
+                                    
+                                    var newUser = NewUser()
+                                    newUser.email = user.email ?? ""
+                                    newUser.firstName = appleIDCredential.fullName?.givenName ?? ""
+                                    newUser.lastName = appleIDCredential.fullName?.familyName ?? ""
+                                    
+                                    self?.moveToRegistrationView(newUser: newUser)
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+//MARK: - ASAuthorizationControllerPresentationContextProviding Extension
+
+extension LogInViewController: ASAuthorizationControllerPresentationContextProviding {
+    
+    //Tells the delegate from which window it should present content to the user
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        
+        return self.view.window!
+    }
+}
+
+
+//MARK: - Google's Stuff
+
+    private func randomNonceString(length: Int = 32) -> String {
+      precondition(length > 0)
+      let charset: Array<Character> =
+          Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+      var result = ""
+      var remainingLength = length
+
+      while remainingLength > 0 {
+        let randoms: [UInt8] = (0 ..< 16).map { _ in
+          var random: UInt8 = 0
+          let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
+          if errorCode != errSecSuccess {
+            fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+          }
+          return random
+        }
+
+        randoms.forEach { random in
+          if remainingLength == 0 {
+            return
+          }
+
+          if random < charset.count {
+            result.append(charset[Int(random)])
+            remainingLength -= 1
+          }
+        }
+      }
+
+      return result
+    }
+
+    private func sha256(_ input: String) -> String {
+      let inputData = Data(input.utf8)
+      let hashedData = SHA256.hash(data: inputData)
+      let hashString = hashedData.compactMap {
+        return String(format: "%02x", $0)
+      }.joined()
+
+      return hashString
+    }

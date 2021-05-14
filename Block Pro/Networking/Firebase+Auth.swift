@@ -11,25 +11,52 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 import FirebaseMessaging
+import SVProgressHUD
 
 class FirebaseAuthentication {
     
     //MARK: - Log In User Function
     
-    public func logInUser (email: String, password: String, completion: @escaping ((_ error: Error?) -> Void)) {
+    public func signInUserWithEmail (email: String, password: String, completion: @escaping ((_ error: Error?, _ userDataFound: Bool?) -> Void)) {
         
         Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
             
             if error != nil {
                 
-                completion(error)
+                print(error?.localizedDescription as Any)
+                
+                completion(error, false)
             }
             
             else {
                 
-                self.retrieveSignedInUser(user?.user) { (error) in
+                self.retrieveSignedInUser(user?.user) { (error, userDataFound) in
                     
-                    completion(error)
+                    completion(error, userDataFound)
+                }
+            }
+        }
+    }
+    
+    public func signInUserWithCredential (_ credential: AuthCredential, completion: @escaping ((_ authResult: User?, _ error: Error?) -> Void)) {
+        
+        Auth.auth().signIn(with: credential) { (authResult, error) in
+            
+            if error != nil {
+                
+                completion(nil, error)
+            }
+            
+            else {
+                
+                if let user = authResult?.user {
+                
+                    completion(user, nil)
+                }
+                
+                else {
+                    
+                    SVProgressHUD.showError(withStatus: "Sorry, something went wrong while signing you in. Please try again later.")
                 }
             }
         }
@@ -57,7 +84,7 @@ class FirebaseAuthentication {
     
     //MARK: - Retrieves User's Info from Database
     
-    public func retrieveSignedInUser (_ user: User?, _ completion: @escaping ((_ error: Error?) -> Void)) {
+    public func retrieveSignedInUser (_ user: User?, _ completion: @escaping ((_ error: Error?, _ userDataFound: Bool?) -> Void)) {
         
         if let signedInUser = user {
             
@@ -67,7 +94,7 @@ class FirebaseAuthentication {
                 
                 if error != nil {
 
-                    completion(error)
+                    completion(error, nil)
                 }
                 
                 else {
@@ -110,12 +137,12 @@ class FirebaseAuthentication {
                             }
                         })
                         
-                        completion(nil)
+                        completion(nil, true)
                     }
                     
                     else {
                         
-                        completion (nil)
+                        completion (nil, false)
                     }
                 }
             }
@@ -214,54 +241,64 @@ class FirebaseAuthentication {
             
             else {
                 
-                if let userID = authResult?.user.uid {
-                    
-                    self.saveNewUserData(newUser: newUser, userID: userID, completion: completion)
-                }
+                self.saveNewUserData(newUser: newUser, userID: authResult?.user.uid, completion: completion)
+                
+//                if let userID = authResult?.user.uid {
+//
+//                    self.saveNewUserData(newUser: newUser, userID: userID, completion: completion)
+//                }
             }
         }
     }
     
-    func saveNewUserData (newUser: NewUser, userID: String, completion: @escaping ((_ error: NSError?) -> Void)) {
+    func saveNewUserData (newUser: NewUser, userID: String? = Auth.auth().currentUser?.uid, completion: @escaping ((_ error: NSError?) -> Void)) {
         
         let db = Firestore.firestore()
-        
+
         let accountCreated = Date()
         
-        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : accountCreated]) { (error) in
+        if let userID = userID {
             
-            if error != nil {
-                
-                completion(error as NSError?)
+            db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : accountCreated]) { (error) in
+
+                if error != nil {
+
+                    completion(error as NSError?)
+                }
+
+                else {
+
+                    let currentUser = CurrentUser.sharedInstance
+                    currentUser.userSignedIn = true
+                    currentUser.userID = userID
+                    currentUser.firstName = newUser.firstName
+                    currentUser.lastName = newUser.lastName
+                    currentUser.username = newUser.username.lowercased()
+                    currentUser.accountCreated = accountCreated
+
+                    completion(nil)
+
+                    InstanceID.instanceID().instanceID(handler: { (result, error) in
+
+                        if error != nil {
+
+                            print(error?.localizedDescription as Any)
+                        }
+
+                        else if let result = result {
+
+                            db.collection("Users").document(userID).setData(["fcmToken" : result.token], merge: true)
+
+                            currentUser.fcmToken = result.token
+                        }
+                    })
+                }
             }
+        }
+        
+        else {
             
-            else {
-                
-                let currentUser = CurrentUser.sharedInstance
-                currentUser.userSignedIn = true
-                currentUser.userID = userID
-                currentUser.firstName = newUser.firstName
-                currentUser.lastName = newUser.lastName
-                currentUser.username = newUser.username.lowercased()
-                currentUser.accountCreated = accountCreated
-                
-                completion(nil)
-                
-                InstanceID.instanceID().instanceID(handler: { (result, error) in
-
-                    if error != nil {
-
-                        print(error?.localizedDescription as Any)
-                    }
-
-                    else if let result = result {
-
-                        db.collection("Users").document(userID).setData(["fcmToken" : result.token], merge: true)
-                        
-                        currentUser.fcmToken = result.token
-                    }
-                })
-            }
+            SVProgressHUD.showError(withStatus: "Sorry, something went wrong while creating your account. Please try again later.")
         }
     }
     
@@ -270,51 +307,6 @@ class FirebaseAuthentication {
         
         return AuthErrorCode(rawValue: error.code)
     }
-    
-    
-//    public func createNewUser (userID: String, newUser: NewUser, completion: (() -> Void)) {
-//        
-//        let db = Firestore.firestore()
-////        let formatter = DateFormatter()
-////        formatter.dateFormat = "MMMM d, yyyy"
-//        
-////        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : formatter.string(from: Date())])
-//        
-//        #warning("not tested yet, it honestly looks like this whole function needs more testing.... where is the currentUser singleton set")
-//        db.collection("Users").document(userID).setData(["userID" : userID, "firstName" : newUser.firstName, "lastName" : newUser.lastName, "username" : newUser.username.lowercased(), "accountCreated" : Date()]) { (error) in
-//            
-//            if error == nil {
-//                
-//                InstanceID.instanceID().instanceID(handler: { (result, error) in
-//
-//                    if error != nil {
-//
-//                        print(error?.localizedDescription as Any)
-//                    }
-//
-//                    else if let result = result {
-//
-//                        db.collection("Users").document(userID).setData(["fcmToken" : result.token], merge: true)
-//                    }
-//                })
-//                
-////                InstanceID.instanceID().getID { (fcmToken, error) in
-////
-////                    if error != nil {
-////
-////                        print(error?.localizedDescription as Any)
-////                    }
-////
-////                    else if let token = fcmToken {
-////
-////                        db.collection("Users").document(userID).setData(["fcmToken" : token], merge: true)
-////                    }
-////                }
-//            }
-//        }
-//        
-//        completion()
-//    }
     
     func setNewFCMToken (fcmToken: String) {
         

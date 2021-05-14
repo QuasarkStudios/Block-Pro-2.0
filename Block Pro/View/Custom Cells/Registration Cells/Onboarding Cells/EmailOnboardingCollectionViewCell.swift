@@ -45,7 +45,6 @@ class EmailOnboardingCollectionViewCell: UICollectionViewCell {
             titleLabel.topAnchor.constraint(equalTo: self.contentView.topAnchor, constant: 15),
             titleLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: 30),
             titleLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: -30),
-//            titleLabel.heightAnchor.constraint(equalToConstant: 45)
         
         ].forEach({ $0.isActive = true })
         
@@ -55,7 +54,7 @@ class EmailOnboardingCollectionViewCell: UICollectionViewCell {
         titleLabel.text = "What about your email?"
     }
     
-    //MARK: - Configure Email TextField Container
+   
     
     private func configureEmailTextFieldContainer () {
         
@@ -81,8 +80,6 @@ class EmailOnboardingCollectionViewCell: UICollectionViewCell {
         emailTextFieldContainer.clipsToBounds = true
     }
     
-    
-    //MARK: - Configure Email TextField
     
     private func configureEmailTextField () {
         
@@ -112,8 +109,6 @@ class EmailOnboardingCollectionViewCell: UICollectionViewCell {
     }
     
     
-    //MARK: - Configure Error Label
-    
     private func configureErrorLabel () {
         
         self.contentView.addSubview(errorLabel)
@@ -124,16 +119,14 @@ class EmailOnboardingCollectionViewCell: UICollectionViewCell {
             errorLabel.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor, constant: UIScreen.main.bounds.width != 320 ? 70 : 50),
             errorLabel.trailingAnchor.constraint(equalTo: self.contentView.trailingAnchor, constant: UIScreen.main.bounds.width != 320 ? -70 : -50),
             errorLabel.topAnchor.constraint(equalTo: emailTextFieldContainer.bottomAnchor, constant: 7.5),
-//            errorLabel.heightAnchor.constraint(equalToConstant: 20)
         
         ].forEach({ $0.isActive = true })
         
         errorLabel.numberOfLines = 0
         errorLabel.adjustsFontSizeToFitWidth = true
         errorLabel.font = UIFont(name: "Poppins-Regular", size: 13)
-//        errorLabel.textColor = .systemRed
-//        errorLabel.text = "Please enter in your E-mail Address"
     }
+    
     
     private func configureProgressView () {
         
@@ -149,6 +142,7 @@ class EmailOnboardingCollectionViewCell: UICollectionViewCell {
         
         ].forEach({ $0.isActive = true })
     }
+    
     
     func displayProgress () {
         
@@ -174,11 +168,13 @@ class EmailOnboardingCollectionViewCell: UICollectionViewCell {
         progressView.showProgress()
     }
     
+    
     @objc private func emailTextChanged () {
         
         emailAddressRegistrationDelegate?.emailAddressEntered(email: emailTextField.text ?? "")
     }
 }
+
 
 extension EmailOnboardingCollectionViewCell: UITextFieldDelegate {
     
