@@ -12,6 +12,7 @@ import FirebaseAuth
 import FirebaseFirestore
 import FirebaseCore
 import FirebaseMessaging
+import GoogleSignIn
 import UserNotifications
 import SVProgressHUD
 
@@ -36,14 +37,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         deleteSavedVoiceMemos()
         
-        SVProgressHUD.setDefaultStyle(.dark)
+        configureSVProgressHUD()
         
-        SVProgressHUD.setMinimumDismissTimeInterval(3)
-        
-        if let image = UIImage(systemName: "xmark.circle.fill") {
-            
-            SVProgressHUD.setErrorImage(image)
-        }
+        GIDSignIn.sharedInstance()?.clientID = FirebaseApp.app()?.options.clientID
         
         return true
     }
@@ -73,15 +69,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let defaults = UserDefaults.standard
         defaults.setValue(false, forKey: "splashViewPresented")
         
-//        if defaults.value(forKey: "keepUserSignedIn") as? Bool ?? false == false {
-//            
-//            do {
-//                try Auth.auth().signOut()
-//                print("user signed out")
-//            } catch let signOutError as NSError {
-//                print("Error signing out", signOutError.localizedDescription)
-//            }
-//        }
+    }
+    
+    open func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        
+        return GIDSignIn.sharedInstance()!.handle(url)
     }
     
     
@@ -229,6 +221,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         } catch {
             
             print(error.localizedDescription)
+        }
+    }
+    
+    private func configureSVProgressHUD () {
+        
+        SVProgressHUD.setDefaultStyle(.dark)
+        SVProgressHUD.setMinimumDismissTimeInterval(3)
+        
+        if let image = UIImage(systemName: "xmark.circle.fill") {
+            
+            SVProgressHUD.setErrorImage(image)
         }
     }
 }

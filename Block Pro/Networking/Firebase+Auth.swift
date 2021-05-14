@@ -23,7 +23,7 @@ class FirebaseAuthentication {
             
             if error != nil {
                 
-                print(error?.localizedDescription as Any)
+//                print(error?.localizedDescription as Any)
                 
                 completion(error, false)
             }

@@ -18,7 +18,7 @@ extension RegistrationViewController {
         //The first and last name has been entered properly
         if newUser.firstName.strictValidationOfTextEntered(withSpecialCharacters: ["-"]) && newUser.lastName.strictValidationOfTextEntered(withSpecialCharacters: ["-"]) {
             
-            progressBarWidthConstraint?.constant = signingUpWithApple ? 72 : 36
+            progressBarWidthConstraint?.constant = signingUpWithApple || signingUpWithGoogle ? 72 : 36
             
             UIView.animate(withDuration: 0.5) {
                 
@@ -157,7 +157,7 @@ extension RegistrationViewController {
                 
                 cell.displayProgress()
                 
-                if signingUpWithApple {
+                if signingUpWithApple || signingUpWithGoogle {
                     
                     prepViewForCompletionOfRegistration()
                 }
@@ -173,7 +173,7 @@ extension RegistrationViewController {
                         
                         cell.errorLabel.text = ""
                         
-                        if self?.signingUpWithApple ?? false {
+                        if (self?.signingUpWithApple ?? false) || (self?.signingUpWithGoogle ?? false) {
                             
                             self?.registrationFailed()
                         }
@@ -195,8 +195,8 @@ extension RegistrationViewController {
                             
                             cell.errorLabel.text = ""
                             
-                            //If the user is signing in with Apple, the required data has been collected and can be saved
-                            if self?.signingUpWithApple ?? false {
+                            //If the user is signing in with Apple or Google, the required data has been collected and can be saved
+                            if (self?.signingUpWithApple ?? false) || (self?.signingUpWithGoogle ?? false) {
                                 
                                 self?.firebaseAuth.saveNewUserData(newUser: self!.newUser, completion: { [weak self](error) in
                                     
@@ -227,7 +227,7 @@ extension RegistrationViewController {
                             cell.errorLabel.textColor = .systemRed
                             cell.errorLabel.text = "Sorry, but this username is already being used"
                             
-                            if self?.signingUpWithApple ?? false {
+                            if (self?.signingUpWithApple ?? false) || (self?.signingUpWithGoogle ?? false) {
                                 
                                 self?.registrationFailed()
                             }

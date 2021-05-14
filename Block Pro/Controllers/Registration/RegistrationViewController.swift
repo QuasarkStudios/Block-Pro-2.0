@@ -38,6 +38,7 @@ class RegistrationViewController: UIViewController {
     
     let firebaseAuth = FirebaseAuthentication()
     var signingUpWithApple: Bool = false
+    var signingUpWithGoogle: Bool = false
     
     var newUser = NewUser()
     
@@ -787,14 +788,14 @@ class RegistrationViewController: UIViewController {
         //Username Onboarding Cell
         else if progressBarWidthConstraint?.constant == 72 {
             
-            progressBarWidthConstraint?.constant = signingUpWithApple ? 0 : 36
+            progressBarWidthConstraint?.constant = signingUpWithApple || signingUpWithGoogle ? 0 : 36
             
             UIView.animate(withDuration: 0.5) {
                 
                 self.view.layoutIfNeeded()
             }
             
-            if signingUpWithApple {
+            if signingUpWithApple || signingUpWithGoogle {
                 
                 registrationCollectionView.scrollToItem(at: IndexPath(row: 3, section: 0), at: .centeredHorizontally, animated: true)
             }
@@ -950,7 +951,7 @@ extension RegistrationViewController: UICollectionViewDataSource, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if signingUpWithApple {
+        if signingUpWithApple || signingUpWithGoogle {
             
             return 6
         }
@@ -998,7 +999,7 @@ extension RegistrationViewController: UICollectionViewDataSource, UICollectionVi
         
         else if indexPath.row == 4 {
             
-            if signingUpWithApple {
+            if signingUpWithApple || signingUpWithGoogle {
                 
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "usernameOnboardingCollectionViewCell", for: indexPath) as! UsernameOnboardingCollectionViewCell
                 
@@ -1021,7 +1022,7 @@ extension RegistrationViewController: UICollectionViewDataSource, UICollectionVi
         
         else if indexPath.row == 5 {
             
-            if signingUpWithApple {
+            if signingUpWithApple || signingUpWithGoogle {
                 
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "profilePictureOnboardingCollectionViewCell", for: indexPath) as! ProfilePictureOnboardingCollectionViewCell
                 

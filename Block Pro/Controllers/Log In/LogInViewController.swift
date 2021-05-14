@@ -7,13 +7,13 @@
 //
 
 import UIKit
-//import FirebaseAuth
-import FirebaseUI
+import FirebaseAuth
+import AuthenticationServices
+import GoogleSignIn
 import CryptoKit
 import BEMCheckBox
 import SVProgressHUD
 import iProgressHUD
-import AuthenticationServices
 
 class LogInViewController: UIViewController {
 
@@ -55,11 +55,12 @@ class LogInViewController: UIViewController {
 
     var buttonAnimationCompleted: Bool = false
     
-    var progressAttachedToSignInButton: Bool = false
+    var progressAttachedToSignInContainer: Bool = false
     var allowProgressToShow: Bool = false
     
     var userSigningUp: Bool = false
     var signingInWithApple: Bool = false
+    var signingInWithGoogle: Bool = false
     
     var currentNonce: String?
     
@@ -109,6 +110,9 @@ class LogInViewController: UIViewController {
         configureSignInButtonContainer()
         configureSignInButton()
         configureCancelButton()
+        
+        GIDSignIn.sharedInstance()?.delegate = self
+        GIDSignIn.sharedInstance()?.presentingViewController = self
         
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
     }
@@ -332,8 +336,6 @@ class LogInViewController: UIViewController {
             stackViewContainer.bottomAnchor.constraint(equalTo: signUpButton.topAnchor, constant: 0),
         
         ].forEach({ $0.isActive = true })
-        
-//        stackViewContainer.backgroundColor = .white
     }
     
 
@@ -351,8 +353,6 @@ class LogInViewController: UIViewController {
             buttonStackView.centerYAnchor.constraint(equalTo: stackViewContainer.centerYAnchor, constant: 0)
         
         ].forEach({ $0.isActive = true })
-//
-//        buttonStackView.backgroundColor = .white
         
         buttonStackView.axis = .vertical
         buttonStackView.distribution = .fillProportionally
@@ -477,7 +477,7 @@ class LogInViewController: UIViewController {
         
         ].forEach({ $0.isActive = true })
         
-        withAppleButton.backgroundColor = .clear//.white
+        withAppleButton.backgroundColor = .clear
         
         withAppleButton.layer.borderWidth = 1
         withAppleButton.layer.borderColor = UIColor(hexString: "D8D8D8")?.cgColor
@@ -498,11 +498,6 @@ class LogInViewController: UIViewController {
         withAppleButton.addTarget(self, action: #selector(buttonTouchDown(sender:)), for: .touchDown)
         withAppleButton.addTarget(self, action: #selector(buttonTouchDragExit(sender:)), for: .touchDragExit)
         withAppleButton.addTarget(self, action: #selector(buttonTouchUpInside(sender:)), for: .touchUpInside)
-        
-//        let appleIDProvider = ASAuthorizationAppleIDProvider()
-//        let request = appleIDProvider.createRequest()
-//        
-//        request.requestedScopes = [.email, .fullName]
     }
     
     
@@ -534,7 +529,7 @@ class LogInViewController: UIViewController {
         
         ].forEach({ $0.isActive = true })
         
-        withGoogleButton.backgroundColor = .clear//.white
+        withGoogleButton.backgroundColor = .clear
         
         withGoogleButton.layer.borderWidth = 1
         withGoogleButton.layer.borderColor = UIColor(hexString: "D8D8D8")?.cgColor
@@ -750,13 +745,13 @@ class LogInViewController: UIViewController {
         
         cancelButton.addTarget(self, action: #selector(buttonTouchDown(sender:)), for: .touchDown)
         cancelButton.addTarget(self, action: #selector(buttonTouchDragExit(sender:)), for: .touchDragExit)
-        cancelButton.addTarget(self, action: #selector(buttonTouchUpInside(sender:)), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(revertBackToSignInOptions), for: .touchUpInside)
     }
     
     
-    //MARK: - Sign In User
+    //MARK: - Sign In User with Email
     
-    private func signInUser () {
+    private func signInUserWithEmail () {
         
         //If the email hasn't been entered
         if !(emailTextField.text?.leniantValidationOfTextEntered() ?? false) {
@@ -791,7 +786,7 @@ class LogInViewController: UIViewController {
 
                     self?.performSegue(withIdentifier: "moveToHomeView", sender: self)
                 }
-                
+
                 self?.signUpButton.isEnabled = true
             }
         }
@@ -864,14 +859,14 @@ class LogInViewController: UIViewController {
         iProgress.isTouchDismiss = false
         iProgress.boxColor = .clear
         
-        iProgress.indicatorSize = view == signInButton ? 100 : 60
+        iProgress.indicatorSize = view == signInButtonContainer ? 100 : 60
         
         iProgress.attachProgress(toView: view)
         
-        if view == signInButton {
+        if view == signInButtonContainer {
             
             view.updateIndicator(style: .ballClipRotate)
-            progressAttachedToSignInButton = true
+            progressAttachedToSignInContainer = true
         }
         
         else if view == signingInProgressView {
@@ -902,7 +897,7 @@ class LogInViewController: UIViewController {
         
         if !shrink {
             
-            self.signInButton.dismissProgress()
+            signInButtonContainer.dismissProgress()
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 
@@ -938,14 +933,14 @@ class LogInViewController: UIViewController {
             if shrink {
                 
                 //Checks to see if iProgress has yet to be attached to the signInButton
-                if !self.progressAttachedToSignInButton {
-
-                    self.attachProgressAnimation(self.signInButton)
+                if !self.progressAttachedToSignInContainer {
                     
                     //Would be false if an error has been returned from the signInUser func before this animation has completed
                     if self.allowProgressToShow {
                         
-                        self.signInButton.showProgress()
+                        self.attachProgressAnimation(self.signInButtonContainer)
+                        
+                        self.signInButtonContainer.showProgress()
                     }
                 }
 
@@ -954,7 +949,7 @@ class LogInViewController: UIViewController {
                     //Would be false if an error has been returned from the signInUser func before this animation has completed
                     if self.allowProgressToShow {
                         
-                        self.signInButton.showProgress()
+                        self.signInButtonContainer.showProgress()
                     }
                 }
             }
@@ -964,7 +959,7 @@ class LogInViewController: UIViewController {
     
     //MARK: - Revert Back to Sign In Options
     
-    private func revertBackToSignInOptions () {
+    @objc private func revertBackToSignInOptions () {
         
         signInButtonLeadingAnchor?.constant = 0
         cancelButtonLeadingAnchor?.constant = ((UIScreen.main.bounds.width / 2) - 100) - 18
@@ -1095,13 +1090,14 @@ class LogInViewController: UIViewController {
             registrationVC.modalPresentationStyle = .fullScreen
             registrationVC.modalTransitionStyle = .crossDissolve
 
-            //Will be non-nil if the user is signing in with apple
+            //Will be non-nil if the user is signing in with Apple or Google
             if let newUser = newUser {
                 
                 registrationVC.newUser = newUser
             }
             
             registrationVC.signingUpWithApple = self.signingInWithApple
+            registrationVC.signingUpWithGoogle = self.signingInWithGoogle
             
             registrationVC.logInViewController = self
             
@@ -1161,6 +1157,7 @@ class LogInViewController: UIViewController {
     
     @objc private func buttonTouchUpInside (sender: UIButton) {
         
+        //Sign In with Email Button
         if sender == withEmailButton {
             
             if !userSigningUp {
@@ -1189,10 +1186,12 @@ class LogInViewController: UIViewController {
                 }
                 
                 signingInWithApple = false
+                signingInWithGoogle = false
                 self.moveToRegistrationView()
             }
         }
         
+        //Sign In with Apple Button
         else if sender == withAppleButton {
             
             UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
@@ -1201,52 +1200,31 @@ class LogInViewController: UIViewController {
             }
             
             signingInWithApple = true
+            signingInWithGoogle = false
             self.signInWithApple()
         }
         
+        //Sign In with Google Button
         else if sender == withGoogleButton {
-            
-            if !userSigningUp {
-                
-                UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
-                    
-                    sender.transform = .identity
-                    
-                } completion: { (finished: Bool) in
-                    
-                    
-                }
-            }
-            
-            else {
-                
-                UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
-                    
-                    sender.transform = .identity
-                    
-                } completion: { (finished: Bool) in
-                    
-                    
-                }
-            }
-        }
-        
-        else if sender == cancelButton {
-            
-            revertBackToSignInOptions()
-        }
-        
-        else if sender == signInButton {
-            
-            signInUser()
             
             UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
                 
                 sender.transform = .identity
+            }
+            
+            signingInWithApple = false
+            signingInWithGoogle = true
+            GIDSignIn.sharedInstance()?.signIn()
+        }
+        
+        //Sign In Button
+        else if sender == signInButton {
+            
+            signInUserWithEmail()
+            
+            UIView.animate(withDuration: 0.3, delay: buttonAnimationCompleted ? 0 : 0.15, options: .curveEaseInOut) {
                 
-            } completion: { (finished: Bool) in
-                
-                
+                sender.transform = .identity
             }
         }
         
@@ -1305,6 +1283,9 @@ extension LogInViewController: UITextFieldDelegate {
         return true
     }
 }
+
+
+//MARK: - ASAuthorizationControllerDelegate Extension
 
 extension LogInViewController: ASAuthorizationControllerDelegate {
     
@@ -1404,46 +1385,121 @@ extension LogInViewController: ASAuthorizationControllerPresentationContextProvi
 }
 
 
+//MARK: - GIDSignInDelegate Extension
+
+extension LogInViewController: GIDSignInDelegate {
+    
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
+        
+        if error != nil {
+
+            print(error.localizedDescription)
+        }
+        
+        else {
+
+            guard let authentication = user.authentication else { return }
+
+            SVProgressHUD.show()
+            
+            //Using the Google ID token and the Google access token from the GIDAuthentication object and exchanging them for a Firebase credential
+            let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken, accessToken: authentication.accessToken)
+            
+            //Using the credential to sign into Firebase
+            //If this is a new user, Firebase will create a new user account
+            firebaseAuth.signInUserWithCredential(credential) { [weak self] (signedInUser, error) in
+                
+                if error != nil {
+                    
+                    print(error?.localizedDescription as Any)
+                    
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                }
+                
+                else {
+                    
+                    if let signedInUser = signedInUser {
+                        
+                        //Retrieves the users data from the "Users" collection in Firebase
+                        self?.retrieveSignedInUserData(signedInUser, completion: { (error, userDataFound) in
+                            
+                            if error != nil {
+                                
+                                print(error?.localizedDescription as Any)
+                                
+                                SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                            }
+                            
+                            else {
+                                
+                                SVProgressHUD.dismiss()
+                                
+                                if userDataFound ?? false {
+                                    
+                                    self?.performSegue(withIdentifier: "moveToHomeView", sender: self)
+                                }
+                                
+                                //If this user is signing in with Google for the first time
+                                //or if this user did not complete the onboarding process during their first sign in
+                                else {
+                                    
+                                    var newUser = NewUser()
+                                    newUser.email = user.profile.email ?? ""
+                                    newUser.firstName = user.profile.givenName
+                                    newUser.lastName = user.profile.familyName
+                                    
+                                    self?.moveToRegistrationView(newUser: newUser)
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
+}
+
+
 //MARK: - Google's Stuff
 
-    private func randomNonceString(length: Int = 32) -> String {
-      precondition(length > 0)
-      let charset: Array<Character> =
-          Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
-      var result = ""
-      var remainingLength = length
+private func randomNonceString(length: Int = 32) -> String {
+  precondition(length > 0)
+  let charset: Array<Character> =
+      Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+  var result = ""
+  var remainingLength = length
 
-      while remainingLength > 0 {
-        let randoms: [UInt8] = (0 ..< 16).map { _ in
-          var random: UInt8 = 0
-          let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
-          if errorCode != errSecSuccess {
-            fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
-          }
-          return random
-        }
+  while remainingLength > 0 {
+    let randoms: [UInt8] = (0 ..< 16).map { _ in
+      var random: UInt8 = 0
+      let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
+      if errorCode != errSecSuccess {
+        fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+      }
+      return random
+    }
 
-        randoms.forEach { random in
-          if remainingLength == 0 {
-            return
-          }
-
-          if random < charset.count {
-            result.append(charset[Int(random)])
-            remainingLength -= 1
-          }
-        }
+    randoms.forEach { random in
+      if remainingLength == 0 {
+        return
       }
 
-      return result
+      if random < charset.count {
+        result.append(charset[Int(random)])
+        remainingLength -= 1
+      }
     }
+  }
 
-    private func sha256(_ input: String) -> String {
-      let inputData = Data(input.utf8)
-      let hashedData = SHA256.hash(data: inputData)
-      let hashString = hashedData.compactMap {
-        return String(format: "%02x", $0)
-      }.joined()
+  return result
+}
 
-      return hashString
-    }
+private func sha256(_ input: String) -> String {
+  let inputData = Data(input.utf8)
+  let hashedData = SHA256.hash(data: inputData)
+  let hashString = hashedData.compactMap {
+    return String(format: "%02x", $0)
+  }.joined()
+
+  return hashString
+}

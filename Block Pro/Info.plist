@@ -18,6 +18,17 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.510722448325-0jgo26lvhf46knbhjic8b6cv0pittpab</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -25,9 +36,9 @@
 	<key>NSCameraUsageDescription</key>
 	<string>This lets you take new photos from your Camera or use photos from your Camera Roll.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allows "Block Pro" to find locations nearest to you</string>
+	<string>Allows "BlockPro 2.0" to find locations nearest to you</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Allows "Block Pro" to record your voice memos</string>
+	<string>Allows "BlockPro 2.0" to record your voice memos</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Black.ttf</string>
