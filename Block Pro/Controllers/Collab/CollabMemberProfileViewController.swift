@@ -190,7 +190,7 @@ class CollabMemberProfileViewController: UIViewController {
         [
 
             zoomingProfilePicture.leadingAnchor.constraint(equalTo: profileView.leadingAnchor, constant: 25),
-            zoomingProfilePicture.topAnchor.constraint(equalTo: profileView.topAnchor, constant: 40/*50*/),
+            zoomingProfilePicture.topAnchor.constraint(equalTo: profileView.topAnchor, constant: 40),
             zoomingProfilePicture.widthAnchor.constraint(equalToConstant: 125),
             zoomingProfilePicture.heightAnchor.constraint(equalToConstant: 125)
 
@@ -198,7 +198,7 @@ class CollabMemberProfileViewController: UIViewController {
         
         zoomingProfilePicture.frame = memberCellProfilePictureFrame ?? .zero
         zoomingProfilePicture.contentMode = .scaleAspectFill
-        zoomingProfilePicture.image = profilePic
+        zoomingProfilePicture.image = profilePic ?? UIImage(named: "DefaultProfilePic")
         zoomingProfilePicture.layer.cornerRadius = 35
         zoomingProfilePicture.clipsToBounds = true
     }
@@ -907,8 +907,6 @@ class CollabMemberProfileViewController: UIViewController {
     //MARK: - Cancel Button Pressed
     
     @objc private func cancelButtonPressed () {
-        
-        let tabBar = CustomTabBar.sharedInstance
 
         SVProgressHUD.dismiss()
         
@@ -934,11 +932,10 @@ class CollabMemberProfileViewController: UIViewController {
                 self.zoomingProfilePicture.layer.cornerRadius = 35 //Corner radius of the memberCellProfilePicture
                 self.blocksCompletedLabel.alpha = 0
                 
-                tabBar.alpha = 1
-                
             } completion: { (finished: Bool) in
 
-                tabBar.shouldHide = false
+                let tabBar = CustomTabBar.sharedInstance
+                keyWindow?.addSubview(tabBar)
             }
 
             //Delaying improves animations

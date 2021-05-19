@@ -700,13 +700,13 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             else {
                 
-                guard let cell = tableView.cellForRow(at: indexPath) as? ConvoMemberInfoCell else { return }
-                
-                    selectedMember = cell.member
-                
-                    tableView.deselectRow(at: indexPath, animated: true)
-                    
-                    performSegue(withIdentifier: "moveToFriendProfileView", sender: self)
+//                guard let cell = tableView.cellForRow(at: indexPath) as? ConvoMemberInfoCell else { return }
+//
+//                    selectedMember = cell.member
+//
+//                    tableView.deselectRow(at: indexPath, animated: true)
+//
+//                    performSegue(withIdentifier: "moveToFriendProfileView", sender: self)
             }
         }
         
@@ -1391,13 +1391,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        if segue.identifier == "moveToFriendProfileView" {
-            
-            let memberVC = segue.destination as! FriendProfileViewController
-            memberVC.member = selectedMember
-        }
-        
-        else if segue.identifier == "moveToConvoPhotoView" {
+        if segue.identifier == "moveToConvoPhotoView" {
             
             let convoPhotosVC = segue.destination as! ConversationPhotosViewController
             convoPhotosVC.conversationID = personalConversation?.conversationID

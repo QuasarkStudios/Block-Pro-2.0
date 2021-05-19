@@ -110,6 +110,11 @@ class SearchBar: UIView {
             
             searchVC.searchTextChanged(searchText: searchTextField.text ?? "")
         }
+        
+        else if let friendsVC = parentViewController as? FriendsViewController {
+            
+            friendsVC.searchTextChanged(searchText: searchTextField.text ?? "")
+        }
     }
 }
 

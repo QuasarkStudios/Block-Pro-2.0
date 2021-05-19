@@ -1289,7 +1289,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
             }
         }
         
-        UIView.transition(with: self.view, duration: 0.3, options: .transitionCrossDissolve) {
+        UIView.transition(with: messagingHomeTableView, duration: 0.3, options: .transitionCrossDissolve) {
             
             self.messagingHomeTableView.reloadData()
         }

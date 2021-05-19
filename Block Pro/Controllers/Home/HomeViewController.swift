@@ -1003,6 +1003,60 @@ class HomeViewController: UIViewController {
     }
     
     
+    //MARK: - Remove Listeners on Sign Out
+    
+    private func removeListenersOnSignOut () {
+        
+        firebaseCollab.friendsListener?.remove()
+        firebaseCollab.allCollabsListener?.remove()
+        
+        firebaseBlock.personalBlocksListener?.remove()
+        firebaseBlock.cachedPersonalBlocks = []
+        firebaseBlock.cachedCollabBlocks = []
+        
+        let firebaseMessaging = FirebaseMessaging.sharedInstance
+        
+        firebaseMessaging.allPersonalConversationsListener?.remove()
+        firebaseMessaging.allCollabConversationsListener?.remove()
+        
+        firebaseMessaging.personalConversationPreviewListenersDict.forEach({ $0.value.remove() })
+        firebaseMessaging.collabConversationPreviewListenersDict.forEach({ $0.value.remove() })
+        
+        firebaseMessaging.personalConversationPreviewListenersDict = [:]
+        firebaseMessaging.collabConversationPreviewListenersDict = [:]
+        
+        firebaseMessaging.personalConversations = []
+        firebaseMessaging.collabConversations = []
+    }
+    
+    
+    //MARK: - Deallocate Root View Controllers
+    
+    private func deallocateRootViewControllers () {
+        
+        tabBarController?.viewControllers?.forEach({ (navigationController) in
+            
+            if let navController = navigationController as? UINavigationController {
+                
+                if let searchViewController = navController.viewControllers.first(where: { $0 as? SearchViewController != nil }) {
+                    
+                    searchViewController.view = nil
+                }
+                
+                else if let messagingViewController = navController.viewControllers.first(where: { $0 as? MessagesHomeViewController != nil }) {
+                    
+                    messagingViewController.view = nil
+                }
+                
+                else if let notificationsViewController = navController.viewControllers.first(where: { $0 as? NotificationsViewController != nil }) {
+                    
+                    notificationsViewController.view = nil
+                }
+            }
+        })
+    }
+    
+    
     //MARK: - Move to Home Sidebar View
     
     private func moveToHomeSidebarView () {
@@ -1479,12 +1533,33 @@ extension HomeViewController: SidebarProtocol {
     
     func moveToProfileView () {
         
-        performSegue(withIdentifier: "moveToProfileView", sender: self)
+        self.view.addSubview(tabBar)
+        
+        let profileVC = ProfileViewController()
+        profileVC.modalPresentationStyle = .overCurrentContext
+        
+        profileVC.headerViewProfilePicture = headerView.profilePicture
+        profileVC.headerViewProfilePictureProgressView = headerView.profilePictureProgressView
+        profileVC.profileDelegate = self
+        
+        self.present(profileVC, animated: false) {
+            
+            profileVC.performZoomPresentationAnimation()
+        }
+        
+        headerView.profilePicture.layer.shadowColor = UIColor.clear.cgColor
+        headerView.profilePicture.layer.borderColor = UIColor.clear.cgColor
     }
     
     func moveToFriendsView() {
         
-        print("friends view")
+        let friendsVC = FriendsViewController()
+        
+        let backBarItem = UIBarButtonItem()
+        backBarItem.title = ""
+        self.navigationItem.backBarButtonItem = backBarItem
+        
+        self.navigationController?.pushViewController(friendsVC, animated: true)
     }
     
     func moveToPrivacyView () {
@@ -1496,7 +1571,7 @@ extension HomeViewController: SidebarProtocol {
         
         SVProgressHUD.show()
         
-        firebaseAuth.logOutUser { (error) in
+        firebaseAuth.logOutUser { [weak self] (error) in
 
             if error != nil {
 
@@ -1504,18 +1579,30 @@ extension HomeViewController: SidebarProtocol {
             }
 
             else {
-
-                self.tabBar.shouldHide = true
                 
-                self.navigationController?.popToRootViewController(animated: true)
+                self?.removeListenersOnSignOut()
+                
+                self?.deallocateRootViewControllers()
+                
+                self?.tabBar.shouldHide = true
+                
+                self?.navigationController?.popToRootViewController(animated: true)
                 
                 SVProgressHUD.dismiss()
-                
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//                    
-//                    SVProgressHUD.showSuccess(withStatus: "You've been signed out")
-//                }
             }
         }
+    }
+}
+
+extension HomeViewController: ProfileProtocol {
+    
+    func profilePictureEdited (profilePic: UIImage?) {
+        
+        headerView.profilePicture.profilePic = profilePic
+    }
+    
+    func presentFriends () {
+        
+        moveToFriendsView()
     }
 }

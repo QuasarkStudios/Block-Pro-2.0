@@ -18,7 +18,7 @@ class FirebaseCollab {
     
     var db = Firestore.firestore()
     lazy var userRef = db.collection("Users").document(currentUser.userID)
-    var friendListener: ListenerRegistration?
+    var friendsListener: ListenerRegistration?
     
     var allCollabsListener: ListenerRegistration?
     var singularCollabListener: ListenerRegistration?
@@ -388,61 +388,6 @@ class FirebaseCollab {
         }
     }
     
-//    func retrieveCollabs (completion: @escaping ((_ collabs: [Collab]?, _ members: [String : [Member]]?, _ error: Error?) -> Void)) {
-//
-//        allCollabsListener = db.collection("Collaborations").whereField("Members", arrayContains: currentUser.userID).addSnapshotListener({ (snapshot, error) in
-//
-//            if error != nil {
-//
-//                completion(nil, nil, error)
-//            }
-//
-//            else {
-//
-//                self.removeCollabsWhereUserInactive(snapshot: snapshot)
-//
-//                if snapshot?.isEmpty != true {
-//
-//                    for document in snapshot?.documents ?? [] {
-//
-//                        let collab = self.configureCollab(document.data())
-//
-//                        if self.collabs.first(where: { $0.collabID == collab.collabID }) == nil {
-//
-//                            self.collabs.append(collab)
-//                        }
-//
-//                        else {
-//
-//                            self.handleCollabUpdate(collab)
-//                        }
-//
-//                        if let existingCollab = self.collabs.first(where: { $0.collabID == collab.collabID }) {
-//
-//                            self.retrieveCollabMembers(existingCollab) { (historicMembers, currentMembers, error) in
-//
-//                                self.handleCollabMembersRetrievalCompletion(collab.collabID, historicMembers, currentMembers, error) { (collabMembers) in
-//
-//                                    completion(nil, collabMembers, nil)
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                    completion(self.collabs, nil, nil)
-//                }
-//
-//                else {
-//
-//                    self.collabs.removeAll()
-//
-//                    completion([], nil, nil)
-//                }
-//
-//                NotificationCenter.default.post(name: .didUpdateCollabs, object: nil)
-//            }
-//        })
-//    }
     
     func retrieveCollabs (completion: @escaping ((_ collabs: [Collab]?, _ error: Error?) -> Void)) {
         
@@ -539,44 +484,6 @@ class FirebaseCollab {
         return collab
     }
     
-//    private func configureCollab (_ document: DocumentSnapshot) -> Collab {
-//
-//        var collab = Collab()
-//
-//        collab.collabID = document.data()?["collabID"] as! String
-//        collab.name = document.data()?["collabName"] as! String
-//        collab.objective = document.data()?["collabObjective"] as? String
-//
-//        collab.coverPhotoID = document.data()?["coverPhotoID"] as? String
-//
-//        let dateCreated = document.data()?["dateCreated"] as! Timestamp
-//        collab.dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreated.seconds))
-//
-//        collab.requestSentOn = parseRequestSentOn(document.data()?["requestSentOn"] as? [String : Timestamp])
-//        collab.accepted = parseAcceptionStatuses(document.data()?["accepted"] as? [String : Bool?])
-//
-//        let startTime = document.data()?["startTime"] as! Timestamp
-//        collab.dates["startTime"] = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))
-//
-//        if let deadline = document.data()?["deadline"] as? Timestamp {
-//
-//            collab.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
-//        }
-//
-//        collab.currentMembersIDs = document.data()?["Members"] as? [String] ?? []
-//
-//        let memberActivity: [String : Any]? = document.data()?["memberActivity"] as? [String : Any]
-//        collab.memberActivity = parseCollabActivity(memberActivity: memberActivity)
-//
-//        collab.reminders = document.data()?["reminders"] as? [Int] ?? []
-//
-//        collab.photoIDs = document.data()?["photos"] as? [String] ?? []
-//        collab.locations = retrieveCollabLocations(document.data()?["locations"] as? [String : Any])
-//        collab.voiceMemos = retrieveCollabVoiceMemos(document.data()?["voiceMemos"] as? [String : Any])
-//        collab.links = retrieveCollabLinks(document.data()?["links"] as? [String : Any])
-//
-//        return collab
-//    }
     
     private func handleCollabUpdate (_ collab: Collab) {
         
@@ -1023,44 +930,6 @@ class FirebaseCollab {
         }
     }
     
-//    func retrieveCollabRequests (completion: @escaping ((_ requests: [CollabRequest]) -> Void)) {
-//
-//        userRef.collection("CollabRequests").getDocuments { (snapshot, error) in
-//
-//            if error != nil {
-//
-//                print(error?.localizedDescription as Any)
-//            }
-//
-//            else {
-//
-//                if snapshot?.isEmpty == false {
-//
-//                    var collabRequests: [CollabRequest] = []
-//
-//                    for document in snapshot!.documents {
-//
-//                        var collabRequest = CollabRequest()
-//
-//                        collabRequest.collabID = document.data()["collabID"] as! String
-//                        collabRequest.name = document.data()["collabName"] as! String
-//                        collabRequest.objective = document.data()["collabObjective"] as? String ?? ""
-//
-//                        let startTime = document.data()["startTime"] as! Timestamp
-//                        collabRequest.dates["startTime"] = Date(timeIntervalSince1970: TimeInterval(startTime.seconds))
-//
-//                        let deadline = document.data()["deadline"] as! Timestamp
-//                        collabRequest.dates["deadline"] = Date(timeIntervalSince1970: TimeInterval(deadline.seconds))
-//
-//                        collabRequests.append(collabRequest)
-//                    }
-//
-//                    completion(collabRequests)
-//                }
-//            }
-//        }
-//    }
-    
     func queryUsers (_ username: String, completion: @escaping ((_ results: [FriendSearchResult]?, _ error: Error?) -> Void)) {
         
         db.collection("Users").getDocuments { (snapshot, error) in
@@ -1116,7 +985,7 @@ class FirebaseCollab {
     
     func retrieveUsersFriends () {
         
-        friendListener = db.collection("Users").document(currentUser.userID).collection("Friends").addSnapshotListener({ (snapshot, error) in
+        friendsListener = db.collection("Users").document(currentUser.userID).collection("Friends").addSnapshotListener({ (snapshot, error) in
             
             if error != nil {
                 
@@ -1275,6 +1144,26 @@ class FirebaseCollab {
             }
         }
     }
+    
+    func deleteFriend (_ friend: Friend) {
+        
+        db.collection("Users").document(currentUser.userID).collection("Friends").document(friend.userID).delete { (error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+        }
+        
+        db.collection("Users").document(friend.userID).collection("Friends").document(currentUser.userID).delete { (error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+        }
+    }
+    
     
     //MARK: - Filter Current Members Function
     

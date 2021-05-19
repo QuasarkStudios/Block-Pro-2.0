@@ -277,7 +277,7 @@ class AddMembersViewController: UIViewController, UITextFieldDelegate {
             searchBeingConducted = false
         }
         
-        UIView.transition(with: self.view, duration: 0.3, options: .transitionCrossDissolve) {
+        UIView.transition(with: membersTableView, duration: 0.3, options: .transitionCrossDissolve) {
             
             self.membersTableView.reloadData()
         }

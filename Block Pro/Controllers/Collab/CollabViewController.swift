@@ -2321,7 +2321,7 @@ extension CollabViewController: CollabMemberProtocol {
     
     func moveToProfileView (_ member: Member, _ memberContainerView: UIView) {
         
-        tabBar.shouldHide = true
+        self.view.addSubview(tabBar)
         
         memberProfileVC = CollabMemberProfileViewController()
         memberProfileVC?.modalPresentationStyle = .overCurrentContext

@@ -50,7 +50,7 @@ class ConvoCoverInfoCell: UITableViewCell {
     
     var conversationMember: Member? {
         didSet {
-
+            
             retrieveProfilePic(member: conversationMember!)
         }
     }
@@ -172,6 +172,32 @@ class ConvoCoverInfoCell: UITableViewCell {
             }
             
             else if let memberProfilePic = firebaseCollab.membersProfilePics[member.userID] {
+                
+                configureCover(memberProfilePic)
+            }
+            
+            else {
+                
+                firebaseStorage.retrieveUserProfilePicFromStorage(userID: member.userID) { (profilePic, userID) in
+                    
+                    self.configureProfilePic(profilePic)
+                    
+                    if profilePic != nil {
+                       
+                        self.firebaseCollab.cacheMemberProfilePics(userID: member.userID, profilePic: profilePic)
+                    }
+                    
+                    else {
+                        
+                        self.configureCover(UIImage(named: "DefaultProfilePic"))
+                    }
+                }
+            }
+        }
+        
+        else {
+            
+            if let memberProfilePic = firebaseCollab.membersProfilePics[member.userID] {
                 
                 configureCover(memberProfilePic)
             }

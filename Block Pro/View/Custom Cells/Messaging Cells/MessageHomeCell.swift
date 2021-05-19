@@ -726,9 +726,8 @@ class MessageHomeCell: UITableViewCell {
             }
 
             else {
-
+                
                 firebaseStorage.retrieveUserProfilePicFromStorage(userID: member?.userID ?? "") { (profilePic, userID) in
-
                     
                     completion(profilePic)
                         

@@ -100,7 +100,9 @@ class VoiceMemoRecorder {
                         //Performs all the layout modifications on the main thread
                         DispatchQueue.main.async {
                             
-                            cell.attachButtonPressed()
+                            cell.voiceMemosConfigurationDelegate?.attachMemoSelected()
+                            
+                            cell.configureRecordingCell()
                         }
                     }
                 }

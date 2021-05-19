@@ -48,31 +48,18 @@ class FirebaseStorage {
         }
     }
     
-//    func retrieveCurrentUsersProfilePicFromStorage (profilePicURL: String, completion: @escaping (() -> Void)) {
-//
-//        let url = NSURL(string: profilePicURL)
-//
-//        URLSession.shared.dataTask(with: url! as URL) { (data, response, error) in
-//
-//            if error != nil {
-//
-//                print(error?.localizedDescription)
-//            }
-//
-//            else {
-//
-//                DispatchQueue.main.async {
-//
-//                    let currentUser = CurrentUser.sharedInstance
-//                    currentUser.profilePictureImage = UIImage(data: data!)
-//
-//                    completion()
-//
-//                    NotificationCenter.default.post(name: .didDownloadProfilePic, object: nil)
-//                }
-//            }
-//        }.resume()
-//    }
+    func deleteProfilePictureFromStorage () {
+        
+        profilePicturesRef.child("\(currentUser.userID).jpeg").delete { (error) in
+            
+            if error != nil {
+                
+                print(error?.localizedDescription as Any)
+            }
+        }
+        
+        currentUser.profilePictureImage = nil
+    }
     
     func retrieveUserProfilePicFromStorage (userID: String, completion: @escaping ((_ profilePic: UIImage?, _ userID: String) -> Void)) {
         
