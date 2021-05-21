@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 struct Conversation {
     
     var conversationID: String = ""
@@ -30,4 +29,5 @@ struct Conversation {
     var memberGainedAccessOn: [String : Any]?
     var memberActivity: [String : Any]?
     
+    var accepted: [String: Bool?]?
 }

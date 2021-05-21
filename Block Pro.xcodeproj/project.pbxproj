@@ -217,6 +217,8 @@
 		0DB0876025E83D3000FEE6FF /* ConfigureCollabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0875F25E83D3000FEE6FF /* ConfigureCollabViewController.swift */; };
 		0DB0876325E83EC000FEE6FF /* CollabCreatedProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0876225E83EC000FEE6FF /* CollabCreatedProtocol.swift */; };
 		0DB0876625E8768B00FEE6FF /* ObjectiveConfigurationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0876525E8768A00FEE6FF /* ObjectiveConfigurationCell.swift */; };
+		0DB1A7F826561E860003D721 /* ScheduleMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB1A7F726561E860003D721 /* ScheduleMessageCell.swift */; };
+		0DB1A7FB265621030003D721 /* SendScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB1A7FA265621030003D721 /* SendScheduleViewController.swift */; };
 		0DB3FEC2249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB3FEC0249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift */; };
 		0DB3FEC3249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DB3FEC1249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib */; };
 		0DB3FEC6249A9A6D00A14FF9 /* ConvoMemberInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB3FEC4249A9A6D00A14FF9 /* ConvoMemberInfoCell.swift */; };
@@ -484,6 +486,8 @@
 		0DB0875F25E83D3000FEE6FF /* ConfigureCollabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigureCollabViewController.swift; sourceTree = "<group>"; };
 		0DB0876225E83EC000FEE6FF /* CollabCreatedProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabCreatedProtocol.swift; sourceTree = "<group>"; };
 		0DB0876525E8768A00FEE6FF /* ObjectiveConfigurationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectiveConfigurationCell.swift; sourceTree = "<group>"; };
+		0DB1A7F726561E860003D721 /* ScheduleMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleMessageCell.swift; sourceTree = "<group>"; };
+		0DB1A7FA265621030003D721 /* SendScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SendScheduleViewController.swift; path = "Block Pro/Controllers/Messaging/SendScheduleViewController.swift"; sourceTree = SOURCE_ROOT; };
 		0DB3FEC0249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoMemberHeaderInfoCell.swift; sourceTree = "<group>"; };
 		0DB3FEC1249A8EF200A14FF9 /* ConvoMemberHeaderInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoMemberHeaderInfoCell.xib; sourceTree = "<group>"; };
 		0DB3FEC4249A9A6D00A14FF9 /* ConvoMemberInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoMemberInfoCell.swift; sourceTree = "<group>"; };
@@ -1029,6 +1033,7 @@
 				0D2386CA24C26F6A00876154 /* PhotoMessageCell.xib */,
 				0DA2A6FB248AC3240051ADAB /* PhotoMessageWithCaptionCell.swift */,
 				0DA2A6FC248AC3250051ADAB /* PhotoMessageWithCaptionCell.xib */,
+				0DB1A7F726561E860003D721 /* ScheduleMessageCell.swift */,
 				0D82282624DA259200D0BBA0 /* ConvoUpdatedMessageCell.swift */,
 				0D82282724DA259200D0BBA0 /* ConvoUpdatedMessageCell.xib */,
 			);
@@ -1187,6 +1192,7 @@
 				0D0102A82468F49D00A5FF28 /* MessagesHomeViewController.swift */,
 				0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */,
 				0D3F29312485ED9900C7763F /* SendPhotoMessageViewController.swift */,
+				0DB1A7FA265621030003D721 /* SendScheduleViewController.swift */,
 				0D86013A2499377F0027F043 /* ConversationInfoViewController.swift */,
 				0D52A5B124B969680039F893 /* ConversationPhotosViewController.swift */,
 			);
@@ -1530,9 +1536,11 @@
 				0D891CC725B5547A00B04C2F /* HalfBlock.swift in Sources */,
 				0D3F29322485ED9900C7763F /* SendPhotoMessageViewController.swift in Sources */,
 				0D5FD0D725BD112800E9BA2D /* LocationsPresentationCell.swift in Sources */,
+				0DB1A7FB265621030003D721 /* SendScheduleViewController.swift in Sources */,
 				0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */,
 				0D589DEC2458C7C2005AC7BC /* CollabRequest.swift in Sources */,
 				0D92BB9F2585698F00D9C561 /* UITextField+Extension.swift in Sources */,
+				0DB1A7F826561E860003D721 /* ScheduleMessageCell.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
 				0D879ADC24B853F70037C880 /* ConvoPhotoCollectionViewCell.swift in Sources */,
 				0D1D028E263CBF620020687F /* CollabPreviewCollectionViewCell.swift in Sources */,

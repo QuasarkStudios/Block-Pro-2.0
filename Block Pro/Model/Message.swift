@@ -18,6 +18,8 @@ struct Message {
     
     var messagePhoto: [String : Any]?
     
+    var messageBlocks: [Block]?
+    
     var memberUpdatedConversationCover: Bool?
     var memberUpdatedConversationName: Bool?
     var memberJoiningConversation: Bool?

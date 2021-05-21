@@ -408,7 +408,28 @@ class ConvoCoverInfoCell: UITableViewCell {
             
             else if let conversation = collabConversation {
                 
-                
+                if conversation.coverPhotoID != nil {
+                    
+                    let pasteboard = UIPasteboard.general
+                    
+                    if coverPhotoContainerLocation?.contains(pressedLocation) ?? false {
+                        
+                        pasteboard.image = coverPhotoImageView.image
+                        
+                        coverPhotoContainer.performCopyAnimationOnView()
+                        
+                        presentCopiedAnimationDelegate?.presentCopiedAnimation()
+                    }
+                    
+                    else if ovalBackgroundViewLocation?.contains(pressedLocation) ?? false {
+                        
+                        pasteboard.image = coverPhotoImageView.image
+                        
+                        coverPhotoContainer.performCopyAnimationOnView()
+                        
+                        presentCopiedAnimationDelegate?.presentCopiedAnimation()
+                    }
+                }
             }
         }
     }

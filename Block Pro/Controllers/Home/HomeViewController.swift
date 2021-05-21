@@ -1564,7 +1564,10 @@ extension HomeViewController: SidebarProtocol {
     
     func moveToPrivacyView () {
         
-        print("move to privacy view")
+        if let url = URL(string: "https://app.termly.io/document/privacy-policy/15b13330-667a-4b0e-baff-0646e5b9eb98") {
+            
+            UIApplication.shared.open(url)
+        }
     }
     
     func userSignedOut() {

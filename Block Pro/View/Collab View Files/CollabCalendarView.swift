@@ -123,6 +123,7 @@ class CollabCalendarView: UIView {
         nextMonthButton.addTarget(self, action: #selector(nextMonthButtonPressed), for: .touchUpInside)
     }
     
+    
     //MARK: - Configure Day Stack View
     
     private func configureDayStackView () {
@@ -450,7 +451,6 @@ extension CollabCalendarView: JTAppleCalendarViewDataSource, JTAppleCalendarView
     func calendar(_ calendar: JTAppleCalendarView, didDeselectDate date: Date, cell: JTAppleCell?, cellState: CellState) {
         
         configureCell(view: cell, cellState: cellState)
-        
     }
     
     func calendar(_ calendar: JTAppleCalendarView, willScrollToDateSegmentWith visibleDates: DateSegmentInfo) {

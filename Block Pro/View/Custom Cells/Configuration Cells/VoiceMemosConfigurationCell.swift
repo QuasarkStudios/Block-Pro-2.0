@@ -411,7 +411,7 @@ class VoiceMemosConfigurationCell: UITableViewCell {
     
     //MARK: - Configure Recording Cell
     
-    private func configureRecordingCell () {
+    func configureRecordingCell () {
             
         willBeginRecording = true
         

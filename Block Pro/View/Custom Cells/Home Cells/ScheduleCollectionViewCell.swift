@@ -135,6 +135,7 @@ class ScheduleCollectionViewCell: UICollectionViewCell {
         
         ].forEach({ $0.isActive = true })
         
+        shareButton.isHidden = true
         shareButton.backgroundColor = UIColor(hexString: "222222")
         
         shareButton.layer.cornerRadius = 17.5

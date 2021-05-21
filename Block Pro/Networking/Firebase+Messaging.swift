@@ -436,35 +436,38 @@ class FirebaseMessaging {
                         
                         let conversation = self.configureCollabConversation(document)
                         
-                        //If this convo hasn't been added to the collabConversations array yet
-                        if self.collabConversations.first(where: { $0.conversationID == conversation.conversationID }) == nil {
+                        if conversation.accepted?[self.currentUser.userID] == true {
                             
-                            self.collabConversations.append(conversation)
-                            
-                            //Adds a listener that will monitor this conversations messages
-                            self.retrieveCollabConversationPreview(conversation.conversationID) { (message, error) in
+                            //If this convo hasn't been added to the collabConversations array yet
+                            if self.collabConversations.first(where: { $0.conversationID == conversation.conversationID }) == nil {
                                 
-                                self.handleCollabConversationPreviewRetrievalCompletion(conversation.conversationID, message, error) { (messagePreview) in
+                                self.collabConversations.append(conversation)
+                                
+                                //Adds a listener that will monitor this conversations messages
+                                self.retrieveCollabConversationPreview(conversation.conversationID) { (message, error) in
                                     
-                                    completion(nil, nil, messagePreview, nil)
+                                    self.handleCollabConversationPreviewRetrievalCompletion(conversation.conversationID, message, error) { (messagePreview) in
+                                        
+                                        completion(nil, nil, messagePreview, nil)
+                                    }
                                 }
                             }
-                        }
-                        
-                        //If this conversation has already been added to the collabConversation array
-                        else {
                             
-                            self.handleCollabConversationUpdate(conversation)
-                        }
-                        
-                        if let existingConversation = self.collabConversations.first(where: { $0.conversationID == conversation.conversationID }) {
-                            
-                            //Grabs a snapshot of the members of a conversation only if they haven't been retrieved yet or have changed
-                            self.retrieveCollabConversationMembers(existingConversation) { (historicMembers, currentMembers, error) in
+                            //If this conversation has already been added to the collabConversation array
+                            else {
                                 
-                                self.handleCollabConversationMembersRetrievalCompletion(conversation.conversationID, historicMembers, currentMembers, error) { (convoMembers) in
+                                self.handleCollabConversationUpdate(conversation)
+                            }
+                            
+                            if let existingConversation = self.collabConversations.first(where: { $0.conversationID == conversation.conversationID }) {
+                                
+                                //Grabs a snapshot of the members of a conversation only if they haven't been retrieved yet or have changed
+                                self.retrieveCollabConversationMembers(existingConversation) { (historicMembers, currentMembers, error) in
                                     
-                                    completion(nil, convoMembers, nil, nil)
+                                    self.handleCollabConversationMembersRetrievalCompletion(conversation.conversationID, historicMembers, currentMembers, error) { (convoMembers) in
+                                        
+                                        completion(nil, convoMembers, nil, nil)
+                                    }
                                 }
                             }
                         }
@@ -501,6 +504,8 @@ class FirebaseMessaging {
         let memberActivity: [String : Any]? = document.data()?["memberActivity"] as? [String : Any]
         conversation.memberActivity = self.parseConversationActivity(memberActivity: memberActivity)
         
+        conversation.accepted = parseCollabAcceptionStatuses(document.data()?["accepted"] as? [String : Bool?])
+        
         return conversation
     }
     
@@ -523,6 +528,7 @@ class FirebaseMessaging {
             self.collabConversations[conversationIndex].currentMembersIDs = conversation.currentMembersIDs
             self.collabConversations[conversationIndex].memberGainedAccessOn = conversation.memberGainedAccessOn
             self.collabConversations[conversationIndex].memberActivity = conversation.memberActivity
+            self.collabConversations[conversationIndex].accepted = conversation.accepted
         }
     }
     
@@ -968,7 +974,11 @@ class FirebaseMessaging {
         var photoDict = message.messagePhoto != nil ? message.messagePhoto : nil
         photoDict?.removeValue(forKey: "photo")
         
-        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "timestamp" : message.timestamp as Any]
+        let blocksDict = setMessageBlocks(message.messageBlocks)
+        
+//        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "timestamp" : message.timestamp as Any]
+        
+        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "blocks" : blocksDict as Any, "timestamp" : message.timestamp as Any]
         
         //If this is a photoMessage
         if let photoID = message.messagePhoto?["photoID"] as? String, let photo = message.messagePhoto?["photo"] as? UIImage {
@@ -1000,7 +1010,7 @@ class FirebaseMessaging {
             }
         }
         
-        //If this is just a regular message
+        //If this is just a regular message or a schedule message
         else {
         
             self.db.collection("Conversations").document(conversationID).collection("Messages").addDocument(data: messageDict) { (error) in
@@ -1023,7 +1033,11 @@ class FirebaseMessaging {
         var photoDict = message.messagePhoto != nil ? message.messagePhoto : nil
         photoDict?.removeValue(forKey: "photo")
         
-        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "timestamp" : message.timestamp as Any]
+        let blocksDict = setMessageBlocks(message.messageBlocks)
+        
+//        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "timestamp" : message.timestamp as Any]
+        
+        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "blocks" : blocksDict as Any, "timestamp" : message.timestamp as Any]
         
         //If this is a photoMessage
         if let photoID = message.messagePhoto?["photoID"] as? String, let photo = message.messagePhoto?["photo"] as? UIImage {
@@ -1055,7 +1069,7 @@ class FirebaseMessaging {
             }
         }
         
-        //If this is just a regular message
+        //If this is just a regular message or a schedule message
         else {
             
             self.db.collection("Collaborations").document(collabID).collection("Messages").addDocument(data: messageDict) { (error) in
@@ -1070,6 +1084,39 @@ class FirebaseMessaging {
                     completion(nil)
                 }
             }
+        }
+    }
+    
+    
+    //MARK: - Set Message Blocks
+    
+    private func setMessageBlocks (_ messageBlocks: [Block]?) -> [String : [String : Any]]? {
+        
+        if let blocks = messageBlocks {
+            
+            var blocksDict: [String : [String : Any]] = [:]
+            
+            let statusArray: [BlockStatus : String] = [.notStarted : "notStarted", .inProgress : "inProgress", .completed : "completed", .needsHelp : "needsHelp", .late : "late"]
+            
+            for block in blocks {
+                
+                if let blockID = block.blockID, let name = block.name, let dateCreated = block.dateCreated, let starts = block.starts, let ends = block.ends {
+                    
+                    blocksDict[blockID] = ["name" : name, "dateCreated" : dateCreated, "startTime" : starts, "endTime" : ends]
+                    
+                    if let status = block.status {
+                        
+                        blocksDict[blockID]?["status"] = statusArray[status]
+                    }
+                }
+            }
+            
+            return blocksDict
+        }
+        
+        else {
+            
+            return nil
         }
     }
     
@@ -1359,6 +1406,24 @@ class FirebaseMessaging {
         }
         
         return !memberActivityDict.isEmpty ? memberActivityDict : nil
+    }
+    
+    
+    //MARK: - Parse Collab Acception Statuses
+    
+    private func parseCollabAcceptionStatuses (_ acceptionStatuses: [String : Bool?]?) -> [String : Bool?] {
+        
+        var acceptionStatusDict: [String : Bool?] = [:]
+        
+        if let statuses = acceptionStatuses {
+            
+            for status in statuses {
+                
+                acceptionStatusDict[status.key] = status.value
+            }
+        }
+        
+        return acceptionStatusDict
     }
     
     

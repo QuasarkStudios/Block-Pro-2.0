@@ -56,8 +56,8 @@ class BlockViewController: UIViewController {
         
         self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Poppins-SemiBold", size: 18)!]
         
-        let shareButton = UIBarButtonItem(image: UIImage(named: "share"), style: .done, target: self, action: #selector(shareButtonPressed))
-        navigationItem.setRightBarButton(shareButton, animated: true)
+//        let shareButton = UIBarButtonItem(image: UIImage(named: "share"), style: .done, target: self, action: #selector(shareButtonPressed))
+//        navigationItem.setRightBarButton(shareButton, animated: true)
         
         configureTableView()
         configureAddBlockButton()
@@ -321,10 +321,13 @@ class BlockViewController: UIViewController {
         }
     }
     
-    @objc private func shareButtonPressed () {
-        
-        
-    }
+    
+    //MARK: - Share Button Pressed
+    
+//    @objc private func shareButtonPressed () {
+//
+//
+//    }
     
     
     //MARK: - Add Block Button Pressed

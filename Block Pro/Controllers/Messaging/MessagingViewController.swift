@@ -1069,6 +1069,7 @@ class MessagingViewController: UIViewController {
         
         let shareScheduleAction = UIAlertAction(title: "    Share your Schedule", style: .default) { [weak self] (shareScheduleAction) in
             
+            self?.moveToSendScheduleView()
         }
         
         let shareImage = UIImage(named: "share")
@@ -1103,7 +1104,7 @@ class MessagingViewController: UIViewController {
     
     func performZoomOnPhotoImageView (photoImageView: UIImageView) {
         
-        print("check")
+//        print("check")
         
         self.zoomedOutImageView = photoImageView
         imageViewBeingZoomed = true
@@ -1305,12 +1306,16 @@ class MessagingViewController: UIViewController {
         completion()
     }
     
-
-    //MARK: - Dismiss Keyboard Function
     
-    @objc private func dismissKeyboard () {
+    //MARK: - Move to Share Schedule View
+    
+    private func moveToSendScheduleView () {
         
-        messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
+        let sendScheduleVC = SendScheduleViewController()
+        sendScheduleVC.personalConversationID = personalConversation?.conversationID
+        sendScheduleVC.collabConversationID = collabConversation?.conversationID
+        
+        self.present(sendScheduleVC, animated: true)
     }
     
     //MARK: Prepare for Segue Method
@@ -1352,6 +1357,14 @@ class MessagingViewController: UIViewController {
             backItem.title = ""
             navigationItem.backBarButtonItem = backItem
         }
+    }
+    
+    
+    //MARK: - Dismiss Keyboard Function
+    
+    @objc private func dismissKeyboard () {
+        
+        messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
     }
 }
 
