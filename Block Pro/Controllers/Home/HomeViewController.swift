@@ -48,7 +48,7 @@ class HomeViewController: UIViewController {
     let minimumHeaderViewHeightWithCalendar: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 85
     let maximumHeaderViewHeight: CGFloat = (keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 60 : 40) + 428.5 //Extra 2.5 added to improve aesthetics
     
-    var expandedIndexPath: IndexPath?
+    var expandedIndexPath: IndexPath? = IndexPath(item: 0, section: 0)
     
     var yCoordForExpandedCell: CGFloat? {
         didSet {
@@ -665,6 +665,7 @@ class HomeViewController: UIViewController {
         else {
             
             var indexPathsToReload: [IndexPath] = []
+            var reloadTableView: Bool = false
             
             for indexPath in collabCollectionView.indexPathsForVisibleItems {
                 
@@ -685,7 +686,9 @@ class HomeViewController: UIViewController {
                     //If either the startTime of the deadline has been updated
                     else if cachedCollab.dates["startTime"] != updatedCollab.dates["startTime"] || cachedCollab.dates["deadline"] != updatedCollab.dates["deadline"] {
                         
-                        indexPathsToReload.append(indexPath)
+                        //Reloading because attempting to only reload certain items when the number of items
+                        //has changed to 0 was causing a crash
+                        reloadTableView = true
                     }
                     
                     //If the members have been updated
@@ -696,12 +699,20 @@ class HomeViewController: UIViewController {
                 }
             }
             
-            if indexPathsToReload.count > 0 {
+            if indexPathsToReload.count > 0, !reloadTableView {
                 
                 //Stops the collectionView from animating the reloading of the items
                 UIView.performWithoutAnimation {
                     
                     self.collabCollectionView.reloadItems(at: indexPathsToReload)
+                }
+            }
+            
+            else {
+                
+                UIView.transition(with: collabCollectionView, duration: 0.3, options: .transitionCrossDissolve) {
+                    
+                    self.collabCollectionView.reloadData()
                 }
             }
         }

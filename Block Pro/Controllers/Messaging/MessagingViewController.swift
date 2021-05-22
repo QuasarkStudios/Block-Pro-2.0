@@ -479,6 +479,7 @@ class MessagingViewController: UIViewController {
         ].forEach({ $0?.isActive = true })
         
         noMessagesAnimationView.loopMode = .loop
+        noMessagesAnimationView.backgroundBehavior = .pauseAndRestore
         noMessagesAnimationView.play()
         
         //Configuring the animationTitle
@@ -1056,7 +1057,6 @@ class MessagingViewController: UIViewController {
         takePhotoAction.setValue(cameraImage, forKey: "image")
         takePhotoAction.setValue(CATextLayerAlignmentMode.left, forKey: "titleTextAlignment") //Aligning text to the left
         
-        
         let choosePhotoAction = UIAlertAction(title: "    Choose a Photo", style: .default) { [weak self] (choosePhotoAction) in
             
             self?.choosePhotoSelected()
@@ -1084,203 +1084,6 @@ class MessagingViewController: UIViewController {
         addAttachmentAlert.addAction(cancelAction)
         
         present(addAttachmentAlert, animated: true, completion: nil)
-    }
-    
-    
-    //MARK: - Zoom In and Pan Gesture Functions
-    //Variables and functions required for zooming in and panning of a cell's photoImageView located here
-    
-    var zoomedOutImageView: UIImageView?
-    var zoomedOutImageViewFrame: CGRect?
-    
-    var blackBackground: UIView?
-    var zoomedInImageView: UIImageView?
-    var zoomedInImageViewFrame: CGRect?
-
-//    var imageViewBeingZoomed: Bool?
-//    var keyboardWasPresent: Bool?
-    
-    var panGesture: UIPanGestureRecognizer?
-    
-    func performZoomOnPhotoImageView (photoImageView: UIImageView) {
-        
-//        print("check")
-        
-        self.zoomedOutImageView = photoImageView
-        imageViewBeingZoomed = true
-        
-        if messageInputAccesoryView.textViewContainer.messageTextView.isFirstResponder {
-            
-            keyboardWasPresent = true
-        }
-        
-        else {
-            
-            keyboardWasPresent = false
-        }
-        
-        self.messageInputAccesoryView.textViewContainer.messageTextView.resignFirstResponder()
-        self.resignFirstResponder()
-        
-        blackBackground = UIView(frame: self.view.frame)
-        blackBackground?.backgroundColor = .clear
-        
-        blackBackground?.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
-        
-        keyWindow?.addSubview(blackBackground!)
-        
-        if let startingFrame = photoImageView.superview?.convert(photoImageView.frame, from: self.view) {
-            
-            zoomedOutImageViewFrame = CGRect(x: abs(startingFrame.minX), y: abs(startingFrame.minY), width: startingFrame.width, height: startingFrame.height)
-            
-            let zoomingImageView = UIImageView(frame: zoomedOutImageViewFrame!)
-            zoomingImageView.image = photoImageView.image
-            zoomingImageView.layer.cornerRadius = 10
-            zoomingImageView.clipsToBounds = true
-            
-            zoomingImageView.isUserInteractionEnabled = true
-            zoomingImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomOut)))
-            
-            keyWindow?.addSubview(zoomingImageView)
-            zoomedInImageView = zoomingImageView
-            
-            photoImageView.isHidden = true
-            
-            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                
-                self.blackBackground?.backgroundColor = .black
-                
-                let height = (startingFrame.height / startingFrame.width) * self.view.frame.width
-                zoomingImageView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: height)
-                zoomingImageView.center = self.view.center
-                
-                zoomingImageView.layer.cornerRadius = 0
-                
-            }) { (finished: Bool) in
-                
-                self.zoomedInImageViewFrame = self.zoomedInImageView?.frame
-                
-                self.addPhotoImageViewPanGesture(view: self.zoomedInImageView)
-                self.addPhotoImageViewPanGesture(view: self.blackBackground)
-            }
-        }
-    }
-    
-    @objc private func handleZoomOut () {
-        
-        self.becomeFirstResponder()
-        
-        if keyboardWasPresent ?? false {
-            
-            messageInputAccesoryView.textViewContainer.messageTextView.becomeFirstResponder()
-        }
-        
-        if let imageView = zoomedInImageView {
-            
-            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                
-                self.blackBackground?.backgroundColor = .clear
-                
-                imageView.frame = self.zoomedOutImageViewFrame!
-                imageView.layer.cornerRadius = 10
-                imageView.clipsToBounds = true
-                
-            }) { (finished: Bool) in
-                
-                self.imageViewBeingZoomed = false
-                
-                self.zoomedOutImageView?.isHidden = false
-                self.blackBackground?.removeFromSuperview()
-                imageView.removeFromSuperview()
-            }
-        }
-    }
-    
-    private func addPhotoImageViewPanGesture (view: UIView?) {
-        
-        if view != nil {
-            
-            panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePhotoImageViewPan(sender:)))
-            
-            view?.addGestureRecognizer(panGesture!)
-        }
-    }
-    
-    @objc private func handlePhotoImageViewPan (sender: UIPanGestureRecognizer) {
-        
-        switch sender.state {
-            
-        case .began, .changed:
-            
-            movePhotoImageViewWithPan(sender: sender)
-            
-        case .ended:
-            
-            if (zoomedInImageView?.frame.minY ?? 0 > (self.view.frame.height / 2)) {
-                
-                handleZoomOut()
-            }
-            
-            else if (zoomedInImageView?.frame.maxY ?? 0 < (self.view.frame.height / 2)) {
-                
-                handleZoomOut()
-            }
-            
-            else {
-                
-                returnPhotoImageViewToOrigin()
-            }
-            
-        default:
-            break
-        }
-    }
-    
-    private func movePhotoImageViewWithPan (sender: UIPanGestureRecognizer) {
-        
-        let translation = sender.translation(in: self.view)
-        
-        if let imageView = zoomedInImageView {
-            
-            let translatedMinYCoord = imageView.frame.minY + translation.y
-            let translatedMinXCoord = imageView.frame.minX + translation.x
-            let translatedMaxYCoord = imageView.frame.maxY + translation.y
-            
-            imageView.frame = CGRect(x: translatedMinXCoord, y: translatedMinYCoord, width: imageView.frame.width, height: imageView.frame.height)
-            
-            if let backgroundView = blackBackground, let zoomedInMinYCoord = zoomedInImageViewFrame?.minY, let zoomedInMaxYCoord = zoomedInImageViewFrame?.maxY {
-                
-                if translatedMinYCoord > zoomedInMinYCoord {
-                    
-                    let originalMinYDistanceToBottom = view.frame.height - zoomedInMinYCoord
-                    let adjustedMinYDistanceToBottom = abs((translatedMinYCoord - (view.frame.height - originalMinYDistanceToBottom)) - originalMinYDistanceToBottom) //tricky but it works
-                    let alphaPart = (1 / originalMinYDistanceToBottom)
-                    
-                    backgroundView.backgroundColor = UIColor.black.withAlphaComponent(alphaPart * adjustedMinYDistanceToBottom)
-                }
-                
-                else if translatedMinYCoord < zoomedInMinYCoord {
-                    
-                    let alphaPart = (1 / zoomedInMaxYCoord)
-                    backgroundView.backgroundColor = UIColor.black.withAlphaComponent(alphaPart * translatedMaxYCoord)
-                }
-            }
-            
-            sender.setTranslation(CGPoint.zero, in: self.view)
-        }
-    }
-    
-    private func returnPhotoImageViewToOrigin () {
-        
-        if let imageView = zoomedInImageView, let imageViewFrame = zoomedInImageViewFrame {
-            
-            UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: .curveEaseInOut, animations: {
-                
-                self.blackBackground?.backgroundColor = .black
-                
-                imageView.frame = imageViewFrame
-            })
-        }
     }
     
     
@@ -1386,7 +1189,9 @@ extension MessagingViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages)
+        let members = personalConversation != nil ? personalConversation?.historicMembers : collabConversation?.historicMembers
+        
+        return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages, members: members ?? [])
     }
 }
 
@@ -1515,8 +1320,6 @@ extension MessagingViewController: ZoomInProtocol {
     
     func zoomInOnPhotoImageView(photoImageView: UIImageView) {
         
-//        performZoomOnPhotoImageView(photoImageView: photoImageView)
-        
         prepViewForImageViewZooming { [weak self] in
 
             self?.zoomingMethods = ZoomingImageViewMethods(on: photoImageView, cornerRadius: 10, completion: {
@@ -1536,6 +1339,21 @@ extension MessagingViewController: ZoomInProtocol {
 
             zoomingMethods?.performZoom()
         }
+    }
+}
+
+
+//MARK: - Schedule Protocol Extension
+
+extension MessagingViewController: ScheduleProtocol {
+    
+    func moveToScheduleView(message: Message) {
+        
+        let scheduleVC = ScheduleMessageViewController()
+        scheduleVC.message = message
+        scheduleVC.members = personalConversation != nil ? personalConversation?.historicMembers : collabConversation?.historicMembers
+        
+        self.present(scheduleVC, animated: true)
     }
 }
 

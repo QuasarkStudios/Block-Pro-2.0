@@ -381,6 +381,24 @@ class MessageHomeCell: UITableViewCell {
                     }
                 }
             }
+            
+            //If this is a scheduleMessage
+            else if messagePreview.messageBlocks != nil {
+                
+                if messagePreview.sender == currentUser.userID {
+                    
+                    attributedString.append(NSAttributedString(string: "You sent your schedule", attributes: italicText))
+                    messagePreviewLabel.attributedText = attributedString
+                }
+                
+                else {
+                    
+                    let memberName = conversation?.currentMembers.first(where: { $0.userID == messagePreview.sender })?.firstName ?? ""
+                    
+                    attributedString.append(NSAttributedString(string: "\(memberName) sent their schedule", attributes: italicText))
+                    messagePreviewLabel.attributedText = attributedString
+                }
+            }
                 
             //If this a member updated/deleted the cover
             else if let memberUpdatedConversationCover = messagePreview.memberUpdatedConversationCover {

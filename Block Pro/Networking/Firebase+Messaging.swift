@@ -371,6 +371,8 @@ class FirebaseMessaging {
                     message.sender = snapshot!.documents.first!["sender"] as! String
                     message.message = snapshot!.documents.first!["message"] as? String
                     message.messagePhoto = snapshot!.documents.first!["photo"] as? [String : Any]
+                    self.retrieveMessageBlocks(&message, snapshot!.documents.first!["blocks"] as? [String : Any])
+                    
                     message.memberUpdatedConversationCover = snapshot!.documents.first!["memberUpdatedConversationCover"] as? Bool
                     message.memberUpdatedConversationName = snapshot!.documents.first!["memberUpdatedConversationName"] as? Bool
                     message.memberJoiningConversation = snapshot!.documents.first!["memberJoiningConversation"] as? Bool
@@ -689,6 +691,8 @@ class FirebaseMessaging {
                     message.sender = snapshot!.documents.first!["sender"] as! String
                     message.message = snapshot!.documents.first!["message"] as? String
                     message.messagePhoto = snapshot!.documents.first!["photo"] as? [String : Any]
+                    self.retrieveMessageBlocks(&message, snapshot!.documents.first!["blocks"] as? [String : Any])
+                    
                     message.memberUpdatedConversationCover = snapshot!.documents.first!["memberUpdatedConversationCover"] as? Bool
                     message.memberUpdatedConversationName = snapshot!.documents.first!["memberUpdatedConversationName"] as? Bool
                     message.memberJoiningConversation = snapshot!.documents.first!["memberJoiningConversation"] as? Bool
@@ -757,6 +761,8 @@ class FirebaseMessaging {
                         message.sender = document.data()["sender"] as! String
                         message.message = document.data()["message"] as? String
                         message.messagePhoto = document.data()["photo"] as? [String : Any]
+                        self.retrieveMessageBlocks(&message, document.data()["blocks"] as? [String : Any])
+
                         message.memberUpdatedConversationCover = document.data()["memberUpdatedConversationCover"] as? Bool
                         message.memberUpdatedConversationName = document.data()["memberUpdatedConversationName"] as? Bool
                         message.memberJoiningConversation = document.data()["memberJoiningConversation"] as? Bool
@@ -800,6 +806,8 @@ class FirebaseMessaging {
                         message.sender = document.data()["sender"] as! String
                         message.message = document.data()["message"] as? String
                         message.messagePhoto = document.data()["photo"] as? [String : Any]
+                        self.retrieveMessageBlocks(&message, document.data()["blocks"] as? [String : Any])
+
                         message.memberUpdatedConversationCover = document.data()["memberUpdatedConversationCover"] as? Bool
                         message.memberUpdatedConversationName = document.data()["memberUpdatedConversationName"] as? Bool
                         message.memberJoiningConversation = document.data()["memberJoiningConversation"] as? Bool
@@ -974,7 +982,7 @@ class FirebaseMessaging {
         var photoDict = message.messagePhoto != nil ? message.messagePhoto : nil
         photoDict?.removeValue(forKey: "photo")
         
-        let blocksDict = setMessageBlocks(message.messageBlocks)
+        let blocksDict = setMessageBlocks(message)
         
 //        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "timestamp" : message.timestamp as Any]
         
@@ -1033,7 +1041,7 @@ class FirebaseMessaging {
         var photoDict = message.messagePhoto != nil ? message.messagePhoto : nil
         photoDict?.removeValue(forKey: "photo")
         
-        let blocksDict = setMessageBlocks(message.messageBlocks)
+        let blocksDict = setMessageBlocks(message)
         
 //        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "timestamp" : message.timestamp as Any]
         
@@ -1090,23 +1098,28 @@ class FirebaseMessaging {
     
     //MARK: - Set Message Blocks
     
-    private func setMessageBlocks (_ messageBlocks: [Block]?) -> [String : [String : Any]]? {
+    private func setMessageBlocks (_ message: Message) -> [String : Any]? {
         
-        if let blocks = messageBlocks {
+        if let dateForBlocks = message.dateForBlocks, let blocks = message.messageBlocks {
             
-            var blocksDict: [String : [String : Any]] = [:]
+            var blocksDict: [String : Any] = [:]
             
             let statusArray: [BlockStatus : String] = [.notStarted : "notStarted", .inProgress : "inProgress", .completed : "completed", .needsHelp : "needsHelp", .late : "late"]
+            
+            blocksDict["dateForBlocks"] = dateForBlocks
             
             for block in blocks {
                 
                 if let blockID = block.blockID, let name = block.name, let dateCreated = block.dateCreated, let starts = block.starts, let ends = block.ends {
                     
-                    blocksDict[blockID] = ["name" : name, "dateCreated" : dateCreated, "startTime" : starts, "endTime" : ends]
-                    
                     if let status = block.status {
                         
-                        blocksDict[blockID]?["status"] = statusArray[status]
+                        blocksDict[blockID] = ["name" : name, "dateCreated" : dateCreated, "startTime" : starts, "endTime" : ends, "status" : statusArray[status] as Any]
+                    }
+                    
+                    else {
+                        
+                        blocksDict[blockID] = ["name" : name, "dateCreated" : dateCreated, "startTime" : starts, "endTime" : ends]
                     }
                 }
             }
@@ -1117,6 +1130,48 @@ class FirebaseMessaging {
         else {
             
             return nil
+        }
+    }
+    
+    
+    //MARK: - Retrieve Message Blocks
+    
+    private func retrieveMessageBlocks (_ message: inout Message, _ blocks: [String : Any]?) {
+        
+        if let blocks = blocks {
+            
+            var blockArray: [Block] = []
+            
+            blocks.forEach { (retrievedBlock) in
+                
+                if retrievedBlock.key != "dateForBlocks" {
+                    
+                    var block = Block()
+                    
+                    block.blockID = retrievedBlock.key
+                    
+                    if let values = retrievedBlock.value as? [String : Any] {
+                        
+                        block.name = values["name"] as? String
+                        
+                        if let dateCreated = values["dateCreated"] as? Timestamp, let starts = values["startTime"] as? Timestamp, let ends = values["endTime"] as? Timestamp {
+                            
+                            block.dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreated.seconds))
+                            block.starts = Date(timeIntervalSince1970: TimeInterval(starts.seconds))
+                            block.ends = Date(timeIntervalSince1970: TimeInterval(ends.seconds))
+                        }
+                    }
+                    
+                    blockArray.append(block)
+                }
+            }
+            
+            if let date = blocks["dateForBlocks"] as? Timestamp {
+                
+                message.dateForBlocks = Date(timeIntervalSince1970: TimeInterval(date.seconds))
+            }
+            
+            message.messageBlocks = blockArray
         }
     }
     

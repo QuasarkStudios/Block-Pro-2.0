@@ -348,7 +348,7 @@ extension CollabViewController: UITableViewDataSource, UITableViewDelegate {
             
             else if selectedTab == "Messages" {
                 
-                return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages)
+                return messagingMethods.heightForRowAt(indexPath: indexPath, messages: messages, members: collab?.historicMembers ?? [])
             }
             
             else {

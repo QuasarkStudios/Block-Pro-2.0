@@ -18,6 +18,7 @@ struct Message {
     
     var messagePhoto: [String : Any]?
     
+    var dateForBlocks: Date?
     var messageBlocks: [Block]?
     
     var memberUpdatedConversationCover: Bool?

@@ -559,6 +559,7 @@ class SendScheduleViewController: UIViewController {
             
             var message = Message()
             message.sender = currentUser.userID
+            message.dateForBlocks = selectedDate
             message.messageBlocks = blocks
             message.timestamp = Date()
             

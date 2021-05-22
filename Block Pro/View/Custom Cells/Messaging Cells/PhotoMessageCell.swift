@@ -55,6 +55,8 @@ class PhotoMessageCell: UITableViewCell {
         }
     }
     
+    var cachedPhotoID: String = ""
+    
     weak var cachePhotoDelegate: CachePhotoProtocol?
     weak var zoomInDelegate: ZoomInProtocol?
     weak var presentCopiedAnimationDelegate: PresentCopiedAnimationProtocol?
@@ -260,6 +262,8 @@ class PhotoMessageCell: UITableViewCell {
         
         else if let photoID = message.messagePhoto?["photoID"] as? String {
             
+            cachedPhotoID = photoID
+            
             photoImageView.image = nil
             
             configureLoadingPhotoIndicator()
@@ -274,15 +278,19 @@ class PhotoMessageCell: UITableViewCell {
                     }
 
                     else {
-
-                        self.photoImageView.image = photo
-                        self.photoImageView.isUserInteractionEnabled = true
                         
-                        self.imageViewContainer.backgroundColor = .white
-                        self.iProgressView.dismissProgress()
-                        self.iProgressView.isHidden = true
+                        //Ensures that this cell wasn't reused before a previous photo retrieval was completed
+                        if self.cachedPhotoID == photoID {
+                            
+                            self.photoImageView.image = photo
+                            self.photoImageView.isUserInteractionEnabled = true
+                            
+                            self.imageViewContainer.backgroundColor = .white
+                            self.iProgressView.dismissProgress()
+                            self.iProgressView.isHidden = true
 
-                        self.cachePhotoDelegate?.cacheMessagePhoto(messageID: message.messageID, photo: photo)
+                            self.cachePhotoDelegate?.cacheMessagePhoto(messageID: message.messageID, photo: photo)
+                        }
                     }
                 }
             }
@@ -298,14 +306,18 @@ class PhotoMessageCell: UITableViewCell {
                     
                     else {
                         
-                        self.photoImageView.image = photo
-                        self.photoImageView.isUserInteractionEnabled = true
-                        
-                        self.imageViewContainer.backgroundColor = .white
-                        self.iProgressView.dismissProgress()
-                        self.iProgressView.isHidden = true
-                        
-                        self.cachePhotoDelegate?.cacheMessagePhoto(messageID: message.messageID, photo: photo)
+                        //Ensures that this cell wasn't reused before a previous photo retrieval was completed
+                        if self.cachedPhotoID == photoID {
+                            
+                            self.photoImageView.image = photo
+                            self.photoImageView.isUserInteractionEnabled = true
+                            
+                            self.imageViewContainer.backgroundColor = .white
+                            self.iProgressView.dismissProgress()
+                            self.iProgressView.isHidden = true
+                            
+                            self.cachePhotoDelegate?.cacheMessagePhoto(messageID: message.messageID, photo: photo)
+                        }
                     }
                 }
             }

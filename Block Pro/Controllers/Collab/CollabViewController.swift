@@ -2082,6 +2082,17 @@ class CollabViewController: UIViewController {
     }
     
     
+    //MARK: - Move to Share Schedule View
+    
+    func moveToSendScheduleView () {
+        
+        let sendScheduleVC = SendScheduleViewController()
+        sendScheduleVC.collabConversationID = collab?.collabID
+        
+        self.present(sendScheduleVC, animated: true)
+    }
+    
+    
     //MARK: - Prepare for Segue
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

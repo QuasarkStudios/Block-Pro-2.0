@@ -60,6 +60,8 @@
 		0D4173AA24304EF7006076A5 /* RegistrationProfilePicCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D4173A824304EF7006076A5 /* RegistrationProfilePicCell.xib */; };
 		0D44BA862476EF8D00647E06 /* Firebase+Messaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D44BA852476EF8D00647E06 /* Firebase+Messaging.swift */; };
 		0D44BA8A2476F76300647E06 /* AddMembers.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D44BA892476F76300647E06 /* AddMembers.storyboard */; };
+		0D44C18A26588F3D00DFD24C /* ScheduleProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D44C18926588F3D00DFD24C /* ScheduleProtocol.swift */; };
+		0D44C18D2658917200DFD24C /* ScheduleMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D44C18C2658917200DFD24C /* ScheduleMessageViewController.swift */; };
 		0D45DECE254694D5003E16E3 /* SelectedLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D45DECD254694D5003E16E3 /* SelectedLocationCell.swift */; };
 		0D45DED325474259003E16E3 /* LocationProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D45DED225474259003E16E3 /* LocationProtocols.swift */; };
 		0D45DEDB254C7FE3003E16E3 /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D45DEDA254C7FE3003E16E3 /* Location.swift */; };
@@ -328,6 +330,8 @@
 		0D4173A824304EF7006076A5 /* RegistrationProfilePicCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RegistrationProfilePicCell.xib; sourceTree = "<group>"; };
 		0D44BA852476EF8D00647E06 /* Firebase+Messaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Firebase+Messaging.swift"; sourceTree = "<group>"; };
 		0D44BA892476F76300647E06 /* AddMembers.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AddMembers.storyboard; sourceTree = "<group>"; };
+		0D44C18926588F3D00DFD24C /* ScheduleProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleProtocol.swift; sourceTree = "<group>"; };
+		0D44C18C2658917200DFD24C /* ScheduleMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScheduleMessageViewController.swift; path = "Block Pro/Controllers/Messaging/ScheduleMessageViewController.swift"; sourceTree = SOURCE_ROOT; };
 		0D45DECD254694D5003E16E3 /* SelectedLocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedLocationCell.swift; sourceTree = "<group>"; };
 		0D45DED225474259003E16E3 /* LocationProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationProtocols.swift; sourceTree = "<group>"; };
 		0D45DEDA254C7FE3003E16E3 /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
@@ -1193,6 +1197,7 @@
 				0DBFED68247C52B900EDFEC3 /* MessagingViewController.swift */,
 				0D3F29312485ED9900C7763F /* SendPhotoMessageViewController.swift */,
 				0DB1A7FA265621030003D721 /* SendScheduleViewController.swift */,
+				0D44C18C2658917200DFD24C /* ScheduleMessageViewController.swift */,
 				0D86013A2499377F0027F043 /* ConversationInfoViewController.swift */,
 				0D52A5B124B969680039F893 /* ConversationPhotosViewController.swift */,
 			);
@@ -1218,6 +1223,7 @@
 				0D5FD12125C018D300E9BA2D /* BlockEdited_DeletedProtocol.swift */,
 				0D49B37725CB4280007C666A /* CollabProgressProtocol.swift */,
 				0DC2FADD25E4956600EF22DA /* CollabMemberProtocol.swift */,
+				0D44C18926588F3D00DFD24C /* ScheduleProtocol.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -1511,9 +1517,11 @@
 				0D7CABE9252A69590045006C /* Public Variables.swift in Sources */,
 				0D670D8B255674DD001D2634 /* LocationsViewController.swift in Sources */,
 				0D0102A92468F49D00A5FF28 /* MessagesHomeViewController.swift in Sources */,
+				0D44C18A26588F3D00DFD24C /* ScheduleProtocol.swift in Sources */,
 				0D72D24B2453FE7B00C11D5F /* CollabViewController.swift in Sources */,
 				0D82282424D76D5300D0BBA0 /* ConvoAddMemberInfoCell.swift in Sources */,
 				0D45DED325474259003E16E3 /* LocationProtocols.swift in Sources */,
+				0D44C18D2658917200DFD24C /* ScheduleMessageViewController.swift in Sources */,
 				0D39A67625AEC8D100D9840B /* PhotosConfigurationCell.swift in Sources */,
 				0D45DEDE254D0151003E16E3 /* MKPlacemark+Extension.swift in Sources */,
 				0D5FD11B25BFD98500E9BA2D /* BlockStatusCollectionViewCell.swift in Sources */,

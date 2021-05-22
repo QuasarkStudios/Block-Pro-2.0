@@ -226,6 +226,7 @@ extension CollabViewController: UITextViewDelegate {
         
         let shareScheduleAction = UIAlertAction(title: "    Share your Schedule", style: .default) { [weak self] (shareScheduleAction) in
             
+            self?.moveToSendScheduleView()
         }
         
         let shareImage = UIImage(named: "share")
@@ -243,6 +244,9 @@ extension CollabViewController: UITextViewDelegate {
     }
 }
 
+
+//MARK: - Reconfigure CollabView from Send Photo VC Extension
+
 extension CollabViewController: ReconfigureCollabViewFromSendPhotoVC {
     
     func reconfigureView() {
@@ -250,5 +254,20 @@ extension CollabViewController: ReconfigureCollabViewFromSendPhotoVC {
         addObservors()
         
         self.becomeFirstResponder()
+    }
+}
+
+
+//MARK: - Schedule Protocol Extension
+
+extension CollabViewController: ScheduleProtocol {
+    
+    func moveToScheduleView(message: Message) {
+        
+        let scheduleVC = ScheduleMessageViewController()
+        scheduleVC.message = message
+        scheduleVC.members = collab?.historicMembers
+        
+        self.present(scheduleVC, animated: true)
     }
 }

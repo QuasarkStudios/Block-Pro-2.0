@@ -28,7 +28,6 @@ extension String {
     
     func strictValidationOfTextEntered (withSpecialCharacters: CharacterSet) -> Bool {
         
-//        let dashSet: CharacterSet = ["-"]
         let finalSet = CharacterSet.alphanumerics.union(withSpecialCharacters)
         
         return finalSet.isSuperset(of: CharacterSet(charactersIn: self)) && !self.isEmpty
@@ -37,6 +36,14 @@ extension String {
     func estimateFrameForMessageCell () -> CGRect {
         
         let size = CGSize(width: 200, height: 100000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        
+        return NSString(string: self).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont(name: "Poppins-Medium", size: 14) as Any], context: nil)
+    }
+    
+    func estimateFrameForMessageScheduleLabel () -> CGRect {
+        
+        let size = CGSize(width: 155, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
         
         return NSString(string: self).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont(name: "Poppins-Medium", size: 14) as Any], context: nil)

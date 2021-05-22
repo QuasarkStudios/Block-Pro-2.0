@@ -12,6 +12,8 @@ class MessagingMethods {
     
     let currentUser = CurrentUser.sharedInstance
     
+    let formatter = DateFormatter()
+    
     weak var parentViewController: AnyObject?
     
     var tableView: UITableView
@@ -83,6 +85,7 @@ class MessagingMethods {
         
         tableView.register(UINib(nibName: "MessageCell", bundle: nil), forCellReuseIdentifier: "messageCell")
         tableView.register(UINib(nibName: "PhotoMessageCell", bundle: nil), forCellReuseIdentifier: "photoMessageCell")
+        tableView.register(ScheduleMessageCell.self, forCellReuseIdentifier: "scheduleMessageCell")
         tableView.register(UINib(nibName: "PhotoMessageWithCaptionCell", bundle: nil), forCellReuseIdentifier: "photoMessageWithCaptionCell")
         tableView.register(UINib(nibName: "ConvoUpdatedMessageCell", bundle: nil), forCellReuseIdentifier: "convoUpdatedMessageCell")
     }
@@ -158,6 +161,30 @@ class MessagingMethods {
                 }
             }
             
+            else if messages?[indexPath.row / 2].messageBlocks != nil {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "scheduleMessageCell", for: indexPath) as! ScheduleMessageCell
+                cell.selectionStyle = .none
+                
+                cell.formatter = formatter
+                
+                cell.members = members
+                cell.previousMessage = (indexPath.row / 2) - 1 >= 0 ? messages![(indexPath.row / 2) - 1] : nil
+                cell.message = messages?[indexPath.row / 2]
+                
+                if let viewController = parentViewController as? MessagingViewController {
+                    
+                    cell.scheduleDelegate = viewController
+                }
+                
+                else if let viewController = parentViewController as? CollabViewController {
+                    
+                    cell.scheduleDelegate = viewController
+                }
+                
+                return cell
+            }
+            
             else if messages?[indexPath.row / 2].message != nil {
                 
                 let cell = tableView.dequeueReusableCell(withIdentifier: "messageCell", for: indexPath) as! MessageCell
@@ -211,11 +238,11 @@ class MessagingMethods {
         }
     }
     
-    func heightForRowAt (indexPath: IndexPath, messages: [Message]?) -> CGFloat {
+    func heightForRowAt (indexPath: IndexPath, messages: [Message]?, members: [Member]) -> CGFloat {
         
         if indexPath.row % 2 == 0 {
             
-            return determineMessageRowHeight(indexPath: indexPath, messages: messages)
+            return determineMessageRowHeight(indexPath: indexPath, messages: messages, members: members)
         }
         
         else {
@@ -226,7 +253,7 @@ class MessagingMethods {
     
     //MARK: - Determine Message Row Height Function
     
-    private func determineMessageRowHeight (indexPath: IndexPath, messages: [Message]?) -> CGFloat {
+    private func determineMessageRowHeight (indexPath: IndexPath, messages: [Message]?, members: [Member]) -> CGFloat {
 
         //NOTE: Some comments will only exist in the first "if" block to avoid redundancy; if a certain line is missing a seemingly important comment, it's most likely in the first "if" block
         
@@ -243,6 +270,12 @@ class MessagingMethods {
                     let textViewHeight = messages?[indexPath.row].message?.estimateFrameForMessageCell().height ?? -16 //Default to 16 if there is no caption to cancel out the extra 16 that will be added to the imageViewHeight in the return
                     
                     return imageViewHeight + textViewHeight + 16 //16 (15 + 1 for the bottom anchor of the photoImageView) is a height increase to the cell to improve it aesthetically
+                }
+                
+                //If this is a schedule message
+                else if messages?[indexPath.row].messageBlocks != nil {
+                    
+                    return calculateScheduleMessageCellHeight(messages?[indexPath.row], members)
                 }
                     
                 //If this is just a simple message
@@ -273,6 +306,11 @@ class MessagingMethods {
                     let textViewHeight = messages?[indexPath.row / 2].message?.estimateFrameForMessageCell().height ?? -16
                     
                     return imageViewHeight + textViewHeight + 31 //16 (15 + 1 for the bottom anchor of the photoImageView) to improve the aesthetics of the cell + an extra 15 to allow for the nameLabel that will be shown in this cell
+                }
+                
+                else if messages?[indexPath.row / 2].messageBlocks != nil {
+                    
+                    return calculateScheduleMessageCellHeight(messages?[indexPath.row / 2], members) + 15
                 }
                 
                 else if let message = messages?[indexPath.row / 2].message {
@@ -306,6 +344,11 @@ class MessagingMethods {
                     return imageViewHeight + textViewHeight + 16
                 }
                 
+                else if messages?[indexPath.row / 2].messageBlocks != nil {
+                    
+                    return calculateScheduleMessageCellHeight(messages?[indexPath.row / 2], members)
+                }
+                
                 else if let message = messages?[indexPath.row / 2].message {
                     
                     return message.estimateFrameForMessageCell().height + 15
@@ -331,6 +374,11 @@ class MessagingMethods {
                     let textViewHeight = messages?[indexPath.row / 2].message?.estimateFrameForMessageCell().height ?? -16
                     
                     return imageViewHeight + textViewHeight + 31
+                }
+                
+                else if messages?[indexPath.row / 2].messageBlocks != nil {
+                    
+                    return calculateScheduleMessageCellHeight(messages?[indexPath.row / 2], members) + 15
                 }
                 
                 else if let message = messages?[indexPath.row / 2].message {
@@ -370,6 +418,11 @@ class MessagingMethods {
                         
                         return imageViewHeight + textViewHeight + 16
                     }
+                }
+                
+                else if messages?[indexPath.row / 2].messageBlocks != nil {
+                    
+                    return calculateScheduleMessageCellHeight(messages?[indexPath.row / 2], members)
                 }
                 
                 else if let message = messages?[indexPath.row / 2].message {
@@ -452,6 +505,35 @@ class MessagingMethods {
         
         return height
     }
+    
+    
+    //MARK: - Calc ScheduleMessageCell Height
+    
+    private func calculateScheduleMessageCellHeight (_ message: Message?, _ members: [Member] ) -> CGFloat{
+        
+        if let dateForBlocks = message?.dateForBlocks {
+            
+            var scheduleLabelText: String = ""
+            
+            scheduleLabelText = message?.sender == currentUser.userID ? "Here's my schedule for " : "Here's \(members.first(where: { $0.userID == message?.sender })?.firstName ?? "")'s schedule for "
+            
+            formatter.dateFormat = "EEEE, MMMM d"
+            scheduleLabelText += formatter.string(from: dateForBlocks)
+            
+            scheduleLabelText += dateForBlocks.daySuffix() + ", "
+            
+            formatter.dateFormat = "yyyy"
+            scheduleLabelText += formatter.string(from: dateForBlocks)
+            
+            return scheduleLabelText.estimateFrameForMessageScheduleLabel().height + 100
+        }
+        
+        else {
+            
+            return 0
+        }
+    }
+    
     
     //MARK: - Reload TableView Function
     

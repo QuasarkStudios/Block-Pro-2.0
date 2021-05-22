@@ -45,6 +45,7 @@ class MessagesAnimationView: UIView {
         ].forEach({ $0.isActive = true })
         
         animationView.loopMode = .loop
+        animationView.backgroundBehavior = .pauseAndRestore
     }
     
     private func configureAnimationTitleLabel () {
