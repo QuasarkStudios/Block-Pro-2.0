@@ -8,15 +8,16 @@
 
 import UIKit
 
-class ConvoPhotosHeaderInfoCell: UITableViewCell {
+class ConvoPhotos_SchedulesHeaderInfoCell: UITableViewCell {
 
+    @IBOutlet weak var headerLabel: UILabel!
     @IBOutlet weak var seeAllLabel: UILabel!
     @IBOutlet weak var seeAllArrow: UIImageView!
     
-    var photoMessageCount: Int? {
+    var messageCount: Int? {
         didSet {
             
-            if let count = photoMessageCount, count > 6 {
+            if let count = messageCount, count > 6 {
                 
                 seeAllLabel.isHidden = false
                 seeAllArrow.isHidden = false

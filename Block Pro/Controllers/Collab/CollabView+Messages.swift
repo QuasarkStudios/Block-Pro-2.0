@@ -268,6 +268,8 @@ extension CollabViewController: ScheduleProtocol {
         scheduleVC.message = message
         scheduleVC.members = collab?.historicMembers
         
-        self.present(scheduleVC, animated: true)
+        let scheduleNavigationController = UINavigationController(rootViewController: scheduleVC)
+        
+        self.present(scheduleNavigationController, animated: true)
     }
 }

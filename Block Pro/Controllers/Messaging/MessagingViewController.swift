@@ -1150,6 +1150,7 @@ class MessagingViewController: UIViewController {
             convoInfoVC.personalConversation = personalConversation
             convoInfoVC.collabConversation = collabConversation
             convoInfoVC.photoMessages = firebaseMessaging.filterPhotoMessages(messages: messages)
+            convoInfoVC.scheduleMessages = firebaseMessaging.filterScheduleMessages(messages: messages)
             
             convoInfoVC.moveToConversationWithFriendDelegate = self
             convoInfoVC.reconfigureViewDelegate = self
@@ -1353,7 +1354,9 @@ extension MessagingViewController: ScheduleProtocol {
         scheduleVC.message = message
         scheduleVC.members = personalConversation != nil ? personalConversation?.historicMembers : collabConversation?.historicMembers
         
-        self.present(scheduleVC, animated: true)
+        let scheduleNavigationController = UINavigationController(rootViewController: scheduleVC)
+        
+        self.present(scheduleNavigationController, animated: true)
     }
 }
 

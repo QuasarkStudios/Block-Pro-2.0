@@ -10,7 +10,6 @@ import UIKit
 
 class ScheduleMessageViewController: UIViewController {
 
-    let navBar = UINavigationBar()
     let blockTableView = UITableView()
     
     let initialContainer = UIView()
@@ -39,7 +38,7 @@ class ScheduleMessageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         self.view.backgroundColor = .white
         
         configureNavBar()
@@ -53,29 +52,18 @@ class ScheduleMessageViewController: UIViewController {
     
     private func configureNavBar () {
         
-        self.view.addSubview(navBar)
-        navBar.translatesAutoresizingMaskIntoConstraints = false
-        
-        [
-        
-            navBar.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
-            navBar.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
-            navBar.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 0),
-            navBar.heightAnchor.constraint(equalToConstant: 44)
-        
-        ].forEach({ $0.isActive = true })
-        
-        navBar.configureNavBar()
-        
-        let cancelButton = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(cancelButtonPressed))
-        cancelButton.style = .done
-        
+        self.navigationController?.navigationBar.configureNavBar()
+
         formatter.dateFormat = "EEEE, MMMM d"
-        
-        let navigationItem = UINavigationItem(title: formatter.string(from: message?.dateForBlocks ?? Date()))
-        navigationItem.leftBarButtonItem = cancelButton
-        
-        navBar.items = [navigationItem]
+        self.title = formatter.string(from: message?.dateForBlocks ?? Date())
+
+        //If this view wasn't pushed onto the navigationStack from either the ConversationSchedulesViewController or the CollabMessagesAttachmentsView
+        if self.navigationController?.viewControllers.count == 1 {
+            
+            let cancelButton = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(cancelButtonPressed))
+            cancelButton.style = .done
+            self.navigationItem.leftBarButtonItem = cancelButton
+        }
     }
     
     
@@ -88,7 +76,7 @@ class ScheduleMessageViewController: UIViewController {
         
         [
         
-            tableView.topAnchor.constraint(equalTo: navBar.bottomAnchor, constant: 15),
+            tableView.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 59),
             tableView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 0),
             tableView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
             tableView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0)
@@ -123,13 +111,13 @@ class ScheduleMessageViewController: UIViewController {
             
         ].forEach( { $0.isActive = true } )
         
+        initialContainer.backgroundColor = UIColor(hexString: "222222")
+        
         initialContainer.layer.cornerRadius = 25
         initialContainer.layer.shadowColor = UIColor(hexString: "39434A")?.cgColor
         initialContainer.layer.shadowRadius = 2
         initialContainer.layer.shadowOffset = CGSize(width: 0, height: 1)
         initialContainer.layer.shadowOpacity = 0.65
-        
-        initialContainer.backgroundColor = UIColor(hexString: "222222")
     }
     
     
@@ -230,7 +218,7 @@ extension ScheduleMessageViewController: UITableViewDataSource, UITableViewDeleg
         let cell = tableView.dequeueReusableCell(withIdentifier: "blocksTableViewCell", for: indexPath) as! BlocksTableViewCell
         cell.selectionStyle = .none
         
-        cell.blocks = message?.messageBlocks
+        cell.blocks = message?.messageBlocks?.sorted(by: { $0.starts! < $1.starts! })
         
         return cell
     }

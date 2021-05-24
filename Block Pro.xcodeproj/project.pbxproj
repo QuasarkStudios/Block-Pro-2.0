@@ -14,7 +14,6 @@
 		0D02C2412443744600D255D7 /* AddMembersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D02C2402443744600D255D7 /* AddMembersViewController.swift */; };
 		0D0C8D9A2442488300EB51F7 /* Collab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0C8D992442488300EB51F7 /* Collab.swift */; };
 		0D0D0B4E25D1FDD400DE6FAD /* progress-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D0D0B4D25D1FDD400DE6FAD /* progress-animation.json */; };
-		0D0ECF3B243E5B0E00D947F4 /* previous_nextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D0ECF3A243E5B0E00D947F4 /* previous_nextButton.swift */; };
 		0D13AC02232DDBD40025EDC3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0D13AC01232DDBD40025EDC3 /* Assets.xcassets */; };
 		0D153CE82433CD2C00741B67 /* Firebase+Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D153CE72433CD2C00741B67 /* Firebase+Storage.swift */; };
 		0D1D028B263C989A0020687F /* MessagingPreviewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D1D028A263C989A0020687F /* MessagingPreviewCollectionViewCell.swift */; };
@@ -191,8 +190,8 @@
 		0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F8022E65F8D001D35B4 /* PendingCollab.swift */; };
 		0D879AD424B834DE0037C880 /* ConvoPhotoInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D879AD224B834DE0037C880 /* ConvoPhotoInfoCell.swift */; };
 		0D879AD524B834DE0037C880 /* ConvoPhotoInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D879AD324B834DE0037C880 /* ConvoPhotoInfoCell.xib */; };
-		0D879AD824B8357E0037C880 /* ConvoPhotosHeaderInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D879AD624B8357E0037C880 /* ConvoPhotosHeaderInfoCell.swift */; };
-		0D879AD924B8357E0037C880 /* ConvoPhotosHeaderInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D879AD724B8357E0037C880 /* ConvoPhotosHeaderInfoCell.xib */; };
+		0D879AD824B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D879AD624B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.swift */; };
+		0D879AD924B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D879AD724B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.xib */; };
 		0D879ADC24B853F70037C880 /* ConvoPhotoCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D879ADA24B853F70037C880 /* ConvoPhotoCollectionViewCell.swift */; };
 		0D879ADD24B853F70037C880 /* ConvoPhotoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D879ADB24B853F70037C880 /* ConvoPhotoCollectionViewCell.xib */; };
 		0D891CC125B51A3F00B04C2F /* FullBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D891CC025B51A3F00B04C2F /* FullBlock.swift */; };
@@ -240,6 +239,9 @@
 		0DC2FADB25E493A400EF22DA /* CollabMemberProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC2FADA25E493A400EF22DA /* CollabMemberProfileViewController.swift */; };
 		0DC2FADE25E4956600EF22DA /* CollabMemberProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC2FADD25E4956600EF22DA /* CollabMemberProtocol.swift */; };
 		0DC7E71824CBAE8500306A83 /* CopiedAnimationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DC7E71724CBAE8500306A83 /* CopiedAnimationView.swift */; };
+		0DCAAE1C2659AADB007D22A7 /* ConvoScheduleInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DCAAE1B2659AADB007D22A7 /* ConvoScheduleInfoCell.swift */; };
+		0DCAAE1F265A1E1F007D22A7 /* ConvoScheduleCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DCAAE1E265A1E1F007D22A7 /* ConvoScheduleCollectionViewCell.swift */; };
+		0DCAAE22265AE463007D22A7 /* ConversationSchedulesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DCAAE21265AE463007D22A7 /* ConversationSchedulesViewController.swift */; };
 		0DD636D12414478B0026B623 /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636D02414478B0026B623 /* NotificationScheduler.swift */; };
 		0DD9D88D24437A64006AA8AB /* MembersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD9D88B24437A64006AA8AB /* MembersTableViewCell.swift */; };
 		0DD9D88E24437A64006AA8AB /* MembersTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DD9D88C24437A64006AA8AB /* MembersTableViewCell.xib */; };
@@ -282,7 +284,6 @@
 		0D02C2402443744600D255D7 /* AddMembersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddMembersViewController.swift; sourceTree = "<group>"; };
 		0D0C8D992442488300EB51F7 /* Collab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collab.swift; sourceTree = "<group>"; };
 		0D0D0B4D25D1FDD400DE6FAD /* progress-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "progress-animation.json"; sourceTree = "<group>"; };
-		0D0ECF3A243E5B0E00D947F4 /* previous_nextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = previous_nextButton.swift; sourceTree = "<group>"; };
 		0D13AC01232DDBD40025EDC3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0D153CE72433CD2C00741B67 /* Firebase+Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Firebase+Storage.swift"; sourceTree = "<group>"; };
 		0D1D028A263C989A0020687F /* MessagingPreviewCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingPreviewCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -462,8 +463,8 @@
 		0D872F8022E65F8D001D35B4 /* PendingCollab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingCollab.swift; sourceTree = "<group>"; };
 		0D879AD224B834DE0037C880 /* ConvoPhotoInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoPhotoInfoCell.swift; sourceTree = "<group>"; };
 		0D879AD324B834DE0037C880 /* ConvoPhotoInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoPhotoInfoCell.xib; sourceTree = "<group>"; };
-		0D879AD624B8357E0037C880 /* ConvoPhotosHeaderInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoPhotosHeaderInfoCell.swift; sourceTree = "<group>"; };
-		0D879AD724B8357E0037C880 /* ConvoPhotosHeaderInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoPhotosHeaderInfoCell.xib; sourceTree = "<group>"; };
+		0D879AD624B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoPhotos_SchedulesHeaderInfoCell.swift; sourceTree = "<group>"; };
+		0D879AD724B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoPhotos_SchedulesHeaderInfoCell.xib; sourceTree = "<group>"; };
 		0D879ADA24B853F70037C880 /* ConvoPhotoCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoPhotoCollectionViewCell.swift; sourceTree = "<group>"; };
 		0D879ADB24B853F70037C880 /* ConvoPhotoCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoPhotoCollectionViewCell.xib; sourceTree = "<group>"; };
 		0D891CC025B51A3F00B04C2F /* FullBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullBlock.swift; sourceTree = "<group>"; };
@@ -513,6 +514,9 @@
 		0DC2FADA25E493A400EF22DA /* CollabMemberProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabMemberProfileViewController.swift; sourceTree = "<group>"; };
 		0DC2FADD25E4956600EF22DA /* CollabMemberProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabMemberProtocol.swift; sourceTree = "<group>"; };
 		0DC7E71724CBAE8500306A83 /* CopiedAnimationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopiedAnimationView.swift; sourceTree = "<group>"; };
+		0DCAAE1B2659AADB007D22A7 /* ConvoScheduleInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoScheduleInfoCell.swift; sourceTree = "<group>"; };
+		0DCAAE1E265A1E1F007D22A7 /* ConvoScheduleCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoScheduleCollectionViewCell.swift; sourceTree = "<group>"; };
+		0DCAAE21265AE463007D22A7 /* ConversationSchedulesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationSchedulesViewController.swift; sourceTree = "<group>"; };
 		0DD636D02414478B0026B623 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		0DD9D88B24437A64006AA8AB /* MembersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersTableViewCell.swift; sourceTree = "<group>"; };
 		0DD9D88C24437A64006AA8AB /* MembersTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MembersTableViewCell.xib; sourceTree = "<group>"; };
@@ -707,7 +711,6 @@
 			isa = PBXGroup;
 			children = (
 				0D41738B242E8738006076A5 /* Swift+Gif.swift */,
-				0D0ECF3A243E5B0E00D947F4 /* previous_nextButton.swift */,
 				0D480EFD2593E17E00E14D1E /* CustomTabBar.swift */,
 				0DC7E71724CBAE8500306A83 /* CopiedAnimationView.swift */,
 				0D2B5BCD24744AE800FC2536 /* ProfilePicture.swift */,
@@ -1057,12 +1060,14 @@
 				0DB3FEC5249A9A6D00A14FF9 /* ConvoMemberInfoCell.xib */,
 				0D82282224D76D5300D0BBA0 /* ConvoAddMemberInfoCell.swift */,
 				0D82282324D76D5300D0BBA0 /* ConvoAddMemberInfoCell.xib */,
-				0D879AD624B8357E0037C880 /* ConvoPhotosHeaderInfoCell.swift */,
-				0D879AD724B8357E0037C880 /* ConvoPhotosHeaderInfoCell.xib */,
+				0D879AD624B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.swift */,
+				0D879AD724B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.xib */,
 				0D879AD224B834DE0037C880 /* ConvoPhotoInfoCell.swift */,
 				0D879AD324B834DE0037C880 /* ConvoPhotoInfoCell.xib */,
 				0D879ADA24B853F70037C880 /* ConvoPhotoCollectionViewCell.swift */,
 				0D879ADB24B853F70037C880 /* ConvoPhotoCollectionViewCell.xib */,
+				0DCAAE1B2659AADB007D22A7 /* ConvoScheduleInfoCell.swift */,
+				0DCAAE1E265A1E1F007D22A7 /* ConvoScheduleCollectionViewCell.swift */,
 				0D82281024D3B8CF00D0BBA0 /* LeaveConvoCell.swift */,
 				0D82281124D3B8CF00D0BBA0 /* LeaveConvoCell.xib */,
 			);
@@ -1200,6 +1205,7 @@
 				0D44C18C2658917200DFD24C /* ScheduleMessageViewController.swift */,
 				0D86013A2499377F0027F043 /* ConversationInfoViewController.swift */,
 				0D52A5B124B969680039F893 /* ConversationPhotosViewController.swift */,
+				0DCAAE21265AE463007D22A7 /* ConversationSchedulesViewController.swift */,
 			);
 			path = Messaging;
 			sourceTree = "<group>";
@@ -1398,7 +1404,7 @@
 				0D78657623E4B56B00BD4C4D /* Poppins-SemiBold.ttf in Resources */,
 				0D78657323E4B56B00BD4C4D /* Poppins-ExtraLight.ttf in Resources */,
 				0D13AC02232DDBD40025EDC3 /* Assets.xcassets in Resources */,
-				0D879AD924B8357E0037C880 /* ConvoPhotosHeaderInfoCell.xib in Resources */,
+				0D879AD924B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.xib in Resources */,
 				0D4173AA24304EF7006076A5 /* RegistrationProfilePicCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1475,6 +1481,7 @@
 				0D670D902558778F001D2634 /* Location+Extension.swift in Sources */,
 				0D50A90024783BD700D71654 /* Conversation.swift in Sources */,
 				0D891CF425BA980600B04C2F /* UILabel+Extension.swift in Sources */,
+				0DCAAE1F265A1E1F007D22A7 /* ConvoScheduleCollectionViewCell.swift in Sources */,
 				0DC7E71824CBAE8500306A83 /* CopiedAnimationView.swift in Sources */,
 				0DC2FADB25E493A400EF22DA /* CollabMemberProfileViewController.swift in Sources */,
 				0D6848BE25D1F8700014ECBB /* ProgressAnimationView.swift in Sources */,
@@ -1500,7 +1507,7 @@
 				0D86013B2499377F0027F043 /* ConversationInfoViewController.swift in Sources */,
 				0DDE6FE7253E460E00A9DF71 /* LocationSearchView.swift in Sources */,
 				0DD9D89324437F4E006AA8AB /* ImageView+Extension.swift in Sources */,
-				0D879AD824B8357E0037C880 /* ConvoPhotosHeaderInfoCell.swift in Sources */,
+				0D879AD824B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.swift in Sources */,
 				0D5FD11625BF6E4900E9BA2D /* SelectedBlockStatusCell.swift in Sources */,
 				0D82281224D3B8CF00D0BBA0 /* LeaveConvoCell.swift in Sources */,
 				0D3F29392486094B00C7763F /* MessageTextView.swift in Sources */,
@@ -1541,6 +1548,7 @@
 				0DBEA4CB26278E9A0074959E /* HomeCalendarCell.swift in Sources */,
 				0D3213D724CAB21200BC46F5 /* VibrateMethods.swift in Sources */,
 				0D470317257B283D00B6A8FA /* VoiceMemoPlayer.swift in Sources */,
+				0DCAAE1C2659AADB007D22A7 /* ConvoScheduleInfoCell.swift in Sources */,
 				0D891CC725B5547A00B04C2F /* HalfBlock.swift in Sources */,
 				0D3F29322485ED9900C7763F /* SendPhotoMessageViewController.swift in Sources */,
 				0D5FD0D725BD112800E9BA2D /* LocationsPresentationCell.swift in Sources */,
@@ -1569,6 +1577,7 @@
 				0D716268262C1833006FC1AB /* SidebarProtocol.swift in Sources */,
 				0D49B37825CB4280007C666A /* CollabProgressProtocol.swift in Sources */,
 				0DEDCCBC2487848900E0AEFD /* AddPhotoButton.swift in Sources */,
+				0DCAAE22265AE463007D22A7 /* ConversationSchedulesViewController.swift in Sources */,
 				0D417399242EC1FB006076A5 /* RegistrationNameCell.swift in Sources */,
 				0DAFFE372537634A00C39B69 /* ProgressCircles.swift in Sources */,
 				0DE8957125F6A7D000E0D643 /* HomeViewController.swift in Sources */,
@@ -1607,7 +1616,6 @@
 				0D2576EB25C3E00E008C2711 /* Error+Extension.swift in Sources */,
 				0D7862F3245FF65B003189AE /* InputAccesoryView.swift in Sources */,
 				0D45DEDB254C7FE3003E16E3 /* Location.swift in Sources */,
-				0D0ECF3B243E5B0E00D947F4 /* previous_nextButton.swift in Sources */,
 				0D480F42259BB6D800E14D1E /* Block.swift in Sources */,
 				0D78684E2446920200A92DD1 /* NavBar+Extension.swift in Sources */,
 				0D5ED71E26449B58002E126F /* RegistrationValidationMethods.swift in Sources */,

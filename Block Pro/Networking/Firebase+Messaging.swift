@@ -975,6 +975,24 @@ class FirebaseMessaging {
     }
     
     
+    //MARK: - Filter Schedule Messages Function
+    
+    func filterScheduleMessages (messages: [Message]?) -> [Message] {
+        
+        var messagesWithSchedules: [Message] = []
+        
+        for message in messages ?? [] {
+            
+            if message.messageBlocks != nil {
+                
+                messagesWithSchedules.append(message)
+            }
+        }
+        
+        return messagesWithSchedules
+    }
+    
+    
     //MARK: - Send Messages Functions
     
     func sendPersonalMessage (conversationID: String, _ message: Message, completion: @escaping ((_ error: Error?) -> Void)) {
@@ -983,8 +1001,6 @@ class FirebaseMessaging {
         photoDict?.removeValue(forKey: "photo")
         
         let blocksDict = setMessageBlocks(message)
-        
-//        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "timestamp" : message.timestamp as Any]
         
         let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "blocks" : blocksDict as Any, "timestamp" : message.timestamp as Any]
         
@@ -1042,8 +1058,6 @@ class FirebaseMessaging {
         photoDict?.removeValue(forKey: "photo")
         
         let blocksDict = setMessageBlocks(message)
-        
-//        let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "timestamp" : message.timestamp as Any]
         
         let messageDict: [String : Any] = ["sender" : message.sender, "message" : message.message as Any, "photo" : photoDict as Any, "blocks" : blocksDict as Any, "timestamp" : message.timestamp as Any]
         
@@ -1142,6 +1156,8 @@ class FirebaseMessaging {
             
             var blockArray: [Block] = []
             
+            let statusArray: [String : BlockStatus] = ["notStarted" : .notStarted, "inProgress" : .inProgress, "completed" : .completed, "needsHelp" : .needsHelp, "late" : .late]
+            
             blocks.forEach { (retrievedBlock) in
                 
                 if retrievedBlock.key != "dateForBlocks" {
@@ -1159,6 +1175,11 @@ class FirebaseMessaging {
                             block.dateCreated = Date(timeIntervalSince1970: TimeInterval(dateCreated.seconds))
                             block.starts = Date(timeIntervalSince1970: TimeInterval(starts.seconds))
                             block.ends = Date(timeIntervalSince1970: TimeInterval(ends.seconds))
+                        }
+                        
+                        if let status = values["status"] as? String {
+                            
+                            block.status = statusArray[status]
                         }
                     }
                     

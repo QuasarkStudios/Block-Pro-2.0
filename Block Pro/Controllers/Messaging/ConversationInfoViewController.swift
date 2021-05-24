@@ -35,10 +35,13 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     let firebaseMessaging = FirebaseMessaging.sharedInstance
     let firebaseCollab = FirebaseCollab.sharedInstance
     
+    let formatter = DateFormatter()
+    
     var personalConversation: Conversation?
     var collabConversation: Conversation?
 
     var photoMessages: [Message] = []
+    var scheduleMessages: [Message] = []
     
     var convoName: String?
     
@@ -102,6 +105,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         NotificationCenter.default.removeObserver(self)
     }
     
+    
     //MARK: - TableView DataSource Methods
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -110,20 +114,20 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             //Checking to see if membersCount is equal to one signifying that the conversation was a group chat that now only has one member
             //Or that this conversation is a group chat
-            if conversation.historicMembers.count  > 2 {
+            if conversation.historicMembers.count > 2 {
                 
-                return 5
+                return 6
             }
             
             else {
                 
-                return 4
+                return 5
             }
         }
         
         else {
             
-            return 4
+            return 5
         }
     }
     
@@ -186,6 +190,12 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         else if section == 3 {
             
             //The "Photos" header cell, the seperator cell, and the collectionView cell
+            return 3
+        }
+        
+        else if section == 4 {
+
+            //The "Schedules" header cell, the seperator cell, and the collectionView cell
             return 3
         }
         
@@ -292,6 +302,8 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 
                 else if let conversation = collabConversation {
                     
+                    cell.membersExpanded = membersExpanded
+                    
                     //If there is less than 3 additional members, hide the "seeAllLabel" and "arrowIndicator"
                     cell.seeAllLabel.isHidden = (conversation.currentMembers.count - 1) > 3 ? false : true
                     cell.arrowIndicator.isHidden = (conversation.currentMembers.count - 1) > 3 ? false : true
@@ -328,8 +340,8 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                         //If this is a group chat
                         if conversation.historicMembers.count > 2 {
                             
-                            //If this member isn't friends with the currentUser
-                            if firebaseCollab.friends.contains(where: { $0.userID == filteredMembers[(indexPath.row / 2) - 1].userID}) {
+                            //If this member is friends with the currentUser
+                            if let friend = firebaseCollab.friends.first(where: { $0.userID == filteredMembers[(indexPath.row / 2) - 1].userID }), friend.accepted == true {
                                 
                                 cell.messageButton.isHidden = false
                             }
@@ -354,8 +366,8 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                         cell.member = filteredMembers[(indexPath.row / 2) - 1]
                         cell.memberActivity = conversation.memberActivity?[filteredMembers[(indexPath.row / 2) - 1].userID]
                         
-                        //If this member isn't friends with the currentUser
-                        if firebaseCollab.friends.contains(where: { $0.userID == filteredMembers[(indexPath.row / 2) - 1].userID}) {
+                        //If this member is friends with the currentUser
+                        if let friend = firebaseCollab.friends.first(where: { $0.userID == filteredMembers[(indexPath.row / 2) - 1].userID }), friend.accepted == true {
                             
                             cell.messageButton.isHidden = false
                         }
@@ -391,10 +403,12 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             else if indexPath.row == 1 {
                 
-                let cell = tableView.dequeueReusableCell(withIdentifier: "convoPhotosHeaderInfoCell", for: indexPath) as! ConvoPhotosHeaderInfoCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "convoPhotos_SchedulesHeaderInfoCell", for: indexPath) as! ConvoPhotos_SchedulesHeaderInfoCell
                 cell.selectionStyle = .none
                 
-                cell.photoMessageCount = photoMessages.count
+                cell.headerLabel.text = "Photos"
+                
+                cell.messageCount = photoMessages.count
                 
                 return cell
             }
@@ -412,6 +426,42 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 cell.cachePhotoDelegate = self
                 cell.zoomInDelegate = self
                 cell.presentCopiedAnimationDelegate = self
+                
+                return cell
+            }
+        }
+        
+        else if indexPath.section == 4 {
+            
+            if indexPath.row == 0 {
+        
+                let cell = tableView.dequeueReusableCell(withIdentifier: "seperatorCell", for: indexPath)
+                cell.isUserInteractionEnabled = false
+                return cell
+            }
+            
+            else if indexPath.row == 1 {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "convoPhotos_SchedulesHeaderInfoCell", for: indexPath) as! ConvoPhotos_SchedulesHeaderInfoCell
+                cell.selectionStyle = .none
+                
+                cell.headerLabel.text = "Schedules"
+                
+                cell.messageCount = scheduleMessages.count
+                
+                return cell
+            }
+            
+            else {
+                
+                let cell = tableView.dequeueReusableCell(withIdentifier: "convoScheduleInfoCell", for: indexPath) as! ConvoScheduleInfoCell
+                cell.selectionStyle = .none
+                
+                cell.formatter = formatter
+                cell.members = personalConversation != nil ? personalConversation?.historicMembers : collabConversation?.historicMembers
+                cell.scheduleMessages = scheduleMessages.sorted(by: { $0.timestamp > $1.timestamp })
+                
+                cell.scheduleDelegate = self
                 
                 return cell
             }
@@ -603,6 +653,44 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             }
         }
         
+        else if indexPath.section == 4 {
+            
+            if indexPath.row == 0 {
+                
+                return 20
+            }
+            
+            else if indexPath.row == 1 {
+                
+                return 25
+            }
+            
+            else {
+                
+                if scheduleMessages.count == 0 {
+                    
+                    //Only using this value so that it matches the photosInfoCell's dimensions
+                    let itemSize = (UIScreen.main.bounds.width - (40 + 10 + 20)) / 3
+                    
+                    //itemSize + top and bottom anchor of collectionView + topAnchor of scheduleContainer
+                    return itemSize + 20 + 10
+                }
+                
+                else if scheduleMessages.count <= 3 {
+                    
+                    //Using the standard itemSize because the dimensions of the cell will now mimic that of the VoiceMemoPresentationCell
+                    //itemSize + top and bottom anchor of collectionView + topAnchor of scheduleContainer
+                    return itemSize + 30
+                }
+                
+                else {
+                    
+                    //5 is for the line spacing
+                    return (itemSize * 2) + 30 + 5
+                }
+            }
+        }
+        
         else {
             
             return 80
@@ -720,6 +808,17 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 }
             }
         }
+        
+        else if indexPath.section == 4 {
+            
+            if indexPath.row == 1 {
+                
+                if scheduleMessages.count > 6 {
+                    
+                    moveToConversationSchedulesView()
+                }
+            }
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -745,7 +844,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         
         tableView.estimatedRowHeight = 0 //Fixes animation glitches
         
-        tableView.contentInset = UIEdgeInsets(top: -topBarHeight, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: -topBarHeight, left: 0, bottom: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? 0 : 20, right: 0)
         tableView.scrollIndicatorInsets = UIEdgeInsets(top: -topBarHeight, left: 0, bottom: 0, right: 0)
         
         tableView.delaysContentTouches = false
@@ -755,8 +854,9 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
         tableView.register(UINib(nibName: "ConvoMemberHeaderInfoCell", bundle: nil), forCellReuseIdentifier: "convoMemberHeaderInfoCell")
         tableView.register(UINib(nibName: "ConvoMemberInfoCell", bundle: nil), forCellReuseIdentifier: "convoMemberInfoCell")
         tableView.register(UINib(nibName: "ConvoAddMemberInfoCell", bundle: nil), forCellReuseIdentifier: "convoAddMemberInfoCell")
-        tableView.register(UINib(nibName: "ConvoPhotosHeaderInfoCell", bundle: nil), forCellReuseIdentifier: "convoPhotosHeaderInfoCell")
+        tableView.register(UINib(nibName: "ConvoPhotos_SchedulesHeaderInfoCell", bundle: nil), forCellReuseIdentifier: "convoPhotos_SchedulesHeaderInfoCell")
         tableView.register(UINib(nibName: "ConvoPhotoInfoCell", bundle: nil), forCellReuseIdentifier: "convoPhotoInfoCell")
+        tableView.register(ConvoScheduleInfoCell.self, forCellReuseIdentifier: "convoScheduleInfoCell")
         tableView.register(UINib(nibName: "LeaveConvoCell", bundle: nil), forCellReuseIdentifier: "leaveConvoCell")
     }
     
@@ -833,7 +933,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                     
                     if scrollView.contentOffset.y > 175 {
                         
-                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .default)
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black, barStyleColor: .default)
                     }
                     
                     else {
@@ -847,7 +947,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                     
                     if scrollView.contentOffset.y > 200 {
                         
-                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .default)
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black, barStyleColor: .default)
                     }
                     
                     else {
@@ -864,7 +964,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                     
                     if scrollView.contentOffset.y > 175 {
                         
-                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .default)
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black, barStyleColor: .default)
                     }
                     
                     else {
@@ -878,7 +978,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                     
                     if scrollView.contentOffset.y > 200 {
                         
-                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .white, barStyleColor: .default)
+                        self.navigationController?.navigationBar.configureNavBar(barBackgroundColor: .clear, barTintColor: .black, barStyleColor: .default)
                     }
                     
                     else {
@@ -1026,6 +1126,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 else {
                     
                     self?.retrieveNewPhotoMessages(self?.firebaseMessaging.filterPhotoMessages(messages: messages))
+                    self?.retrieveNewScheduleMessages(self?.firebaseMessaging.filterScheduleMessages(messages: messages))
                 }
             }
     }
@@ -1155,12 +1256,13 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 else {
                     
                     self?.retrieveNewPhotoMessages(self?.firebaseMessaging.filterPhotoMessages(messages: messages))
+                    self?.retrieveNewScheduleMessages(self?.firebaseMessaging.filterScheduleMessages(messages: messages))
                 }
             }
     }
     
     
-    //MARK: - Retrieve Messages Function
+    //MARK: - Retrieve New Photo Messages
     
     private func retrieveNewPhotoMessages (_ updatedPhotoMessages: [Message]?) {
         
@@ -1178,6 +1280,28 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             photoMessages = photoMessages.sorted(by: { $0.timestamp > $1.timestamp })
                 
             messagingInfoTableView.reloadSections([3], with: .fade)
+        }
+    }
+    
+    
+    //MARK: - Retrieve New Schedule Messages
+    
+    private func retrieveNewScheduleMessages (_ updatedScheduleMessages: [Message]?) {
+        
+        //New schedule messages have been recieved
+        if updatedScheduleMessages?.count ?? 0 > scheduleMessages.count {
+            
+            for message in updatedScheduleMessages ?? [] {
+                
+                if scheduleMessages.contains(where: { $0.messageID == message.messageID }) == false {
+                    
+                    scheduleMessages.append(message)
+                }
+            }
+            
+            scheduleMessages.sort(by: { $0.timestamp > $1.timestamp })
+            
+            messagingInfoTableView.reloadSections([4], with: .fade)
         }
     }
     
@@ -1387,6 +1511,22 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     }
     
     
+    //MARK: - Move To Conversation Schedules View
+    
+    private func moveToConversationSchedulesView () {
+        
+        let conversationSchedulesVC = ConversationSchedulesViewController()
+        
+        conversationSchedulesVC.personalConversation = personalConversation
+        conversationSchedulesVC.collabConversation = collabConversation
+        conversationSchedulesVC.scheduleMessages = scheduleMessages.sorted(by: { $0.timestamp > $1.timestamp })
+        
+        let conversationSchedulesNavigationController = UINavigationController(rootViewController: conversationSchedulesVC)
+        
+        self.present(conversationSchedulesNavigationController, animated: true)
+    }
+    
+    
     //MARK: - Prepare for Segue
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -1578,6 +1718,23 @@ extension ConversationInfoViewController: ZoomInProtocol {
         
         zoomingMethods = ZoomingImageViewMethods(on: photoImageView, cornerRadius: 10)
         zoomingMethods?.performZoom()
+    }
+}
+
+
+//MARK: - Schedule Protocol
+
+extension ConversationInfoViewController: ScheduleProtocol {
+    
+    func moveToScheduleView(message: Message) {
+        
+        let scheduleVC = ScheduleMessageViewController()
+        scheduleVC.message = message
+        scheduleVC.members = personalConversation != nil ? personalConversation?.historicMembers : collabConversation?.historicMembers
+        
+        let scheduleNavigationController = UINavigationController(rootViewController: scheduleVC)
+        
+        self.present(scheduleNavigationController, animated: true)
     }
 }
 
