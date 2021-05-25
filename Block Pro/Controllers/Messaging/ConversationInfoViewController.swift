@@ -180,8 +180,16 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             else if let conversation = collabConversation {
                 
-                //The "Member" header cell, all the members minus the current user, and the seperator cells
-                return ((conversation.currentMembers.count - 1) * 2) + 1
+                if conversation.currentMembers.count > 1 {
+                    
+                    //The "Member" header cell, all the members minus the current user, and the seperator cells
+                    return ((conversation.currentMembers.count - 1) * 2) + 1
+                }
+                
+                else {
+                    
+                    return 3
+                }
             }
 
             return 0
@@ -360,21 +368,36 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                     
                     else if let conversation = collabConversation {
                         
-                        var filteredMembers = conversation.currentMembers
-                        filteredMembers.removeAll(where: { $0.userID == currentUser.userID })
-                        
-                        cell.member = filteredMembers[(indexPath.row / 2) - 1]
-                        cell.memberActivity = conversation.memberActivity?[filteredMembers[(indexPath.row / 2) - 1].userID]
-                        
-                        //If this member is friends with the currentUser
-                        if let friend = firebaseCollab.friends.first(where: { $0.userID == filteredMembers[(indexPath.row / 2) - 1].userID }), friend.accepted == true {
+                        if conversation.currentMembers.count > 1 {
                             
-                            cell.messageButton.isHidden = false
+                            var filteredMembers = conversation.currentMembers
+                            filteredMembers.removeAll(where: { $0.userID == currentUser.userID })
+                            
+                            cell.member = filteredMembers[(indexPath.row / 2) - 1]
+                            cell.memberActivity = conversation.memberActivity?[filteredMembers[(indexPath.row / 2) - 1].userID]
+                            
+                            //If this member is friends with the currentUser
+                            if let friend = firebaseCollab.friends.first(where: { $0.userID == filteredMembers[(indexPath.row / 2) - 1].userID }), friend.accepted == true {
+                                
+                                cell.messageButton.isHidden = false
+                            }
+                            
+                            else {
+                                
+                                cell.messageButton.isHidden = true
+                            }
                         }
                         
                         else {
                             
-                            cell.messageButton.isHidden = true
+                            if let member = conversation.currentMembers.first {
+                                
+                                cell.member = member
+                                cell.memberActivity = conversation.memberActivity?[member.userID]
+                                cell.messageButton.isHidden = true
+                                
+                                cell.nameLabel.text = "Just You"
+                            }
                         }
                     }
                     
@@ -767,6 +790,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                 let addMembersVC: AddMembersViewController = AddMembersViewController()
                 addMembersVC.membersAddedDelegate = self
                 addMembersVC.headerLabelText = "Add Members"
+                addMembersVC.noFriendsLabel.text = "No Friends\nYet"
                 
                 addMembersVC.members = firebaseCollab.friends
                 addMembersVC.addedMembers = [:]
@@ -788,13 +812,13 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
             
             else {
                 
-//                guard let cell = tableView.cellForRow(at: indexPath) as? ConvoMemberInfoCell else { return }
-//
-//                    selectedMember = cell.member
-//
-//                    tableView.deselectRow(at: indexPath, animated: true)
-//
-//                    performSegue(withIdentifier: "moveToFriendProfileView", sender: self)
+                if let cell = tableView.cellForRow(at: indexPath) as? ConvoMemberInfoCell {
+                    
+                    moveToMemberProfileView(cell)
+                    
+                    cell.profilePicImageView?.layer.shadowColor = UIColor.clear.cgColor
+                    cell.profilePicImageView?.layer.borderColor = UIColor.clear.cgColor
+                }
             }
         }
         
@@ -992,7 +1016,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     
     //MARK: - Personal Conversation Monitoring Functions
     
-    private func monitorPersonalConversation () {
+    func monitorPersonalConversation () {
         
         guard let conversation = personalConversation else { return }
             
@@ -1134,7 +1158,7 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
     
     //MARK: - Collab Conversation Monitoring Functions
     
-    private func monitorCollabConversation () {
+    func monitorCollabConversation () {
         
         guard let conversation = collabConversation else { return }
         
@@ -1508,6 +1532,27 @@ class ConversationInfoViewController: UIViewController, UITableViewDataSource, U
                     self?.navigationController?.popToRootViewController(animated: true)
                 }
             }
+    }
+    
+    
+    //MARK: - Move To Member Profile View
+    
+    private func moveToMemberProfileView (_ cell: ConvoMemberInfoCell) {
+        
+        firebaseMessaging.monitorPersonalConversationListener?.remove()
+        firebaseMessaging.monitorCollabConversationListener?.remove()
+        
+        let memberProfileVC = ConversationMemberProfileViewController()
+        memberProfileVC.modalPresentationStyle = .overCurrentContext
+        
+        memberProfileVC.member = cell.member
+        memberProfileVC.memberActivity = cell.memberActivity
+        memberProfileVC.memberCell = cell
+        
+        self.present(memberProfileVC, animated: false) {
+            
+            memberProfileVC.performZoomPresentationAnimation()
+        }
     }
     
     

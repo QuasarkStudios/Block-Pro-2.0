@@ -281,7 +281,6 @@ class FriendProfileViewController: UIViewController {
         
         dateLabel.alpha = 0
         dateLabel.numberOfLines = 2
-        
     }
     
     
@@ -352,7 +351,6 @@ class FriendProfileViewController: UIViewController {
             friendCellUsernameLabelFrame = cellUsernameLabelStartingFrame
             
             configureZoomingProfilePicture(profilePicture.profilePic)
-            
             configureNameLabel()
             
             //Hiding the subviews of the friendCell

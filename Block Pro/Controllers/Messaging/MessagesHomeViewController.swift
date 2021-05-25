@@ -1974,6 +1974,7 @@ class MessagesHomeViewController: UIViewController, UITableViewDataSource, UITab
         let addMembersVC: AddMembersViewController = AddMembersViewController()
         addMembersVC.membersAddedDelegate = self
         addMembersVC.headerLabelText = "Conversate With"
+        addMembersVC.noFriendsLabel.text = "No Friends\nYet"
         
         let firebaseCollab = FirebaseCollab.sharedInstance
         addMembersVC.members = []

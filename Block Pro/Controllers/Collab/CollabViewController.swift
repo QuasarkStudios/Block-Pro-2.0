@@ -2109,9 +2109,12 @@ class CollabViewController: UIViewController {
         
         else if segue.identifier == "moveToAttachmentsView" {
             
-            let attachmentsView = segue.destination as! CollabMessagesAttachmentsView
-            attachmentsView.collabID = collab?.collabID
-            attachmentsView.photoMessages = firebaseMessaging.filterPhotoMessages(messages: messages).sorted(by: { $0.timestamp > $1.timestamp })
+            if let navigationController = segue.destination as? UINavigationController, let attachmentsView = navigationController.viewControllers.first as? CollabMessagesAttachmentsView {
+                
+                attachmentsView.collab = collab
+                attachmentsView.photoMessages = firebaseMessaging.filterPhotoMessages(messages: messages).sorted(by: { $0.timestamp > $1.timestamp })
+                attachmentsView.scheduleMessages = firebaseMessaging.filterScheduleMessages(messages: messages).sorted(by: { $0.timestamp > $1.timestamp })
+            }
         }
         
         else if segue.identifier == "moveToLocationsView" {

@@ -152,9 +152,9 @@
                                 </constraints>
                                 <items>
                                     <navigationItem title="Photos" id="Rh3-KQ-diz">
-                                        <barButtonItem key="rightBarButtonItem" title="Done" style="done" id="oyO-zs-cba">
+                                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="stop" id="haG-sV-Ffp">
                                             <connections>
-                                                <action selector="doneButton:" destination="3re-Lx-1xx" id="Lv7-hI-WwA"/>
+                                                <action selector="cancelButtonPressed:" destination="3re-Lx-1xx" id="f70-pm-WDc"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>

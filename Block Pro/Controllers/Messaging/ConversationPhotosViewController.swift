@@ -185,7 +185,7 @@ class ConversationPhotosViewController: UIViewController, UICollectionViewDataSo
             }
     }
     
-    @IBAction func doneButton(_ sender: Any) {
+    @IBAction func cancelButtonPressed (_ sender: Any) {
         
         dismiss(animated: true, completion: nil)
     }

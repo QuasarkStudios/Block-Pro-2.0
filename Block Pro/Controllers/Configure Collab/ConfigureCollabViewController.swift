@@ -359,6 +359,7 @@ class ConfigureCollabViewController: UIViewController {
         let addMembersVC: AddMembersViewController = AddMembersViewController()
         addMembersVC.membersAddedDelegate = self
         addMembersVC.headerLabelText = "Add Members"
+        addMembersVC.noFriendsLabel.text = "No Friends\nYet"
         
         addMembersVC.members = []
         firebaseCollab.friends.forEach({ if $0.accepted == true { addMembersVC.members?.append($0) } })

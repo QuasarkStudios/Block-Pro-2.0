@@ -22,6 +22,9 @@ class AddMembersViewController: UIViewController, UITextFieldDelegate {
     
     lazy var searchBar = SearchBar(parentViewController: self, placeholderText: "Search")
     
+    let noFriendsImageView = UIImageView(image: UIImage(named: "friends"))
+    let noFriendsLabel = UILabel()
+    
     let memberCountContainer = UIView()
     let memberCountLabel = UILabel()
     
@@ -29,7 +32,19 @@ class AddMembersViewController: UIViewController, UITextFieldDelegate {
     let firebaseCollab = FirebaseCollab.sharedInstance
     let firebaseStorage = FirebaseStorage()
     
-    var members: [Any]?
+    var members: [Any]? {
+        didSet {
+            
+            self.isModalInPresentation = members?.count ?? 0 > 0
+            
+            searchBar.isHidden = members?.count ?? 0 == 0
+            membersTableView.isUserInteractionEnabled = members?.count ?? 0 > 0
+            
+            noFriendsImageView.isHidden = members?.count ?? 0 > 0
+            noFriendsLabel.isHidden = members?.count ?? 0 > 0
+        }
+    }
+    
     var filteredMembers: [Any] = []
     
     //Set to be an empty dictionary from previous view controller
@@ -64,12 +79,12 @@ class AddMembersViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.isModalInPresentation = true
-        
         configureNavBar()
         configureMembersTableView() //Call here to allow link between navBar and tableView to be established correctly
         configureNavBarExtensionView()
         configureSearchBar()
+        configureNoFriendsImageView()
+        configureNoFriendsLabel()
         configureMemberCountContainer()
         configureGestureRecognizors()
     }
@@ -106,10 +121,13 @@ class AddMembersViewController: UIViewController, UITextFieldDelegate {
             self.navigationItem.leftBarButtonItem = cancelButton
         }
         
-        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonPressed))
-        doneButton.style = .done
-        
-        self.navigationItem.rightBarButtonItem = doneButton
+        if members?.count ?? 0 > 0 {
+            
+            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonPressed))
+            doneButton.style = .done
+            
+            self.navigationItem.rightBarButtonItem = doneButton
+        }
     }
     
     
@@ -179,6 +197,51 @@ class AddMembersViewController: UIViewController, UITextFieldDelegate {
             searchBar.heightAnchor.constraint(equalToConstant: 37)
         
         ].forEach({ $0.isActive = true })
+    }
+    
+    
+    //MARK: - Configure No Friends Image View
+    
+    private func configureNoFriendsImageView () {
+        
+        let imageViewDimensionsConstant = UIScreen.main.bounds.width - 50
+        
+        self.view.addSubview(noFriendsImageView)
+        noFriendsImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            noFriendsImageView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor, constant: 0),
+            noFriendsImageView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: keyWindow?.safeAreaInsets.bottom ?? 0 > 0 ? -32.5 : -10),
+            noFriendsImageView.widthAnchor.constraint(equalToConstant: imageViewDimensionsConstant),
+            noFriendsImageView.heightAnchor.constraint(equalToConstant: imageViewDimensionsConstant)
+        
+        ].forEach({ $0.isActive = true })
+        
+        noFriendsImageView.isUserInteractionEnabled = false
+        noFriendsImageView.contentMode = .scaleAspectFit
+    }
+    
+    
+    //MARK: - Configure No Friends Label
+    
+    private func configureNoFriendsLabel () {
+        
+        self.view.addSubview(noFriendsLabel)
+        noFriendsLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        [
+        
+            noFriendsLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 0),
+            noFriendsLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: 0),
+            noFriendsLabel.topAnchor.constraint(equalTo: noFriendsImageView.bottomAnchor, constant: 0),
+            noFriendsLabel.heightAnchor.constraint(equalToConstant: 70)
+        
+        ].forEach({ $0.isActive = true })
+        
+        noFriendsLabel.numberOfLines = 0
+        noFriendsLabel.font = UIFont(name: "Poppins-SemiBold", size: 25)
+        noFriendsLabel.textAlignment = .center
     }
     
     

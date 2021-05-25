@@ -311,6 +311,7 @@ class ConfigureBlockViewController: UIViewController {
         let addMembersVC: AddMembersViewController = AddMembersViewController()
         addMembersVC.membersAddedDelegate = self
         addMembersVC.headerLabelText = "Assign Members"
+        addMembersVC.noFriendsLabel.text = "No Members\nYet"
         
         var members = collab?.currentMembers
         members?.removeAll(where: { $0.userID == currentUser.userID })

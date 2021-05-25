@@ -23,9 +23,9 @@
                     <navigationItem key="navigationItem" id="xth-I9-gVW"/>
                     <connections>
                         <segue destination="ZQ0-Pn-r3R" kind="presentation" identifier="moveToSendPhotoView" id="ALG-0R-TeX"/>
-                        <segue destination="oby-j0-d8S" kind="showDetail" identifier="moveToAttachmentsView" id="4hG-Ij-Q67"/>
                         <segue destination="uRd-HE-G0h" kind="showDetail" identifier="moveToConfigureBlockView" id="zFt-cE-0eL"/>
                         <segue destination="egY-f1-tjm" kind="showDetail" identifier="moveToSelectedBlockView" id="s3O-Eg-3YO"/>
+                        <segue destination="Oc1-hT-jxe" kind="showDetail" identifier="moveToAttachmentsView" id="khy-na-phv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uV2-mK-fUT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -66,35 +66,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="758"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iYK-li-w3p">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="crx-BK-Ygi"/>
-                                </constraints>
-                                <items>
-                                    <navigationItem id="Cg2-hv-R1A">
-                                        <nil key="title"/>
-                                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="kYW-fW-9za">
-                                            <rect key="frame" x="104" y="11.666666666666664" width="167" height="33"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <segments>
-                                                <segment title="Photos"/>
-                                                <segment title="Schedules"/>
-                                            </segments>
-                                            <connections>
-                                                <action selector="photos_schedulesSegmentedControl:" destination="oby-j0-d8S" eventType="valueChanged" id="Uw1-xU-utc"/>
-                                            </connections>
-                                        </segmentedControl>
-                                        <barButtonItem key="rightBarButtonItem" style="done" systemItem="done" id="EUN-1a-0Jv">
-                                            <connections>
-                                                <action selector="doneButton:" destination="oby-j0-d8S" id="pfo-BU-NYs"/>
-                                            </connections>
-                                        </barButtonItem>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="O14-Fe-Aoa">
-                                <rect key="frame" x="0.0" y="54" width="375" height="704"/>
+                                <rect key="frame" x="0.0" y="61" width="375" height="697"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="zvq-Zw-LEg">
                                     <size key="itemSize" width="128" height="128"/>
@@ -117,23 +90,57 @@
                         <viewLayoutGuide key="safeArea" id="PfY-hF-y4p"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="iYK-li-w3p" firstAttribute="leading" secondItem="PfY-hF-y4p" secondAttribute="leading" id="4oW-cH-U07"/>
-                            <constraint firstItem="iYK-li-w3p" firstAttribute="top" secondItem="PfY-hF-y4p" secondAttribute="top" id="9LH-Lg-7Ph"/>
-                            <constraint firstItem="O14-Fe-Aoa" firstAttribute="top" secondItem="iYK-li-w3p" secondAttribute="bottom" constant="10" id="Ogp-vD-VFQ"/>
-                            <constraint firstItem="iYK-li-w3p" firstAttribute="trailing" secondItem="PfY-hF-y4p" secondAttribute="trailing" id="RG3-no-GHx"/>
                             <constraint firstAttribute="bottom" secondItem="O14-Fe-Aoa" secondAttribute="bottom" id="TJI-bC-svF"/>
                             <constraint firstItem="O14-Fe-Aoa" firstAttribute="leading" secondItem="PfY-hF-y4p" secondAttribute="leading" id="WK4-FT-ke1"/>
+                            <constraint firstItem="O14-Fe-Aoa" firstAttribute="top" secondItem="PfY-hF-y4p" secondAttribute="top" constant="5" id="iNf-o8-mCu"/>
                             <constraint firstItem="PfY-hF-y4p" firstAttribute="trailing" secondItem="O14-Fe-Aoa" secondAttribute="trailing" id="xpe-XI-9AY"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="XeL-F2-37H">
+                        <nil key="title"/>
+                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="stop" id="lpA-ac-GA9">
+                            <connections>
+                                <action selector="cancelButtonPressed:" destination="oby-j0-d8S" id="7KO-lI-Egm"/>
+                            </connections>
+                        </barButtonItem>
+                        <segmentedControl key="titleView" opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="kYW-fW-9za">
+                            <rect key="frame" x="104" y="12" width="167" height="32"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <segments>
+                                <segment title="Photos"/>
+                                <segment title="Schedules"/>
+                            </segments>
+                            <connections>
+                                <action selector="photos_schedulesSegmentedControl:" destination="oby-j0-d8S" eventType="valueChanged" id="Uw1-xU-utc"/>
+                            </connections>
+                        </segmentedControl>
+                    </navigationItem>
                     <connections>
-                        <outlet property="navBar" destination="iYK-li-w3p" id="A26-rJ-CD8"/>
                         <outlet property="photos_schedulesCollectionView" destination="O14-Fe-Aoa" id="puj-L8-2js"/>
+                        <outlet property="photos_schedulesSegmentIndicator" destination="kYW-fW-9za" id="fbb-Wi-mNz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYu-hv-M9J" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1668" y="-4"/>
+            <point key="canvasLocation" x="2569" y="-4"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="ugD-Mg-tDJ">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Oc1-hT-jxe" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="zl4-dC-ZTF">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="oby-j0-d8S" kind="relationship" relationship="rootViewController" id="NfU-R9-Al5"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="85B-dx-qFQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1646" y="-4"/>
         </scene>
     </scenes>
     <resources>

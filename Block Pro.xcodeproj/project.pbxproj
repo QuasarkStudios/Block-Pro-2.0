@@ -242,6 +242,7 @@
 		0DCAAE1C2659AADB007D22A7 /* ConvoScheduleInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DCAAE1B2659AADB007D22A7 /* ConvoScheduleInfoCell.swift */; };
 		0DCAAE1F265A1E1F007D22A7 /* ConvoScheduleCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DCAAE1E265A1E1F007D22A7 /* ConvoScheduleCollectionViewCell.swift */; };
 		0DCAAE22265AE463007D22A7 /* ConversationSchedulesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DCAAE21265AE463007D22A7 /* ConversationSchedulesViewController.swift */; };
+		0DCAAE26265C7F60007D22A7 /* ConversationMemberProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DCAAE25265C7F5F007D22A7 /* ConversationMemberProfileViewController.swift */; };
 		0DD636D12414478B0026B623 /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD636D02414478B0026B623 /* NotificationScheduler.swift */; };
 		0DD9D88D24437A64006AA8AB /* MembersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DD9D88B24437A64006AA8AB /* MembersTableViewCell.swift */; };
 		0DD9D88E24437A64006AA8AB /* MembersTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0DD9D88C24437A64006AA8AB /* MembersTableViewCell.xib */; };
@@ -517,6 +518,7 @@
 		0DCAAE1B2659AADB007D22A7 /* ConvoScheduleInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoScheduleInfoCell.swift; sourceTree = "<group>"; };
 		0DCAAE1E265A1E1F007D22A7 /* ConvoScheduleCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoScheduleCollectionViewCell.swift; sourceTree = "<group>"; };
 		0DCAAE21265AE463007D22A7 /* ConversationSchedulesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationSchedulesViewController.swift; sourceTree = "<group>"; };
+		0DCAAE25265C7F5F007D22A7 /* ConversationMemberProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationMemberProfileViewController.swift; sourceTree = "<group>"; };
 		0DD636D02414478B0026B623 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		0DD9D88B24437A64006AA8AB /* MembersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MembersTableViewCell.swift; sourceTree = "<group>"; };
 		0DD9D88C24437A64006AA8AB /* MembersTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MembersTableViewCell.xib; sourceTree = "<group>"; };
@@ -1204,6 +1206,7 @@
 				0DB1A7FA265621030003D721 /* SendScheduleViewController.swift */,
 				0D44C18C2658917200DFD24C /* ScheduleMessageViewController.swift */,
 				0D86013A2499377F0027F043 /* ConversationInfoViewController.swift */,
+				0DCAAE25265C7F5F007D22A7 /* ConversationMemberProfileViewController.swift */,
 				0D52A5B124B969680039F893 /* ConversationPhotosViewController.swift */,
 				0DCAAE21265AE463007D22A7 /* ConversationSchedulesViewController.swift */,
 			);
@@ -1486,6 +1489,7 @@
 				0DC2FADB25E493A400EF22DA /* CollabMemberProfileViewController.swift in Sources */,
 				0D6848BE25D1F8700014ECBB /* ProgressAnimationView.swift in Sources */,
 				0D5FD10925BF52B600E9BA2D /* VoiceMemosPresentationCell.swift in Sources */,
+				0DCAAE26265C7F60007D22A7 /* ConversationMemberProfileViewController.swift in Sources */,
 				0D589DEA2458C519005AC7BC /* NotificationsViewController.swift in Sources */,
 				0D687DB72617CEA100A9BB7D /* CollabRequestCell.swift in Sources */,
 				0DB52AD325D79F3600645D27 /* CollabView+Progress.swift in Sources */,
