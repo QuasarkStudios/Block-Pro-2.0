@@ -399,7 +399,7 @@ class ProfileViewController: UIViewController {
             
             firebaseStorage.retrieveUserProfilePicFromStorage(userID: currentUser.userID) { [weak self] (profilePic, _) in
                 
-                self?.zoomingProfilePicture.image = profilePic
+                self?.zoomingProfilePicture.image = profilePic ?? UIImage(named: "DefaultProfilePic")
                 self?.profileViewProfilePicture.profilePic = profilePic
             }
         }

@@ -39,12 +39,9 @@ extension Date {
         }
         
         else {
+            
             return false
         }
-
-        return (startDate ... endDate).contains(self)
-        
-        return (min(startDate, endDate) ... max(startDate, endDate)).contains(self)
     }
     
     func determineNumberOfWeeks () -> Int {
