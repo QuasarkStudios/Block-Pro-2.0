@@ -15,15 +15,14 @@ import SVProgressHUD
 
 class FirebaseAuthentication {
     
-    //MARK: - Log In User Function
+    
+    //MARK: - Sign In User with Email
     
     public func signInUserWithEmail (email: String, password: String, completion: @escaping ((_ error: Error?, _ userDataFound: Bool?) -> Void)) {
         
         Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
             
             if error != nil {
-                
-//                print(error?.localizedDescription as Any)
                 
                 completion(error, false)
             }
@@ -37,6 +36,9 @@ class FirebaseAuthentication {
             }
         }
     }
+    
+    
+    //MARK: - Sign In User with Credential
     
     public func signInUserWithCredential (_ credential: AuthCredential, completion: @escaping ((_ authResult: User?, _ error: Error?) -> Void)) {
         
@@ -59,25 +61,6 @@ class FirebaseAuthentication {
                     SVProgressHUD.showError(withStatus: "Sorry, something went wrong while signing you in. Please try again later.")
                 }
             }
-        }
-    }
-    
-    public func logOutUser (completion: ((_ error: Error?) -> Void)) {
-        
-        do {
-            
-            try Auth.auth().signOut()
-            
-            let currentUser = CurrentUser.sharedInstance
-            currentUser.userSignedIn = false
-            
-            deleteFCMToken()
-            
-            completion(nil)
-            
-        } catch let signOutError as NSError {
-            
-            completion(signOutError)
         }
     }
     
@@ -149,6 +132,9 @@ class FirebaseAuthentication {
         }
     }
     
+    
+    //MARK: - Verify Email Address
+
     func verifyEmailAddress (_ email: String, completion: @escaping ((_ emailInUse: Bool?, _ error: NSError?) -> Void)) {
         
         Auth.auth().fetchSignInMethods(forEmail: email) { (signInMethods, error) in
@@ -174,8 +160,8 @@ class FirebaseAuthentication {
     }
     
     
-    //MARK: - Registration Process
-
+    //MARK: - Validate Username
+    
     public func validateUsername (username: String, completion: @escaping ((_ snapshot: QuerySnapshot?, _ error: Error?) -> Void)) {
         
         let db = Firestore.firestore()
@@ -190,66 +176,31 @@ class FirebaseAuthentication {
             else {
                 
                 completion(snapshot, nil)
-                
-//                if snapshot?.isEmpty == false {
-//
-//                    completion(snapshot, nil)
-//                }
-//
-//                else {
-//
-//                    completion(nil, nil)
-//                }
             }
         }
     }
-    
-    
-    public func validateAccountInfoAndRegisterNewUser (email: String, password: String, completion: @escaping ((_ userID: String?,
-        _ error: Error?) -> Void)) {
-        
-        Auth.auth().createUser(withEmail: email, password: password) { (authResult, error) in
-            
-            if error != nil {
 
-                completion(nil, error)
-            }
-            
-            else {
-                
-                if let userID = authResult?.user.uid {
-                    
-                    completion(userID, nil)
-                }
-                
-                else {
-                    
-                    completion(nil, nil)
-                }
-            }
-        }
-    }
+    
+    //MARK: - Create New User
     
     func createNewUser (newUser: NewUser, completion: @escaping ((_ error: NSError?) -> Void)) {
-        
+
         Auth.auth().createUser(withEmail: newUser.email, password: newUser.password) { (authResult, error) in
-            
+
             if error != nil {
-                
+
                 completion(error as NSError?)
             }
-            
+
             else {
-                
+
                 self.saveNewUserData(newUser: newUser, userID: authResult?.user.uid, completion: completion)
-                
-//                if let userID = authResult?.user.uid {
-//
-//                    self.saveNewUserData(newUser: newUser, userID: userID, completion: completion)
-//                }
             }
         }
     }
+    
+    
+    //MARK: - Save New User Data
     
     func saveNewUserData (newUser: NewUser, userID: String? = Auth.auth().currentUser?.uid, completion: @escaping ((_ error: NSError?) -> Void)) {
         
@@ -303,10 +254,37 @@ class FirebaseAuthentication {
     }
     
     
+    //MARK: - Log Out User
+    
+    public func logOutUser (completion: ((_ error: Error?) -> Void)) {
+        
+        do {
+            
+            try Auth.auth().signOut()
+            
+            let currentUser = CurrentUser.sharedInstance
+            currentUser.userSignedIn = false
+            
+            deleteFCMToken()
+            
+            completion(nil)
+            
+        } catch let signOutError as NSError {
+            
+            completion(signOutError)
+        }
+    }
+    
+    
+    //MARK: - Get Error Code
+    
     public func getErrorCode (_ error: NSError) -> AuthErrorCode? {
         
         return AuthErrorCode(rawValue: error.code)
     }
+    
+    
+    //MARK: - Set New FCM Token
     
     func setNewFCMToken (fcmToken: String) {
         
@@ -315,6 +293,9 @@ class FirebaseAuthentication {
         
         Firestore.firestore().collection("Users").document(currentUser.userID).setData(["fcmToken" : fcmToken], merge: true)
     }
+    
+    
+    //MARK: - Delete FCM Token
     
     func deleteFCMToken () {
         

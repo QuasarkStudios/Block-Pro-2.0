@@ -24,10 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-//        print("realm location:", Realm.Configuration.defaultConfiguration.fileURL!) //Used to locate where our Realm database is
         print("user defaults location:", NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
-        
-        //let realm = try! Realm()//
         
         configureNotifications()
         
@@ -65,10 +62,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-        
-        let defaults = UserDefaults.standard
-        defaults.setValue(false, forKey: "splashViewPresented")
-        
     }
     
     open func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
@@ -82,22 +75,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         print("failed to register for remote notfications: \(error.localizedDescription)")
     }
     
-    
-//    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-//
-//        print("message notif recieved")
-//    }
-    
-//    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-//        
-//        let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-//        print(token) 
-//    }
-    
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-
-        print("weeee made it \n")
         
         debugPrint("Received: \(userInfo)")
         completionHandler(UIBackgroundFetchResult.newData)
@@ -127,56 +106,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
     }
-
-//    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-//
-//
-//        let tabBarController = self.window?.rootViewController as! UITabBarController
-//
-//        let defaults = UserDefaults.standard
-//
-//        //If the selected notification is a Pomodoro notification
-//        if defaults.value(forKey: "pomodoroNotificationID") as? String ?? "" == response.notification.request.identifier {
-//
-//            let application = UIApplication.shared
-//
-//            //If BlockPro is active
-//            if application.applicationState == .active {
-//
-//                tabBarController.delegate = nil
-//                tabBarController.selectedIndex = 1
-//            }
-//
-//            //If BlockPro isn't active
-//            else if application.applicationState == .inactive {
-//
-//                //If the loading splashView has already been presented
-//                if defaults.value(forKey: "splashViewPresented") as? Bool ?? false == true {
-//
-//                    tabBarController.delegate = nil
-//                    tabBarController.selectedIndex = 1
-//                }
-//
-//                //If it hasn't been presented
-//                else {
-//
-//                    //Move to the Pomodoro view after a small delay
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.25) {
-//
-//                        tabBarController.delegate = nil
-//                        tabBarController.selectedIndex = 1
-//                    }
-//                }
-//            }
-//        }
-//
-//        else {
-//
-//            tabBarController.delegate = nil
-//            tabBarController.selectedIndex = 2
-//        }
-//    }
-    
     
     private func configureNotifications () {
         
@@ -185,10 +114,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UNUserNotificationCenter.current().requestAuthorization(options: notifOptions) { (granted, error) in
             
             if granted == true {
+                
                 print ("granted")
             }
             
             else {
+                
                 print ("denied")
             }
         }

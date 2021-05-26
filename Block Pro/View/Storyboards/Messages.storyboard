@@ -6,7 +6,6 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
-        <capability name="collection view cell content view" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -134,16 +133,7 @@
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="IwS-et-ZG8">
-                                        <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="VdC-gs-Yhy">
-                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </collectionViewCellContentView>
-                                    </collectionViewCell>
-                                </cells>
+                                <cells/>
                             </collectionView>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8dN-bU-DBQ">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
@@ -152,9 +142,9 @@
                                 </constraints>
                                 <items>
                                     <navigationItem title="Photos" id="Rh3-KQ-diz">
-                                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="stop" id="haG-sV-Ffp">
+                                        <barButtonItem key="leftBarButtonItem" style="done" systemItem="stop" id="Bad-2V-Q3h">
                                             <connections>
-                                                <action selector="cancelButtonPressed:" destination="3re-Lx-1xx" id="f70-pm-WDc"/>
+                                                <action selector="cancelButtonPressed:" destination="3re-Lx-1xx" id="d5y-qU-X9Z"/>
                                             </connections>
                                         </barButtonItem>
                                     </navigationItem>

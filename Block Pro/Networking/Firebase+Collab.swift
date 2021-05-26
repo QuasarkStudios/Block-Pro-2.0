@@ -29,6 +29,9 @@ class FirebaseCollab {
     
     static let sharedInstance = FirebaseCollab()
     
+    
+    //MARK: - Create Collab
+    
     func createCollab (collab: Collab, completion: @escaping ((_ error: Error?) -> Void)) {
         
         let batch = db.batch()
@@ -64,6 +67,9 @@ class FirebaseCollab {
             }
         }
     }
+    
+    
+    //MARK: - Edit Collab
     
     func editCollab (collab: Collab, completion: @escaping ((_ error: Error?) -> Void)) {
         
@@ -101,6 +107,9 @@ class FirebaseCollab {
             }
         }
     }
+    
+    
+    //MARK: - Set Collab Members
     
     private func setCollabMembers (_ collabID: String, _ addedMembers: [Any], _ batch: WriteBatch) {
         
@@ -187,6 +196,9 @@ class FirebaseCollab {
         batch.updateData(["requestSentOn" : requestsSentOn], forDocument: db.collection("Collaborations").document(collabID))
     }
     
+    
+    //MARK: - Set Collab Locations
+    
     private func setCollabLocations (collabID: String, locations: [Location]?) -> [String : [String : Any]] {
 
         var locationDict: [String : [String : Any]] = [:]
@@ -201,6 +213,9 @@ class FirebaseCollab {
 
         return locationDict
     }
+    
+    
+    //MARK: - Set Collab Voice Memos
     
     private func setCollabVoiceMemos (collabID: String, voiceMemos: [VoiceMemo]?) -> [String : [String : Any]]{
         
@@ -217,6 +232,9 @@ class FirebaseCollab {
         return voiceMemoDict
     }
     
+    
+    //MARK: - Set Collab Links
+    
     private func setCollabLinks (collabID: String, links: [Link]?) -> [String : [String : String?]] {
         
         var linksDict: [String : [String : String?]] = [:]
@@ -232,6 +250,9 @@ class FirebaseCollab {
         return linksDict
     }
     
+    
+    //MARK: - Save Collab Photos
+    
     private func saveCollabPhotosToStorage (_ collabID: String, _ photos: [String : UIImage?]?) {
         
         var count = 0
@@ -243,6 +264,9 @@ class FirebaseCollab {
             count += 1
         }
     }
+    
+    
+    //MARK: - Edit Collab Photos
     
     private func editCollabPhotosSavedInStorage (cachedCollab: Collab, editedCollab: Collab) {
         
@@ -269,6 +293,9 @@ class FirebaseCollab {
         }
     }
     
+    
+    //MARK: - Save Collab Voice Memos
+    
     private func saveCollabVoiceMemosToStorage (_ collabID: String, _ voiceMemos: [VoiceMemo]?) {
         
         for voiceMemo in voiceMemos ?? [] {
@@ -276,6 +303,9 @@ class FirebaseCollab {
             firebaseStorage.saveCollabVoiceMemosToStorage(collabID, voiceMemo.voiceMemoID ?? "")
         }
     }
+    
+    
+    //MARK: - Edit Collab Voice Memos
     
     private func editCollabVoiceMemosSavedInStorage (cachedCollab: Collab, editedCollab: Collab) {
         
@@ -301,6 +331,9 @@ class FirebaseCollab {
             }
         }
     }
+    
+    
+    //MARK: - Save Collab Cover Photo
     
     func saveCollabCoverPhoto (collabID: String, coverPhotoID: String, coverPhoto: UIImage, completion: @escaping ((_ error: Error?) -> Void)) {
         
@@ -347,6 +380,9 @@ class FirebaseCollab {
         }
     }
     
+    
+    //MARK: - Delete Collab Cover Photo
+    
     func deleteCollabCoverPhoto (collabID: String, completion: @escaping ((_ error: Error?) -> Void)) {
         
         firebaseStorage.deleteCollabCoverPhoto(collabID: collabID) { (error) in
@@ -388,6 +424,8 @@ class FirebaseCollab {
         }
     }
     
+    
+    //MARK: - Retrieve Collabs
     
     func retrieveCollabs (completion: @escaping ((_ collabs: [Collab]?, _ error: Error?) -> Void)) {
         
@@ -445,6 +483,9 @@ class FirebaseCollab {
         })
     }
     
+    
+    //MARK: - Configure Collab
+    
     private func configureCollab (_ data: [String : Any]?) -> Collab {
         
         var collab = Collab()
@@ -485,6 +526,8 @@ class FirebaseCollab {
     }
     
     
+    //MARK: - Handle Collab Update
+    
     private func handleCollabUpdate (_ collab: Collab) {
         
         if let collabIndex = self.collabs.firstIndex(where: { $0.collabID == collab.collabID }) {
@@ -515,6 +558,9 @@ class FirebaseCollab {
         }
     }
     
+    
+    //MARK: - Remove Collabs Where User Inactive
+    
     private func removeCollabsWhereUserInactive (snapshot: QuerySnapshot?) {
         
         if snapshot?.documents.count != collabs.count {
@@ -540,6 +586,8 @@ class FirebaseCollab {
         }
     }
     
+    
+    //MARK: - Retrieve Collab Members
     
     private func retrieveCollabMembers (_ collab: Collab, completion: @escaping ((_ historicMembers: [Member], _ currentMembers: [Member], _ error: Error?) -> Void)) {
         
@@ -621,6 +669,9 @@ class FirebaseCollab {
         }
     }
     
+    
+    //MARK: - Handle Collab Members Retrieval Completion
+    
     private func handleCollabMembersRetrievalCompletion (_ collabID: String, _ historicMembers: [Member], _ currentMembers: [Member], _ error: Error?, _ completion: (([String : [Member]]) -> Void)) {
 
         if error != nil {
@@ -641,6 +692,9 @@ class FirebaseCollab {
             }
         }
     }
+    
+    
+    //MARK: - Retrieve Collab Locations
     
     private func retrieveCollabLocations (_ locations: [String : Any]?) -> [Location]? {
         
@@ -681,6 +735,8 @@ class FirebaseCollab {
     }
     
     
+    //MARK: - Retrieve Collab Voice Memos
+    
     private func retrieveCollabVoiceMemos (_ voiceMemos: [String : Any]?) -> [VoiceMemo]? {
         
         var voiceMemoArray: [VoiceMemo] = []
@@ -706,6 +762,8 @@ class FirebaseCollab {
     }
     
     
+    //MARK: - Retrieve Collab Links
+    
     private func retrieveCollabLinks (_ links: [String : Any]?) -> [Link]? {
         
         var linkArray: [Link] = []
@@ -726,6 +784,9 @@ class FirebaseCollab {
         
         return linkArray
     }
+    
+    
+    //MARK: - Mark Collab Request Notifications
     
     func markCollabRequestNotifications (_ collabRequests: [Collab]?) {
         
@@ -751,6 +812,9 @@ class FirebaseCollab {
         }
     }
     
+    
+    //MARK: - Accept Collab Request
+    
     func acceptCollabRequest (_ collabID: String) {
         
         db.collection("Collaborations").document(collabID).updateData(["accepted." + currentUser.userID : true]) { (error) in
@@ -769,6 +833,9 @@ class FirebaseCollab {
             }
         }
     }
+    
+    
+    //MARK: - Decline Collab Request
     
     func declineCollabRequest (_ collabRequest: Collab) {
         
@@ -805,6 +872,9 @@ class FirebaseCollab {
             }
         }
     }
+    
+    
+    //MARK: - Monitor Collab
     
     func monitorCollab (collabID: String, completion: @escaping ((_ updatedCollab: [String : Any?]) -> Void)) {
         
@@ -845,6 +915,9 @@ class FirebaseCollab {
             }
         })
     }
+    
+    
+    //MARK: - Leave Collab
     
     func leaveCollab (_ collab: Collab, completion: @escaping ((_ error: Error?) -> Void)) {
         
@@ -903,6 +976,9 @@ class FirebaseCollab {
         }
     }
     
+    
+    //MARK: - Delete Collab
+    
     func deleteCollab (_ collab: Collab, completion: @escaping ((_ error: Error?) -> Void)) {
         
         let batch = db.batch()
@@ -929,6 +1005,9 @@ class FirebaseCollab {
             }
         }
     }
+    
+    
+    //MARK: - Query Users
     
     func queryUsers (_ username: String, completion: @escaping ((_ results: [FriendSearchResult]?, _ error: Error?) -> Void)) {
         
@@ -982,6 +1061,9 @@ class FirebaseCollab {
             }
         }
     }
+    
+    
+    //MARK: - Retrieve Users Friends
     
     func retrieveUsersFriends () {
         
@@ -1039,6 +1121,9 @@ class FirebaseCollab {
         })
     }
     
+    
+    //MARK: - Send Friend Requests
+    
     func sendFriendRequest (_ user: Any) {
         
         let currentUserData: [String : Any] = ["userID" : currentUser.userID, "firstName" : currentUser.firstName, "lastName" : currentUser.lastName, "username" : currentUser.username, "requestSentBy" : currentUser.userID, "requestSentOn" : Date()]
@@ -1072,6 +1157,9 @@ class FirebaseCollab {
         }
     }
     
+    
+    //MARK: - Mark Friend Requests
+    
     func markFriendRequestNotifications (_ friendRequests: [Friend]?) {
         
         let batch = db.batch()
@@ -1096,6 +1184,9 @@ class FirebaseCollab {
         }
     }
     
+    
+    //MARK: - Accept Friend Request
+    
     func acceptFriendRequest (_ friendRequest: Friend) {
         
         db.collection("Users").document(currentUser.userID).collection("Friends").document(friendRequest.userID).updateData(["accepted" : true, "dateOfFriendship" : Date()]) { (error) in
@@ -1114,6 +1205,9 @@ class FirebaseCollab {
             }
         }
     }
+    
+    
+    //MARK: - Decline Friend Request
     
     func declineFriendRequest (_ friendRequest: Friend) {
         
@@ -1134,6 +1228,9 @@ class FirebaseCollab {
         }
     }
     
+    
+    //MARK: - Cache Friend Profile Pictures
+    
     func cacheFriendsProfilePicture (_ friend: Friend) {
         
         firebaseStorage.retrieveUserProfilePicFromStorage(userID: friend.userID) { (profilePicture, userID) in
@@ -1144,6 +1241,9 @@ class FirebaseCollab {
             }
         }
     }
+    
+    
+    //MARK: - Delete Friend
     
     func deleteFriend (_ friend: Friend) {
         
@@ -1182,6 +1282,9 @@ class FirebaseCollab {
         return members
     }
     
+    
+    //MARK: - Parse Request Sent On
+    
     private func parseRequestSentOn (_ requestSentOn: [String : Timestamp]?) -> [String : Date] {
         
         var sentOnDict: [String : Date] = [:]
@@ -1198,6 +1301,9 @@ class FirebaseCollab {
         return sentOnDict
     }
     
+    
+    //MARK: - Parse Acception Statuses
+    
     private func parseAcceptionStatuses (_ acceptionStatuses: [String : Bool?]?) -> [String : Bool?] {
         
         var acceptionStatusDict: [String : Bool?] = [:]
@@ -1212,6 +1318,9 @@ class FirebaseCollab {
         
         return acceptionStatusDict
     }
+    
+    
+    //MARK: - Parse Collab Activity
     
     private func parseCollabActivity (memberActivity: [String : Any]?) -> [String : Any]? {
         
@@ -1237,6 +1346,9 @@ class FirebaseCollab {
         
         return !memberActivityDict.isEmpty ? memberActivityDict : nil
     }
+    
+    
+    //MARK: - Cache Member Profile Pics
     
     func cacheMemberProfilePics (userID: String, profilePic: UIImage?) {
          

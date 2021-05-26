@@ -42,7 +42,6 @@
 		0D39A67925AEE0A100D9840B /* PhotoConfigurationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D39A67825AEE0A100D9840B /* PhotoConfigurationCollectionViewCell.swift */; };
 		0D39A67C25AEE63600D9840B /* LocationsConfigurationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D39A67B25AEE63600D9840B /* LocationsConfigurationCell.swift */; };
 		0D39A67F25AEEAE900D9840B /* AddLocation.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D39A67E25AEEAE900D9840B /* AddLocation.storyboard */; };
-		0D3A9E2522F367460052BCB6 /* CollabBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3A9E2422F367460052BCB6 /* CollabBlock.swift */; };
 		0D3F29322485ED9900C7763F /* SendPhotoMessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3F29312485ED9900C7763F /* SendPhotoMessageViewController.swift */; };
 		0D3F29342485F86E00C7763F /* InputAccesoryViewMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3F29332485F86E00C7763F /* InputAccesoryViewMethods.swift */; };
 		0D3F29372486027300C7763F /* SendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3F29362486027300C7763F /* SendButton.swift */; };
@@ -87,7 +86,6 @@
 		0D589DE62458A0D9005AC7BC /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D589DE42458A0D9005AC7BC /* MessageCell.xib */; };
 		0D589DE82458C3E5005AC7BC /* Notifications.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D589DE72458C3E5005AC7BC /* Notifications.storyboard */; };
 		0D589DEA2458C519005AC7BC /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D589DE92458C519005AC7BC /* NotificationsViewController.swift */; };
-		0D589DEC2458C7C2005AC7BC /* CollabRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D589DEB2458C7C2005AC7BC /* CollabRequest.swift */; };
 		0D589DEE24593D4A005AC7BC /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D589DED24593D4A005AC7BC /* Message.swift */; };
 		0D589DF024593FB6005AC7BC /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D589DEF24593FB6005AC7BC /* String+Extension.swift */; };
 		0D5ED7172641EA8E002E126F /* NameOnboardingCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D5ED7162641EA8E002E126F /* NameOnboardingCollectionViewCell.swift */; };
@@ -137,7 +135,6 @@
 		0D72D2492453FB6E00C11D5F /* Collab.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D72D2482453FB6E00C11D5F /* Collab.storyboard */; };
 		0D72D24B2453FE7B00C11D5F /* CollabViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D72D24A2453FE7B00C11D5F /* CollabViewController.swift */; };
 		0D7655D42452909500707867 /* Member.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7655D32452909500707867 /* Member.swift */; };
-		0D7655D62452915D00707867 /* NewCollab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7655D52452915D00707867 /* NewCollab.swift */; };
 		0D7862F3245FF65B003189AE /* InputAccesoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D7862F2245FF65B003189AE /* InputAccesoryView.swift */; };
 		0D78657023E4B56B00BD4C4D /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78655E23E4B55400BD4C4D /* Poppins-Black.ttf */; };
 		0D78657123E4B56B00BD4C4D /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0D78655F23E4B55600BD4C4D /* Poppins-ExtraBold.ttf */; };
@@ -182,12 +179,8 @@
 		0D86013F24993A860027F043 /* ConvoNameInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D86013D24993A860027F043 /* ConvoNameInfoCell.xib */; };
 		0D86386425AAAB69000DB1A3 /* ReminderConfigurationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D86386325AAAB69000DB1A3 /* ReminderConfigurationCell.swift */; };
 		0D86386725ACCC11000DB1A3 /* ReminderConfigurationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D86386625ACCC11000DB1A3 /* ReminderConfigurationCollectionViewCell.swift */; };
-		0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7522DBE435001D35B4 /* FriendRequest.swift */; };
-		0D872F7822DEE925001D35B4 /* PendingFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7722DEE925001D35B4 /* PendingFriend.swift */; };
 		0D872F7A22E01F7C001D35B4 /* Friend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7922E01F7C001D35B4 /* Friend.swift */; };
 		0D872F7C22E25350001D35B4 /* CurrentUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7B22E25350001D35B4 /* CurrentUser.swift */; };
-		0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F7E22E2ABF0001D35B4 /* UpcomingCollab.swift */; };
-		0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D872F8022E65F8D001D35B4 /* PendingCollab.swift */; };
 		0D879AD424B834DE0037C880 /* ConvoPhotoInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D879AD224B834DE0037C880 /* ConvoPhotoInfoCell.swift */; };
 		0D879AD524B834DE0037C880 /* ConvoPhotoInfoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0D879AD324B834DE0037C880 /* ConvoPhotoInfoCell.xib */; };
 		0D879AD824B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D879AD624B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.swift */; };
@@ -315,7 +308,6 @@
 		0D39A67825AEE0A100D9840B /* PhotoConfigurationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoConfigurationCollectionViewCell.swift; sourceTree = "<group>"; };
 		0D39A67B25AEE63600D9840B /* LocationsConfigurationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsConfigurationCell.swift; sourceTree = "<group>"; };
 		0D39A67E25AEEAE900D9840B /* AddLocation.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = AddLocation.storyboard; sourceTree = "<group>"; };
-		0D3A9E2422F367460052BCB6 /* CollabBlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabBlock.swift; sourceTree = "<group>"; };
 		0D3F29312485ED9900C7763F /* SendPhotoMessageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendPhotoMessageViewController.swift; sourceTree = "<group>"; };
 		0D3F29332485F86E00C7763F /* InputAccesoryViewMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccesoryViewMethods.swift; sourceTree = "<group>"; };
 		0D3F29362486027300C7763F /* SendButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendButton.swift; sourceTree = "<group>"; };
@@ -360,7 +352,6 @@
 		0D589DE42458A0D9005AC7BC /* MessageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
 		0D589DE72458C3E5005AC7BC /* Notifications.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Notifications.storyboard; sourceTree = "<group>"; };
 		0D589DE92458C519005AC7BC /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
-		0D589DEB2458C7C2005AC7BC /* CollabRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabRequest.swift; sourceTree = "<group>"; };
 		0D589DED24593D4A005AC7BC /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		0D589DEF24593FB6005AC7BC /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		0D5ED7162641EA8E002E126F /* NameOnboardingCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameOnboardingCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -410,7 +401,6 @@
 		0D72D2482453FB6E00C11D5F /* Collab.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Collab.storyboard; sourceTree = "<group>"; };
 		0D72D24A2453FE7B00C11D5F /* CollabViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabViewController.swift; sourceTree = "<group>"; };
 		0D7655D32452909500707867 /* Member.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Member.swift; sourceTree = "<group>"; };
-		0D7655D52452915D00707867 /* NewCollab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCollab.swift; sourceTree = "<group>"; };
 		0D7862F2245FF65B003189AE /* InputAccesoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputAccesoryView.swift; sourceTree = "<group>"; };
 		0D78655E23E4B55400BD4C4D /* Poppins-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Black.ttf"; sourceTree = "<group>"; };
 		0D78655F23E4B55600BD4C4D /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
@@ -456,12 +446,8 @@
 		0D86013D24993A860027F043 /* ConvoNameInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoNameInfoCell.xib; sourceTree = "<group>"; };
 		0D86386325AAAB69000DB1A3 /* ReminderConfigurationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderConfigurationCell.swift; sourceTree = "<group>"; };
 		0D86386625ACCC11000DB1A3 /* ReminderConfigurationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderConfigurationCollectionViewCell.swift; sourceTree = "<group>"; };
-		0D872F7522DBE435001D35B4 /* FriendRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendRequest.swift; sourceTree = "<group>"; };
-		0D872F7722DEE925001D35B4 /* PendingFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingFriend.swift; sourceTree = "<group>"; };
 		0D872F7922E01F7C001D35B4 /* Friend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Friend.swift; sourceTree = "<group>"; };
 		0D872F7B22E25350001D35B4 /* CurrentUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentUser.swift; sourceTree = "<group>"; };
-		0D872F7E22E2ABF0001D35B4 /* UpcomingCollab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpcomingCollab.swift; sourceTree = "<group>"; };
-		0D872F8022E65F8D001D35B4 /* PendingCollab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingCollab.swift; sourceTree = "<group>"; };
 		0D879AD224B834DE0037C880 /* ConvoPhotoInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoPhotoInfoCell.swift; sourceTree = "<group>"; };
 		0D879AD324B834DE0037C880 /* ConvoPhotoInfoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConvoPhotoInfoCell.xib; sourceTree = "<group>"; };
 		0D879AD624B8357E0037C880 /* ConvoPhotos_SchedulesHeaderInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConvoPhotos_SchedulesHeaderInfoCell.swift; sourceTree = "<group>"; };
@@ -712,26 +698,22 @@
 		0D2CED02228FC75B00CC9180 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				0D41738B242E8738006076A5 /* Swift+Gif.swift */,
-				0D480EFD2593E17E00E14D1E /* CustomTabBar.swift */,
-				0DC7E71724CBAE8500306A83 /* CopiedAnimationView.swift */,
-				0D2B5BCD24744AE800FC2536 /* ProfilePicture.swift */,
-				0D2175DD24EF825000A7AF2E /* SearchBar.swift */,
-				0DAFFE362537634A00C39B69 /* ProgressCircles.swift */,
-				0D37F4FC24FDBCFF00618ECD /* ConversationAnimation.swift */,
-				0D2175DB24E9CD0F00A7AF2E /* Personal_CollabContainer.swift */,
-				0DDE6FE6253E460E00A9DF71 /* LocationSearchView.swift */,
-				0D480F102598284900E14D1E /* CustomSegmentControl.swift */,
-				0D5FD0E225BF3F4E00E9BA2D /* iProgressView.swift */,
-				0D49B37B25CCD54B007C666A /* CollabProgressView.swift */,
-				0D6848BD25D1F8700014ECBB /* ProgressAnimationView.swift */,
-				0DB52ACC25D66DF000645D27 /* MessagesAnimationView.swift */,
 				0DE8957625F6CC5B00E0D643 /* Home View Files */,
 				0D1ABA7D2537B0F400878DDF /* Collab View Files */,
 				0D3F29352486025000C7763F /* Input Accesory View */,
 				0D687DB22617CE6200A9BB7D /* Block Views */,
 				0DA9F83322A84788008BECAE /* Storyboards */,
 				0D2CED0722907B0E00CC9180 /* Custom Cells */,
+				0DCAAE28265CB433007D22A7 /* Animation Views */,
+				0D480EFD2593E17E00E14D1E /* CustomTabBar.swift */,
+				0D2B5BCD24744AE800FC2536 /* ProfilePicture.swift */,
+				0D2175DD24EF825000A7AF2E /* SearchBar.swift */,
+				0DAFFE362537634A00C39B69 /* ProgressCircles.swift */,
+				0D2175DB24E9CD0F00A7AF2E /* Personal_CollabContainer.swift */,
+				0DDE6FE6253E460E00A9DF71 /* LocationSearchView.swift */,
+				0D480F102598284900E14D1E /* CustomSegmentControl.swift */,
+				0D5FD0E225BF3F4E00E9BA2D /* iProgressView.swift */,
+				0D49B37B25CCD54B007C666A /* CollabProgressView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -762,6 +744,7 @@
 		0D3213D524CA10AF00BC46F5 /* Helper Classes */ = {
 			isa = PBXGroup;
 			children = (
+				0D41738B242E8738006076A5 /* Swift+Gif.swift */,
 				0D3213D324CA106B00BC46F5 /* MessagingMethods.swift */,
 				0D3F29332485F86E00C7763F /* InputAccesoryViewMethods.swift */,
 				0D3213D624CAB21200BC46F5 /* VibrateMethods.swift */,
@@ -1076,18 +1059,6 @@
 			path = "Convo Info View Cells";
 			sourceTree = "<group>";
 		};
-		0D872F7D22E2AB72001D35B4 /* Collab Model Files */ = {
-			isa = PBXGroup;
-			children = (
-				0D872F8022E65F8D001D35B4 /* PendingCollab.swift */,
-				0D872F7E22E2ABF0001D35B4 /* UpcomingCollab.swift */,
-				0D872F7722DEE925001D35B4 /* PendingFriend.swift */,
-				0D872F7522DBE435001D35B4 /* FriendRequest.swift */,
-				0D3A9E2422F367460052BCB6 /* CollabBlock.swift */,
-			);
-			path = "Collab Model Files";
-			sourceTree = "<group>";
-		};
 		0D9262A3260C535300109454 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
@@ -1099,18 +1070,15 @@
 		0D93300B22927C9100B6191D /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				0D480F41259BB6D800E14D1E /* Block.swift */,
-				0D872F7D22E2AB72001D35B4 /* Collab Model Files */,
 				0D7CD51A2432FCBE00BE1BE6 /* NewUser.swift */,
-				0D7655D52452915D00707867 /* NewCollab.swift */,
-				0D0C8D992442488300EB51F7 /* Collab.swift */,
-				0D589DEB2458C7C2005AC7BC /* CollabRequest.swift */,
-				0D7655D32452909500707867 /* Member.swift */,
-				0D872F7922E01F7C001D35B4 /* Friend.swift */,
-				0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */,
 				0D872F7B22E25350001D35B4 /* CurrentUser.swift */,
+				0D0C8D992442488300EB51F7 /* Collab.swift */,
+				0D480F41259BB6D800E14D1E /* Block.swift */,
 				0D50A8FF24783BD700D71654 /* Conversation.swift */,
 				0D589DED24593D4A005AC7BC /* Message.swift */,
+				0DDDA65422DA842A00B69A4E /* FriendSearchResults.swift */,
+				0D872F7922E01F7C001D35B4 /* Friend.swift */,
+				0D7655D32452909500707867 /* Member.swift */,
 				0D45DEDA254C7FE3003E16E3 /* Location.swift */,
 				0DDF87E4256210700051C8F6 /* VoiceMemo.swift */,
 				0D92BB9825833C6D00D9C561 /* Link.swift */,
@@ -1169,6 +1137,17 @@
 				0D47030E2578880000B6A8FA /* CollectionView Cells */,
 			);
 			path = "CollabHome Cells";
+			sourceTree = "<group>";
+		};
+		0DCAAE28265CB433007D22A7 /* Animation Views */ = {
+			isa = PBXGroup;
+			children = (
+				0DC7E71724CBAE8500306A83 /* CopiedAnimationView.swift */,
+				0D37F4FC24FDBCFF00618ECD /* ConversationAnimation.swift */,
+				0D6848BD25D1F8700014ECBB /* ProgressAnimationView.swift */,
+				0DB52ACC25D66DF000645D27 /* MessagesAnimationView.swift */,
+			);
+			path = "Animation Views";
 			sourceTree = "<group>";
 		};
 		0DD636D2241447940026B623 /* Notification Scheduler */ = {
@@ -1515,7 +1494,6 @@
 				0D5FD11625BF6E4900E9BA2D /* SelectedBlockStatusCell.swift in Sources */,
 				0D82281224D3B8CF00D0BBA0 /* LeaveConvoCell.swift in Sources */,
 				0D3F29392486094B00C7763F /* MessageTextView.swift in Sources */,
-				0D872F8122E65F8E001D35B4 /* PendingCollab.swift in Sources */,
 				0D86386425AAAB69000DB1A3 /* ReminderConfigurationCell.swift in Sources */,
 				0D8C40BA254661D800A09E7D /* LocationSearchCell.swift in Sources */,
 				0DE728C52509751B00581048 /* CachePhotoProtocol.swift in Sources */,
@@ -1539,7 +1517,6 @@
 				0D2CE0FF245099B300C60F49 /* DateCell.swift in Sources */,
 				0D480EFE2593E17E00E14D1E /* CustomTabBar.swift in Sources */,
 				0DF2EBE4264F8F0500815553 /* ProfileProtocols.swift in Sources */,
-				0D872F7822DEE925001D35B4 /* PendingFriend.swift in Sources */,
 				0D5FD0E325BF3F4E00E9BA2D /* iProgressView.swift in Sources */,
 				0D7C878A2601235900D1B833 /* BlockViewController.swift in Sources */,
 				0DB52AD925DE4FC500645D27 /* CollabObjectiveViewController.swift in Sources */,
@@ -1557,8 +1534,6 @@
 				0D3F29322485ED9900C7763F /* SendPhotoMessageViewController.swift in Sources */,
 				0D5FD0D725BD112800E9BA2D /* LocationsPresentationCell.swift in Sources */,
 				0DB1A7FB265621030003D721 /* SendScheduleViewController.swift in Sources */,
-				0D872F7F22E2ABF0001D35B4 /* UpcomingCollab.swift in Sources */,
-				0D589DEC2458C7C2005AC7BC /* CollabRequest.swift in Sources */,
 				0D92BB9F2585698F00D9C561 /* UITextField+Extension.swift in Sources */,
 				0DB1A7F826561E860003D721 /* ScheduleMessageCell.swift in Sources */,
 				0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */,
@@ -1567,7 +1542,6 @@
 				0D4173A524303610006076A5 /* RegistrationAccountCreationCell.swift in Sources */,
 				0D48468125281744002CF201 /* CollabHeaderView.swift in Sources */,
 				0D4173A1242FDE38006076A5 /* RegistrationUsernameCell.swift in Sources */,
-				0D3A9E2522F367460052BCB6 /* CollabBlock.swift in Sources */,
 				0D5ED7272645BC02002E126F /* ProfilePictureOnboardingCollectionViewCell.swift in Sources */,
 				0D5FD0BF25BC01C100E9BA2D /* SelectedBlockViewController.swift in Sources */,
 				0D7CD51B2432FCBE00BE1BE6 /* NewUser.swift in Sources */,
@@ -1661,7 +1635,6 @@
 				0D2B5BCE24744AE800FC2536 /* ProfilePicture.swift in Sources */,
 				0DDF87E5256210700051C8F6 /* VoiceMemo.swift in Sources */,
 				0D7E1B78247435AC00BB8E58 /* MessageHomeCell.swift in Sources */,
-				0D872F7622DBE435001D35B4 /* FriendRequest.swift in Sources */,
 				0D2386CB24C26F6A00876154 /* PhotoMessageCell.swift in Sources */,
 				0D5ED7212644A442002E126F /* UsernameOnboardingCollectionViewCell.swift in Sources */,
 				0D39A67925AEE0A100D9840B /* PhotoConfigurationCollectionViewCell.swift in Sources */,
@@ -1669,7 +1642,6 @@
 				0D5ED7172641EA8E002E126F /* NameOnboardingCollectionViewCell.swift in Sources */,
 				0D3F29342485F86E00C7763F /* InputAccesoryViewMethods.swift in Sources */,
 				0DC2FADE25E4956600EF22DA /* CollabMemberProtocol.swift in Sources */,
-				0D7655D62452915D00707867 /* NewCollab.swift in Sources */,
 				0DE728C3250881F800581048 /* CollabView+Messages.swift in Sources */,
 				0DBF9F41263C88BB009D8E68 /* BlockPreviewCollectionViewCell.swift in Sources */,
 				0D589DE52458A0D9005AC7BC /* MessageCell.swift in Sources */,
