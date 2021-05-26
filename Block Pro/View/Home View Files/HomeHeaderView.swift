@@ -11,7 +11,7 @@ import JTAppleCalendar
 
 class HomeHeaderView: UIView {
 
-    let profilePicture = ProfilePicture()
+    let profilePicture = ProfilePicture(shadowOpacity: 0.5)
     lazy var profilePictureProgressView = iProgressView(self, 100, .circleStrokeSpin)
     let welcomeLabel = UILabel()
     
