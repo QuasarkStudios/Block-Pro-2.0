@@ -1800,6 +1800,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Block Pro/Block Pro.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 6YUNA7374D;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Block Pro/Info.plist";
@@ -1828,6 +1829,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Block Pro/Block Pro.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 6YUNA7374D;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Block Pro/Info.plist";

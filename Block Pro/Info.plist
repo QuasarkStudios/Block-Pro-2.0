@@ -30,15 +30,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>This lets you take new photos from your Camera or use photos from your Camera Roll.</string>
+	<string>Allows "BlockPro 2.0" to access your camera in order for you to be able to take new photos to use as your profile picture, as an attachment, or to share with your friends through your messages.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Allows "BlockPro 2.0" to find locations nearest to you</string>
+	<string>Allows "BlockPro 2.0" to use your current location in order to find locations nearest to you.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Allows "BlockPro 2.0" to record your voice memos</string>
+	<string>Allows "BlockPro 2.0" to record your voice memos to use as attachments.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Black.ttf</string>
