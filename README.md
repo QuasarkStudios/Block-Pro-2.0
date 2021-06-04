@@ -1,12 +1,12 @@
 BlockPro 2.0 is the second iteration of the first application I published onto the App Store, BlockPro 1.0. Originally intended to serve as an update to 1.0, BlockPro 2.0 went through a series of design iterations until it evolved into an entirely new and rewritten application.
 
-Designed to boost productivity and facilitate collaborative teamwork, it is packed with important features to help achieve these goals, such as:
+Designed to boost productivity and facilitate collaborative teamwork, BlockPro 2.0 is packed with important features that gives the application the ability to:
 
-- the ability to organize your tasks for the day into “blocks”
-- the ability to create collaborations with other users
-- the ability to add attachments such as photos, locations, voice memos and links to both “blocks" and collaborations
-- the ability to assign tasks to users in a collaboration, to monitor the progress of the collaboration and all of its tasks, and to monitor the activity of each individual member
-- the ability to keep in contact with other users by sending messages, photos, and schedules to one another.
+- organize your tasks for the day into “blocks”
+- create collaborations with other users
+- add attachments such as photos, locations, voice memos and links to both “blocks" and collaborations
+- assign tasks to users in a collaboration, to monitor the progress of the collaboration and all of its tasks, and to monitor the activity of each individual member
+- keep in contact with other users by sending messages, photos, and schedules to one another.
 
 The enablement of all of the above features required somewhat of a diverse tech stack. The stack and the purpose for using each language, framework, and library involved are as follows:
 
