@@ -178,7 +178,7 @@ extension HomeCalendarCell: JTAppleCalendarViewDataSource, JTAppleCalendarViewDe
         
         else {
             
-            return ConfigurationParameters(startDate: Date(), endDate: Date(), numberOfRows: 6, calendar: Calendar(identifier: .gregorian), generateInDates: .forAllMonths, generateOutDates: .tillEndOfGrid)
+            return ConfigurationParameters(startDate: Date().startOfMonth, endDate: Date().endOfMonth, numberOfRows: 6, calendar: Calendar(identifier: .gregorian), generateInDates: .forAllMonths, generateOutDates: .tillEndOfGrid)
         }
     }
     

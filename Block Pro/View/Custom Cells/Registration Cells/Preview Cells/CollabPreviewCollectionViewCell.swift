@@ -11,7 +11,7 @@ import Lottie
 
 class CollabPreviewCollectionViewCell: UICollectionViewCell {
     
-    lazy var animationView = AnimationView(name: "home-animation")
+    lazy var animationView = LottieAnimationView(name: "home-animation")
     let collabLabel = UILabel()
     
     var heightForLabel: CGFloat {

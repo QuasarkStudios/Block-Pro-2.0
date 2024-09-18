@@ -18,7 +18,7 @@ class HomeViewController: UIViewController {
     lazy var collabCollectionView = UICollectionView(frame: .zero, collectionViewLayout: CollabCollectionViewFlowLayout(self))
     let calendarTableView = UITableView()
     
-    let animationView = AnimationView(name: "home-animation")
+    let animationView = LottieAnimationView(name: "home-animation")
     let animationTitleLabel = UILabel()
     
     let calendarButton = UIButton(type: .system)
@@ -1618,5 +1618,22 @@ extension HomeViewController: ProfileProtocol {
     func presentFriends () {
         
         moveToFriendsView()
+    }
+    
+    func deleteAccount() {
+        SVProgressHUD.show()
+        
+        firebaseAuth.deleteAccount { [weak self] error in
+            if error != nil {
+                SVProgressHUD.showError(withStatus: error?.localizedDescription)
+            } else {
+                self?.removeListenersOnSignOut()
+                self?.deallocateRootViewControllers()
+                self?.tabBar.shouldHide = true
+                self?.navigationController?.popToRootViewController(animated: true)
+                
+                SVProgressHUD.showSuccess(withStatus: "Your account has been deleted")
+            }
+        }
     }
 }

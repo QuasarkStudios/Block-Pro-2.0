@@ -11,7 +11,7 @@ import Lottie
 
 class ProgressAnimationView: UIView {
 
-    let animationView = AnimationView(name: "progress-animation")
+    let animationView = LottieAnimationView(name: "progress-animation")
     var animationViewCenterYAnchor: NSLayoutConstraint?
     var animationViewHeightConstraint: NSLayoutConstraint?
     

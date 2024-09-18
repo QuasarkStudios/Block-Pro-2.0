@@ -34,7 +34,6 @@
 		0D2CECF0228FB55600CC9180 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D2CECEF228FB55600CC9180 /* AppDelegate.swift */; };
 		0D2CECF5228FB55600CC9180 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CECF3228FB55600CC9180 /* Main.storyboard */; };
 		0D2CECFA228FB55800CC9180 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D2CECF8228FB55800CC9180 /* LaunchScreen.storyboard */; };
-		0D3213D224C8F2F100BC46F5 /* scissor-cutting-animated.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D3213D124C8F2F100BC46F5 /* scissor-cutting-animated.json */; };
 		0D3213D424CA106B00BC46F5 /* MessagingMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3213D324CA106B00BC46F5 /* MessagingMethods.swift */; };
 		0D3213D724CAB21200BC46F5 /* VibrateMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D3213D624CAB21200BC46F5 /* VibrateMethods.swift */; };
 		0D37F4FD24FDBCFF00618ECD /* ConversationAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D37F4FC24FDBCFF00618ECD /* ConversationAnimation.swift */; };
@@ -250,6 +249,7 @@
 		0DE728C3250881F800581048 /* CollabView+Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE728C2250881F800581048 /* CollabView+Messages.swift */; };
 		0DE728C52509751B00581048 /* CachePhotoProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE728C42509751B00581048 /* CachePhotoProtocol.swift */; };
 		0DE728C82509BB7400581048 /* SendPhoto.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DE728C72509BB7400581048 /* SendPhoto.storyboard */; };
+		0DE745B12C9153ED00D8386F /* scissor-cutting-animated.json in Resources */ = {isa = PBXBuildFile; fileRef = 0DE745B02C9153ED00D8386F /* scissor-cutting-animated.json */; };
 		0DE8953225F4BA1E00E0D643 /* DeleteConfigurationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8953125F4BA1E00E0D643 /* DeleteConfigurationCell.swift */; };
 		0DE8957125F6A7D000E0D643 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957025F6A7D000E0D643 /* HomeViewController.swift */; };
 		0DE8957825F6CC8800E0D643 /* HomeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957725F6CC8700E0D643 /* HomeHeaderView.swift */; };
@@ -300,7 +300,6 @@
 		0D2CECF4228FB55600CC9180 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0D2CECF9228FB55800CC9180 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0D2CECFB228FB55800CC9180 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0D3213D124C8F2F100BC46F5 /* scissor-cutting-animated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "scissor-cutting-animated.json"; path = "../../../Downloads/scissor-cutting-animated.json"; sourceTree = "<group>"; };
 		0D3213D324CA106B00BC46F5 /* MessagingMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagingMethods.swift; sourceTree = "<group>"; };
 		0D3213D624CAB21200BC46F5 /* VibrateMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibrateMethods.swift; sourceTree = "<group>"; };
 		0D37F4FC24FDBCFF00618ECD /* ConversationAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationAnimation.swift; sourceTree = "<group>"; };
@@ -519,6 +518,7 @@
 		0DE728C2250881F800581048 /* CollabView+Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollabView+Messages.swift"; sourceTree = "<group>"; };
 		0DE728C42509751B00581048 /* CachePhotoProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachePhotoProtocol.swift; sourceTree = "<group>"; };
 		0DE728C72509BB7400581048 /* SendPhoto.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SendPhoto.storyboard; sourceTree = "<group>"; };
+		0DE745B02C9153ED00D8386F /* scissor-cutting-animated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "scissor-cutting-animated.json"; path = "../../../../../../Downloads/scissor-cutting-animated.json"; sourceTree = "<group>"; };
 		0DE8953125F4BA1E00E0D643 /* DeleteConfigurationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteConfigurationCell.swift; sourceTree = "<group>"; };
 		0DE8957025F6A7D000E0D643 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		0DE8957725F6CC8700E0D643 /* HomeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeaderView.swift; sourceTree = "<group>"; };
@@ -659,7 +659,7 @@
 				0D417391242E8C7B006076A5 /* giphy.gif */,
 				0D898524263D0C5700FDB366 /* block-onboarding-animation.json */,
 				0D2A387A24C2A207008D69F3 /* chat-bubbles-animation.json */,
-				0D3213D124C8F2F100BC46F5 /* scissor-cutting-animated.json */,
+				0DE745B02C9153ED00D8386F /* scissor-cutting-animated.json */,
 				0D0D0B4D25D1FDD400DE6FAD /* progress-animation.json */,
 				0D85AB332624CA5000FF07E4 /* home-animation.json */,
 				0D716261262BA772006FC1AB /* conversation-animation.json */,
@@ -1272,7 +1272,6 @@
 				0D2CECE9228FB55600CC9180 /* Frameworks */,
 				0D2CECEA228FB55600CC9180 /* Resources */,
 				F8D5ABBF9B78C39B554A57F7 /* [CP] Embed Pods Frameworks */,
-				D71F86554224A6FEBB7C90BA /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1377,12 +1376,12 @@
 				0D7865B523F7709500BD4C4D /* Home.storyboard in Resources */,
 				0D589DE62458A0D9005AC7BC /* MessageCell.xib in Resources */,
 				0D78658123E4B56B00BD4C4D /* Poppins-MediumItalic.ttf in Resources */,
-				0D3213D224C8F2F100BC46F5 /* scissor-cutting-animated.json in Resources */,
 				0D78657423E4B56B00BD4C4D /* Poppins-Medium.ttf in Resources */,
 				0D78657123E4B56B00BD4C4D /* Poppins-ExtraBold.ttf in Resources */,
 				0D417392242E8C7B006076A5 /* giphy.gif in Resources */,
 				0D82282524D76D5300D0BBA0 /* ConvoAddMemberInfoCell.xib in Resources */,
 				0D78658023E4B56B00BD4C4D /* Poppins-Thin.ttf in Resources */,
+				0DE745B12C9153ED00D8386F /* scissor-cutting-animated.json in Resources */,
 				0D78657623E4B56B00BD4C4D /* Poppins-SemiBold.ttf in Resources */,
 				0D78657323E4B56B00BD4C4D /* Poppins-ExtraLight.ttf in Resources */,
 				0D13AC02232DDBD40025EDC3 /* Assets.xcassets in Resources */,
@@ -1414,23 +1413,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D71F86554224A6FEBB7C90BA /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Block Pro/Pods-Block Pro-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F8D5ABBF9B78C39B554A57F7 /* [CP] Embed Pods Frameworks */ = {

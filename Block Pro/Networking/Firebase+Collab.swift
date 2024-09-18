@@ -1031,13 +1031,13 @@ class FirebaseCollab {
                         searchResult.firstName = document.data()["firstName"] as? String ?? ""
                         searchResult.lastName = document.data()["lastName"] as? String ?? ""
                         searchResult.username = document.data()["username"] as? String ?? ""
+                        searchResult.isAccountDeleted = document.data()["isAccountDeleted"] as? Bool ?? false
                         
                         if searchResult.userID == self.currentUser.userID {
-                            
                             continue
-                        }
-                        
-                        else {
+                        } else if searchResult.isAccountDeleted {
+                            continue
+                        } else {
                             
                             if self.friends.contains(where: { $0.userID == searchResult.userID }) {
                                 

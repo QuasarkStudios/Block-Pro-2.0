@@ -11,7 +11,7 @@ import Lottie
 
 class BlockPreviewCollectionViewCell: UICollectionViewCell {
     
-    lazy var animationView = AnimationView(name: "block-onboarding-animation")
+    lazy var animationView = LottieAnimationView(name: "block-onboarding-animation")
     let blockLabel = UILabel()
     
     var heightForLabel: CGFloat {

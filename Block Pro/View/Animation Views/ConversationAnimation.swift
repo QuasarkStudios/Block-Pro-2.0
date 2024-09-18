@@ -11,7 +11,7 @@ import Lottie
 
 class ConversationAnimation: UIView {
 
-    let conversationAnimationView = AnimationView(name: "conversation-animation")
+    let conversationAnimationView = LottieAnimationView(name: "conversation-animation")
     let conversationAnimationTitle = UILabel()
     
     var loadingCount: Int = 1

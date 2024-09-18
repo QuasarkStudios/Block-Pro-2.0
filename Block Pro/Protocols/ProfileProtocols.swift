@@ -9,8 +9,7 @@
 import Foundation
 
 protocol ProfileProtocol: AnyObject {
-    
-    func profilePictureEdited (profilePic: UIImage?)
-    
-    func presentFriends ()
+    func profilePictureEdited(profilePic: UIImage?)
+    func presentFriends()
+    func deleteAccount()
 }

@@ -36,7 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         configureSVProgressHUD()
         
-        GIDSignIn.sharedInstance()?.clientID = FirebaseApp.app()?.options.clientID
+        let gidConfiguration = GIDConfiguration(clientID: FirebaseApp.app()?.options.clientID ?? "")
+        GIDSignIn.sharedInstance.configuration = gidConfiguration
         
         return true
     }
@@ -65,8 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     }
     
     open func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        
-        return GIDSignIn.sharedInstance()!.handle(url)
+        return GIDSignIn.sharedInstance.handle(url)
     }
     
     
@@ -170,9 +170,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 extension AppDelegate: MessagingDelegate {
     
     //Subscribe to topics here
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
         
-        //print("fcm token:   ", fcmToken)
+        guard let fcmToken else { return }
         
         let currentUser = CurrentUser.sharedInstance
         

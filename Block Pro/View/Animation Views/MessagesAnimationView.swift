@@ -11,7 +11,7 @@ import Lottie
 
 class MessagesAnimationView: UIView {
 
-    let animationView = AnimationView(name: "chat-bubbles-animation")
+    let animationView = LottieAnimationView(name: "chat-bubbles-animation")
     let animationTitleLabel = UILabel()
     
     override init(frame: CGRect) {

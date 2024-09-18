@@ -88,16 +88,8 @@ class FirebaseStorage {
     }
     
     
-    func deleteProfilePictureFromStorage () {
-        
-        profilePicturesRef.child("\(currentUser.userID).jpeg").delete { (error) in
-            
-            if error != nil {
-                
-                print(error?.localizedDescription as Any)
-            }
-        }
-        
+    func deleteProfilePictureFromStorage() async {
+        try? await profilePicturesRef.child("\(currentUser.userID).jpeg").delete()
         currentUser.profilePictureImage = nil
     }
     

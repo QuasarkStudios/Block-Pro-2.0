@@ -111,8 +111,8 @@ class LogInViewController: UIViewController {
         configureSignInButton()
         configureCancelButton()
         
-        GIDSignIn.sharedInstance()?.delegate = self
-        GIDSignIn.sharedInstance()?.presentingViewController = self
+//        GIDSignIn.sharedInstance()?.delegate = self
+//        GIDSignIn.sharedInstance()?.presentingViewController = self
         
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
     }
@@ -1213,8 +1213,10 @@ class LogInViewController: UIViewController {
             }
             
             signingInWithApple = false
-            signingInWithGoogle = true
-            GIDSignIn.sharedInstance()?.signIn()
+            signingInWithGoogle = true            
+            GIDSignIn.sharedInstance.signIn(withPresenting: self) { [weak self] result, error in
+                self?.handleGoogleSignIn(result: result, error: error)
+            }
         }
         
         //Sign In Button
@@ -1387,23 +1389,18 @@ extension LogInViewController: ASAuthorizationControllerPresentationContextProvi
 
 //MARK: - GIDSignInDelegate Extension
 
-extension LogInViewController: GIDSignInDelegate {
+extension LogInViewController {
     
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
-        
-        if error != nil {
-
+    private func handleGoogleSignIn(result: GIDSignInResult?, error: Error?) {
+        if let error {
             print(error.localizedDescription)
-        }
-        
-        else {
-
-            guard let authentication = user.authentication else { return }
-
+        } else {
+            guard let user = result?.user, let idToken = user.idToken else { return }
+            
             SVProgressHUD.show()
             
             //Using the Google ID token and the Google access token from the GIDAuthentication object and exchanging them for a Firebase credential
-            let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken, accessToken: authentication.accessToken)
+            let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString, accessToken: user.accessToken.tokenString)
             
             //Using the credential to sign into Firebase
             //If this is a new user, Firebase will create a new user account
@@ -1444,9 +1441,9 @@ extension LogInViewController: GIDSignInDelegate {
                                 else {
                                     
                                     var newUser = NewUser()
-                                    newUser.email = user.profile.email ?? ""
-                                    newUser.firstName = user.profile.givenName
-                                    newUser.lastName = user.profile.familyName
+                                    newUser.email = user.profile?.email ?? ""
+                                    newUser.firstName = user.profile?.givenName ?? ""
+                                    newUser.lastName = user.profile?.familyName ?? ""
                                     
                                     self?.moveToRegistrationView(newUser: newUser)
                                 }

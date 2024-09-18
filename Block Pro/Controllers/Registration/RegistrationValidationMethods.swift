@@ -89,17 +89,12 @@ extension RegistrationViewController {
                     if let errorCode = self?.firebaseAuth.getErrorCode(error) {
                         
                         switch errorCode {
-                            
-                            case .invalidEmail:
-                                
-                                cell.errorLabel.textColor = .systemRed
-                                cell.errorLabel.text = "Sorry, but this email is badly formatted"
-                            
-                            default:
-                                
-                                SVProgressHUD.showError(withStatus: error.localizedDescription)
-                                
-                                cell.errorLabel.text = ""
+                        case .invalidEmail:
+                            cell.errorLabel.textColor = .systemRed
+                            cell.errorLabel.text = "Sorry, but this email is badly formatted"
+                        default:
+                            SVProgressHUD.showError(withStatus: error.localizedDescription)
+                            cell.errorLabel.text = ""
                         }
                     }
                 }

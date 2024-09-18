@@ -20,7 +20,7 @@ class NotificationsViewController: UIViewController {
     let showAllFriendRequestsButton = UIButton(type: .system)
     let showAllCollabRequestsButton = UIButton(type: .system)
     
-    let animationView = AnimationView(name: "notifications-animation")
+    let animationView = LottieAnimationView(name: "notifications-animation")
     let animationTitleLabel = UILabel()
     
     lazy var tabBar = CustomTabBar.sharedInstance

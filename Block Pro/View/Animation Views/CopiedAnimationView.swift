@@ -73,7 +73,7 @@ class CopiedAnimationView: UIView {
             copiedAnimationTitle.font = UIFont(name: "Poppins-SemiBold", size: 16)
             
             
-            let animationView = AnimationView(name: "scissor-cutting-animated")
+            let animationView = LottieAnimationView(name: "scissor-cutting-animated")
             
             self.addSubview(animationView)
             animationView.translatesAutoresizingMaskIntoConstraints = false
@@ -98,7 +98,7 @@ class CopiedAnimationView: UIView {
         
         for subview in self.subviews {
             
-            if let animationView = subview as? AnimationView {
+            if let animationView = subview as? LottieAnimationView {
 
                 animationView.stop() //To allow for the animation to be appear to be restarted if it is already ongoing
             }
@@ -132,7 +132,7 @@ class CopiedAnimationView: UIView {
             
             for subview in self.subviews {
                 
-                if let animationView = subview as? AnimationView {
+                if let animationView = subview as? LottieAnimationView {
 
                     animationView.play()
                 }
@@ -152,7 +152,7 @@ class CopiedAnimationView: UIView {
         
         for subview in self.subviews {
             
-            if let animationView = subview as? AnimationView {
+            if let animationView = subview as? LottieAnimationView {
 
                 animationView.stop()
             }

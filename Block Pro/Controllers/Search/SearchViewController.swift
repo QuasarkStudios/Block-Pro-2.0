@@ -17,7 +17,7 @@ class SearchViewController: UIViewController {
     
     let searchResultsTableView = UITableView()
     
-    let animationView = AnimationView(name: "search-animation")
+    let animationView = LottieAnimationView(name: "search-animation")
     let animationTitleLabel = UILabel()
     
     lazy var tabBar = CustomTabBar.sharedInstance

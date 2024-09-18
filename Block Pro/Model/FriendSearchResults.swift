@@ -15,5 +15,7 @@ class FriendSearchResult {
     var lastName: String = ""
     var username: String = ""
     
+    var isAccountDeleted: Bool = false
+    
     var profilePicture: UIImage?
 }

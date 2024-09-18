@@ -99,23 +99,23 @@ class FirebaseAuthentication {
                             currentUser.accountCreated = accountCreated
                         }
                         
-                        InstanceID.instanceID().instanceID(handler: { (result, error) in
+                        Messaging.messaging().token(completion: { (token, error) in
 
                             if error != nil {
 
                                 print(error?.localizedDescription as Any)
                             }
 
-                            else if let result = result {
+                            else if let token {
 
-                                if let fcmToken = snapshot?["fcmToken"] as? String, fcmToken == result.token {
+                                if let fcmToken = snapshot?["fcmToken"] as? String, fcmToken == token {
 
                                     currentUser.fcmToken = fcmToken
                                 }
 
                                 else {
 
-                                    self.setNewFCMToken(fcmToken: result.token)
+                                    self.setNewFCMToken(fcmToken: token)
                                 }
                             }
                         })
@@ -146,7 +146,7 @@ class FirebaseAuthentication {
             
             else {
                 
-                if signInMethods == nil {
+                if (signInMethods?.isEmpty ?? true) {
                     
                     completion(false, nil)
                 }
@@ -229,18 +229,18 @@ class FirebaseAuthentication {
 
                     completion(nil)
 
-                    InstanceID.instanceID().instanceID(handler: { (result, error) in
+                    Messaging.messaging().token(completion: { (token, error) in
 
                         if error != nil {
 
                             print(error?.localizedDescription as Any)
                         }
 
-                        else if let result = result {
+                        else if let token {
 
-                            db.collection("Users").document(userID).setData(["fcmToken" : result.token], merge: true)
+                            db.collection("Users").document(userID).setData(["fcmToken" : token], merge: true)
 
-                            currentUser.fcmToken = result.token
+                            currentUser.fcmToken = token
                         }
                     })
                 }
@@ -275,6 +275,46 @@ class FirebaseAuthentication {
         }
     }
     
+    func logoutUser() async throws {
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            self?.logOutUser { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+    }
+    
+    
+    // MARK: - Delete Account
+    
+    func deleteAccount(completion: @escaping ((_ error: Error?) -> Void)) {
+        let currentUser = CurrentUser.sharedInstance
+        let firebaseStorage = FirebaseStorage()
+        let dispatchGroup = DispatchGroup()
+        
+        currentUser.userSignedIn = false
+        
+        Task {
+            do {
+                await firebaseStorage.deleteProfilePictureFromStorage()
+                await deleteFCMToken()
+                try await Firestore.firestore().collection("Users").document(currentUser.userID).setData(["isAccountDeleted": true], merge: true)
+                try await logoutUser()
+                
+                await MainActor.run {
+                    completion(nil)
+                }
+            } catch {
+                await MainActor.run {
+                    completion(error)
+                }
+            }
+        }
+    }
+    
     
     //MARK: - Get Error Code
     
@@ -297,17 +337,32 @@ class FirebaseAuthentication {
     
     //MARK: - Delete FCM Token
     
-    func deleteFCMToken () {
-        
+    func deleteFCMToken(completion: (() -> Void)? = nil) {
         let currentUser = CurrentUser.sharedInstance
+        let dispatchGroup = DispatchGroup()
         
-        Firestore.firestore().collection("Users").document(currentUser.userID).updateData(["fcmToken" : FieldValue.delete()])
+        dispatchGroup.enter()
+        Firestore.firestore().collection("Users").document(currentUser.userID).updateData(["fcmToken" : FieldValue.delete()]) { _ in
+            dispatchGroup.leave()
+        }
         
-        InstanceID.instanceID().deleteID { (error) in
-            
-            if error != nil {
-                
-                print("error deleting fcm instance id: ", error?.localizedDescription as Any)
+        dispatchGroup.enter()
+        Messaging.messaging().deleteToken { error in
+            if let error {
+                print("error deleting fcm instance id: ", error.localizedDescription as Any)
+            }
+            dispatchGroup.leave()
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            completion?()
+        }
+    }
+    
+    func deleteFCMToken() async {
+        return await withCheckedContinuation { [weak self] continuation in
+            self?.deleteFCMToken {
+                continuation.resume()
             }
         }
     }

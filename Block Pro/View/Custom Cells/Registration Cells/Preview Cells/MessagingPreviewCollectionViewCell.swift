@@ -11,7 +11,7 @@ import Lottie
 
 class MessagingPreviewCollectionViewCell: UICollectionViewCell {
     
-    let animationView = AnimationView(name: "conversation-animation")
+    let animationView = LottieAnimationView(name: "conversation-animation")
     let messagingLabel = UILabel()
 
     var heightForLabel: CGFloat {

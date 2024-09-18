@@ -22,6 +22,8 @@ class ProfileViewController: UIViewController {
     let dateJoinedLabel = UILabel()
     let friendsLabel = UILabel()
     
+    private let deleteAccountButton = UIButton(type: .system)
+    
     var headerViewProfilePicture: ProfilePicture?
     var headerViewProfilePictureFrame: CGRect?
     
@@ -43,6 +45,7 @@ class ProfileViewController: UIViewController {
         configureNameLabel()
         configureDateJoinedLabel()
         configureFriendsLabel()
+        configureDeleteAccountButton()
     }
     
     
@@ -70,7 +73,7 @@ class ProfileViewController: UIViewController {
             profileView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 10),
             profileView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -10),
             profileView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor, constant: 0),
-            profileView.heightAnchor.constraint(equalToConstant: 405)
+            profileView.heightAnchor.constraint(equalToConstant: 480)
         
         ].forEach({ $0.isActive = true })
         
@@ -322,6 +325,26 @@ class ProfileViewController: UIViewController {
         friendsLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(presentFriends)))
     }
     
+    // MARK: - Configure Delete Account Button
+    
+    private func configureDeleteAccountButton() {
+        profileView.addSubview(deleteAccountButton)
+        deleteAccountButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            deleteAccountButton.leadingAnchor.constraint(equalTo: profileView.leadingAnchor, constant: 32),
+            deleteAccountButton.trailingAnchor.constraint(equalTo: profileView.trailingAnchor, constant: -32),
+            deleteAccountButton.bottomAnchor.constraint(equalTo: profileView.bottomAnchor, constant: -32),
+            deleteAccountButton.heightAnchor.constraint(equalToConstant: 45)
+        ])
+        
+        deleteAccountButton.titleLabel?.font = UIFont(name: "Poppins-Medium", size: 16)
+        deleteAccountButton.tintColor = .white
+        deleteAccountButton.setTitle("Delete Account", for: .normal)
+        deleteAccountButton.backgroundColor = .flatRed()
+        deleteAccountButton.layer.cornerRadius = 10
+        deleteAccountButton.addTarget(self, action: #selector(deleteAccountButtonPressed), for: .touchUpInside)
+    }
     
     //MARK: - Perform Zoom Presentation Animation
     
@@ -475,7 +498,11 @@ class ProfileViewController: UIViewController {
     
     //MARK: - Cancel Button Pressed
     
-    @objc private func cancelButtonPressed () {
+    @objc private func cancelButtonPressed() {
+        handleCancelButtonPressed()
+    }
+    
+    private func handleCancelButtonPressed(completion: (() -> Void)? = nil) {
         
         if let profilePictureStartingFrame = headerViewProfilePictureFrame {
             
@@ -519,10 +546,20 @@ class ProfileViewController: UIViewController {
                         profilePicture.layer.add(profilePictureShadowAnimation, forKey: nil)
                         profilePicture.layer.shadowColor = UIColor(hexString: "39434A")!.cgColor
                         
-                        self.dismiss(animated: false)
+                        self.dismiss(animated: false) {
+                            completion?()
+                        }
                     }
                 }
             }
+        }
+    }
+    
+    // MARK: - Delete Account Button Pressed
+    
+    @objc private func deleteAccountButtonPressed() {
+        handleCancelButtonPressed { [weak self] in
+            self?.profileDelegate?.deleteAccount()
         }
     }
 }

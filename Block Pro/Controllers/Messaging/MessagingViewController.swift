@@ -16,7 +16,7 @@ class MessagingViewController: UIViewController {
     @IBOutlet weak var messagesTableView: UITableView!
     
     let noMessagesAnimationContainer = UIView()
-    let noMessagesAnimationView = AnimationView(name: "chat-bubbles-animation")
+    let noMessagesAnimationView = LottieAnimationView(name: "chat-bubbles-animation")
     let noMessagesAnimationTitle = UILabel()
     
     var copiedAnimationView: CopiedAnimationView?
