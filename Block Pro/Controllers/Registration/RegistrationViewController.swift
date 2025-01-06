@@ -361,7 +361,9 @@ class RegistrationViewController: UIViewController {
         
         //Appears to be helping fix the choppy scrolling that occurs when scrolling from the first to the second cell
         //Choppy scrolling appears to be caused by initializing two animationViews at the same time
-        collectionView.dequeueReusableCell(withReuseIdentifier: "collabPreviewCollectionViewCell", for: IndexPath(item: 2, section: 0))
+        
+        //Started to cause a crash, so I'm removing this line for now.
+//        collectionView.dequeueReusableCell(withReuseIdentifier: "collabPreviewCollectionViewCell", for: IndexPath(item: 2, section: 0))
     }
 
     

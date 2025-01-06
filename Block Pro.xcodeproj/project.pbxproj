@@ -124,7 +124,6 @@
 		0D687DB026159F6300A9BB7D /* notifications-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D687DAF26159F6300A9BB7D /* notifications-animation.json */; };
 		0D687DB72617CEA100A9BB7D /* CollabRequestCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D687DB62617CEA100A9BB7D /* CollabRequestCell.swift */; };
 		0D687DBB261AD40400A9BB7D /* CollabRequestProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D687DBA261AD40400A9BB7D /* CollabRequestProtocol.swift */; };
-		0D68D7B9264B57AC0011069C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0D68D7B8264B57AB0011069C /* GoogleService-Info.plist */; };
 		0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */; };
 		0D716262262BA773006FC1AB /* conversation-animation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0D716261262BA772006FC1AB /* conversation-animation.json */; };
 		0D716265262BBBDE006FC1AB /* HomeSidebarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D716264262BBBDE006FC1AB /* HomeSidebarViewController.swift */; };
@@ -250,6 +249,7 @@
 		0DE728C52509751B00581048 /* CachePhotoProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE728C42509751B00581048 /* CachePhotoProtocol.swift */; };
 		0DE728C82509BB7400581048 /* SendPhoto.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0DE728C72509BB7400581048 /* SendPhoto.storyboard */; };
 		0DE745B12C9153ED00D8386F /* scissor-cutting-animated.json in Resources */ = {isa = PBXBuildFile; fileRef = 0DE745B02C9153ED00D8386F /* scissor-cutting-animated.json */; };
+		0DE745B32C9ABC2C00D8386F /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0DE745B22C9ABC2C00D8386F /* GoogleService-Info.plist */; };
 		0DE8953225F4BA1E00E0D643 /* DeleteConfigurationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8953125F4BA1E00E0D643 /* DeleteConfigurationCell.swift */; };
 		0DE8957125F6A7D000E0D643 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957025F6A7D000E0D643 /* HomeViewController.swift */; };
 		0DE8957825F6CC8800E0D643 /* HomeHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DE8957725F6CC8700E0D643 /* HomeHeaderView.swift */; };
@@ -390,7 +390,6 @@
 		0D687DAF26159F6300A9BB7D /* notifications-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "notifications-animation.json"; sourceTree = "<group>"; };
 		0D687DB62617CEA100A9BB7D /* CollabRequestCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabRequestCell.swift; sourceTree = "<group>"; };
 		0D687DBA261AD40400A9BB7D /* CollabRequestProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollabRequestProtocol.swift; sourceTree = "<group>"; };
-		0D68D7B8264B57AB0011069C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0D70F91C2429BBCD00407E4A /* LogInRegister.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LogInRegister.storyboard; sourceTree = "<group>"; };
 		0D716261262BA772006FC1AB /* conversation-animation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "conversation-animation.json"; sourceTree = "<group>"; };
 		0D716264262BBBDE006FC1AB /* HomeSidebarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeSidebarViewController.swift; sourceTree = "<group>"; };
@@ -519,6 +518,7 @@
 		0DE728C42509751B00581048 /* CachePhotoProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachePhotoProtocol.swift; sourceTree = "<group>"; };
 		0DE728C72509BB7400581048 /* SendPhoto.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SendPhoto.storyboard; sourceTree = "<group>"; };
 		0DE745B02C9153ED00D8386F /* scissor-cutting-animated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = "scissor-cutting-animated.json"; path = "../../../../../../Downloads/scissor-cutting-animated.json"; sourceTree = "<group>"; };
+		0DE745B22C9ABC2C00D8386F /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0DE8953125F4BA1E00E0D643 /* DeleteConfigurationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteConfigurationCell.swift; sourceTree = "<group>"; };
 		0DE8957025F6A7D000E0D643 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		0DE8957725F6CC8700E0D643 /* HomeHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHeaderView.swift; sourceTree = "<group>"; };
@@ -666,7 +666,7 @@
 				0D1F1E13260873DD009EA8C5 /* search-animation.json */,
 				0D687DAF26159F6300A9BB7D /* notifications-animation.json */,
 				0D2CECFB228FB55800CC9180 /* Info.plist */,
-				0D68D7B8264B57AB0011069C /* GoogleService-Info.plist */,
+				0DE745B22C9ABC2C00D8386F /* GoogleService-Info.plist */,
 			);
 			path = "Block Pro";
 			sourceTree = "<group>";
@@ -1322,6 +1322,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0D39A67F25AEEAE900D9840B /* AddLocation.storyboard in Resources */,
+				0DE745B32C9ABC2C00D8386F /* GoogleService-Info.plist in Resources */,
 				0D2CECFA228FB55800CC9180 /* LaunchScreen.storyboard in Resources */,
 				0D495225244F70A000AAD436 /* DateCell.xib in Resources */,
 				0D82281324D3B8CF00D0BBA0 /* LeaveConvoCell.xib in Resources */,
@@ -1349,7 +1350,6 @@
 				0D687DB026159F6300A9BB7D /* notifications-animation.json in Resources */,
 				0D7E5DE6262FE2FC00620D6B /* Launch-Log In Screen Illustration (Scaled).png in Resources */,
 				0D480F072597C60500E14D1E /* ConfigureBlock.storyboard in Resources */,
-				0D68D7B9264B57AC0011069C /* GoogleService-Info.plist in Resources */,
 				0D70F91D2429BBCD00407E4A /* LogInRegister.storyboard in Resources */,
 				0DAD3B5F24A7C66F00607579 /* ConvoCoverInfoCell.xib in Resources */,
 				0DBF3E9822B03DC800E180D2 /* ProgressHUD.bundle in Resources */,
@@ -1782,16 +1782,17 @@
 				CODE_SIGN_ENTITLEMENTS = "Block Pro/Block Pro.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6YUNA7374D;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Block Pro/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "BlockPro 2.0";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.quasarkstudios.blockpro2.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1811,16 +1812,17 @@
 				CODE_SIGN_ENTITLEMENTS = "Block Pro/Block Pro.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 6YUNA7374D;
 				GCC_NO_COMMON_BLOCKS = YES;
 				INFOPLIST_FILE = "Block Pro/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "BlockPro 2.0";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.quasarkstudios.blockpro2.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

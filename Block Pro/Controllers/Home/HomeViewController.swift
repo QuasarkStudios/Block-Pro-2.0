@@ -1621,19 +1621,28 @@ extension HomeViewController: ProfileProtocol {
     }
     
     func deleteAccount() {
-        SVProgressHUD.show()
-        
-        firebaseAuth.deleteAccount { [weak self] error in
-            if error != nil {
-                SVProgressHUD.showError(withStatus: error?.localizedDescription)
-            } else {
-                self?.removeListenersOnSignOut()
-                self?.deallocateRootViewControllers()
-                self?.tabBar.shouldHide = true
-                self?.navigationController?.popToRootViewController(animated: true)
-                
-                SVProgressHUD.showSuccess(withStatus: "Your account has been deleted")
+        let deleteAccountAlert = UIAlertController(title: "Delete Account", message: "Are you sure you would like to delete your account? This action can't be reversed.", preferredStyle: .alert)
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self]  _ in
+            SVProgressHUD.show()
+            
+            self?.firebaseAuth.deleteAccount { [weak self] error in
+                if error != nil {
+                    SVProgressHUD.showError(withStatus: error?.localizedDescription)
+                } else {
+                    self?.removeListenersOnSignOut()
+                    self?.deallocateRootViewControllers()
+                    self?.tabBar.shouldHide = true
+                    self?.navigationController?.popToRootViewController(animated: true)
+                    
+                    SVProgressHUD.showSuccess(withStatus: "Your account has been deleted")
+                }
             }
         }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        deleteAccountAlert.addAction(deleteAction)
+        deleteAccountAlert.addAction(cancelAction)
+        
+        present(deleteAccountAlert, animated: true)
     }
 }
